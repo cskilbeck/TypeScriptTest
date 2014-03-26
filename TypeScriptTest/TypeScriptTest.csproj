@@ -18,8 +18,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="app.css" />
+    <Content Include="img\Cooper_Black_440.png" />
     <Content Include="index.html" />
+    <Content Include="keyboard.js" />
+    <Content Include="list.js" />
     <Content Include="main.js" />
+    <Content Include="mouse.js" />
+    <Content Include="sprite.js" />
+    <Content Include="font.js" />
+    <Content Include="util.js" />
     <Content Include="web.config" />
   </ItemGroup>
   <ItemGroup>

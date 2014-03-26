@@ -1,0 +1,2292 @@
+BitmapFont = {
+	pageCount: 1,
+	height: 44,
+	internalLeading: 0,
+	baseline: 29.79883,
+	layerCount: 2,
+	glyphCount: 96,
+	Layers: [
+		{
+			offsetX: 0
+			offsetY: 0
+			color: FFFFFFFF
+		},
+		{
+			offsetX: 0
+			offsetY: 0
+			color: FFFFFFFF
+		}
+	],
+	glyphs: [
+		{
+			char: 32,
+			images: 0,
+			advance: 11
+		},
+		{
+			char: 33,
+			images: 2,
+			advance: 13.55664,
+			images: [
+				graphic: {
+					offsetX: -5.238281,
+					offsetY: -6.462891,
+					x: 322,
+					y: 232,
+					w: 24,
+					h: 44,
+				},
+				graphic: {
+					offsetX: 1.761719,
+					offsetY: 0.5371094,
+					x: 124,
+					y: 450,
+					w: 11,
+					h: 30,
+				}
+			]
+		},
+		{
+			char: 34,
+			images: 2,
+			advance: 19.01367,
+			images: [
+				graphic: {
+					offsetX: -5.539063,
+					offsetY: -7.193359,
+					x: 265,
+					y: 450,
+					w: 30,
+					h: 28,
+				},
+				graphic: {
+					offsetX: 1.460938,
+					offsetY: -0.1933594,
+					x: 482,
+					y: 500,
+					w: 17,
+					h: 14,
+				}
+			]
+		},
+		{
+			char: 35,
+			images: 2,
+			advance: 26.4043,
+			images: [
+				graphic: {
+					offsetX: -4.130859,
+					offsetY: -4.787109,
+					x: 240,
+					y: 237,
+					w: 35,
+					h: 42,
+				},
+				graphic: {
+					offsetX: 1.869141,
+					offsetY: 2.212891,
+					x: 323,
+					y: 450,
+					w: 23,
+					h: 28,
+				}
+			]
+		},
+		{
+			char: 36,
+			images: 2,
+			advance: 26.4043,
+			images: [
+				graphic: {
+					offsetX: -5.539063,
+					offsetY: -5.947266,
+					x: 361,
+					y: 1,
+					w: 37,
+					h: 47,
+				},
+				graphic: {
+					offsetX: 1.460938,
+					offsetY: 1.052734,
+					x: 383,
+					y: 353,
+					w: 24,
+					h: 33,
+				}
+			]
+		},
+		{
+			char: 37,
+			images: 2,
+			advance: 35.66406,
+			images: [
+				graphic: {
+					offsetX: -6.419922,
+					offsetY: -7.365234,
+					x: 1,
+					y: 55,
+					w: 48,
+					h: 45,
+				},
+				graphic: {
+					offsetX: 0.5800781,
+					offsetY: -0.3652344,
+					x: 77,
+					y: 356,
+					w: 35,
+					h: 31,
+				}
+			]
+		},
+		{
+			char: 38,
+			images: 2,
+			advance: 38.24219,
+			images: [
+				graphic: {
+					offsetX: -6.419922,
+					offsetY: -7.923828,
+					x: 399,
+					y: 1,
+					w: 51,
+					h: 46,
+				},
+				graphic: {
+					offsetX: 0.5800781,
+					offsetY: -0.9238281,
+					x: 408,
+					y: 353,
+					w: 38,
+					h: 32,
+				}
+			]
+		},
+		{
+			char: 39,
+			images: 2,
+			advance: 10.0332,
+			images: [
+				graphic: {
+					offsetX: -5.539063,
+					offsetY: -7.193359,
+					x: 347,
+					y: 450,
+					w: 21,
+					h: 28,
+				},
+				graphic: {
+					offsetX: 1.460938,
+					offsetY: -0.1933594,
+					x: 133,
+					y: 500,
+					w: 8,
+					h: 14,
+				}
+			]
+		},
+		{
+			char: 40,
+			images: 2,
+			advance: 21.93555,
+			images: [
+				graphic: {
+					offsetX: -4.056641,
+					offsetY: -7.236328,
+					x: 69,
+					y: 1,
+					w: 32,
+					h: 53,
+				},
+				graphic: {
+					offsetX: 2.943359,
+					offsetY: -0.2363281,
+					x: 318,
+					y: 277,
+					w: 19,
+					h: 39,
+				}
+			]
+		},
+		{
+			char: 41,
+			images: 2,
+			advance: 21.93555,
+			images: [
+				graphic: {
+					offsetX: -5.570313,
+					offsetY: -7.214844,
+					x: 102,
+					y: 1,
+					w: 32,
+					h: 53,
+				},
+				graphic: {
+					offsetX: 0.4296875,
+					offsetY: -0.2148438,
+					x: 338,
+					y: 277,
+					w: 19,
+					h: 39,
+				}
+			]
+		},
+		{
+			char: 42,
+			images: 2,
+			advance: 26.4043,
+			images: [
+				graphic: {
+					offsetX: -1.875,
+					offsetY: -7.193359,
+					x: 447,
+					y: 353,
+					w: 31,
+					h: 32,
+				},
+				graphic: {
+					offsetX: 4.125,
+					offsetY: -0.1933594,
+					x: 416,
+					y: 500,
+					w: 19,
+					h: 18,
+				}
+			]
+		},
+		{
+			char: 43,
+			images: 2,
+			advance: 26.4043,
+			images: [
+				graphic: {
+					offsetX: -3.357422,
+					offsetY: -0.8554688,
+					x: 78,
+					y: 319,
+					w: 34,
+					h: 36,
+				},
+				graphic: {
+					offsetX: 2.642578,
+					offsetY: 6.144531,
+					x: 1,
+					y: 481,
+					w: 22,
+					h: 22,
+				}
+			]
+		},
+		{
+			char: 44,
+			images: 2,
+			advance: 13.19141,
+			images: [
+				graphic: {
+					offsetX: -4.796875,
+					offsetY: 12.72266,
+					x: 304,
+					y: 354,
+					w: 24,
+					h: 32,
+				},
+				graphic: {
+					offsetX: 1.203125,
+					offsetY: 19.72266,
+					x: 133,
+					y: 481,
+					w: 11,
+					h: 18,
+				}
+			]
+		},
+		{
+			char: 45,
+			images: 2,
+			advance: 12.50391,
+			images: [
+				graphic: {
+					offsetX: -6,
+					offsetY: 7.222656,
+					x: 63,
+					y: 477,
+					w: 25,
+					h: 22,
+				},
+				graphic: {
+					offsetX: 0,
+					offsetY: 14.22266,
+					x: 257,
+					y: 502,
+					w: 13,
+					h: 8,
+				}
+			]
+		},
+		{
+			char: 46,
+			images: 2,
+			advance: 13.19141,
+			images: [
+				graphic: {
+					offsetX: -4.453125,
+					offsetY: 13.00195,
+					x: 63,
+					y: 451,
+					w: 23,
+					h: 25,
+				},
+				graphic: {
+					offsetX: 1.546875,
+					offsetY: 20.00195,
+					x: 245,
+					y: 502,
+					w: 11,
+					h: 11,
+				}
+			]
+		},
+		{
+			char: 47,
+			images: 2,
+			advance: 20.75391,
+			images: [
+				graphic: {
+					offsetX: -7.804688,
+					offsetY: -7.214844,
+					x: 1,
+					y: 1,
+					w: 33,
+					h: 53,
+				},
+				graphic: {
+					offsetX: -1.804688,
+					offsetY: -0.2148438,
+					x: 408,
+					y: 276,
+					w: 21,
+					h: 39,
+				}
+			]
+		},
+		{
+			char: 48,
+			images: 2,
+			advance: 26.4043,
+			images: [
+				graphic: {
+					offsetX: -5.904297,
+					offsetY: -2.230469,
+					x: 152,
+					y: 238,
+					w: 38,
+					h: 40,
+				},
+				graphic: {
+					offsetX: 1.095703,
+					offsetY: 4.769531,
+					x: 417,
+					y: 450,
+					w: 25,
+					h: 26,
+				}
+			]
+		},
+		{
+			char: 49,
+			images: 2,
+			advance: 26.4043,
+			images: [
+				graphic: {
+					offsetX: -4.28125,
+					offsetY: -2.080078,
+					x: 372,
+					y: 276,
+					w: 35,
+					h: 40,
+				},
+				graphic: {
+					offsetX: 1.71875,
+					offsetY: 4.919922,
+					x: 443,
+					y: 450,
+					w: 23,
+					h: 26,
+				}
+			]
+		},
+		{
+			char: 50,
+			images: 2,
+			advance: 26.4043,
+			images: [
+				graphic: {
+					offsetX: -5.613281,
+					offsetY: -2.080078,
+					x: 113,
+					y: 238,
+					w: 38,
+					h: 41,
+				},
+				graphic: {
+					offsetX: 0.3867188,
+					offsetY: 4.919922,
+					x: 391,
+					y: 450,
+					w: 25,
+					h: 27,
+				}
+			]
+		},
+		{
+			char: 51,
+			images: 2,
+			advance: 26.4043,
+			images: [
+				graphic: {
+					offsetX: -6.085938,
+					offsetY: -2.080078,
+					x: 126,
+					y: 193,
+					w: 38,
+					h: 44,
+				},
+				graphic: {
+					offsetX: -0.0859375,
+					offsetY: 4.919922,
+					x: 362,
+					y: 419,
+					w: 26,
+					h: 30,
+				}
+			]
+		},
+		{
+			char: 52,
+			images: 2,
+			advance: 26.4043,
+			images: [
+				graphic: {
+					offsetX: -6.505859,
+					offsetY: -3.712891,
+					x: 126,
+					y: 147,
+					w: 39,
+					h: 45,
+				},
+				graphic: {
+					offsetX: 0.4941406,
+					offsetY: 3.287109,
+					x: 453,
+					y: 418,
+					w: 25,
+					h: 31,
+				}
+			]
+		},
+		{
+			char: 53,
+			images: 2,
+			advance: 26.4043,
+			images: [
+				graphic: {
+					offsetX: -5.603516,
+					offsetY: -1.779297,
+					x: 1,
+					y: 238,
+					w: 37,
+					h: 43,
+				},
+				graphic: {
+					offsetX: 1.396484,
+					offsetY: 5.220703,
+					x: 204,
+					y: 450,
+					w: 24,
+					h: 29,
+				}
+			]
+		},
+		{
+			char: 54,
+			images: 2,
+			advance: 26.4043,
+			images: [
+				graphic: {
+					offsetX: -6.248047,
+					offsetY: -5.388672,
+					x: 200,
+					y: 237,
+					w: 39,
+					h: 43,
+				},
+				graphic: {
+					offsetX: 0.7519531,
+					offsetY: 1.611328,
+					x: 177,
+					y: 450,
+					w: 26,
+					h: 29,
+				}
+			]
+		},
+		{
+			char: 55,
+			images: 2,
+			advance: 26.4043,
+			images: [
+				graphic: {
+					offsetX: -6.183594,
+					offsetY: -2.960938,
+					x: 451,
+					y: 1,
+					w: 38,
+					h: 46,
+				},
+				graphic: {
+					offsetX: 0.8164063,
+					offsetY: 4.039063,
+					x: 479,
+					y: 353,
+					w: 25,
+					h: 32,
+				}
+			]
+		},
+		{
+			char: 56,
+			images: 2,
+			advance: 26.4043,
+			images: [
+				graphic: {
+					offsetX: -6.527344,
+					offsetY: -4.658203,
+					x: 39,
+					y: 238,
+					w: 39,
+					h: 42,
+				},
+				graphic: {
+					offsetX: 0.4726563,
+					offsetY: 2.341797,
+					x: 296,
+					y: 450,
+					w: 26,
+					h: 28,
+				}
+			]
+		},
+		{
+			char: 57,
+			images: 2,
+			advance: 26.4043,
+			images: [
+				graphic: {
+					offsetX: -6.462891,
+					offsetY: -2.080078,
+					x: 166,
+					y: 147,
+					w: 39,
+					h: 45,
+				},
+				graphic: {
+					offsetX: 0.5371094,
+					offsetY: 4.919922,
+					x: 479,
+					y: 418,
+					w: 25,
+					h: 31,
+				}
+			]
+		},
+		{
+			char: 58,
+			images: 2,
+			advance: 13.19141,
+			images: [
+				graphic: {
+					offsetX: -5.453125,
+					offsetY: 0.5839844,
+					x: 276,
+					y: 280,
+					w: 24,
+					h: 37,
+				},
+				graphic: {
+					offsetX: 1.546875,
+					offsetY: 7.583984,
+					x: 491,
+					y: 476,
+					w: 11,
+					h: 23,
+				}
+			]
+		},
+		{
+			char: 59,
+			images: 2,
+			advance: 13.19141,
+			images: [
+				graphic: {
+					offsetX: -4.796875,
+					offsetY: 0.5839844,
+					x: 347,
+					y: 232,
+					w: 24,
+					h: 44,
+				},
+				graphic: {
+					offsetX: 1.203125,
+					offsetY: 7.583984,
+					x: 136,
+					y: 450,
+					w: 11,
+					h: 30,
+				}
+			]
+		},
+		{
+			char: 60,
+			images: 2,
+			advance: 22,
+			images: [
+				graphic: {
+					offsetX: -5.539063,
+					offsetY: -7.322266,
+					x: 165,
+					y: 193,
+					w: 34,
+					h: 44,
+				},
+				graphic: {
+					offsetX: 1.460938,
+					offsetY: -0.3222656,
+					x: 1,
+					y: 450,
+					w: 20,
+					h: 30,
+				}
+			]
+		},
+		{
+			char: 61,
+			images: 2,
+			advance: 26.4043,
+			images: [
+				graphic: {
+					offsetX: -4.357422,
+					offsetY: 3.419922,
+					x: 229,
+					y: 450,
+					w: 35,
+					h: 28,
+				},
+				graphic: {
+					offsetX: 2.642578,
+					offsetY: 10.41992,
+					x: 459,
+					y: 500,
+					w: 22,
+					h: 14,
+				}
+			]
+		},
+		{
+			char: 62,
+			images: 2,
+			advance: 22,
+			images: [
+				graphic: {
+					offsetX: -5.539063,
+					offsetY: -7.322266,
+					x: 379,
+					y: 231,
+					w: 34,
+					h: 44,
+				},
+				graphic: {
+					offsetX: 1.460938,
+					offsetY: -0.3222656,
+					x: 22,
+					y: 450,
+					w: 20,
+					h: 30,
+				}
+			]
+		},
+		{
+			char: 63,
+			images: 2,
+			advance: 21.20508,
+			images: [
+				graphic: {
+					offsetX: -5.699219,
+					offsetY: -6.742188,
+					x: 414,
+					y: 231,
+					w: 33,
+					h: 44,
+				},
+				graphic: {
+					offsetX: 0.3007813,
+					offsetY: 0.2578125,
+					x: 69,
+					y: 420,
+					w: 21,
+					h: 30,
+				}
+			]
+		},
+		{
+			char: 64,
+			images: 2,
+			advance: 35.14844,
+			images: [
+				graphic: {
+					offsetX: -5.818359,
+					offsetY: -7.34375,
+					x: 197,
+					y: 55,
+					w: 47,
+					h: 45,
+				},
+				graphic: {
+					offsetX: 1.181641,
+					offsetY: -0.34375,
+					x: 183,
+					y: 387,
+					w: 33,
+					h: 31,
+				}
+			]
+		},
+		{
+			char: 65,
+			images: 2,
+			advance: 36.37305,
+			images: [
+				graphic: {
+					offsetX: -6,
+					offsetY: -7.494141,
+					x: 261,
+					y: 54,
+					w: 49,
+					h: 45,
+				},
+				graphic: {
+					offsetX: 0,
+					offsetY: -0.4941406,
+					x: 146,
+					y: 355,
+					w: 37,
+					h: 31,
+				}
+			]
+		},
+		{
+			char: 66,
+			images: 2,
+			advance: 31.56055,
+			images: [
+				graphic: {
+					offsetX: -5.419922,
+					offsetY: -6.914063,
+					x: 448,
+					y: 186,
+					w: 43,
+					h: 44,
+				},
+				graphic: {
+					offsetX: 0.5800781,
+					offsetY: 0.0859375,
+					x: 102,
+					y: 419,
+					w: 31,
+					h: 30,
+				}
+			]
+		},
+		{
+			char: 67,
+			images: 2,
+			advance: 31.66797,
+			images: [
+				graphic: {
+					offsetX: -5.96875,
+					offsetY: -7.365234,
+					x: 435,
+					y: 140,
+					w: 44,
+					h: 45,
+				},
+				graphic: {
+					offsetX: 1.03125,
+					offsetY: -0.3652344,
+					x: 251,
+					y: 387,
+					w: 31,
+					h: 31,
+				}
+			]
+		},
+		{
+			char: 68,
+			images: 2,
+			advance: 35.29883,
+			images: [
+				graphic: {
+					offsetX: -5.419922,
+					offsetY: -7.257813,
+					x: 438,
+					y: 94,
+					w: 47,
+					h: 45,
+				},
+				graphic: {
+					offsetX: 0.5800781,
+					offsetY: -0.2578125,
+					x: 37,
+					y: 387,
+					w: 34,
+					h: 31,
+				}
+			]
+		},
+		{
+			char: 69,
+			images: 2,
+			advance: 30.40039,
+			images: [
+				graphic: {
+					offsetX: -5.419922,
+					offsetY: -7.601563,
+					x: 293,
+					y: 145,
+					w: 42,
+					h: 45,
+				},
+				graphic: {
+					offsetX: 0.5800781,
+					offsetY: -0.6015625,
+					x: 480,
+					y: 386,
+					w: 30,
+					h: 31,
+				}
+			]
+		},
+		{
+			char: 70,
+			images: 2,
+			advance: 29.08984,
+			images: [
+				graphic: {
+					offsetX: -5.419922,
+					offsetY: -7.128906,
+					x: 237,
+					y: 146,
+					w: 42,
+					h: 45,
+				},
+				graphic: {
+					offsetX: 0.5800781,
+					offsetY: -0.1289063,
+					x: 72,
+					y: 388,
+					w: 29,
+					h: 31,
+				}
+			]
+		},
+		{
+			char: 71,
+			images: 2,
+			advance: 34.93359,
+			images: [
+				graphic: {
+					offsetX: -5.96875,
+					offsetY: -7.365234,
+					x: 387,
+					y: 95,
+					w: 47,
+					h: 45,
+				},
+				graphic: {
+					offsetX: 1.03125,
+					offsetY: -0.3652344,
+					x: 113,
+					y: 387,
+					w: 34,
+					h: 31,
+				}
+			]
+		},
+		{
+			char: 72,
+			images: 2,
+			advance: 35.27734,
+			images: [
+				graphic: {
+					offsetX: -5.419922,
+					offsetY: -7.236328,
+					x: 311,
+					y: 99,
+					w: 47,
+					h: 45,
+				},
+				graphic: {
+					offsetX: 0.5800781,
+					offsetY: -0.2363281,
+					x: 329,
+					y: 386,
+					w: 35,
+					h: 31,
+				}
+			]
+		},
+		{
+			char: 73,
+			images: 2,
+			advance: 18.19727,
+			images: [
+				graphic: {
+					offsetX: -5.419922,
+					offsetY: -7.214844,
+					x: 480,
+					y: 140,
+					w: 29,
+					h: 45,
+				},
+				graphic: {
+					offsetX: 0.5800781,
+					offsetY: -0.2148438,
+					x: 344,
+					y: 418,
+					w: 17,
+					h: 31,
+				}
+			]
+		},
+		{
+			char: 74,
+			images: 2,
+			advance: 27.58594,
+			images: [
+				graphic: {
+					offsetX: -7.300781,
+					offsetY: -7.214844,
+					x: 1,
+					y: 147,
+					w: 41,
+					h: 45,
+				},
+				graphic: {
+					offsetX: -0.3007813,
+					offsetY: -0.2148438,
+					x: 315,
+					y: 418,
+					w: 28,
+					h: 31,
+				}
+			]
+		},
+		{
+			char: 75,
+			images: 2,
+			advance: 36.39453,
+			images: [
+				graphic: {
+					offsetX: -5.419922,
+					offsetY: -7.214844,
+					x: 50,
+					y: 55,
+					w: 48,
+					h: 45,
+				},
+				graphic: {
+					offsetX: 0.5800781,
+					offsetY: -0.2148438,
+					x: 40,
+					y: 355,
+					w: 36,
+					h: 31,
+				}
+			]
+		},
+		{
+			char: 76,
+			images: 2,
+			advance: 27.84375,
+			images: [
+				graphic: {
+					offsetX: -5.419922,
+					offsetY: -7.193359,
+					x: 85,
+					y: 147,
+					w: 40,
+					h: 45,
+				},
+				graphic: {
+					offsetX: 0.5800781,
+					offsetY: -0.1933594,
+					x: 396,
+					y: 418,
+					w: 28,
+					h: 31,
+				}
+			]
+		},
+		{
+			char: 77,
+			images: 2,
+			advance: 38.88672,
+			images: [
+				graphic: {
+					offsetX: -5.419922,
+					offsetY: -7.214844,
+					x: 336,
+					y: 53,
+					w: 50,
+					h: 45,
+				},
+				graphic: {
+					offsetX: 0.5800781,
+					offsetY: -0.2148438,
+					x: 1,
+					y: 355,
+					w: 38,
+					h: 31,
+				}
+			]
+		},
+		{
+			char: 78,
+			images: 2,
+			advance: 36.52344,
+			images: [
+				graphic: {
+					offsetX: -5.441406,
+					offsetY: -7.214844,
+					x: 99,
+					y: 55,
+					w: 48,
+					h: 45,
+				},
+				graphic: {
+					offsetX: 0.5585938,
+					offsetY: -0.2148438,
+					x: 184,
+					y: 355,
+					w: 36,
+					h: 31,
+				}
+			]
+		},
+		{
+			char: 79,
+			images: 2,
+			advance: 34.24609,
+			images: [
+				graphic: {
+					offsetX: -5.96875,
+					offsetY: -7.365234,
+					x: 97,
+					y: 101,
+					w: 46,
+					h: 45,
+				},
+				graphic: {
+					offsetX: 1.03125,
+					offsetY: -0.3652344,
+					x: 217,
+					y: 387,
+					w: 33,
+					h: 31,
+				}
+			]
+		},
+		{
+			char: 80,
+			images: 2,
+			advance: 30.09961,
+			images: [
+				graphic: {
+					offsetX: -5.419922,
+					offsetY: -7.021484,
+					x: 336,
+					y: 187,
+					w: 42,
+					h: 44,
+				},
+				graphic: {
+					offsetX: 0.5800781,
+					offsetY: -0.02148438,
+					x: 134,
+					y: 419,
+					w: 29,
+					h: 30,
+				}
+			]
+		},
+		{
+			char: 81,
+			images: 2,
+			advance: 34.375,
+			images: [
+				graphic: {
+					offsetX: -5.96875,
+					offsetY: -7.365234,
+					x: 261,
+					y: 1,
+					w: 46,
+					h: 52,
+				},
+				graphic: {
+					offsetX: 1.03125,
+					offsetY: -0.3652344,
+					x: 113,
+					y: 280,
+					w: 33,
+					h: 38,
+				}
+			]
+		},
+		{
+			char: 82,
+			images: 2,
+			advance: 34.16016,
+			images: [
+				graphic: {
+					offsetX: -5.419922,
+					offsetY: -7.128906,
+					x: 144,
+					y: 101,
+					w: 46,
+					h: 45,
+				},
+				graphic: {
+					offsetX: 0.5800781,
+					offsetY: -0.1289063,
+					x: 148,
+					y: 387,
+					w: 34,
+					h: 31,
+				}
+			]
+		},
+		{
+			char: 83,
+			images: 2,
+			advance: 28.38086,
+			images: [
+				graphic: {
+					offsetX: -6.119141,
+					offsetY: -7.365234,
+					x: 43,
+					y: 147,
+					w: 41,
+					h: 45,
+				},
+				graphic: {
+					offsetX: 0.8808594,
+					offsetY: -0.3652344,
+					x: 425,
+					y: 418,
+					w: 27,
+					h: 31,
+				}
+			]
+		},
+		{
+			char: 84,
+			images: 2,
+			advance: 30.83008,
+			images: [
+				graphic: {
+					offsetX: -7,
+					offsetY: -7.429688,
+					x: 191,
+					y: 101,
+					w: 45,
+					h: 45,
+				},
+				graphic: {
+					offsetX: 0,
+					offsetY: -0.4296875,
+					x: 283,
+					y: 387,
+					w: 31,
+					h: 31,
+				}
+			]
+		},
+		{
+			char: 85,
+			images: 2,
+			advance: 36.07227,
+			images: [
+				graphic: {
+					offsetX: -5.441406,
+					offsetY: -7.193359,
+					x: 245,
+					y: 100,
+					w: 47,
+					h: 45,
+				},
+				graphic: {
+					offsetX: 0.5585938,
+					offsetY: -0.1933594,
+					x: 408,
+					y: 386,
+					w: 35,
+					h: 31,
+				}
+			]
+		},
+		{
+			char: 86,
+			images: 2,
+			advance: 35.32031,
+			images: [
+				graphic: {
+					offsetX: -6,
+					offsetY: -7.214844,
+					x: 148,
+					y: 55,
+					w: 48,
+					h: 45,
+				},
+				graphic: {
+					offsetX: 0,
+					offsetY: -0.2148438,
+					x: 221,
+					y: 355,
+					w: 36,
+					h: 31,
+				}
+			]
+		},
+		{
+			char: 87,
+			images: 2,
+			advance: 45.74023,
+			images: [
+				graphic: {
+					offsetX: -6,
+					offsetY: -7.214844,
+					x: 438,
+					y: 48,
+					w: 58,
+					h: 45,
+				},
+				graphic: {
+					offsetX: 0,
+					offsetY: -0.2148438,
+					x: 329,
+					y: 354,
+					w: 46,
+					h: 31,
+				}
+			]
+		},
+		{
+			char: 88,
+			images: 2,
+			advance: 34.97656,
+			images: [
+				graphic: {
+					offsetX: -6,
+					offsetY: -7.214844,
+					x: 1,
+					y: 101,
+					w: 47,
+					h: 45,
+				},
+				graphic: {
+					offsetX: 0,
+					offsetY: -0.2148438,
+					x: 444,
+					y: 386,
+					w: 35,
+					h: 31,
+				}
+			]
+		},
+		{
+			char: 89,
+			images: 2,
+			advance: 34.31055,
+			images: [
+				graphic: {
+					offsetX: -6,
+					offsetY: -7.214844,
+					x: 49,
+					y: 101,
+					w: 47,
+					h: 45,
+				},
+				graphic: {
+					offsetX: 0,
+					offsetY: -0.2148438,
+					x: 1,
+					y: 387,
+					w: 35,
+					h: 31,
+				}
+			]
+		},
+		{
+			char: 90,
+			images: 2,
+			advance: 30.18555,
+			images: [
+				graphic: {
+					offsetX: -6.699219,
+					offsetY: -7.257813,
+					x: 359,
+					y: 141,
+					w: 43,
+					h: 45,
+				},
+				graphic: {
+					offsetX: 0.3007813,
+					offsetY: -0.2578125,
+					x: 365,
+					y: 387,
+					w: 30,
+					h: 31,
+				}
+			]
+		},
+		{
+			char: 91,
+			images: 2,
+			advance: 21.93555,
+			images: [
+				graphic: {
+					offsetX: -1.585938,
+					offsetY: -7.214844,
+					x: 201,
+					y: 1,
+					w: 29,
+					h: 53,
+				},
+				graphic: {
+					offsetX: 5.414063,
+					offsetY: -0.2148438,
+					x: 494,
+					y: 276,
+					w: 16,
+					h: 39,
+				}
+			]
+		},
+		{
+			char: 92,
+			images: 2,
+			advance: 20.75391,
+			images: [
+				graphic: {
+					offsetX: -4.28125,
+					offsetY: -7.193359,
+					x: 35,
+					y: 1,
+					w: 33,
+					h: 53,
+				},
+				graphic: {
+					offsetX: 1.71875,
+					offsetY: -0.1933594,
+					x: 430,
+					y: 276,
+					w: 21,
+					h: 39,
+				}
+			]
+		},
+		{
+			char: 93,
+			images: 2,
+			advance: 21.93555,
+			images: [
+				graphic: {
+					offsetX: -4.839844,
+					offsetY: -7.214844,
+					x: 231,
+					y: 1,
+					w: 29,
+					h: 53,
+				},
+				graphic: {
+					offsetX: 1.160156,
+					offsetY: -0.2148438,
+					x: 152,
+					y: 279,
+					w: 16,
+					h: 39,
+				}
+			]
+		},
+		{
+			char: 94,
+			images: 2,
+			advance: 22,
+			images: [
+				graphic: {
+					offsetX: -6.021484,
+					offsetY: -7.021484,
+					x: 1,
+					y: 419,
+					w: 34,
+					h: 30,
+				},
+				graphic: {
+					offsetX: -0.02148438,
+					offsetY: -0.02148438,
+					x: 436,
+					y: 500,
+					w: 22,
+					h: 16,
+				}
+			]
+		},
+		{
+			char: 95,
+			images: 2,
+			advance: 22,
+			images: [
+				graphic: {
+					offsetX: -6,
+					offsetY: 24.9043,
+					x: 47,
+					y: 500,
+					w: 34,
+					h: 20,
+				},
+				graphic: {
+					offsetX: 0,
+					offsetY: 31.9043,
+					x: 284,
+					y: 502,
+					w: 22,
+					h: 6,
+				}
+			]
+		},
+		{
+			char: 96,
+			images: 2,
+			advance: 22,
+			images: [
+				graphic: {
+					offsetX: -2.648438,
+					offsetY: -8.160156,
+					x: 148,
+					y: 480,
+					w: 24,
+					h: 22,
+				},
+				graphic: {
+					offsetX: 3.351563,
+					offsetY: -1.160156,
+					x: 271,
+					y: 502,
+					w: 12,
+					h: 8,
+				}
+			]
+		},
+		{
+			char: 97,
+			images: 2,
+			advance: 24.94336,
+			images: [
+				graphic: {
+					offsetX: -5.419922,
+					offsetY: 1.142578,
+					x: 41,
+					y: 318,
+					w: 36,
+					h: 36,
+				},
+				graphic: {
+					offsetX: 0.5800781,
+					offsetY: 8.142578,
+					x: 173,
+					y: 480,
+					w: 24,
+					h: 22,
+				}
+			]
+		},
+		{
+			char: 98,
+			images: 2,
+			advance: 27.82227,
+			images: [
+				graphic: {
+					offsetX: -6.150391,
+					offsetY: -6.763672,
+					x: 85,
+					y: 193,
+					w: 40,
+					h: 44,
+				},
+				graphic: {
+					offsetX: -0.1503906,
+					offsetY: 0.2363281,
+					x: 224,
+					y: 419,
+					w: 28,
+					h: 30,
+				}
+			]
+		},
+		{
+			char: 99,
+			images: 2,
+			advance: 23.16016,
+			images: [
+				graphic: {
+					offsetX: -6.269531,
+					offsetY: 1.164063,
+					x: 206,
+					y: 318,
+					w: 35,
+					h: 36,
+				},
+				graphic: {
+					offsetX: 0.7304688,
+					offsetY: 8.164063,
+					x: 24,
+					y: 481,
+					w: 22,
+					h: 22,
+				}
+			]
+		},
+		{
+			char: 100,
+			images: 2,
+			advance: 28.61719,
+			images: [
+				graphic: {
+					offsetX: -6.291016,
+					offsetY: -6.806641,
+					x: 280,
+					y: 191,
+					w: 41,
+					h: 44,
+				},
+				graphic: {
+					offsetX: 0.7089844,
+					offsetY: 0.1933594,
+					x: 253,
+					y: 419,
+					w: 28,
+					h: 30,
+				}
+			]
+		},
+		{
+			char: 101,
+			images: 2,
+			advance: 23.33203,
+			images: [
+				graphic: {
+					offsetX: -6.269531,
+					offsetY: 1.164063,
+					x: 169,
+					y: 318,
+					w: 36,
+					h: 36,
+				},
+				graphic: {
+					offsetX: 0.7304688,
+					offsetY: 8.164063,
+					x: 89,
+					y: 481,
+					w: 22,
+					h: 22,
+				}
+			]
+		},
+		{
+			char: 102,
+			images: 2,
+			advance: 18.66992,
+			images: [
+				graphic: {
+					offsetX: -6.699219,
+					offsetY: -7,
+					x: 448,
+					y: 231,
+					w: 32,
+					h: 44,
+				},
+				graphic: {
+					offsetX: 0.3007813,
+					offsetY: 0,
+					x: 43,
+					y: 450,
+					w: 19,
+					h: 30,
+				}
+			]
+		},
+		{
+			char: 103,
+			images: 2,
+			advance: 25.4375,
+			images: [
+				graphic: {
+					offsetX: -6.419922,
+					offsetY: 0.00390625,
+					x: 399,
+					y: 48,
+					w: 38,
+					h: 46,
+				},
+				graphic: {
+					offsetX: 0.5800781,
+					offsetY: 7.003906,
+					x: 278,
+					y: 354,
+					w: 25,
+					h: 32,
+				}
+			]
+		},
+		{
+			char: 104,
+			images: 2,
+			advance: 29.86328,
+			images: [
+				graphic: {
+					offsetX: -5.570313,
+					offsetY: -6.785156,
+					x: 206,
+					y: 192,
+					w: 41,
+					h: 44,
+				},
+				graphic: {
+					offsetX: 0.4296875,
+					offsetY: 0.2148438,
+					x: 164,
+					y: 419,
+					w: 29,
+					h: 30,
+				}
+			]
+		},
+		{
+			char: 105,
+			images: 2,
+			advance: 15.68359,
+			images: [
+				graphic: {
+					offsetX: -6.570313,
+					offsetY: -6.763672,
+					x: 248,
+					y: 192,
+					w: 28,
+					h: 44,
+				},
+				graphic: {
+					offsetX: 0.4296875,
+					offsetY: 0.2363281,
+					x: 108,
+					y: 450,
+					w: 15,
+					h: 30,
+				}
+			]
+		},
+		{
+			char: 106,
+			images: 2,
+			advance: 16.24219,
+			images: [
+				graphic: {
+					offsetX: -6.150391,
+					offsetY: -6.763672,
+					x: 308,
+					y: 1,
+					w: 27,
+					h: 52,
+				},
+				graphic: {
+					offsetX: -0.1503906,
+					offsetY: 0.2363281,
+					x: 169,
+					y: 279,
+					w: 14,
+					h: 38,
+				}
+			]
+		},
+		{
+			char: 107,
+			images: 2,
+			advance: 32.29102,
+			images: [
+				graphic: {
+					offsetX: -5.570313,
+					offsetY: -6.763672,
+					x: 403,
+					y: 186,
+					w: 44,
+					h: 44,
+				},
+				graphic: {
+					offsetX: 0.4296875,
+					offsetY: 0.2363281,
+					x: 36,
+					y: 419,
+					w: 32,
+					h: 30,
+				}
+			]
+		},
+		{
+			char: 108,
+			images: 2,
+			advance: 16.07031,
+			images: [
+				graphic: {
+					offsetX: -5.591797,
+					offsetY: -6.785156,
+					x: 481,
+					y: 231,
+					w: 28,
+					h: 44,
+				},
+				graphic: {
+					offsetX: 0.4082031,
+					offsetY: 0.2148438,
+					x: 91,
+					y: 450,
+					w: 16,
+					h: 30,
+				}
+			]
+		},
+		{
+			char: 109,
+			images: 2,
+			advance: 42.43164,
+			images: [
+				graphic: {
+					offsetX: -5.570313,
+					offsetY: 1.314453,
+					x: 184,
+					y: 281,
+					w: 54,
+					h: 36,
+				},
+				graphic: {
+					offsetX: 0.4296875,
+					offsetY: 8.314453,
+					x: 229,
+					y: 479,
+					w: 42,
+					h: 22,
+				}
+			]
+		},
+		{
+			char: 110,
+			images: 2,
+			advance: 29.51953,
+			images: [
+				graphic: {
+					offsetX: -5.570313,
+					offsetY: 1.292969,
+					x: 408,
+					y: 316,
+					w: 41,
+					h: 36,
+				},
+				graphic: {
+					offsetX: 0.4296875,
+					offsetY: 8.292969,
+					x: 272,
+					y: 479,
+					w: 29,
+					h: 22,
+				}
+			]
+		},
+		{
+			char: 111,
+			images: 2,
+			advance: 26.49023,
+			images: [
+				graphic: {
+					offsetX: -6.269531,
+					offsetY: 1.142578,
+					x: 343,
+					y: 317,
+					w: 39,
+					h: 36,
+				},
+				graphic: {
+					offsetX: 0.7304688,
+					offsetY: 8.142578,
+					x: 390,
+					y: 479,
+					w: 25,
+					h: 22,
+				}
+			]
+		},
+		{
+			char: 112,
+			images: 2,
+			advance: 29.2832,
+			images: [
+				graphic: {
+					offsetX: -5.570313,
+					offsetY: 1.142578,
+					x: 1,
+					y: 193,
+					w: 41,
+					h: 44,
+				},
+				graphic: {
+					offsetX: 0.4296875,
+					offsetY: 8.142578,
+					x: 194,
+					y: 419,
+					w: 29,
+					h: 30,
+				}
+			]
+		},
+		{
+			char: 113,
+			images: 2,
+			advance: 28.50977,
+			images: [
+				graphic: {
+					offsetX: -6.269531,
+					offsetY: 1.164063,
+					x: 43,
+					y: 193,
+					w: 41,
+					h: 44,
+				},
+				graphic: {
+					offsetX: 0.7304688,
+					offsetY: 8.164063,
+					x: 282,
+					y: 419,
+					w: 28,
+					h: 30,
+				}
+			]
+		},
+		{
+			char: 114,
+			images: 2,
+			advance: 23.52539,
+			images: [
+				graphic: {
+					offsetX: -5.570313,
+					offsetY: 1.292969,
+					x: 242,
+					y: 318,
+					w: 35,
+					h: 36,
+				},
+				graphic: {
+					offsetX: 0.4296875,
+					offsetY: 8.292969,
+					x: 198,
+					y: 480,
+					w: 23,
+					h: 22,
+				}
+			]
+		},
+		{
+			char: 115,
+			images: 2,
+			advance: 20.96875,
+			images: [
+				graphic: {
+					offsetX: -5.119141,
+					offsetY: 1.142578,
+					x: 113,
+					y: 319,
+					w: 32,
+					h: 36,
+				},
+				graphic: {
+					offsetX: 0.8808594,
+					offsetY: 8.142578,
+					x: 112,
+					y: 481,
+					w: 20,
+					h: 22,
+				}
+			]
+		},
+		{
+			char: 116,
+			images: 2,
+			advance: 20.36719,
+			images: [
+				graphic: {
+					offsetX: -6.300781,
+					offsetY: -4.013672,
+					x: 79,
+					y: 238,
+					w: 33,
+					h: 42,
+				},
+				graphic: {
+					offsetX: -0.3007813,
+					offsetY: 2.986328,
+					x: 369,
+					y: 450,
+					w: 21,
+					h: 28,
+				}
+			]
+		},
+		{
+			char: 117,
+			images: 2,
+			advance: 29.82031,
+			images: [
+				graphic: {
+					offsetX: -5.570313,
+					offsetY: 1.314453,
+					x: 450,
+					y: 316,
+					w: 41,
+					h: 36,
+				},
+				graphic: {
+					offsetX: 0.4296875,
+					offsetY: 8.314453,
+					x: 302,
+					y: 479,
+					w: 29,
+					h: 22,
+				}
+			]
+		},
+		{
+			char: 118,
+			images: 2,
+			advance: 27.60742,
+			images: [
+				graphic: {
+					offsetX: -6.300781,
+					offsetY: 1.292969,
+					x: 301,
+					y: 317,
+					w: 41,
+					h: 36,
+				},
+				graphic: {
+					offsetX: -0.3007813,
+					offsetY: 8.292969,
+					x: 332,
+					y: 479,
+					w: 29,
+					h: 22,
+				}
+			]
+		},
+		{
+			char: 119,
+			images: 2,
+			advance: 43.50586,
+			images: [
+				graphic: {
+					offsetX: -6.300781,
+					offsetY: 1.292969,
+					x: 39,
+					y: 281,
+					w: 57,
+					h: 36,
+				},
+				graphic: {
+					offsetX: -0.3007813,
+					offsetY: 8.292969,
+					x: 417,
+					y: 477,
+					w: 45,
+					h: 22,
+				}
+			]
+		},
+		{
+			char: 120,
+			images: 2,
+			advance: 26.46875,
+			images: [
+				graphic: {
+					offsetX: -6,
+					offsetY: 1.292969,
+					x: 1,
+					y: 318,
+					w: 39,
+					h: 36,
+				},
+				graphic: {
+					offsetX: 0,
+					offsetY: 8.292969,
+					x: 362,
+					y: 479,
+					w: 27,
+					h: 22,
+				}
+			]
+		},
+		{
+			char: 121,
+			images: 2,
+			advance: 27.24219,
+			images: [
+				graphic: {
+					offsetX: -6,
+					offsetY: 1.292969,
+					x: 277,
+					y: 236,
+					w: 40,
+					h: 43,
+				},
+				graphic: {
+					offsetX: 0,
+					offsetY: 8.292969,
+					x: 148,
+					y: 450,
+					w: 28,
+					h: 29,
+				}
+			]
+		},
+		{
+			char: 122,
+			images: 2,
+			advance: 22.62305,
+			images: [
+				graphic: {
+					offsetX: -5.699219,
+					offsetY: 0.9277344,
+					x: 240,
+					y: 280,
+					w: 35,
+					h: 37,
+				},
+				graphic: {
+					offsetX: 0.3007813,
+					offsetY: 7.927734,
+					x: 467,
+					y: 476,
+					w: 23,
+					h: 23,
+				}
+			]
+		},
+		{
+			char: 123,
+			images: 2,
+			advance: 21.93555,
+			images: [
+				graphic: {
+					offsetX: -4.474609,
+					offsetY: -7.193359,
+					x: 135,
+					y: 1,
+					w: 32,
+					h: 53,
+				},
+				graphic: {
+					offsetX: 1.525391,
+					offsetY: -0.1933594,
+					x: 452,
+					y: 276,
+					w: 20,
+					h: 39,
+				}
+			]
+		},
+		{
+			char: 124,
+			images: 2,
+			advance: 22,
+			images: [
+				graphic: {
+					offsetX: -0.8554688,
+					offsetY: -6.763672,
+					x: 336,
+					y: 1,
+					w: 24,
+					h: 51,
+				},
+				graphic: {
+					offsetX: 6.144531,
+					offsetY: 0.2363281,
+					x: 358,
+					y: 277,
+					w: 10,
+					h: 37,
+				}
+			]
+		},
+		{
+			char: 125,
+			images: 2,
+			advance: 21.93555,
+			images: [
+				graphic: {
+					offsetX: -4.839844,
+					offsetY: -7.193359,
+					x: 168,
+					y: 1,
+					w: 32,
+					h: 53,
+				},
+				graphic: {
+					offsetX: 1.160156,
+					offsetY: -0.1933594,
+					x: 473,
+					y: 276,
+					w: 20,
+					h: 39,
+				}
+			]
+		},
+		{
+			char: 126,
+			images: 2,
+			advance: 29.32617,
+			images: [
+				graphic: {
+					offsetX: -1.982422,
+					offsetY: 2.109375,
+					x: 467,
+					y: 450,
+					w: 34,
+					h: 25,
+				},
+				graphic: {
+					offsetX: 4.017578,
+					offsetY: 9.109375,
+					x: 222,
+					y: 502,
+					w: 22,
+					h: 11,
+				}
+			]
+		},
+		{
+			char: 127,
+			images: 0,
+			advance: 0
+		}
+	]
+	charMap: {
+		32:0,
+		33:1,
+		34:2,
+		35:3,
+		36:4,
+		37:5,
+		38:6,
+		39:7,
+		40:8,
+		41:9,
+		42:10,
+		43:11,
+		44:12,
+		45:13,
+		46:14,
+		47:15,
+		48:16,
+		49:17,
+		50:18,
+		51:19,
+		52:20,
+		53:21,
+		54:22,
+		55:23,
+		56:24,
+		57:25,
+		58:26,
+		59:27,
+		60:28,
+		61:29,
+		62:30,
+		63:31,
+		64:32,
+		65:33,
+		66:34,
+		67:35,
+		68:36,
+		69:37,
+		70:38,
+		71:39,
+		72:40,
+		73:41,
+		74:42,
+		75:43,
+		76:44,
+		77:45,
+		78:46,
+		79:47,
+		80:48,
+		81:49,
+		82:50,
+		83:51,
+		84:52,
+		85:53,
+		86:54,
+		87:55,
+		88:56,
+		89:57,
+		90:58,
+		91:59,
+		92:60,
+		93:61,
+		94:62,
+		95:63,
+		96:64,
+		97:65,
+		98:66,
+		99:67,
+		100:68,
+		101:69,
+		102:70,
+		103:71,
+		104:72,
+		105:73,
+		106:74,
+		107:75,
+		108:76,
+		109:77,
+		110:78,
+		111:79,
+		112:80,
+		113:81,
+		114:82,
+		115:83,
+		116:84,
+		117:85,
+		118:86,
+		119:87,
+		120:88,
+		121:89,
+		122:90,
+		123:91,
+		124:92,
+		125:93,
+		126:94,
+		127:95
+	}
+};

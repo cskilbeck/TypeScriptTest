@@ -42600,4 +42600,4 @@ var Dictionary = {
 	"zymotic": "(adj) (pathology, obsolete) Relating to or caused by infection.\n",
 	"zymurgy": "(n) The chemistry of fermentation with @yeast@s, especially the @science@ involved in @beer@ and @wine@ making.\n",
 	"zyzzyva": "(n) A tropical American @weevil@ of the genus Zyzzyva.\n"
-}
+};

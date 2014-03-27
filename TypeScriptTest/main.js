@@ -5,17 +5,17 @@ var frames = 0;
 
 var x = 1
 
-var fontImages = [
-    ImageLoader.load("Cooper_Black_440")
-];
+var board;
 
-var font = new Font(Cooper_Black_44, fontImages);
+function init() {
+    board = new Board();
+}
 
 function drawFrame() {
     var canvas = document.getElementById('myCanvas');
     var context = canvas.getContext('2d');
     context.fillStyle = 'white';
-    context.fillRect(0, 0, 640, 480);
+    context.fillRect(0, 0, 800, 600);
     context.fillStyle = 'red';
     context.fillRect(x, 10, 100, 100);
     ++x;
@@ -27,7 +27,7 @@ function drawFrame() {
     }
     context.globalCompositeOperation = 'source-over';
     context.globalAlpha = 1;
-    font.drawText(context, 100, 100, "Hello");
+    board.draw(context);
 }
 
 function run() {
@@ -46,5 +46,6 @@ window.onload = function () {
     var fontpage = ImageLoader.load("Cooper_Black_440.png");
     Mouse.init(canvas);
     Keyboard.init();
+    init();
     run();
 };

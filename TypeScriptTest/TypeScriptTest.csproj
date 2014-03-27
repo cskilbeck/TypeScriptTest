@@ -18,6 +18,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="app.css" />
+    <Content Include="board.js" />
+    <Content Include="img\allColour.png" />
     <Content Include="img\Cooper_Black_440.png" />
     <Content Include="index.html" />
     <Content Include="keyboard.js" />
@@ -28,6 +30,7 @@
     <Content Include="font.js" />
     <Content Include="util.js" />
     <Content Include="web.config" />
+    <Content Include="word.js" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="dictionary.js" />
@@ -38,6 +41,9 @@
     <None Include="web.Release.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="tile.js" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

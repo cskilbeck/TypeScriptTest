@@ -3,8 +3,6 @@ var currentTime = window.performance.now();
 var deltaTime = 0;
 var frames = 0;
 
-var x = 1
-
 var board;
 
 function init() {
@@ -16,15 +14,6 @@ function drawFrame() {
     var context = canvas.getContext('2d');
     context.fillStyle = 'white';
     context.fillRect(0, 0, 800, 600);
-    context.fillStyle = 'red';
-    context.fillRect(x, 10, 100, 100);
-    ++x;
-    if (Keyboard.pressed('a')) {
-        x = 0;
-    }
-    if (Mouse.left.released) {
-        x = 0;
-    }
     context.globalCompositeOperation = 'source-over';
     context.globalAlpha = 1;
     board.draw(context);

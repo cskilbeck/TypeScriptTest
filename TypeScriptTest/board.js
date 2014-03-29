@@ -139,7 +139,6 @@
             while (foundWords.length > 0) {
                 var w = foundWords[0];
                 foundWords.shift();
-                console.log(w.str);
                 var i;
                 for (i = 0; i < w.str.length; ++i) {
                     var t = this.getWordTile(w, i);
@@ -150,8 +149,7 @@
                 if (i == w.str.length) {
                     words.push(w);
                     for (var j = 0; j < w.str.length; ++j) {
-                        var t = this.getWordTile(w, j);
-                        t.setWord(w, j);
+                        this.getWordTile(w, j).setWord(w, j);
                     }
                 }
             }

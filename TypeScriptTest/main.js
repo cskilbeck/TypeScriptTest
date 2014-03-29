@@ -1,40 +1,42 @@
-﻿
-var currentTime = window.performance.now();
-var deltaTime = 0;
-var frames = 0;
+﻿var Game = (function () {
 
-var board;
+    var currentTime = window.performance.now();
+    var deltaTime = 0;
+    var frames = 0;
+    var board;
+    var canvas;
+    var context;
 
-function init() {
-    board = new Board();
-}
+    var Game = function (canvasName, screenDivName) {
+        Mouse.init(canvasName, screenDivName);
+        Keyboard.init();
+        canvas = document.getElementById('myCanvas');
+        context = canvas.getContext('2d');
+        board = new Board();
+    };
 
-function drawFrame() {
-    var canvas = document.getElementById('myCanvas');
-    var context = canvas.getContext('2d');
-    context.fillStyle = 'white';
-    context.fillRect(0, 0, 800, 600);
-    context.globalCompositeOperation = 'source-over';
-    context.globalAlpha = 1;
-    board.draw(context);
-}
+    Game.prototype = {
 
-function run() {
-    var now = window.performance.now();
-    deltaTime = now - currentTime;
-    currentTime = now;
-    Keyboard.update();
-    Mouse.update();
-    drawFrame(currentTime, deltaTime);
-    frames += 1;
-    requestAnimFrame(run);
-}
+        run: function () {
+            var now = window.performance.now();
+            deltaTime = now - currentTime;
+            currentTime = now;
+            Keyboard.update();
+            Mouse.update();
+            context.fillStyle = 'white';
+            context.fillRect(0, 0, 800, 600);
+            context.globalCompositeOperation = 'source-over';
+            context.globalAlpha = 1;
+            board.draw(context);
+            frames += 1;
+            requestAnimFrame(this.run);
+       }
+    };
+
+    return Game;
+
+})();
 
 window.onload = function () {
-    var canvas = document.getElementById('myCanvas');
-    var fontpage = ImageLoader.load("Cooper_Black_440.png");
-    Mouse.init(canvas);
-    Keyboard.init();
-    init();
-    run();
+    new Game('myCanvas', 'screen').run();
 };

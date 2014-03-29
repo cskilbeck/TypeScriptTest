@@ -133,9 +133,9 @@ var Mouse = (function () {
         })
     }
 
-    pub.init = function (canvas) {
-        o.canvas = canvas;
-        setMouseCapture(document.getElementById("screen"), pub);
+    pub.init = function (canvasName, screenDivName) {
+        o.canvas = document.getElementById(canvasName);
+        setMouseCapture(document.getElementById(screenDivName), pub);
     };
 
     var updateButton = function (b) {

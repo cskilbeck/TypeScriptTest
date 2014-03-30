@@ -39,6 +39,8 @@
   <ItemGroup>
     <Content Include="dictionary.js" />
     <Content Include="cooper.js" />
+    <Content Include="Arial.bitmapfont" />
+    <Content Include="Fixedsys.bitmapfont" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

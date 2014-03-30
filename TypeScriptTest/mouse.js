@@ -20,30 +20,6 @@ HTMLCanvasElement.prototype.relMouseCoords = function (event) {
 
 var Mouse = (function () {
     "use strict";
-    var pub = {
-            x: 0,
-            y: 0,
-            deltaX: 0,
-            deltaY: 0,
-            left: {
-                held: false,
-                pressed: false,
-                released: false,
-                prev: false
-            },
-            right: {
-                held: false,
-                pressed: false,
-                released: false,
-                prev: false
-            }
-        },
-
-        o = {
-            canvas: null,
-            oldx: 0,
-            oldy: 0
-        };
 
     //////////////////////////////////////////////////////////////////////
 
@@ -59,6 +35,16 @@ var Mouse = (function () {
         return e;
     }
 
+    function viewport() {
+        var e = window,
+            a = 'inner';
+        if (!window.hasOwnProperty('innerWidth')) {
+            a = 'client';
+            e = document.documentElement || document.body;
+        }
+        return { width: e[a + 'Width'], height: e[a + 'Height'] };
+    }
+
     //////////////////////////////////////////////////////////////////////
 
     function addListener(element, name, func) {
@@ -71,7 +57,7 @@ var Mouse = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    function setMouseCapture(element, obj) {
+    function setMouseCapture(element, pub, priv) {
         if (element.setCapture) {
             element.setCapture();
         }
@@ -82,10 +68,10 @@ var Mouse = (function () {
             }
             event = fixupMouseEvent(event);
             if (event.which === 1) {
-                obj.left.held = true;
+                pub.left.held = true;
             }
             if (event.which === 3) {
-                obj.right.held = true;
+                pub.right.held = true;
             }
         });
 
@@ -96,26 +82,28 @@ var Mouse = (function () {
         });
 
         addListener(element, "mouseup", function (event) {
-
             event = fixupMouseEvent(event);
             if (event.which === 1) {
-                obj.left.held = false;
+                pub.left.held = false;
             }
             if (event.which === 3) {
-                obj.right.held = false;
+                pub.right.held = false;
             }
         });
 
         addListener(element, "mousemove", function (event) {
+            var view = viewport(),
+                e,
+                p;
             event = window.event || event;
             if (event && event.preventDefault) {
                 event.preventDefault();
             }
-            var e = fixupMouseEvent(event),
-                p = o.canvas.relMouseCoords(e);
+            e = fixupMouseEvent(event);
+            p = priv.canvas.relMouseCoords(e);
             pub.x = p.x;
             pub.y = p.y;
-            if (e.y < 0) {
+            if (e.y < 0 || e.y > view.height || e.x < 0 || e.x > view.width) {
                 if (element.releaseCapture) {    // allow IE to see mouse clicks outside client area
                     element.releaseCapture();
                 }
@@ -139,19 +127,42 @@ var Mouse = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    pub.init = function (canvasName, screenDivName) {
-        o.canvas = document.getElementById(canvasName);
-        setMouseCapture(document.getElementById(screenDivName), pub);
-    };
+    var priv = {
+            canvas: null,
+            oldx: 0,
+            oldy: 0
+        },
 
-    pub.update = function () {
-        updateButton(pub.left);
-        updateButton(pub.right);
-        pub.deltax = pub.x - o.oldx;
-        pub.deltay = pub.y - o.oldy;
-        o.oldx = pub.x;
-        o.oldy = pub.y;
-    };
+        pub = {
+            x: 0,
+            y: 0,
+            deltaX: 0,
+            deltaY: 0,
+            left: {
+                held: false,
+                pressed: false,
+                released: false,
+                prev: false
+            },
+            right: {
+                held: false,
+                pressed: false,
+                released: false,
+                prev: false
+            },
+            init: function (canvasName, screenDivName) {
+                priv.canvas = document.getElementById(canvasName);
+                setMouseCapture(document.getElementById(screenDivName), pub, priv);
+            },
+            update: function () {
+                updateButton(pub.left);
+                updateButton(pub.right);
+                pub.deltax = pub.x - priv.oldx;
+                pub.deltay = pub.y - priv.oldy;
+                priv.oldx = pub.x;
+                priv.oldy = pub.y;
+            }
+        };
 
     //////////////////////////////////////////////////////////////////////
 

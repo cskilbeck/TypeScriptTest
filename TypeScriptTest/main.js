@@ -41,6 +41,8 @@ var Game = (function () {
 
         fixedSys.drawText(context, 700, 20, "Frames: " + frames.toString());
         fixedSys.drawText(context, 700, 35, "Delta: " + deltaTime.toString());
+        fixedSys.drawText(context, 700, 50, "X: " + Mouse.x);
+        fixedSys.drawText(context, 700, 65, "Y: " + Mouse.y);
 
         board.draw(context);
 

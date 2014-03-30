@@ -6,6 +6,8 @@
 
 var Keyboard = (function () {
 
+    //////////////////////////////////////////////////////////////////////
+
     var held = [];
     var pressed = [];
     var released = [];
@@ -13,6 +15,8 @@ var Keyboard = (function () {
     var q = [];
     var clr = [];
     var lastKey;
+
+    //////////////////////////////////////////////////////////////////////
 
     var keyLookup = {
         none: 0,
@@ -70,6 +74,8 @@ var Keyboard = (function () {
         z: 90
     };
 
+    //////////////////////////////////////////////////////////////////////
+
     var keyNames = {
         0: "none",
         8: "backspace",
@@ -126,9 +132,13 @@ var Keyboard = (function () {
         90: "z"
     };
 
+    //////////////////////////////////////////////////////////////////////
+
     return {
 
-        init: function() {
+        //////////////////////////////////////////////////////////////////////
+
+        init: function () {
             for (var i = 0; i < 255; ++i) {
                 held[i] = false;
                 pressed[i] = false;
@@ -144,6 +154,8 @@ var Keyboard = (function () {
                 q.push({ key: e.which, action: false });
             }, false)
         },
+
+        //////////////////////////////////////////////////////////////////////
 
         update: function () {
 
@@ -173,21 +185,30 @@ var Keyboard = (function () {
             lastKey = last !== 0 ? keyNames[last] : null;
         },
 
+        //////////////////////////////////////////////////////////////////////
+
         held: function (key) {
             return held[keyLookup[key.toLowerCase()]];
         },
+
+        //////////////////////////////////////////////////////////////////////
 
         pressed: function (key) {
             return pressed[keyLookup[key.toLowerCase()]];
         },
 
+        //////////////////////////////////////////////////////////////////////
+
         released: function (key) {
             return released[keyLookup[key.toLowerCase()]];
         },
+
+        //////////////////////////////////////////////////////////////////////
 
         lastKeyPressed: function () {
             return lastKey;
         }
     }
+
 })();
 

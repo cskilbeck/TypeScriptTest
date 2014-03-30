@@ -1,4 +1,12 @@
-﻿var Board = (function () {
+﻿//////////////////////////////////////////////////////////////////////
+
+"use strict"
+
+//////////////////////////////////////////////////////////////////////
+
+var Board = (function () {
+
+    //////////////////////////////////////////////////////////////////////
 
     var letters = [
         { score: 1, frequency: 9 },	    //A
@@ -29,10 +37,14 @@
         { score: 10, frequency: 1 }     //Z
     ];
 
+    //////////////////////////////////////////////////////////////////////
+
     var aToZ = "abcdefghijklmnopqrstuvwxyz";
     var distribution = [];
-
     var foundWords = [];
+    var words = [];
+
+    //////////////////////////////////////////////////////////////////////
 
     var Board = function () {
         this.width = 7;
@@ -53,26 +65,38 @@
         this.markAllWords();
     };
 
+    //////////////////////////////////////////////////////////////////////
+
     Board.prototype = {
 
-        tile: function(x, y) {
+        //////////////////////////////////////////////////////////////////////
+
+        tile: function (x, y) {
             return this.board[x + y * this.width];
         },
+
+        //////////////////////////////////////////////////////////////////////
 
         letter: function (x, y) {
             return tile(x, y).letter;
         },
+
+        //////////////////////////////////////////////////////////////////////
 
         randomLetter: function () {
             var r = Math.floor(Math.random() * distribution.length);
             return aToZ[distribution[r]];
         },
 
+        //////////////////////////////////////////////////////////////////////
+
         draw: function (context) {
             for (var i = 0; i < this.board.length; ++i) {
                 this.board[i].draw(context);
             }
         },
+
+        //////////////////////////////////////////////////////////////////////
 
         getScore: function (str) {
             var s = 0;
@@ -84,6 +108,8 @@
             }
             return s * str.length;
         },
+
+        //////////////////////////////////////////////////////////////////////
 
         markWordPass: function (orientation, offset, limit, xMul, yMul) {
 
@@ -118,11 +144,15 @@
             }
         },
 
-        getWordTile: function(w, i) {
+        //////////////////////////////////////////////////////////////////////
+
+        getWordTile: function (w, i) {
             var yo = w.orientation;
             var xo = 1-yo;
             return this.board[(w.x + xo * i) + (w.y + yo * i) * this.width];
         },
+
+        //////////////////////////////////////////////////////////////////////
 
         markAllWords: function () {
 
@@ -155,6 +185,8 @@
             }
         }
     }
+
+    //////////////////////////////////////////////////////////////////////
 
     return Board;
 }());

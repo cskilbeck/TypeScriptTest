@@ -91,19 +91,29 @@ var Sprite = (function () {
         this[listNodeName || 'spriteListNode'] = new LinkedListNode(this);
     }
 
+    //////////////////////////////////////////////////////////////////////
+
     sprite.prototype =
     {
+        //////////////////////////////////////////////////////////////////////
+
         loaded: function () {
             return this.image != null && this.image.complete;
         },
+
+        //////////////////////////////////////////////////////////////////////
 
         width: function () {
             return this.image.width;
         },
 
+        //////////////////////////////////////////////////////////////////////
+
         height: function () {
             return this.image.height;
         },
+
+        //////////////////////////////////////////////////////////////////////
 
         draw: function () {
             if (this.loaded() && this.visible) {
@@ -134,6 +144,8 @@ var Sprite = (function () {
             }
         },
 
+        //////////////////////////////////////////////////////////////////////
+
         drawSafe: function () {
             context.save();
             this.draw();
@@ -141,7 +153,10 @@ var Sprite = (function () {
         }
     }
 
+    //////////////////////////////////////////////////////////////////////
+
     return sprite;
+
 })();
 
 //////////////////////////////////////////////////////////////////////

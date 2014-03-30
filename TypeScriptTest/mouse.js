@@ -133,10 +133,14 @@ var Mouse = (function () {
         })
     }
 
+    //////////////////////////////////////////////////////////////////////
+
     pub.init = function (canvasName, screenDivName) {
         o.canvas = document.getElementById(canvasName);
         setMouseCapture(document.getElementById(screenDivName), pub);
     };
+
+    //////////////////////////////////////////////////////////////////////
 
     var updateButton = function (b) {
         var delta = b.held ^ b.prev;
@@ -144,6 +148,8 @@ var Mouse = (function () {
         b.released = delta & !b.held;
         b.prev = b.held;
     };
+
+    //////////////////////////////////////////////////////////////////////
 
     pub.update = function () {
         updateButton(pub.left);
@@ -154,5 +160,8 @@ var Mouse = (function () {
         o.oldy = pub.y;
     };
 
+    //////////////////////////////////////////////////////////////////////
+
     return pub;
+
 }());

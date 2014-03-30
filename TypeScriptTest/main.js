@@ -1,4 +1,10 @@
-﻿var Game = (function () {
+﻿//////////////////////////////////////////////////////////////////////
+
+"use strict"
+
+//////////////////////////////////////////////////////////////////////
+
+var Game = (function () {
 
     var currentTime = window.performance.now();
     var deltaTime = 0;
@@ -10,7 +16,7 @@
     var Game = function (canvasName, screenDivName) {
         Mouse.init(canvasName, screenDivName);
         Keyboard.init();
-        canvas = document.getElementById('myCanvas');
+        canvas = document.getElementById(canvasName);
         context = canvas.getContext('2d');
         board = new Board();
     };
@@ -36,6 +42,8 @@
     return Game;
 
 })();
+
+//////////////////////////////////////////////////////////////////////
 
 window.onload = function () {
     new Game('myCanvas', 'screen').run();

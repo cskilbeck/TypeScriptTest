@@ -1,13 +1,11 @@
-﻿
-var Orientation = (function () {
-    "use strict";
+﻿//////////////////////////////////////////////////////////////////////
 
-    return {
-        horizontal: 0,
-        vertical: 1
-    };
+var Orientation = {
+    horizontal: 0,
+    vertical: 1
+};
 
-}());
+//////////////////////////////////////////////////////////////////////
 
 var Word = (function () {
     "use strict";
@@ -35,3 +33,6 @@ var Word = (function () {
     return Word;
 
 }());
+
+//////////////////////////////////////////////////////////////////////
+

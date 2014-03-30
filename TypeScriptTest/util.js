@@ -4,7 +4,7 @@
 
 //////////////////////////////////////////////////////////////////////
 
-window.requestAnimFrame = (function (callback) {
+window.requestAnimFrame = (function () {
     "use strict";
     return window.requestAnimationFrame ||
         window.webkitRequestAnimationFrame ||

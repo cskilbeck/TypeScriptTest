@@ -20,9 +20,11 @@
     <Content Include="app.css" />
     <Content Include="Arial.js" />
     <Content Include="board.js" />
+    <Content Include="Fixedsys.js" />
     <Content Include="img\allColour.png" />
     <Content Include="img\Arial0.png" />
     <Content Include="img\Cooper_Black_440.png" />
+    <Content Include="img\Fixedsys0.png" />
     <Content Include="index.html" />
     <Content Include="keyboard.js" />
     <Content Include="list.js" />

@@ -1,6 +1,7 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
 /*global HTMLCanvasElement, window, document */
+/*jslint bitwise: true */
 
 HTMLCanvasElement.prototype.relMouseCoords = function (event) {
     "use strict";

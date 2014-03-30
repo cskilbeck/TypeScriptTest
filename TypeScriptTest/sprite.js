@@ -123,12 +123,8 @@ var Sprite = (function () {
                 fh,
                 frameX,
                 frameY,
-                px,
-                py,
                 xtweak,
-                ytweak,
-                w,
-                h;
+                ytweak;
             if (this.loaded() && this.visible) {
                 context.setTransform(1, 0, 0, 1, 0, 0);
                 context.translate(this.x, this.y);
@@ -138,8 +134,6 @@ var Sprite = (function () {
                 fh = this.frameHeight === 0 ? this.height() : this.frameHeight;
                 frameX = ((this.frame % this.framesWide) >>> 0) * fw;
                 frameY = ((this.frame / this.framesWide) >>> 0) * fh;
-                px = this.pivotX * fw;
-                py = this.pivotY * fh;
                 context.globalAlpha = this.transparency / 255;
                 xtweak = 0;
                 ytweak = 0;
@@ -151,9 +145,7 @@ var Sprite = (function () {
                 }
                 frameX += xtweak;
                 frameY += ytweak;
-                w = fw - xtweak * 2;
-                h = fh - ytweak * 2;
-                context.drawImage(this.image, frameX, frameY, w, h, -px, -py, fw, fh);
+                context.drawImage(this.image, frameX, frameY, fw - xtweak * 2, fh - ytweak * 2, -this.pivotX * fw, -this.pivotY * fh, fw, fh);
             }
         },
 

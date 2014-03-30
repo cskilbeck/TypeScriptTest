@@ -26,19 +26,22 @@ var Game = (function () {
         };
 
     function doFrame() {
+
         var now = window.performance.now();
         deltaTime = now - currentTime;
         currentTime = now;
+
         Keyboard.update();
         Mouse.update();
 
-        context.fillStyle = 'darkGrey';
+        context.globalCompositeOperation = 'source-over';
+        context.globalAlpha = 1;
+        context.fillStyle = 'rgb(64, 128, 64)';
         context.fillRect(0, 0, 800, 600);
 
         fixedSys.drawText(context, 700, 20, "Frames: " + frames.toString());
+        fixedSys.drawText(context, 700, 35, "Delta: " + deltaTime.toString());
 
-        context.globalCompositeOperation = 'source-over';
-        context.globalAlpha = 1;
         board.draw(context);
 
         frames += 1;

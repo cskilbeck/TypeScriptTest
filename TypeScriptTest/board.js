@@ -1,69 +1,77 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-"use strict"
+/*global Tile, Dictionary, Word, Orientation */
+/*jslint plusplus: true, bitwise: true */
 
 //////////////////////////////////////////////////////////////////////
 
 var Board = (function () {
 
+    "use strict";
+
     //////////////////////////////////////////////////////////////////////
 
     var letters = [
-        { score: 1, frequency: 9 },	    //A
-        { score: 3, frequency: 2 },	    //B
-        { score: 3, frequency: 2 },	    //C 
-        { score: 2, frequency: 4 },	    //D
-        { score: 1, frequency: 12 },	//E
-        { score: 4, frequency: 2 },	    //F
-        { score: 2, frequency: 3 },	    //G
-        { score: 4, frequency: 2 },	    //H
-        { score: 1, frequency: 9 },	    //I
-        { score: 8, frequency: 1 },	    //J
-        { score: 5, frequency: 1 },	    //K
-        { score: 1, frequency: 4 },	    //L
-        { score: 3, frequency: 2 },	    //M
-        { score: 1, frequency: 6 },	    //N
-        { score: 1, frequency: 8 },	    //O
-        { score: 3, frequency: 2 },	    //P
-        { score: 10, frequency: 1 },	//Q
-        { score: 1, frequency: 6 },	    //R
-        { score: 1, frequency: 4 },	    //S
-        { score: 1, frequency: 6 },	    //T
-        { score: 1, frequency: 4 },	    //U
-        { score: 4, frequency: 2 },	    //V
-        { score: 4, frequency: 2 },	    //W
-        { score: 8, frequency: 1 },	    //X
-        { score: 4, frequency: 2 },	    //Y
+        { score: 1, frequency: 9 },     //A
+        { score: 3, frequency: 2 },     //B
+        { score: 3, frequency: 2 },     //C 
+        { score: 2, frequency: 4 },     //D
+        { score: 1, frequency: 12 },    //E
+        { score: 4, frequency: 2 },     //F
+        { score: 2, frequency: 3 },     //G
+        { score: 4, frequency: 2 },     //H
+        { score: 1, frequency: 9 },     //I
+        { score: 8, frequency: 1 },     //J
+        { score: 5, frequency: 1 },     //K
+        { score: 1, frequency: 4 },     //L
+        { score: 3, frequency: 2 },     //M
+        { score: 1, frequency: 6 },     //N
+        { score: 1, frequency: 8 },     //O
+        { score: 3, frequency: 2 },     //P
+        { score: 10, frequency: 1 },    //Q
+        { score: 1, frequency: 6 },     //R
+        { score: 1, frequency: 4 },     //S
+        { score: 1, frequency: 6 },     //T
+        { score: 1, frequency: 4 },     //U
+        { score: 4, frequency: 2 },     //V
+        { score: 4, frequency: 2 },     //W
+        { score: 8, frequency: 1 },     //X
+        { score: 4, frequency: 2 },     //Y
         { score: 10, frequency: 1 }     //Z
-    ];
+    ],
 
     //////////////////////////////////////////////////////////////////////
 
-    var aToZ = "abcdefghijklmnopqrstuvwxyz";
-    var distribution = [];
-    var foundWords = [];
-    var words = [];
+        aToZ = "abcdefghijklmnopqrstuvwxyz",
+        distribution = [],
+        foundWords = [],
+        words = [],
 
     //////////////////////////////////////////////////////////////////////
 
-    var Board = function () {
-        this.width = 7;
-        this.height = 5;
-        this.length = this.width * this.height;
-        this.board = new Array(this.length);
-        this.words = [];
-        for (var i = 0; i < letters.length; ++i) {
-            var score = letters[i].score;
-            var frequency = letters[i].frequency;
-            for (var j = 0; j < frequency; ++j) {
-                distribution.push(i);
+        Board = function () {
+            var i,
+                j,
+                frequency;
+            this.score = 0;
+            this.score = 0;
+            this.width = 7;
+            this.height = 5;
+            this.length = this.width * this.height;
+            this.board = new Array(this.length);
+            this.words = [];
+            for (i = 0; i < letters.length; ++i) {
+                this.score += letters[i].score;
+                frequency = letters[i].frequency;
+                for (j = 0; j < frequency; ++j) {
+                    distribution.push(i);
+                }
             }
-        }
-        for (var i = 0; i < this.board.length; ++i) {
-            this.board[i] = new Tile(this.randomLetter(), i % this.width, (i / this.width) >>> 0);
-        }
-        this.markAllWords();
-    };
+            for (i = 0; i < this.board.length; ++i) {
+                this.board[i] = new Tile(this.randomLetter(), i % this.width, (i / this.width) >>> 0);
+            }
+            this.markAllWords();
+        };
 
     //////////////////////////////////////////////////////////////////////
 
@@ -78,7 +86,7 @@ var Board = (function () {
         //////////////////////////////////////////////////////////////////////
 
         letter: function (x, y) {
-            return tile(x, y).letter;
+            return this.tile(x, y).letter;
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -91,7 +99,8 @@ var Board = (function () {
         //////////////////////////////////////////////////////////////////////
 
         draw: function (context) {
-            for (var i = 0; i < this.board.length; ++i) {
+            var i;
+            for (i = 0; i < this.board.length; ++i) {
                 this.board[i].draw(context);
             }
         },
@@ -99,12 +108,11 @@ var Board = (function () {
         //////////////////////////////////////////////////////////////////////
 
         getScore: function (str) {
-            var s = 0;
-            var A = 97; // "a".getCodeAt(0)
-            for (var i = 0; i < str.length; ++i) {
-                var char = str.charCodeAt(i);
-                char -= A;
-                s += letters[char].score;
+            var s = 0,
+                A = 97, // "a".getCodeAt(0)
+                i;
+            for (i = 0; i < str.length; ++i) {
+                s += letters[str.charCodeAt(i) - A].score;
             }
             return s * str.length;
         },
@@ -113,30 +121,34 @@ var Board = (function () {
 
         markWordPass: function (orientation, offset, limit, xMul, yMul) {
 
-            var xLim = this.width - 2 * xMul;
-            var yLim = this.height - 2 * yMul;
+            var xLim = this.width - 2 * xMul,
+                yLim = this.height - 2 * yMul,
+                y,
+                x,
+                n,
+                t,
+                e,
+                m,
+                i,
+                string,
+                checkString;
 
-            for (var y = 0; y < yLim; ++y)
-            {
-                for (var x = 0; x < xLim; ++x)
-                {
-                    var n = x + y * this.width;
-                    var t = x * xMul + y * yMul;
+            for (y = 0; y < yLim; ++y) {
+                for (x = 0; x < xLim; ++x) {
+                    n = x + y * this.width;
+                    t = x * xMul + y * yMul;
 
-                    for (var e = 3; e + t <= limit; ++e)
-                    {
-                        var m = n;
-                        var i = 0;
-                        var checkString = [];
-                        for (; i < e; ++i)
-                        {
+                    for (e = 3; e + t <= limit; ++e) {
+                        m = n;
+                        checkString = [];
+                        for (i = 0; i < e; ++i) {
                             checkString[i] = this.board[m].letter;
                             m += offset;
                         }
-                        var string = checkString.join('');
+                        string = checkString.join('');
 
                         // is that a word?
-                        if(Dictionary.hasOwnProperty(string)) {
+                        if (Dictionary.hasOwnProperty(string)) {
                             foundWords.push(new Word(string, x, y, orientation, this.getScore(string)));
                         }
                     }
@@ -147,8 +159,8 @@ var Board = (function () {
         //////////////////////////////////////////////////////////////////////
 
         getWordTile: function (w, i) {
-            var yo = w.orientation;
-            var xo = 1-yo;
+            var yo = w.orientation,
+                xo = 1 - yo;
             return this.board[(w.x + xo * i) + (w.y + yo * i) * this.width];
         },
 
@@ -156,35 +168,38 @@ var Board = (function () {
 
         markAllWords: function () {
 
+            var w,
+                i,
+                t,
+                j;
             words = [];         // valid words
             foundWords = [];    // all the words, including overlapped ones
 
-            this.markWordPass(horizontal, 1, this.width, 1, 0);
-            this.markWordPass(vertical, this.width, this.height, 0, 1);
+            this.markWordPass(Orientation.horizontal, 1, this.width, 1, 0);
+            this.markWordPass(Orientation.vertical, this.width, this.height, 0, 1);
 
             foundWords.sort(function (a, b) {
                 return a.compare(b);
             });
 
             while (foundWords.length > 0) {
-                var w = foundWords[0];
+                w = foundWords[0];
                 foundWords.shift();
-                var i;
                 for (i = 0; i < w.str.length; ++i) {
-                    var t = this.getWordTile(w, i);
-                    if (t.vertical.word != null && w.orientation == vertical || t.horizontal.word != null && w.orientation == horizontal) {
+                    t = this.getWordTile(w, i);
+                    if ((t.vertical.word !== null && w.orientation === Orientation.vertical) || (t.horizontal.word !== null && w.orientation === Orientation.horizontal)) {
                         break;
                     }
                 }
-                if (i == w.str.length) {
+                if (i === w.str.length) {
                     words.push(w);
-                    for (var j = 0; j < w.str.length; ++j) {
+                    for (j = 0; j < w.str.length; ++j) {
                         this.getWordTile(w, j).setWord(w, j);
                     }
                 }
             }
         }
-    }
+    };
 
     //////////////////////////////////////////////////////////////////////
 

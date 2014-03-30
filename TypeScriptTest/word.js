@@ -1,8 +1,17 @@
-﻿var horizontal = 0;
-var vertical = 1;
+﻿
+var Orientation = (function () {
+    "use strict";
+
+    return {
+        horizontal: 0,
+        vertical: 1
+    };
+
+}());
 
 var Word = (function () {
-    
+    "use strict";
+
     var Word = function (str, x, y, orientation, score) {
         this.str = str;
         this.x = x;
@@ -21,8 +30,8 @@ var Word = (function () {
             }
             return this.str > b.str;
         }
-    }
+    };
 
     return Word;
 
-})();
+}());

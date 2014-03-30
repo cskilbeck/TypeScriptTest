@@ -1,10 +1,12 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-"use strict"
+/*global LinkedList, LinkedListNode, Image */
+/*jslint bitwise: true */
 
 //////////////////////////////////////////////////////////////////////
 
 function SpriteList(listNodeName) {
+    "use strict";
 
     LinkedList.call(this, listNodeName || 'spriteListNode');
 }
@@ -15,21 +17,23 @@ SpriteList.prototype = Object.create(LinkedList.prototype);
 
 //////////////////////////////////////////////////////////////////////
 
-SpriteList.prototype.draw = function () {
+SpriteList.prototype.draw = function (context) {
+    "use strict";
     context.save();
     this.reverseForEach(function (s) {
         s.draw();
-    })
+    });
     context.restore();
-}
+};
 
 //////////////////////////////////////////////////////////////////////
 
 SpriteList.prototype.isLoaded = function () {
+    "use strict";
     return this.reverseForEach(function (s) {
         return s.loaded();
-    })
-}
+    });
+};
 
 //////////////////////////////////////////////////////////////////////
 
@@ -39,6 +43,7 @@ SpriteList.prototype.addToBack = LinkedList.prototype.pushBack;
 //////////////////////////////////////////////////////////////////////
 
 var ImageLoader = (function () {
+    "use strict";
 
     var images = {};
 
@@ -49,27 +54,25 @@ var ImageLoader = (function () {
         },
 
         load: function (name) {
+            var image;
             if (name !== undefined) {
                 if (images.hasOwnProperty(name)) {
                     return images[name];
                 }
-                else {
-                    var image = new Image();
-                    images[name] = image;
-                    image.src = 'img/' + name + '.png';
-                    return image;
-                }
-            } else {
-                return null;
+                image = new Image();
+                images[name] = image;
+                image.src = 'img/' + name + '.png';
+                return image;
             }
+            return null;
         }
-    }
-})();
+    };
+}());
 
 //////////////////////////////////////////////////////////////////////
 
 var Sprite = (function () {
-
+    "use strict";
     var sprite = function (graphic, listNodeName) {
         this.x = 0.0;
         this.y = 0.0;
@@ -89,16 +92,16 @@ var Sprite = (function () {
         this.flipX = false;
         this.flipY = false;
         this[listNodeName || 'spriteListNode'] = new LinkedListNode(this);
-    }
+    };
 
     //////////////////////////////////////////////////////////////////////
 
-    sprite.prototype =
-    {
+    sprite.prototype = {
+
         //////////////////////////////////////////////////////////////////////
 
         loaded: function () {
-            return this.image != null && this.image.complete;
+            return this.image !== null && this.image.complete;
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -115,21 +118,31 @@ var Sprite = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        draw: function () {
+        draw: function (context) {
+            var fw,
+                fh,
+                frameX,
+                frameY,
+                px,
+                py,
+                xtweak,
+                ytweak,
+                w,
+                h;
             if (this.loaded() && this.visible) {
                 context.setTransform(1, 0, 0, 1, 0, 0);
                 context.translate(this.x, this.y);
                 context.rotate(this.rotation);
                 context.scale(this.scaleX * (this.flipX ? -1 : 1), this.scaleY * (this.flipY ? -1 : 1));
-                var fw = this.frameWidth === 0 ? this.width() : this.frameWidth;
-                var fh = this.frameHeight === 0 ? this.height() : this.frameHeight;
-                var frameX = ((this.frame % this.framesWide) >>> 0) * fw;
-                var frameY = ((this.frame / this.framesWide) >>> 0) * fh;
-                var px = this.pivotX * fw;
-                var py = this.pivotY * fh;
+                fw = this.frameWidth === 0 ? this.width() : this.frameWidth;
+                fh = this.frameHeight === 0 ? this.height() : this.frameHeight;
+                frameX = ((this.frame % this.framesWide) >>> 0) * fw;
+                frameY = ((this.frame / this.framesWide) >>> 0) * fh;
+                px = this.pivotX * fw;
+                py = this.pivotY * fh;
                 context.globalAlpha = this.transparency / 255;
-                var xtweak = 0;
-                var ytweak = 0;
+                xtweak = 0;
+                ytweak = 0;
                 if (this.scaleX > 1) {
                     xtweak = 0.5 - (0.5 / this.scaleX);
                 }
@@ -138,25 +151,25 @@ var Sprite = (function () {
                 }
                 frameX += xtweak;
                 frameY += ytweak;
-                var w = fw - xtweak * 2;
-                var h = fh - ytweak * 2;
+                w = fw - xtweak * 2;
+                h = fh - ytweak * 2;
                 context.drawImage(this.image, frameX, frameY, w, h, -px, -py, fw, fh);
             }
         },
 
         //////////////////////////////////////////////////////////////////////
 
-        drawSafe: function () {
+        drawSafe: function (context) {
             context.save();
-            this.draw();
+            this.draw(context);
             context.restore();
         }
-    }
+    };
 
     //////////////////////////////////////////////////////////////////////
 
     return sprite;
 
-})();
+}());
 
 //////////////////////////////////////////////////////////////////////

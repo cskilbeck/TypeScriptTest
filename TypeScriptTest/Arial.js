@@ -1,4 +1,5 @@
 var Arial = {
+    name: "Arial",
 	pageCount: 1,
 	height: 52,
 	internalLeading: 0,
@@ -20,7 +21,7 @@ var Arial = {
 	glyphs: [
 		{
 			char: 65,
-			images: 2,
+			imageCount: 2,
 			advance: 37.40039,
 			images: [
 				{
@@ -45,7 +46,7 @@ var Arial = {
 		},
 		{
 			char: 66,
-			images: 2,
+			imageCount: 2,
 			advance: 37.40039,
 			images: [
 				{
@@ -70,7 +71,7 @@ var Arial = {
 		},
 		{
 			char: 67,
-			images: 2,
+			imageCount: 2,
 			advance: 38.49219,
 			images: [
 				{
@@ -95,7 +96,7 @@ var Arial = {
 		},
 		{
 			char: 68,
-			images: 2,
+			imageCount: 2,
 			advance: 38.49219,
 			images: [
 				{
@@ -120,7 +121,7 @@ var Arial = {
 		},
 		{
 			char: 69,
-			images: 2,
+			imageCount: 2,
 			advance: 34.68359,
 			images: [
 				{
@@ -145,7 +146,7 @@ var Arial = {
 		},
 		{
 			char: 70,
-			images: 2,
+			imageCount: 2,
 			advance: 31.4082,
 			images: [
 				{
@@ -170,7 +171,7 @@ var Arial = {
 		},
 		{
 			char: 71,
-			images: 2,
+			imageCount: 2,
 			advance: 41.18359,
 			images: [
 				{
@@ -195,7 +196,7 @@ var Arial = {
 		},
 		{
 			char: 72,
-			images: 2,
+			imageCount: 2,
 			advance: 39.50781,
 			images: [
 				{
@@ -220,7 +221,7 @@ var Arial = {
 		},
 		{
 			char: 73,
-			images: 2,
+			imageCount: 2,
 			advance: 16.27539,
 			images: [
 				{
@@ -245,7 +246,7 @@ var Arial = {
 		},
 		{
 			char: 74,
-			images: 2,
+			imageCount: 2,
 			advance: 29.80859,
 			images: [
 				{
@@ -270,7 +271,7 @@ var Arial = {
 		},
 		{
 			char: 75,
-			images: 2,
+			imageCount: 2,
 			advance: 38.49219,
 			images: [
 				{
@@ -295,7 +296,7 @@ var Arial = {
 		},
 		{
 			char: 76,
-			images: 2,
+			imageCount: 2,
 			advance: 31.4082,
 			images: [
 				{
@@ -320,7 +321,7 @@ var Arial = {
 		},
 		{
 			char: 77,
-			images: 2,
+			imageCount: 2,
 			advance: 43.31641,
 			images: [
 				{
@@ -345,7 +346,7 @@ var Arial = {
 		},
 		{
 			char: 78,
-			images: 2,
+			imageCount: 2,
 			advance: 39.50781,
 			images: [
 				{
@@ -370,7 +371,7 @@ var Arial = {
 		},
 		{
 			char: 79,
-			images: 2,
+			imageCount: 2,
 			advance: 41.18359,
 			images: [
 				{
@@ -395,7 +396,7 @@ var Arial = {
 		},
 		{
 			char: 80,
-			images: 2,
+			imageCount: 2,
 			advance: 34.68359,
 			images: [
 				{
@@ -420,7 +421,7 @@ var Arial = {
 		},
 		{
 			char: 81,
-			images: 2,
+			imageCount: 2,
 			advance: 41.18359,
 			images: [
 				{
@@ -445,7 +446,7 @@ var Arial = {
 		},
 		{
 			char: 82,
-			images: 2,
+			imageCount: 2,
 			advance: 37.40039,
 			images: [
 				{
@@ -470,7 +471,7 @@ var Arial = {
 		},
 		{
 			char: 83,
-			images: 2,
+			imageCount: 2,
 			advance: 34.68359,
 			images: [
 				{
@@ -495,7 +496,7 @@ var Arial = {
 		},
 		{
 			char: 84,
-			images: 2,
+			imageCount: 2,
 			advance: 32.5,
 			images: [
 				{
@@ -520,7 +521,7 @@ var Arial = {
 		},
 		{
 			char: 85,
-			images: 2,
+			imageCount: 2,
 			advance: 39.50781,
 			images: [
 				{
@@ -545,7 +546,7 @@ var Arial = {
 		},
 		{
 			char: 86,
-			images: 2,
+			imageCount: 2,
 			advance: 35.77539,
 			images: [
 				{
@@ -570,7 +571,7 @@ var Arial = {
 		},
 		{
 			char: 87,
-			images: 2,
+			imageCount: 2,
 			advance: 48.77539,
 			images: [
 				{
@@ -595,7 +596,7 @@ var Arial = {
 		},
 		{
 			char: 88,
-			images: 2,
+			imageCount: 2,
 			advance: 31.4082,
 			images: [
 				{
@@ -620,7 +621,7 @@ var Arial = {
 		},
 		{
 			char: 89,
-			images: 2,
+			imageCount: 2,
 			advance: 32.5,
 			images: [
 				{
@@ -645,7 +646,7 @@ var Arial = {
 		},
 		{
 			char: 90,
-			images: 2,
+			imageCount: 2,
 			advance: 33.5918,
 			images: [
 				{

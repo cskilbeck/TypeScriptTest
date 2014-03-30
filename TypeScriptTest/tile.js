@@ -12,7 +12,7 @@ var Tile = (function () {
     var Beginning = 1;
     var Middle = 2;
     var End = 3;
-    var font = new Font(Arial, [ImageLoader.load("Arial0")]);
+    var font = new Font(Arial);
     var tiles = ImageLoader.load("allColour");
 
     //////////////////////////////////////////////////////////////////////

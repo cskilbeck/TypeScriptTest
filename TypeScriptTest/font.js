@@ -8,9 +8,12 @@ var Font = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    var Font = function (fontData, images) {
+    var Font = function (fontData) {
         this.font = fontData;
-        this.images = images;
+        this.images = [];
+        for (var i = 0; i < fontData.pageCount; ++i) {
+            this.images.push(ImageLoader.load(fontData.name + i.toString()));
+        }
     };
 
     //////////////////////////////////////////////////////////////////////
@@ -27,9 +30,11 @@ var Font = (function () {
                     if (this.font.charMap.hasOwnProperty(c)) {
                         var g = this.font.charMap[c];
                         var glyph = this.font.glyphs[g];
-                        var s = glyph.images[l];
-                        var img = this.images[s.page];
-                        ctx.drawImage(img, s.x, s.y, s.w, s.h, xc + s.offsetX, yc + s.offsetY, s.w, s.h);
+                        if (l < glyph.imageCount) {
+                            var s = glyph.images[l];
+                            var img = this.images[s.page];
+                            ctx.drawImage(img, s.x, s.y, s.w, s.h, xc + s.offsetX, yc + s.offsetY, s.w, s.h);
+                        }
                         xc += glyph.advance;
                     }
                 }

@@ -1,23 +1,24 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-"use strict"
+
 
 //////////////////////////////////////////////////////////////////////
 
-function InvalidListNodeNameException() { }
+function InvalidListNodeNameException() { "use strict"; return "InvalidListNodeNameException"; }
 
 //////////////////////////////////////////////////////////////////////
 
 var LinkedListNode = function (obj) {
+    "use strict";
     this.item = obj;
-    this.next;
-    this.prev;
-}
+    this.next = null;
+    this.prev = null;
+};
 
 //////////////////////////////////////////////////////////////////////
 
 var LinkedList = (function () {
-
+    "use strict";
     var LinkedList = function (nodeName) {
         if (typeof nodeName !== 'string') {
             throw new InvalidListNodeNameException();
@@ -26,7 +27,7 @@ var LinkedList = (function () {
         this.root = new LinkedListNode(null);
         this.root.next = this.root;
         this.root.prev = this.root;
-    }
+    };
 
     LinkedList.prototype = {
 
@@ -56,8 +57,8 @@ var LinkedList = (function () {
         },
 
         insertBefore: function (objBefore, obj) {
-            var n = objBefore[this.nodeName];
-            var node = obj[this.nodeName];
+            var n = objBefore[this.nodeName],
+                node = obj[this.nodeName];
             node.next = n;
             node.prev = n.prev;
             n.next.prev = node;
@@ -65,8 +66,8 @@ var LinkedList = (function () {
         },
 
         insertAfter: function (objAfter, obj) {
-            var n = objAfter[this.nodeName];
-            var node = obj[this.nodeName];
+            var n = objAfter[this.nodeName],
+                node = obj[this.nodeName];
             node.prev = n;
             node.next = n.next;
             n.prev.next = node;
@@ -96,9 +97,7 @@ var LinkedList = (function () {
                 node.next.prev = node.prev;
                 return node.item;
             }
-            else {
-                return null;
-            }
+            return null;
         },
 
         popBack: function () {
@@ -108,9 +107,7 @@ var LinkedList = (function () {
                 node.next.prev = node.prev;
                 return node.item;
             }
-            else {
-                return null;
-            }
+            return null;
         },
 
         remove: function (obj) {
@@ -136,52 +133,55 @@ var LinkedList = (function () {
         },
 
         count: function () {
-            var count = 0;
-            var i = root.next;
-            while (i !== root) {
+            var count = 0,
+                i = this.root.next;
+            while (i !== this.root) {
                 i = i.next;
-                ++count;
+                count += 1;
             }
             return count;
         },
 
         forEach: function (callback, context) {
-            var node = this.root.next;
-            var index = 0;
+            var node = this.root.next,
+                next,
+                index = 0;
             while (node !== this.root) {
-                var next = node.next;
+                next = node.next;
                 if (callback.call(context, node.item, index) === false) {
                     return false;
                 }
                 node = next;
-                ++index;
+                index += 1;
             }
             return true;
         },
 
         reverseForEach: function (callback, context) {
-            var node = this.root.prev;
-            var index = 0;
+            var node = this.root.prev,
+                next,
+                index = 0;
             while (node !== this.root) {
-                var next = node.prev;
+                next = node.prev;
                 if (callback.call(context, node.item, index) === false) {
                     return false;
                 }
                 node = next;
-                ++index;
+                index += 1;
             }
             return true;
         },
 
         removeIf: function (callback, context) {
-            var node = this.root.next;
-            var removed = 0;
+            var node = this.root.next,
+                next,
+                removed = 0;
             while (node !== this.root) {
-                var next = node.next;
+                next = node.next;
                 if (callback.call(context, node.item) === true) {
                     node.prev.next = next;
                     node.next.prev = node.prev;
-                    ++removed;
+                    removed += 1;
                 }
                 node = next;
             }
@@ -189,74 +189,78 @@ var LinkedList = (function () {
         },
 
         findFirstOf: function (callback, context) {
-            var node = this.root.next;
-            var index = 0;
+            var node = this.root.next,
+                next,
+                index = 0;
             while (node !== this.root) {
-                var next = node.next;
+                next = node.next;
                 if (callback.call(context, node.item, index) === true) {
                     return node.item;
                 }
                 node = next;
-                ++index;
+                index += 1;
             }
             return null;
         },
 
         findLastOf: function (callback, context) {
-            var node = this.root.next;
-            var index = 0;
+            var node = this.root.next,
+                prev,
+                index = 0;
             while (node !== this.root) {
-                var prev = node.prev;
+                prev = node.prev;
                 if (callback.call(context, node.item, index) === true) {
                     return node.item;
                 }
                 node = prev;
-                --index;
+                index -= 1;
             }
             return null;
         },
 
         select: function (newListNodeName, callback, context) {
-            var list = new LinkedList(newListNodeName);
-            var node = this.root.next;
-            var index = 0;
+            var list = new LinkedList(newListNodeName),
+                node = this.root.next,
+                index = 0,
+                next;
             while (node !== this.root) {
-                var next = node.next;
+                next = node.next;
                 if (callback.call(context, node.item, index) === true) {
                     list.pushBack(node.item);
                 }
                 node = next;
-                ++index;
+                index += 1;
             }
             return list;
         },
 
         reverseFind: function (callback, context) {
-            var node = this.root.prev;
-            var index = 0;
+            var node = this.root.prev,
+                index = 0,
+                prev;
             while (node !== this.root) {
-                var prev = node.prev;
+                prev = node.prev;
                 if (callback.call(context, node.item, index) === true) {
                     return node.item;
                 }
                 node = prev;
-                ++index;
+                index += 1;
             }
             return null;
         },
 
-        // todo: merge sort
         sortedBy: function (callback, context) {
-            var list = new LinkedList(this.nodeName);
-            var node = this.root.next;
+            var list = new LinkedList(this.nodeName),
+                node = this.root.next,
+                n,
+                node2;
             while (node !== this.root) {
-                var node2 = list.root.next;
+                node2 = list.root.next;
                 this.remove(node.item);
                 if (node2 === list.root) {
                     list.pushBack(node.item);
-                }
-                else {
-                    var n = node2;
+                } else {
+                    n = node2;
                     while (node2 !== list.root && callback.call(context, node.item, node2.item) >= 0) {
                         n = node2;
                         node2 = node2.next;
@@ -269,14 +273,14 @@ var LinkedList = (function () {
         },
 
         toString: function () {
-            var s = 'list <';
-            var sep = "";
+            var s = 'list <',
+                sep = "";
             this.forEach(function (i) {
                 s += sep + i.toString();
                 sep = ',';
-            })
+            });
             return s + '>';
         }
-    }
+    };
     return LinkedList;
-})();
+}());

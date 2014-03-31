@@ -57,7 +57,7 @@ var Mouse = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    function setMouseCapture(element, pub, priv) {
+    function setMouseCapture(element, canvas, pub) {
         if (element.setCapture) {
             element.setCapture();
         }
@@ -100,7 +100,7 @@ var Mouse = (function () {
                 event.preventDefault();
             }
             e = fixupMouseEvent(event);
-            p = priv.canvas.relMouseCoords(e);
+            p = canvas.relMouseCoords(e);
             pub.x = p.x;
             pub.y = p.y;
             if (e.y < 0 || e.y > view.height || e.x < 0 || e.x > view.width) {
@@ -127,13 +127,13 @@ var Mouse = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    var priv = {
-            canvas: null,
-            oldx: 0,
-            oldy: 0
-        },
+    //////////////////////////////////////////////////////////////////////
 
-        pub = {
+    var canvas = null,
+        oldx = 0,
+        oldy = 0,
+
+        Mouse = {
             x: 0,
             y: 0,
             deltaX: 0,
@@ -151,21 +151,21 @@ var Mouse = (function () {
                 prev: false
             },
             init: function (canvasName, screenDivName) {
-                priv.canvas = document.getElementById(canvasName);
-                setMouseCapture(document.getElementById(screenDivName), pub, priv);
+                canvas = document.getElementById(canvasName);
+                setMouseCapture(document.getElementById(screenDivName), canvas, Mouse);
             },
             update: function () {
-                updateButton(pub.left);
-                updateButton(pub.right);
-                pub.deltax = pub.x - priv.oldx;
-                pub.deltay = pub.y - priv.oldy;
-                priv.oldx = pub.x;
-                priv.oldy = pub.y;
+                updateButton(Mouse.left);
+                updateButton(Mouse.right);
+                Mouse.deltax = Mouse.x - oldx;
+                Mouse.deltay = Mouse.y - oldy;
+                oldx = Mouse.x;
+                oldy = Mouse.y;
             }
         };
 
     //////////////////////////////////////////////////////////////////////
 
-    return pub;
+    return Mouse;
 
 }());

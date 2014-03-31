@@ -127,9 +127,8 @@ var Mouse = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    //////////////////////////////////////////////////////////////////////
-
     var canvas = null,
+        screen = null,
         oldx = 0,
         oldy = 0,
 
@@ -152,7 +151,8 @@ var Mouse = (function () {
             },
             init: function (canvasName, screenDivName) {
                 canvas = document.getElementById(canvasName);
-                setMouseCapture(document.getElementById(screenDivName), canvas, Mouse);
+                screen = document.getElementById(screenDivName);
+                setMouseCapture(screen, canvas, Mouse);
             },
             update: function () {
                 updateButton(Mouse.left);

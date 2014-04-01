@@ -1,7 +1,7 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
 /*global HTMLCanvasElement, window, document */
-/*jslint bitwise: true */
+/*jslint bitwise: true, maxlen: 130 */
 
 //////////////////////////////////////////////////////////////////////
 
@@ -22,24 +22,6 @@ HTMLCanvasElement.prototype.relMouseCoords = function (event) {
 
 var Mouse = (function () {
     "use strict";
-
-    var wnd = window,
-        innerW = 'innerWidth',
-        innerH = 'innerHeight';
-
-    //////////////////////////////////////////////////////////////////////
-
-    if (!window.hasOwnProperty('innerWidth')) {
-        innerW = 'clientWidth';
-        innerH = 'clientHeight';
-        wnd = document.documentElement || document.body;
-    }
-
-    //////////////////////////////////////////////////////////////////////
-
-    function viewport() {
-        return { width: wnd[innerW], height: wnd[innerH] };
-    }
 
     //////////////////////////////////////////////////////////////////////
 
@@ -63,6 +45,20 @@ var Mouse = (function () {
         } else if (element.attachEvent) {
             element.attachEvent(name, func);
         }
+    }
+
+    //////////////////////////////////////////////////////////////////////
+
+    function viewport() {
+        var wnd = window,
+            innerW = 'innerWidth',
+            innerH = 'innerHeight';
+        if (!window.hasOwnProperty('innerWidth')) {
+            innerW = 'clientWidth';
+            innerH = 'clientHeight';
+            wnd = document.documentElement || document.body;
+        }
+        return { width: wnd[innerW], height: wnd[innerH] };
     }
 
     //////////////////////////////////////////////////////////////////////

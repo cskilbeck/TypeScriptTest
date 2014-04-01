@@ -1,7 +1,7 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
 /*global Keyboard, Mouse, Board, document, window, requestAnimFrame,
-    console, Font, Fixedsys, Random */
+    console, Font, Fixedsys, Random, Debug */
 
 //////////////////////////////////////////////////////////////////////
 
@@ -19,10 +19,11 @@ var Game = (function () {
         context,
 
         Game = function (canvasName, screenDivName) {
-            Mouse.init(canvasName, screenDivName);
-            Keyboard.init();
             canvas = document.getElementById(canvasName);
             context = canvas.getContext('2d');
+            Debug.context = context;
+            Mouse.init(canvasName, screenDivName);
+            Keyboard.init();
             board = new Board();
         };
 

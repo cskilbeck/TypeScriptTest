@@ -1,7 +1,7 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
 /*global LinkedList, LinkedListNode, Image */
-/*jslint bitwise: true */
+/*jslint bitwise: true, maxlen: 130 */
 
 //////////////////////////////////////////////////////////////////////
 
@@ -145,7 +145,11 @@ var Sprite = (function () {
                 }
                 frameX += xtweak;
                 frameY += ytweak;
-                context.drawImage(this.image, frameX, frameY, fw - xtweak * 2, fh - ytweak * 2, -this.pivotX * fw, -this.pivotY * fh, fw, fh);
+                context.drawImage(this.image,
+                    frameX, frameY,
+                    fw - xtweak * 2, fh - ytweak * 2,
+                    -this.pivotX * fw, -this.pivotY * fh,
+                    fw, fh);
             }
         },
 

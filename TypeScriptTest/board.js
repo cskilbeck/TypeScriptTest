@@ -12,33 +12,33 @@ var Board = (function () {
     //////////////////////////////////////////////////////////////////////
 
     var letters = [
-        { score: 1, frequency: 9 },     //A
-        { score: 3, frequency: 2 },     //B
-        { score: 3, frequency: 2 },     //C 
-        { score: 2, frequency: 4 },     //D
-        { score: 1, frequency: 12 },    //E
-        { score: 4, frequency: 2 },     //F
-        { score: 2, frequency: 3 },     //G
-        { score: 4, frequency: 2 },     //H
-        { score: 1, frequency: 9 },     //I
-        { score: 8, frequency: 1 },     //J
-        { score: 5, frequency: 1 },     //K
-        { score: 1, frequency: 4 },     //L
-        { score: 3, frequency: 2 },     //M
-        { score: 1, frequency: 6 },     //N
-        { score: 1, frequency: 8 },     //O
-        { score: 3, frequency: 2 },     //P
-        { score: 10, frequency: 1 },    //Q
-        { score: 1, frequency: 6 },     //R
-        { score: 1, frequency: 4 },     //S
-        { score: 1, frequency: 6 },     //T
-        { score: 1, frequency: 4 },     //U
-        { score: 4, frequency: 2 },     //V
-        { score: 4, frequency: 2 },     //W
-        { score: 8, frequency: 1 },     //X
-        { score: 4, frequency: 2 },     //Y
-        { score: 10, frequency: 1 }     //Z
-    ],
+            { score: 1, frequency: 9 },     //A
+            { score: 3, frequency: 2 },     //B
+            { score: 3, frequency: 2 },     //C 
+            { score: 2, frequency: 4 },     //D
+            { score: 1, frequency: 12 },    //E
+            { score: 4, frequency: 2 },     //F
+            { score: 2, frequency: 3 },     //G
+            { score: 4, frequency: 2 },     //H
+            { score: 1, frequency: 9 },     //I
+            { score: 8, frequency: 1 },     //J
+            { score: 5, frequency: 1 },     //K
+            { score: 1, frequency: 4 },     //L
+            { score: 3, frequency: 2 },     //M
+            { score: 1, frequency: 6 },     //N
+            { score: 1, frequency: 8 },     //O
+            { score: 3, frequency: 2 },     //P
+            { score: 10, frequency: 1 },    //Q
+            { score: 1, frequency: 6 },     //R
+            { score: 1, frequency: 4 },     //S
+            { score: 1, frequency: 6 },     //T
+            { score: 1, frequency: 4 },     //U
+            { score: 4, frequency: 2 },     //V
+            { score: 4, frequency: 2 },     //W
+            { score: 8, frequency: 1 },     //X
+            { score: 4, frequency: 2 },     //Y
+            { score: 10, frequency: 1 }     //Z
+        ],
 
     //////////////////////////////////////////////////////////////////////
 
@@ -48,6 +48,11 @@ var Board = (function () {
         words = [],
         random = new Random(),
         activeTile = null,
+        swapTile = null,
+        clickX,
+        clickY,
+        offsetX,
+        offsetY,
 
     //////////////////////////////////////////////////////////////////////
 
@@ -134,26 +139,74 @@ var Board = (function () {
         // update
 
         update: function () {
-            var clickedTile;
+            var clickedTile,
+                snapX,
+                snapY,
+                tileX,
+                tileY;
+            if (Mouse.left.released && activeTile !== null) {
+                activeTile.reset();
+                if (swapTile !== null) {
+                    swapTile.reset();
+                }
+                swapTile = null;
+            }
             if (Mouse.left.pressed) {
                 clickedTile = this.tileFromScreenPos(Mouse.x, Mouse.y);
                 if (clickedTile !== null) {
-                    if (activeTile !== null) {
+                    if (activeTile !== null && activeTile !== clickedTile) {
                         activeTile.selected = false;
+                        activeTile.layer = 0;
                     }
-                    clickedTile.selected = clickedTile !== activeTile;
                     activeTile = clickedTile;
+                    clickX = Mouse.x;
+                    clickY = Mouse.y;
+                    offsetX = clickX - activeTile.x;
+                    offsetY = clickY - activeTile.y;
+                }
+            } else {
+                if (Mouse.left.held && activeTile !== null) {
+                    activeTile.selected = true;
+                    activeTile.layer = 1;
+                    tileX = Mouse.x - offsetX;
+                    tileY = Mouse.y - offsetY;
+                    snapX = Math.floor((tileX + Tile.width / 2) / Tile.width) * Tile.width;
+                    snapY = Math.floor((tileY + Tile.height / 2) / Tile.height) * Tile.height;
+                    if (Math.abs(tileX - snapX) < Tile.width / 6 && Math.abs(tileY - snapY) < Tile.height / 6) {
+                        activeTile.x = snapX;
+                        activeTile.y = snapY;
+                        swapTile = this.tileFromScreenPos(snapX, snapY);
+                        swapTile.x = activeTile.origin.x;
+                        swapTile.y = activeTile.origin.y;
+                    } else {
+                        if (swapTile !== null) {
+                            swapTile.reset();
+                        }
+                        swapTile = null;
+                        activeTile.x = tileX;
+                        activeTile.y = tileY;
+                    }
                 }
             }
         },
+
 
         //////////////////////////////////////////////////////////////////////
         // Draw the tiles
 
         draw: function (context) {
-            var i;
-            for (i = 0; i < this.board.length; ++i) {
-                this.board[i].draw(context);
+            var layer = 0,
+                i,
+                drawn = true;
+            while (drawn) {
+                drawn = false;
+                for (i = 0; i < this.board.length; ++i) {
+                    if (this.board[i].layer === layer) {
+                        this.board[i].draw(context);
+                        drawn = true;
+                    }
+                }
+                layer += 1;
             }
         },
 

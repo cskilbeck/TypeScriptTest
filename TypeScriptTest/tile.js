@@ -25,6 +25,10 @@ var Tile = (function () {
             this.y = y * Tile.height;
             this.layer = 0;
             this.selected = false;
+            this.origin = {
+                x: this.x,
+                y: this.y
+            };
 
             // a tile can be part of a horizontal and/or vertical word
             this.horizontal = {
@@ -71,6 +75,21 @@ var Tile = (function () {
             this.horizontal.position = None;
             this.vertical.position = None;
         },
+
+        //////////////////////////////////////////////////////////////////////
+        // put it back to its origin
+
+        resetPosition: function () {
+            this.x = this.origin.x;
+            this.y = this.origin.y;
+        },
+
+        reset: function() {
+            this.resetPosition();
+            this.selected = false;
+            this.layer = 0;
+        },
+
 
         //////////////////////////////////////////////////////////////////////
         // draw tile background

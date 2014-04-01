@@ -15,11 +15,13 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
+    <JSLintSkip>\dictionary.js</JSLintSkip>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="app.css" />
     <Content Include="Arial.js" />
     <Content Include="board.js" />
+    <Content Include="debug.js" />
     <Content Include="Fixedsys.js" />
     <Content Include="img\allColour.png" />
     <Content Include="img\Arial0.png" />
@@ -34,19 +36,12 @@
     <Content Include="sprite.js" />
     <Content Include="font.js" />
     <Content Include="util.js" />
-    <Content Include="web.config" />
     <Content Include="word.js" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="dictionary.js" />
     <Content Include="Arial.bitmapfont" />
     <Content Include="Fixedsys.bitmapfont" />
-    <None Include="web.Debug.config">
-      <DependentUpon>web.config</DependentUpon>
-    </None>
-    <None Include="web.Release.config">
-      <DependentUpon>web.config</DependentUpon>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="tile.js" />

@@ -1,4 +1,6 @@
-﻿var Dictionary = {
+﻿/*jslint maxlen: 257 */
+
+var Dictionary = {
     "aah": "(n) Expression of amazement or surprise or enthusiasm.\n(v) To say or exclaim aah.\n",
     "aahed": "(v) Past tense of @aah@\n",
     "aahing": "(v) Present tense of @aah@\n",

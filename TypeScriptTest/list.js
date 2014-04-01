@@ -1,6 +1,7 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-/*jslint maxlen: 130 */
+/*global console */
+/*jslint maxlen: 130, bitwise: true */
 
 //////////////////////////////////////////////////////////////////////
 
@@ -10,6 +11,7 @@ function InvalidListNodeNameException() { "use strict"; return "InvalidListNodeN
 
 var LinkedListNode = function (obj) {
     "use strict";
+
     this.item = obj;
     this.next = null;
     this.prev = null;
@@ -19,6 +21,7 @@ var LinkedListNode = function (obj) {
 
 var LinkedList = (function () {
     "use strict";
+
     var LinkedList = function (nodeName) {
         if (typeof nodeName !== 'string') {
             throw new InvalidListNodeNameException();
@@ -29,6 +32,133 @@ var LinkedList = (function () {
         this.root.prev = this.root;
     };
 
+    function setNext(o, n) {
+        o.next = n;
+    }
+
+    function setPrev(o, n) {
+        o.prev = n;
+    }
+
+    function getNext(o) {
+        return o.next;
+    }
+
+    function getPrev(o) {
+        return o.prev;
+    }
+
+    function merge(left, right, callback, context) {
+
+        var insertPoint = right.root,
+            runHead = left.headNode(),
+            leftEnd = left.root,
+            rightEnd = right.root,
+            runStart,
+            runEnd,
+            prev,
+            otherTail,
+            rightRoot,
+            myTail;
+
+        console.log("Merge " + left.toString() + " & " + right.toString());
+
+        while (runHead !== leftEnd) {
+
+            do {
+                insertPoint = getNext(insertPoint);
+            } while (insertPoint !== rightEnd && callback.call(context, insertPoint.item, runHead.item) < 0);
+
+            if (insertPoint !== rightEnd) {
+
+                runStart = runHead;
+
+                do {
+                    runEnd = runHead;
+                    runHead = getNext(runHead);
+                } while (runHead !== leftEnd && callback.call(context, runHead.item, insertPoint.item) < 0);
+
+                prev = getPrev(insertPoint);
+                setPrev(runStart, prev);
+                setNext(prev, runStart);
+                setPrev(insertPoint, runEnd);
+                setNext(runEnd, insertPoint);
+
+            } else {
+
+                otherTail = left.tailNode();
+                rightRoot = right.root;
+                myTail = right.tailNode();
+                setPrev(runHead, myTail);
+                setNext(myTail, runHead);
+                setPrev(rightRoot, otherTail);
+                setNext(otherTail, rightRoot);
+                break;
+            }
+        }
+        console.log("= " + right.toString());
+    }
+
+    function merge_sort(size, list, callback, context) {
+
+        var leftSize,
+            rightSize,
+            midPoint,
+            leftList,
+            rightList,
+            leftRoot,
+            rightRoot,
+            newTail,
+            newHead,
+            midPrev,
+            i;
+
+        if (size > 1) {
+
+            leftSize = (size / 2) >>> 0;
+            rightSize = size - leftSize;
+            midPoint = list.headNode();
+
+            for (i = 0; i < leftSize; i += 1) {
+                midPoint = getNext(midPoint);
+            }
+
+            leftList = new LinkedList(list.nodeName);
+            rightList = new LinkedList(list.nodeName);
+
+            leftRoot = leftList.root;
+            rightRoot = rightList.root;
+
+            newTail = list.tailNode();
+            newHead = list.headNode();
+
+            midPrev = getPrev(midPoint);
+
+            setPrev(leftRoot, midPrev);
+            setNext(leftRoot, newHead);
+            setPrev(newHead, leftRoot);
+            setNext(midPrev, leftRoot);
+
+            setPrev(rightRoot, newTail);
+            setNext(rightRoot, midPoint);
+            setPrev(midPoint, rightRoot);
+            setNext(newTail, rightRoot);
+
+            merge_sort(leftSize, leftList, callback, context);
+            merge_sort(rightSize, rightList, callback, context);
+
+            merge(rightList, leftList, callback, context);
+
+            newTail = leftList.tailNode();
+            newHead = leftList.headNode();
+
+            setPrev(newHead, leftRoot);
+            setNext(newTail, leftRoot);
+            setPrev(leftRoot, newTail);
+            setNext(leftRoot, newHead);
+        }
+    }
+
     LinkedList.prototype = {
 
         isEmpty: function () {
@@ -38,6 +168,14 @@ var LinkedList = (function () {
         clear: function () {
             this.root.next = this.root;
             this.root.prev = this.root;
+        },
+
+        headNode: function () {
+            return this.root.next;
+        },
+
+        tailNode: function () {
+            return this.root.prev;
         },
 
         head: function () {
@@ -249,27 +387,8 @@ var LinkedList = (function () {
             return null;
         },
 
-        sortedBy: function (callback, context) {
-            var list = new LinkedList(this.nodeName),
-                node = this.root.next,
-                n,
-                node2;
-            while (node !== this.root) {
-                node2 = list.root.next;
-                this.remove(node.item);
-                if (node2 === list.root) {
-                    list.pushBack(node.item);
-                } else {
-                    n = node2;
-                    while (node2 !== list.root && callback.call(context, node.item, node2.item) >= 0) {
-                        n = node2;
-                        node2 = node2.next;
-                    }
-                    list.insertAfter(n.item, node.item);
-                }
-                node = node.next;
-            }
-            return list;
+        sort: function (callback, context) {
+            merge_sort(this.count(), this, callback, context);
         },
 
         toString: function () {

@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-/*global Tile, Dictionary, Word, Orientation, Random, Mouse */
+/*global Tile, Dictionary, Word, Orientation, Random, Mouse, LinkedList */
 /*jslint plusplus: true, bitwise: true, maxlen: 130 */
 
 //////////////////////////////////////////////////////////////////////
@@ -10,6 +10,7 @@ var Board = (function () {
     "use strict";
 
     //////////////////////////////////////////////////////////////////////
+    // private static vars
 
     var letters = [
             { score: 1, frequency: 9 },     //A
@@ -40,12 +41,10 @@ var Board = (function () {
             { score: 10, frequency: 1 }     //Z
         ],
 
-    //////////////////////////////////////////////////////////////////////
-
         aToZ = "abcdefghijklmnopqrstuvwxyz",
         distribution = [],
-        foundWords = [],
-        words = [],
+        foundWords = new LinkedList("listNode"),
+        words = new LinkedList("listNode"),
         random = new Random(),
         activeTile = null,
         swapTile = null,
@@ -53,13 +52,13 @@ var Board = (function () {
         clickY,
         offsetX,
         offsetY,
+        i,
+        j,
 
     //////////////////////////////////////////////////////////////////////
+    // constructor
 
         Board = function () {
-            var i,
-                j,
-                frequency;
             this.score = 0;
             this.score = 0;
             this.width = 7;
@@ -67,17 +66,25 @@ var Board = (function () {
             this.length = this.width * this.height;
             this.board = [];
             this.board.length = this.length;
+        };
 
-            // init the distribution table
-            for (i = 0; i < letters.length; ++i) {
-                frequency = letters[i].frequency;
-                for (j = 0; j < frequency; ++j) {
-                    distribution.push(i);
-                }
-            }
+    //////////////////////////////////////////////////////////////////////
+    // static initialization: init the distribution table
 
+    for (i = 0; i < letters.length; ++i) {
+        for (j = 0; j < letters[i].frequency; ++j) {
+            distribution.push(i);
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////
+    // public member functions
+
+    Board.prototype = {
+
+        randomize: function (seed) {
             // make a random board
-            random.seed(1);
+            random.seed(seed);
             for (i = 0; i < this.board.length; ++i) {
                 this.board[i] = new Tile(this.randomLetter(), i % this.width, (i / this.width) >>> 0);
             }
@@ -86,11 +93,7 @@ var Board = (function () {
             while (this.markAllWords() !== 0) {
                 this.getWordTile(words[0], 0).letter = this.randomLetter();
             }
-        };
-
-    //////////////////////////////////////////////////////////////////////
-
-    Board.prototype = {
+        },
 
         //////////////////////////////////////////////////////////////////////
         // Get the board as an ascii string
@@ -143,13 +146,17 @@ var Board = (function () {
                 snapX,
                 snapY,
                 tileX,
-                tileY;
-            if (Mouse.left.released && activeTile !== null) {
-                activeTile.reset();
+                tileY,
+                swapLetter;
+            if (Mouse.left.released) {
+                if (activeTile !== null) {
+                    activeTile.reset();
+                }
                 if (swapTile !== null) {
                     swapTile.reset();
                 }
                 swapTile = null;
+                activeTile = null;
             }
             if (Mouse.left.pressed) {
                 clickedTile = this.tileFromScreenPos(Mouse.x, Mouse.y);
@@ -161,8 +168,8 @@ var Board = (function () {
                     activeTile = clickedTile;
                     clickX = Mouse.x;
                     clickY = Mouse.y;
-                    offsetX = clickX - activeTile.x;
-                    offsetY = clickY - activeTile.y;
+                    offsetX = clickX - activeTile.pos.x;
+                    offsetY = clickY - activeTile.pos.y;
                 }
             } else {
                 if (Mouse.left.held && activeTile !== null) {
@@ -173,18 +180,22 @@ var Board = (function () {
                     snapX = Math.floor((tileX + Tile.width / 2) / Tile.width) * Tile.width;
                     snapY = Math.floor((tileY + Tile.height / 2) / Tile.height) * Tile.height;
                     if (Math.abs(tileX - snapX) < Tile.width / 6 && Math.abs(tileY - snapY) < Tile.height / 6) {
-                        activeTile.x = snapX;
-                        activeTile.y = snapY;
                         swapTile = this.tileFromScreenPos(snapX, snapY);
-                        swapTile.x = activeTile.origin.x;
-                        swapTile.y = activeTile.origin.y;
+                        swapLetter = swapTile.letter;
+                        swapTile.letter = activeTile.letter;
+                        activeTile.letter = swapLetter;
+                        swapTile.selected = true;
+                        swapTile.layer = 1;
+                        activeTile.reset();
+                        activeTile = swapTile;
+                        activeTile.setPosition(snapX, snapY);
+                        this.markAllWords();
                     } else {
                         if (swapTile !== null) {
                             swapTile.reset();
                         }
                         swapTile = null;
-                        activeTile.x = tileX;
-                        activeTile.y = tileY;
+                        activeTile.setPosition(tileX, tileY);
                     }
                 }
             }
@@ -256,7 +267,7 @@ var Board = (function () {
 
                         // is that a word?
                         if (Dictionary.hasOwnProperty(string)) {
-                            foundWords.push(new Word(string, x, y, orientation, this.getScore(string)));
+                            foundWords.pushBack(new Word(string, x, y, orientation, this.getScore(string)));
                         }
                     }
                 }
@@ -280,9 +291,11 @@ var Board = (function () {
             var w,
                 i,
                 t,
-                j;
-            words.length = 0;
-            foundWords.length = 0;
+                j,
+                sortedWords;
+
+            words.clear();
+            foundWords.clear();
             this.score = 0;
 
             // clear the words from the tiles
@@ -295,14 +308,13 @@ var Board = (function () {
             this.markWordPass(Orientation.vertical, this.width, this.height, 0, 1);
 
             // sort by score, length, alphabet
-            foundWords.sort(function (a, b) {
-                return a.compare(b);
+            sortedWords = foundWords.sort(function (a, b) {
+                return b.compare(a);
             });
 
             // find the best, non-overlapping ones, discard the others
-            while (foundWords.length > 0) {
-                w = foundWords[0];
-                foundWords.shift();
+            while (!sortedWords.empty()) {
+                w = sortedWords.popFront();
                 for (i = 0; i < w.str.length; ++i) {
                     t = this.getWordTile(w, i);
                     if (t.vertical.word !== null && w.orientation === Orientation.vertical) {
@@ -313,7 +325,7 @@ var Board = (function () {
                     }
                 }
                 if (i === w.str.length) {
-                    words.push(w);
+                    words.pushBack(w);
                     this.score += w.score;
                     for (j = 0; j < w.str.length; ++j) {
                         this.getWordTile(w, j).setWord(w, j);

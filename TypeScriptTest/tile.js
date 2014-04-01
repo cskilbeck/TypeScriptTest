@@ -21,13 +21,15 @@ var Tile = (function () {
 
         Tile = function (letter, x, y) {
             this.letter = letter;
-            this.x = x * Tile.width;
-            this.y = y * Tile.height;
             this.layer = 0;
             this.selected = false;
-            this.origin = {
-                x: this.x,
-                y: this.y
+            this.pos = {
+                x: x * Tile.width,
+                y: y * Tile.height
+            };
+            this.org = {
+                x: this.pos.x,
+                y: this.pos.y
             };
 
             // a tile can be part of a horizontal and/or vertical word
@@ -77,14 +79,28 @@ var Tile = (function () {
         },
 
         //////////////////////////////////////////////////////////////////////
+
+        setOrigin: function (x, y) {
+            this.org.x = x;
+            this.org.y = y;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        setPosition: function (x, y) {
+            this.pos.x = x;
+            this.pos.y = y;
+        },
+
+        //////////////////////////////////////////////////////////////////////
         // put it back to its origin
 
         resetPosition: function () {
-            this.x = this.origin.x;
-            this.y = this.origin.y;
+            this.pos.x = this.org.x;
+            this.pos.y = this.org.y;
         },
 
-        reset: function() {
+        reset: function () {
             this.resetPosition();
             this.selected = false;
             this.layer = 0;
@@ -104,16 +120,21 @@ var Tile = (function () {
                 sx = 384;
                 sy = 0;
             }
-            context.drawImage(tiles, sx, sy, Tile.width, Tile.height, this.x, this.y, Tile.width, Tile.height);
+            context.drawImage(tiles, sx, sy, Tile.width, Tile.height, this.pos.x, this.pos.y, Tile.width, Tile.height);
         },
 
         //////////////////////////////////////////////////////////////////////
         // draw the letter
 
         drawLetter: function (context) {
-            var u = this.letter.toUpperCase(),
+            var xOffset = -1,
+                yOffset = 6,
+                u = this.letter.toUpperCase(),
                 dim = font.measureText(u);
-            font.drawText(context, this.x + 48 - dim.width / 2, this.y + 28, u);
+            font.drawText(context,
+                this.pos.x + Tile.width / 2 - dim.width / 2 + xOffset,
+                this.pos.y + Tile.height / 2 - dim.height / 2 + yOffset,
+                u);
         },
 
         //////////////////////////////////////////////////////////////////////

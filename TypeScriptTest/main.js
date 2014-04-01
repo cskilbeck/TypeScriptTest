@@ -25,6 +25,7 @@ var Game = (function () {
             Mouse.init(canvasName, screenDivName);
             Keyboard.init();
             board = new Board();
+            board.randomize(1);
         };
 
     function doFrame() {

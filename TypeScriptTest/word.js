@@ -1,5 +1,9 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
+/*globals LinkedListNode */
+
+//////////////////////////////////////////////////////////////////////
+
 var Orientation = {
     horizontal: 0,
     vertical: 1
@@ -18,20 +22,30 @@ var Word = (function () {
         this.y = y;
         this.orientation = orientation;
         this.score = score;
+        this.index = 0;
+        this.listNode = new LinkedListNode(this);
     };
 
     //////////////////////////////////////////////////////////////////////
     // words are sorted by score then length then alphabetically
 
     Word.prototype = {
+
         compare: function (b) {
             if (this.score > b.score) {
-                return true;
+                return -1;
             }
             if (this.str.length > b.str.length) {
-                return true;
+                return -1;
             }
-            return this.str > b.str;
+            if (this.str.localeCompare(b.str) < 0) {
+                return -1;
+            }
+            return 0;
+        },
+
+        toString: function () {
+            return this.str + "(" + this.score.toString() + ")";
         }
     };
 

@@ -61,13 +61,11 @@ var LinkedList = (function () {
             rightRoot,
             myTail;
 
-        console.log("Merge " + left.toString() + " & " + right.toString());
-
         while (runHead !== leftEnd) {
 
             do {
                 insertPoint = getNext(insertPoint);
-            } while (insertPoint !== rightEnd && callback.call(context, insertPoint.item, runHead.item) < 0);
+            } while (insertPoint !== rightEnd && callback.call(context, insertPoint.item, runHead.item) > 0);
 
             if (insertPoint !== rightEnd) {
 
@@ -76,7 +74,7 @@ var LinkedList = (function () {
                 do {
                     runEnd = runHead;
                     runHead = getNext(runHead);
-                } while (runHead !== leftEnd && callback.call(context, runHead.item, insertPoint.item) < 0);
+                } while (runHead !== leftEnd && callback.call(context, runHead.item, insertPoint.item) > 0);
 
                 prev = getPrev(insertPoint);
                 setPrev(runStart, prev);
@@ -96,7 +94,6 @@ var LinkedList = (function () {
                 break;
             }
         }
-        console.log("= " + right.toString());
     }
 
     function merge_sort(size, list, callback, context) {
@@ -104,6 +101,7 @@ var LinkedList = (function () {
         var leftSize,
             rightSize,
             midPoint,
+            oldHead,
             leftList,
             rightList,
             leftRoot,
@@ -116,7 +114,7 @@ var LinkedList = (function () {
 
         if (size > 1) {
 
-            leftSize = (size / 2) >>> 0;
+            leftSize = size >>> 1;
             rightSize = size - leftSize;
             midPoint = list.headNode();
 

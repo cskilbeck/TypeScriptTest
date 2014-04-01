@@ -35,8 +35,14 @@ var Word = (function () {
             if (this.score > b.score) {
                 return -1;
             }
+            if (this.score < b.score) {
+                return 1;
+            }
             if (this.str.length > b.str.length) {
                 return -1;
+            }
+            if (this.str.length < b.str.length) {
+                return 1;
             }
             return this.str.localeCompare(b.str);
         },

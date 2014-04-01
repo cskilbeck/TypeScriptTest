@@ -111,6 +111,7 @@ var LinkedList = (function () {
             newTail,
             newHead,
             midPrev,
+            listRoot,
             i;
 
         if (size > 1) {
@@ -151,11 +152,12 @@ var LinkedList = (function () {
 
             newTail = leftList.tailNode();
             newHead = leftList.headNode();
+            listRoot = list.root;
 
-            setPrev(newHead, leftRoot);
-            setNext(newTail, leftRoot);
-            setPrev(leftRoot, newTail);
-            setNext(leftRoot, newHead);
+            setPrev(newHead, listRoot);
+            setNext(newTail, listRoot);
+            setPrev(listRoot, newTail);
+            setNext(listRoot, newHead);
         }
     }
 

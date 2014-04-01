@@ -38,10 +38,7 @@ var Word = (function () {
             if (this.str.length > b.str.length) {
                 return -1;
             }
-            if (this.str.localeCompare(b.str) < 0) {
-                return -1;
-            }
-            return 0;
+            return this.str.localeCompare(b.str);
         },
 
         toString: function () {

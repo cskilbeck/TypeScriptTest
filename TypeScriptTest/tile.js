@@ -9,7 +9,8 @@ var Tile = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    var Beginning = 1,
+    var None = 0,
+        Beginning = 1,
         Middle = 2,
         End = 3,
         font = new Font(Arial),
@@ -22,6 +23,8 @@ var Tile = (function () {
             this.x = x * 96;
             this.y = y * 96;
             this.layer = 0;
+
+            // a tile can be part of a horizontal and/or vertical word
             this.horizontal = {
                 word: null,
                 index: 0,
@@ -39,6 +42,7 @@ var Tile = (function () {
     Tile.prototype = {
 
         //////////////////////////////////////////////////////////////////////
+        // mark this tile as part of word w at index i
 
         setWord: function (w, i) {
             var pos,
@@ -57,6 +61,17 @@ var Tile = (function () {
         },
 
         //////////////////////////////////////////////////////////////////////
+        // make this tile not part of any words
+
+        clearWords: function() {
+            this.horizontal.word = null;
+            this.vertical.word = null;
+            this.horizontal.position = None;
+            this.vertical.position = None;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+        // draw tile background
 
         drawTile: function (context) {
             var sx = this.horizontal.position * 96,
@@ -68,6 +83,7 @@ var Tile = (function () {
         },
 
         //////////////////////////////////////////////////////////////////////
+        // draw the letter
 
         drawLetter: function (context) {
             var u = this.letter.toUpperCase(),
@@ -76,6 +92,7 @@ var Tile = (function () {
         },
 
         //////////////////////////////////////////////////////////////////////
+        // draw whole tile
 
         draw: function (context) {
             this.drawTile(context);

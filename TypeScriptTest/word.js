@@ -10,6 +10,8 @@ var Orientation = {
 var Word = (function () {
     "use strict";
 
+    //////////////////////////////////////////////////////////////////////
+
     var Word = function (str, x, y, orientation, score) {
         this.str = str;
         this.x = x;
@@ -17,6 +19,9 @@ var Word = (function () {
         this.orientation = orientation;
         this.score = score;
     };
+
+    //////////////////////////////////////////////////////////////////////
+    // words are sorted by score then length then alphabetically
 
     Word.prototype = {
         compare: function (b) {

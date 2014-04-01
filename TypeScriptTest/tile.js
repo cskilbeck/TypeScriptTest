@@ -1,6 +1,7 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
 /*global Font, ImageLoader, Arial, Orientation */
+/*jslint maxlen: 130 */
 
 //////////////////////////////////////////////////////////////////////
 
@@ -20,9 +21,10 @@ var Tile = (function () {
 
         Tile = function (letter, x, y) {
             this.letter = letter;
-            this.x = x * 96;
-            this.y = y * 96;
+            this.x = x * Tile.width;
+            this.y = y * Tile.height;
             this.layer = 0;
+            this.selected = false;
 
             // a tile can be part of a horizontal and/or vertical word
             this.horizontal = {
@@ -63,7 +65,7 @@ var Tile = (function () {
         //////////////////////////////////////////////////////////////////////
         // make this tile not part of any words
 
-        clearWords: function() {
+        clearWords: function () {
             this.horizontal.word = null;
             this.vertical.word = null;
             this.horizontal.position = None;
@@ -74,12 +76,16 @@ var Tile = (function () {
         // draw tile background
 
         drawTile: function (context) {
-            var sx = this.horizontal.position * 96,
-                sy = this.vertical.position * 96;
+            var sx = this.horizontal.position * Tile.width,
+                sy = this.vertical.position * Tile.height;
             if (this.horizontal.word === null && this.vertical.word === null) {
-                sy += 384;
+                sy = 384;
             }
-            context.drawImage(tiles, sx, sy, 96, 96, this.x, this.y, 96, 96);
+            if (this.selected) {
+                sx = 384;
+                sy = 0;
+            }
+            context.drawImage(tiles, sx, sy, Tile.width, Tile.height, this.x, this.y, Tile.width, Tile.height);
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -101,6 +107,9 @@ var Tile = (function () {
     };
 
     //////////////////////////////////////////////////////////////////////
+
+    Tile.width = 96;
+    Tile.height = 96;
 
     return Tile;
 

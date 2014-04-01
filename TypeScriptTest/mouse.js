@@ -3,6 +3,8 @@
 /*global HTMLCanvasElement, window, document */
 /*jslint bitwise: true */
 
+//////////////////////////////////////////////////////////////////////
+
 HTMLCanvasElement.prototype.relMouseCoords = function (event) {
     "use strict";
     var totalOffsetX = 0,
@@ -21,6 +23,24 @@ HTMLCanvasElement.prototype.relMouseCoords = function (event) {
 var Mouse = (function () {
     "use strict";
 
+    var wnd = window,
+        innerW = 'innerWidth',
+        innerH = 'innerHeight';
+
+    //////////////////////////////////////////////////////////////////////
+
+    if (!window.hasOwnProperty('innerWidth')) {
+        innerW = 'clientWidth';
+        innerH = 'clientHeight';
+        wnd = document.documentElement || document.body;
+    }
+
+    //////////////////////////////////////////////////////////////////////
+
+    function viewport() {
+        return { width: wnd[innerW], height: wnd[innerH] };
+    }
+
     //////////////////////////////////////////////////////////////////////
 
     function fixupMouseEvent(event) {
@@ -33,16 +53,6 @@ var Mouse = (function () {
             y: event.y || event.clientY
         };
         return e;
-    }
-
-    function viewport() {
-        var e = window,
-            a = 'inner';
-        if (!window.hasOwnProperty('innerWidth')) {
-            a = 'client';
-            e = document.documentElement || document.body;
-        }
-        return { width: e[a + 'Width'], height: e[a + 'Height'] };
     }
 
     //////////////////////////////////////////////////////////////////////

@@ -45,6 +45,7 @@ var Game = (function () {
         fixedSys.drawText(context, 680, 40, "X: " + Mouse.x);
         fixedSys.drawText(context, 680, 55, "Y: " + Mouse.y);
 
+        board.update();
         board.draw(context);
 
         frames += 1;

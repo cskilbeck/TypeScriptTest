@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-/*global Tile, Dictionary, Word, Orientation, Random */
+/*global Tile, Dictionary, Word, Orientation, Random, Mouse */
 /*jslint plusplus: true, bitwise: true, maxlen: 130 */
 
 //////////////////////////////////////////////////////////////////////
@@ -12,33 +12,33 @@ var Board = (function () {
     //////////////////////////////////////////////////////////////////////
 
     var letters = [
-            { score: 1, frequency: 9 },     //A
-            { score: 3, frequency: 2 },     //B
-            { score: 3, frequency: 2 },     //C 
-            { score: 2, frequency: 4 },     //D
-            { score: 1, frequency: 12 },    //E
-            { score: 4, frequency: 2 },     //F
-            { score: 2, frequency: 3 },     //G
-            { score: 4, frequency: 2 },     //H
-            { score: 1, frequency: 9 },     //I
-            { score: 8, frequency: 1 },     //J
-            { score: 5, frequency: 1 },     //K
-            { score: 1, frequency: 4 },     //L
-            { score: 3, frequency: 2 },     //M
-            { score: 1, frequency: 6 },     //N
-            { score: 1, frequency: 8 },     //O
-            { score: 3, frequency: 2 },     //P
-            { score: 10, frequency: 1 },    //Q
-            { score: 1, frequency: 6 },     //R
-            { score: 1, frequency: 4 },     //S
-            { score: 1, frequency: 6 },     //T
-            { score: 1, frequency: 4 },     //U
-            { score: 4, frequency: 2 },     //V
-            { score: 4, frequency: 2 },     //W
-            { score: 8, frequency: 1 },     //X
-            { score: 4, frequency: 2 },     //Y
-            { score: 10, frequency: 1 }     //Z
-        ],
+        { score: 1, frequency: 9 },     //A
+        { score: 3, frequency: 2 },     //B
+        { score: 3, frequency: 2 },     //C 
+        { score: 2, frequency: 4 },     //D
+        { score: 1, frequency: 12 },    //E
+        { score: 4, frequency: 2 },     //F
+        { score: 2, frequency: 3 },     //G
+        { score: 4, frequency: 2 },     //H
+        { score: 1, frequency: 9 },     //I
+        { score: 8, frequency: 1 },     //J
+        { score: 5, frequency: 1 },     //K
+        { score: 1, frequency: 4 },     //L
+        { score: 3, frequency: 2 },     //M
+        { score: 1, frequency: 6 },     //N
+        { score: 1, frequency: 8 },     //O
+        { score: 3, frequency: 2 },     //P
+        { score: 10, frequency: 1 },    //Q
+        { score: 1, frequency: 6 },     //R
+        { score: 1, frequency: 4 },     //S
+        { score: 1, frequency: 6 },     //T
+        { score: 1, frequency: 4 },     //U
+        { score: 4, frequency: 2 },     //V
+        { score: 4, frequency: 2 },     //W
+        { score: 8, frequency: 1 },     //X
+        { score: 4, frequency: 2 },     //Y
+        { score: 10, frequency: 1 }     //Z
+    ],
 
     //////////////////////////////////////////////////////////////////////
 
@@ -47,14 +47,14 @@ var Board = (function () {
         foundWords = [],
         words = [],
         random = new Random(),
+        activeTile = null,
 
     //////////////////////////////////////////////////////////////////////
 
         Board = function () {
             var i,
                 j,
-                frequency,
-                wrd;
+                frequency;
             this.score = 0;
             this.score = 0;
             this.width = 7;
@@ -90,7 +90,7 @@ var Board = (function () {
         //////////////////////////////////////////////////////////////////////
         // Get the board as an ascii string
 
-        toString: function() {
+        toString: function () {
             var i,
                 s = "";
             for (i = 0; i < this.length; ++i) {
@@ -114,10 +114,37 @@ var Board = (function () {
         },
 
         //////////////////////////////////////////////////////////////////////
+        // get the tile at a position on the screen
+
+        tileFromScreenPos: function (x, y) {
+            if (x >= 0 && y >= 0 && x < this.width * Tile.width && y < this.height * Tile.height) {
+                return this.tile((x / Tile.width) >>> 0, (y / Tile.height) >>> 0);
+            }
+            return null;
+        },
+
+        //////////////////////////////////////////////////////////////////////
         // Get a random letter from the distribution table
 
         randomLetter: function () {
             return aToZ[distribution[random.next() % distribution.length]];
+        },
+
+        //////////////////////////////////////////////////////////////////////
+        // update
+
+        update: function () {
+            var clickedTile;
+            if (Mouse.left.pressed) {
+                clickedTile = this.tileFromScreenPos(Mouse.x, Mouse.y);
+                if (clickedTile !== null) {
+                    if (activeTile !== null) {
+                        activeTile.selected = false;
+                    }
+                    clickedTile.selected = clickedTile !== activeTile;
+                    activeTile = clickedTile;
+                }
+            }
         },
 
         //////////////////////////////////////////////////////////////////////

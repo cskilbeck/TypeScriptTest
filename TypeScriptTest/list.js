@@ -2,6 +2,7 @@
 
 function InvalidListNodeNameException() {
     "use strict";
+
     return "InvalidListNodeNameException";
 }
 

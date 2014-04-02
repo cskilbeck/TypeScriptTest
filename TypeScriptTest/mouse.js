@@ -23,14 +23,13 @@ var Mouse = (function () {
 
     function fixupMouseEvent(event) {
         event = event || window.event;
-        var e = {
+        return {
             e: event,
             target: event.target || event.srcElement,
             which: event.which || event.button === 1 ? 1 : event.button === 2 ? 3 : event.button === 4 ? 2 : 1,
             x: event.x || event.clientX,
             y: event.y || event.clientY
         };
-        return e;
     }
 
     //////////////////////////////////////////////////////////////////////

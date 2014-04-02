@@ -135,7 +135,7 @@ var Board = (function () {
         //////////////////////////////////////////////////////////////////////
         // update
 
-        update: function () {
+        update: function (deltaTime) {
             var clickedTile,
                 snapX,
                 snapY,

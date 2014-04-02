@@ -1,12 +1,8 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-/*global HTMLCanvasElement, window, document */
-/*jslint bitwise: true, maxlen: 130 */
-
-//////////////////////////////////////////////////////////////////////
-
 HTMLCanvasElement.prototype.relMouseCoords = function (event) {
     "use strict";
+
     var totalOffsetX = 0,
         totalOffsetY = 0,
         currentElement = this;

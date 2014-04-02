@@ -1,14 +1,6 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-/*global Keyboard, Mouse, Board, document, window, requestAnimFrame,
-    console, Font, Fixedsys, Random, Debug */
-
-//////////////////////////////////////////////////////////////////////
-
-var fixedSys = new Font(Fixedsys);
-
 var Game = (function () {
-
     "use strict";
 
     var currentTime = window.performance.now(),
@@ -42,10 +34,10 @@ var Game = (function () {
         context.fillStyle = 'rgb(64, 128, 64)';
         context.fillRect(0, 0, 800, 600);
 
-        fixedSys.drawText(context, 680, 10, "Frames: " + frames.toString());
-        fixedSys.drawText(context, 680, 25, "Delta: " + deltaTime.toString());
-        fixedSys.drawText(context, 680, 40, "X: " + Mouse.x);
-        fixedSys.drawText(context, 680, 55, "Y: " + Mouse.y);
+        Debug.text(680, 10, "Frames: " + frames.toString());
+        Debug.text(680, 25, "Delta: " + deltaTime.toString());
+        Debug.text(680, 40, "X: " + Mouse.x);
+        Debug.text(680, 55, "Y: " + Mouse.y);
 
         board.update();
         board.draw(context);
@@ -68,5 +60,6 @@ var Game = (function () {
 
 window.onload = function () {
     "use strict";
+
     new Game('myCanvas', 'screen').run();
 };

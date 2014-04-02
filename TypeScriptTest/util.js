@@ -1,11 +1,8 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-/*global window, performance */
-
-//////////////////////////////////////////////////////////////////////
-
 window.requestAnimFrame = (function () {
     "use strict";
+
     return window.requestAnimationFrame ||
         window.webkitRequestAnimationFrame ||
         window.mozRequestAnimationFrame ||
@@ -22,6 +19,7 @@ window.performance = window.performance || {};
 
 performance.now = (function () {
     "use strict";
+
     return performance.now ||
             performance.mozNow ||
             performance.msNow ||
@@ -35,6 +33,8 @@ performance.now = (function () {
 //////////////////////////////////////////////////////////////////////
 
 function ease(x) {
+    "use strict";
+
     var x2 = x * x,
         x3 = x2 * x;
     return 3 * x2 - 2 * x3;
@@ -43,6 +43,8 @@ function ease(x) {
 //////////////////////////////////////////////////////////////////////
 
 function lerp(start, end, duration, time) {
+    "use strict";
+
     var s = time / duration,
         xd = end.x - start.x,
         yd = end.y - start.y,

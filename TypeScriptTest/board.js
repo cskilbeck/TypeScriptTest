@@ -1,12 +1,6 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-/*global Tile, Dictionary, Word, Orientation, Random, Mouse, LinkedList */
-/*jslint plusplus: true, bitwise: true, maxlen: 130 */
-
-//////////////////////////////////////////////////////////////////////
-
 var Board = (function () {
-
     "use strict";
 
     //////////////////////////////////////////////////////////////////////
@@ -15,7 +9,7 @@ var Board = (function () {
     var letters = [
             { score: 1, frequency: 9 },     //A
             { score: 3, frequency: 2 },     //B
-            { score: 3, frequency: 2 },     //C 
+            { score: 3, frequency: 2 },     //C
             { score: 2, frequency: 4 },     //D
             { score: 1, frequency: 12 },    //E
             { score: 4, frequency: 2 },     //F

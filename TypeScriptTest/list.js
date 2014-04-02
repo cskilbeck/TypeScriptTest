@@ -1,11 +1,9 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-/*global console */
-/*jslint maxlen: 130, bitwise: true */
-
-//////////////////////////////////////////////////////////////////////
-
-function InvalidListNodeNameException() { "use strict"; return "InvalidListNodeNameException"; }
+function InvalidListNodeNameException() {
+    "use strict";
+    return "InvalidListNodeNameException";
+}
 
 //////////////////////////////////////////////////////////////////////
 
@@ -111,7 +109,7 @@ var LinkedList = (function () {
                 midPoint = midPoint.next;
             }
 
-            leftRoot = listNode(null);  // should be able to get rid of this by making the merge function work on 2 contiguous sections of a list
+            leftRoot = listNode(null);
             rightRoot = listNode(null);
             tail = list.prev;
             head = list.next;
@@ -137,18 +135,16 @@ var LinkedList = (function () {
             list.prev = tail;
             list.next = head;
 
-        } else if (size > 1) {
+        } else if (size === 2 && sortCallback.call(sortContext, list.prev.item, list.next.item) > 0) {
 
             head = list.next;
             tail = list.prev;
-            if (sortCallback.call(sortContext, tail.item, head.item) > 0) {
-                list.next = tail;
-                list.prev = head;
-                head.next = list;
-                head.prev = tail;
-                tail.next = head;
-                tail.prev = list;
-            }
+            list.next = tail;
+            list.prev = head;
+            head.next = list;
+            head.prev = tail;
+            tail.next = head;
+            tail.prev = list;
         }
     }
 

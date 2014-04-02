@@ -28,6 +28,7 @@
     <Content Include="img\Cooper_Black_440.png" />
     <Content Include="img\Fixedsys0.png" />
     <Content Include="index.html" />
+    <Content Include="JSLintOptions.xml" />
     <Content Include="keyboard.js" />
     <Content Include="list.js" />
     <Content Include="main.js" />

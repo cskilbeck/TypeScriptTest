@@ -715,6 +715,7 @@
       <string>Keyboard</string>
       <string>requestAnimFrame</string>
       <string>Board</string>
+      <string>XMLHttpRequest</string>
     </PreDefined>
   </JSLintOptions>
   <BuildFileTypes>JS</BuildFileTypes>

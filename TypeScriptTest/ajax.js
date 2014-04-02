@@ -5,13 +5,13 @@ var ajax = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    function send(url, callback, method, data, sync) {
+    function send(url, callback, context, method, data, sync) {
 
         var xr = new XMLHttpRequest();
         xr.open(method, url, sync);
         xr.onreadystatechange = function () {
             if (xr.readyState === XMLHttpRequest.DONE) {
-                callback(xr.responseText);
+                callback.call(context, xr.responseText);
             }
         };
         if (method === 'POST') {
@@ -26,26 +26,26 @@ var ajax = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        get: function (url, data, callback, sync) {
+        get: function (url, data, callback, context, sync) {
 
             var query = [],
                 key;
             for (key in data) {
                 query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
             }
-            send(url + '?' + query.join('&'), callback, 'GET', null, sync);
+            send(url + '?' + query.join('&'), callback, context, 'GET', null, sync);
         },
 
         //////////////////////////////////////////////////////////////////////
 
-        post: function (url, data, callback, sync) {
+        post: function (url, data, callback, context, sync) {
 
             var query = [],
                 key;
             for (key in data) {
                 query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
             }
-            send(url, callback, 'POST', query.join('&'), sync);
+            send(url, callback, context, 'POST', query.join('&'), sync);
         }
     };
 

@@ -1,12 +1,6 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-/*global ImageLoader */
-/*jslint plusplus: true, maxlen: 130 */
-
-//////////////////////////////////////////////////////////////////////
-
 var Font = (function () {
-
     "use strict";
 
     //////////////////////////////////////////////////////////////////////
@@ -29,12 +23,10 @@ var Font = (function () {
                 layer,
                 i,
                 c,
-                g,
                 xc,
                 yc,
                 glyph,
-                s,
-                img;
+                s;
             for (l = 0; l < this.font.layerCount; ++l) {
                 layer = this.font.Layers[l];
                 xc = x + layer.offsetX;
@@ -42,12 +34,10 @@ var Font = (function () {
                 for (i = 0; i < str.length; ++i) {
                     c = str.charCodeAt(i);
                     if (this.font.charMap.hasOwnProperty(c)) {
-                        g = this.font.charMap[c];
-                        glyph = this.font.glyphs[g];
+                        glyph = this.font.glyphs[this.font.charMap[c]];
                         if (l < glyph.imageCount) {
                             s = glyph.images[l];
-                            img = this.images[s.page];
-                            ctx.drawImage(img, s.x, s.y, s.w, s.h, xc + s.offsetX, yc + s.offsetY, s.w, s.h);
+                            ctx.drawImage(this.images[s.page], s.x, s.y, s.w, s.h, xc + s.offsetX, yc + s.offsetY, s.w, s.h);
                         }
                         xc += glyph.advance;
                     }
@@ -67,7 +57,6 @@ var Font = (function () {
                 xc,
                 i,
                 c,
-                g,
                 glyph,
                 s;
             l = this.font.layerCount - 1;
@@ -78,8 +67,7 @@ var Font = (function () {
             for (i = 0; i < str.length; ++i) {
                 c = str.charCodeAt(i);
                 if (this.font.charMap.hasOwnProperty(c)) {
-                    g = this.font.charMap[c];
-                    glyph = this.font.glyphs[g];
+                    glyph = this.font.glyphs[this.font.charMap[c]];
                     s = glyph.images[l];
                     w = xc + s.w;
                     xc += glyph.advance;

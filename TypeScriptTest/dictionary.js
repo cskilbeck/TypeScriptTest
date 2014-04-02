@@ -1,6 +1,4 @@
-﻿/*jslint maxlen: 257 */
-
-var Dictionary = {
+﻿var Dictionary = {
     "aah": "(n) Expression of amazement or surprise or enthusiasm.\n(v) To say or exclaim aah.\n",
     "aahed": "(v) Past tense of @aah@\n",
     "aahing": "(v) Present tense of @aah@\n",
@@ -21910,6 +21908,7 @@ var Dictionary = {
     "maddest": "(adj) Superlative of @mad@\n",
     "madding": "(v) Present tense of @mad@\n",
     "maddish": "(adj) Somewhat @mad@\n",
+    "made": "(v) Past tense of @make@\n",
     "madly": "(adv) In a @mad@ @manner@; without @reason@ or understanding; @wildly@.\n",
     "madman": "(n) A male who is @insane@ or mentally disturbed.\n",
     "madmen": "(n) Plural of @madman@\n",

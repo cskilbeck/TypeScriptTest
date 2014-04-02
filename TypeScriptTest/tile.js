@@ -1,10 +1,5 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-/*global Font, ImageLoader, Arial, Orientation */
-/*jslint maxlen: 130 */
-
-//////////////////////////////////////////////////////////////////////
-
 var Tile = (function () {
     "use strict";
 
@@ -100,6 +95,9 @@ var Tile = (function () {
             this.pos.y = this.org.y;
         },
 
+        //////////////////////////////////////////////////////////////////////
+        // reset everything
+
         reset: function () {
             this.resetPosition();
             this.selected = false;
@@ -147,6 +145,7 @@ var Tile = (function () {
     };
 
     //////////////////////////////////////////////////////////////////////
+    // static const
 
     Tile.width = 96;
     Tile.height = 96;

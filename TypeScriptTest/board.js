@@ -1,12 +1,6 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-/*global Tile, Dictionary, Word, Orientation, Random, Mouse, LinkedList */
-/*jslint plusplus: true, bitwise: true, maxlen: 130 */
-
-//////////////////////////////////////////////////////////////////////
-
 var Board = (function () {
-
     "use strict";
 
     //////////////////////////////////////////////////////////////////////
@@ -15,7 +9,7 @@ var Board = (function () {
     var letters = [
             { score: 1, frequency: 9 },     //A
             { score: 3, frequency: 2 },     //B
-            { score: 3, frequency: 2 },     //C 
+            { score: 3, frequency: 2 },     //C
             { score: 2, frequency: 4 },     //D
             { score: 1, frequency: 12 },    //E
             { score: 4, frequency: 2 },     //F
@@ -141,13 +135,15 @@ var Board = (function () {
         //////////////////////////////////////////////////////////////////////
         // update
 
-        update: function () {
+        update: function (deltaTime) {
             var clickedTile,
                 snapX,
                 snapY,
                 tileX,
                 tileY,
-                swapLetter;
+                swapLetter,
+                word,
+                y;
             if (Mouse.left.released) {
                 if (activeTile !== null) {
                     activeTile.reset();
@@ -181,15 +177,17 @@ var Board = (function () {
                     snapY = Math.floor((tileY + Tile.height / 2) / Tile.height) * Tile.height;
                     if (Math.abs(tileX - snapX) < Tile.width / 6 && Math.abs(tileY - snapY) < Tile.height / 6) {
                         swapTile = this.tileFromScreenPos(snapX, snapY);
-                        swapLetter = swapTile.letter;
-                        swapTile.letter = activeTile.letter;
-                        activeTile.letter = swapLetter;
-                        swapTile.selected = true;
-                        swapTile.layer = 1;
-                        activeTile.reset();
-                        activeTile = swapTile;
-                        activeTile.setPosition(snapX, snapY);
-                        this.markAllWords();
+                        if (swapTile !== null) {
+                            swapLetter = swapTile.letter;
+                            swapTile.letter = activeTile.letter;
+                            activeTile.letter = swapLetter;
+                            swapTile.selected = true;
+                            swapTile.layer = 1;
+                            activeTile.reset();
+                            activeTile = swapTile;
+                            activeTile.setPosition(snapX, snapY);
+                            this.markAllWords();
+                        }
                     } else {
                         if (swapTile !== null) {
                             swapTile.reset();
@@ -198,6 +196,13 @@ var Board = (function () {
                         activeTile.setPosition(tileX, tileY);
                     }
                 }
+            }
+            y = 100;
+            Debug.text(680, y, "Score: " + this.score.toString());
+            y += 20;
+            for (word = words.headNode(); word.item != null; word = word.next) {
+                Debug.text(680, y, word.item.toString());
+                y += 15;
             }
         },
 

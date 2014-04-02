@@ -1,10 +1,5 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-/*global LinkedList, LinkedListNode, Image */
-/*jslint bitwise: true, maxlen: 130 */
-
-//////////////////////////////////////////////////////////////////////
-
 function SpriteList(listNodeName) {
     "use strict";
 
@@ -19,6 +14,7 @@ SpriteList.prototype = Object.create(LinkedList.prototype);
 
 SpriteList.prototype.draw = function (context) {
     "use strict";
+
     context.save();
     this.reverseForEach(function (s) {
         s.draw();
@@ -30,6 +26,7 @@ SpriteList.prototype.draw = function (context) {
 
 SpriteList.prototype.isLoaded = function () {
     "use strict";
+
     return this.reverseForEach(function (s) {
         return s.loaded();
     });
@@ -73,6 +70,7 @@ var ImageLoader = (function () {
 
 var Sprite = (function () {
     "use strict";
+
     var sprite = function (graphic, listNodeName) {
         this.x = 0.0;
         this.y = 0.0;
@@ -91,7 +89,7 @@ var Sprite = (function () {
         this.frame = 0;
         this.flipX = false;
         this.flipY = false;
-        this[listNodeName || 'spriteListNode'] = new LinkedListNode(this);
+        this[listNodeName || 'spriteListNode'] = listNode(this);
     };
 
     //////////////////////////////////////////////////////////////////////

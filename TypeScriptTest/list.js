@@ -1,21 +1,22 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-/*global console */
-/*jslint maxlen: 130, bitwise: true */
-
-//////////////////////////////////////////////////////////////////////
-
-function InvalidListNodeNameException() { "use strict"; return "InvalidListNodeNameException"; }
-
-//////////////////////////////////////////////////////////////////////
-
-var LinkedListNode = function (obj) {
+function InvalidListNodeNameException() {
     "use strict";
 
-    this.item = obj;
-    this.next = null;
-    this.prev = null;
-};
+    return "InvalidListNodeNameException";
+}
+
+//////////////////////////////////////////////////////////////////////
+
+function listNode(obj) {
+    "use strict";
+
+    return {
+        item: obj,
+        next: null,
+        prev: null
+    };
+}
 
 //////////////////////////////////////////////////////////////////////
 
@@ -27,33 +28,22 @@ var LinkedList = (function () {
             throw new InvalidListNodeNameException();
         }
         this.nodeName = nodeName;
-        this.root = new LinkedListNode(null);
+        this.root = listNode(null);
         this.root.next = this.root;
         this.root.prev = this.root;
-    };
+        this.size = 0;
+    },
+        sortCallback,
+        sortContext;
 
-    function setNext(o, n) {
-        o.next = n;
-    }
+    //////////////////////////////////////////////////////////////////////
 
-    function setPrev(o, n) {
-        o.prev = n;
-    }
+    function merge(left, right) {
 
-    function getNext(o) {
-        return o.next;
-    }
-
-    function getPrev(o) {
-        return o.prev;
-    }
-
-    function merge(left, right, callback, context) {
-
-        var insertPoint = right.root,
-            runHead = left.headNode(),
-            leftEnd = left.root,
-            rightEnd = right.root,
+        var insertPoint = right,
+            runHead = left.next,
+            leftEnd = left,
+            rightEnd = right,
             runStart,
             runEnd,
             prev,
@@ -64,8 +54,8 @@ var LinkedList = (function () {
         while (runHead !== leftEnd) {
 
             do {
-                insertPoint = getNext(insertPoint);
-            } while (insertPoint !== rightEnd && callback.call(context, insertPoint.item, runHead.item) > 0);
+                insertPoint = insertPoint.next;
+            } while (insertPoint !== rightEnd && sortCallback.call(sortContext, insertPoint.item, runHead.item) > 0);
 
             if (insertPoint !== rightEnd) {
 
@@ -73,101 +63,111 @@ var LinkedList = (function () {
 
                 do {
                     runEnd = runHead;
-                    runHead = getNext(runHead);
-                } while (runHead !== leftEnd && callback.call(context, runHead.item, insertPoint.item) > 0);
+                    runHead = runHead.next;
+                } while (runHead !== leftEnd && sortCallback.call(sortContext, runHead.item, insertPoint.item) > 0);
 
-                prev = getPrev(insertPoint);
-                setPrev(runStart, prev);
-                setNext(prev, runStart);
-                setPrev(insertPoint, runEnd);
-                setNext(runEnd, insertPoint);
+                prev = insertPoint.prev;
+                runStart.prev = prev;
+                prev.next = runStart;
+                insertPoint.prev = runEnd;
+                runEnd.next = insertPoint;
 
             } else {
 
-                otherTail = left.tailNode();
-                rightRoot = right.root;
-                myTail = right.tailNode();
-                setPrev(runHead, myTail);
-                setNext(myTail, runHead);
-                setPrev(rightRoot, otherTail);
-                setNext(otherTail, rightRoot);
+                otherTail = left.prev;
+                rightRoot = right;
+                myTail = right.prev;
+                runHead.prev = myTail;
+                myTail.next = runHead;
+                rightRoot.prev = otherTail;
+                otherTail.next = rightRoot;
                 break;
             }
         }
     }
 
-    function merge_sort(size, list, callback, context) {
+    //////////////////////////////////////////////////////////////////////
+
+    function merge_sort(size, list) {
 
         var leftSize,
             rightSize,
             midPoint,
-            oldHead,
-            leftList,
-            rightList,
             leftRoot,
             rightRoot,
-            newTail,
-            newHead,
+            tail,
+            head,
             midPrev,
-            listRoot,
             i;
 
-        if (size > 1) {
+        if (size > 2) {
 
             leftSize = size >>> 1;
             rightSize = size - leftSize;
-            midPoint = list.headNode();
+            midPoint = list.next;
 
             for (i = 0; i < leftSize; i += 1) {
-                midPoint = getNext(midPoint);
+                midPoint = midPoint.next;
             }
 
-            leftList = new LinkedList(list.nodeName);
-            rightList = new LinkedList(list.nodeName);
+            leftRoot = listNode(null);
+            rightRoot = listNode(null);
+            tail = list.prev;
+            head = list.next;
+            midPrev = midPoint.prev;
+            leftRoot.prev = midPrev;
+            leftRoot.next = head;
+            head.prev = leftRoot;
+            midPrev.next = leftRoot;
+            rightRoot.prev = tail;
+            rightRoot.next = midPoint;
+            midPoint.prev = rightRoot;
+            tail.next = rightRoot;
 
-            leftRoot = leftList.root;
-            rightRoot = rightList.root;
+            merge_sort(leftSize, leftRoot);
+            merge_sort(rightSize, rightRoot);
 
-            newTail = list.tailNode();
-            newHead = list.headNode();
+            merge(rightRoot, leftRoot);
 
-            midPrev = getPrev(midPoint);
+            tail = leftRoot.prev;
+            head = leftRoot.next;
+            head.prev = list;
+            tail.next = list;
+            list.prev = tail;
+            list.next = head;
 
-            setPrev(leftRoot, midPrev);
-            setNext(leftRoot, newHead);
-            setPrev(newHead, leftRoot);
-            setNext(midPrev, leftRoot);
+        } else if (size === 2 &&
+            sortCallback.call(sortContext, list.prev.item, list.next.item) > 0) {
 
-            setPrev(rightRoot, newTail);
-            setNext(rightRoot, midPoint);
-            setPrev(midPoint, rightRoot);
-            setNext(newTail, rightRoot);
-
-            merge_sort(leftSize, leftList, callback, context);
-            merge_sort(rightSize, rightList, callback, context);
-
-            merge(rightList, leftList, callback, context);
-
-            newTail = leftList.tailNode();
-            newHead = leftList.headNode();
-            listRoot = list.root;
-
-            setPrev(newHead, listRoot);
-            setNext(newTail, listRoot);
-            setPrev(listRoot, newTail);
-            setNext(listRoot, newHead);
+            head = list.next;
+            tail = list.prev;
+            list.next = tail;
+            list.prev = head;
+            head.next = list;
+            head.prev = tail;
+            tail.next = head;
+            tail.prev = list;
         }
     }
 
+    //////////////////////////////////////////////////////////////////////
+
     LinkedList.prototype = {
 
+        sort: function (callback, context) {
+            sortCallback = callback;
+            sortContext = context;
+            merge_sort(this.size, this.root);
+        },
+
         isEmpty: function () {
-            return this.root.next === this.root;
+            return this.size === 0;
         },
 
         clear: function () {
             this.root.next = this.root;
             this.root.prev = this.root;
+            this.size = 0;
         },
 
         headNode: function () {
@@ -201,6 +201,7 @@ var LinkedList = (function () {
             node.prev = n.prev;
             n.next.prev = node;
             n.prev = node;
+            this.size += 1;
         },
 
         insertAfter: function (objAfter, obj) {
@@ -210,6 +211,7 @@ var LinkedList = (function () {
             node.next = n.next;
             n.prev.next = node;
             n.next = node;
+            this.size += 1;
         },
 
         pushFront: function (obj) {
@@ -218,6 +220,7 @@ var LinkedList = (function () {
             node.next = this.root.next;
             this.root.next.prev = node;
             this.root.next = node;
+            this.size += 1;
         },
 
         pushBack: function (obj) {
@@ -226,6 +229,7 @@ var LinkedList = (function () {
             node.next = this.root;
             this.root.prev.next = node;
             this.root.prev = node;
+            this.size += 1;
         },
 
         popFront: function () {
@@ -233,6 +237,7 @@ var LinkedList = (function () {
                 var node = this.root.next;
                 node.prev.next = node.next;
                 node.next.prev = node.prev;
+                this.size -= 1;
                 return node.item;
             }
             return null;
@@ -243,6 +248,7 @@ var LinkedList = (function () {
                 var node = this.root.prev;
                 node.prev.next = node.next;
                 node.next.prev = node.prev;
+                this.size -= 1;
                 return node.item;
             }
             return null;
@@ -252,6 +258,7 @@ var LinkedList = (function () {
             var node = obj[this.nodeName];
             node.prev.next = node.next;
             node.next.prev = node.prev;
+            this.size -= 1;
         },
 
         moveToFront: function (item) {
@@ -268,16 +275,6 @@ var LinkedList = (function () {
             node.next.prev = node.prev;
             this.root.prev.next = node;
             this.root.prev = node;
-        },
-
-        count: function () {
-            var count = 0,
-                i = this.root.next;
-            while (i !== this.root) {
-                i = i.next;
-                count += 1;
-            }
-            return count;
         },
 
         forEach: function (callback, context) {
@@ -323,6 +320,7 @@ var LinkedList = (function () {
                 }
                 node = next;
             }
+            this.size -= removed;
             return removed;
         },
 
@@ -387,12 +385,8 @@ var LinkedList = (function () {
             return null;
         },
 
-        sort: function (callback, context) {
-            merge_sort(this.count(), this, callback, context);
-        },
-
         toString: function () {
-            var s = 'list <',
+            var s = 'list (' + this.size.toString() + ') <',
                 sep = "";
             this.forEach(function (i) {
                 s += sep + i.toString();

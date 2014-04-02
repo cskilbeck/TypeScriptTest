@@ -1,12 +1,6 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-/*global window */
-/*jslint plusplus: true */
-
-//////////////////////////////////////////////////////////////////////
-
 var Keyboard = (function () {
-
     "use strict";
 
     //////////////////////////////////////////////////////////////////////
@@ -141,7 +135,7 @@ var Keyboard = (function () {
 
         init: function () {
             var i = 0;
-            for (i = 0; i < 255; ++i) {
+            for (i = 0; i < 255; i += 1) {
                 held[i] = false;
                 pressed[i] = false;
                 released[i] = false;

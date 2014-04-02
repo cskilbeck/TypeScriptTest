@@ -1,9 +1,5 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-/*globals LinkedListNode */
-
-//////////////////////////////////////////////////////////////////////
-
 var Orientation = {
     horizontal: 0,
     vertical: 1
@@ -23,7 +19,7 @@ var Word = (function () {
         this.orientation = orientation;
         this.score = score;
         this.index = 0;
-        this.listNode = new LinkedListNode(this);
+        this.listNode = listNode(this);
     };
 
     //////////////////////////////////////////////////////////////////////

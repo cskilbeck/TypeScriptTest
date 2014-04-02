@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-/*globals LinkedListNode */
+/*globals listNode */
 
 //////////////////////////////////////////////////////////////////////
 
@@ -23,7 +23,7 @@ var Word = (function () {
         this.orientation = orientation;
         this.score = score;
         this.index = 0;
-        this.listNode = new LinkedListNode(this);
+        this.listNode = listNode(this);
     };
 
     //////////////////////////////////////////////////////////////////////
@@ -35,13 +35,16 @@ var Word = (function () {
             if (this.score > b.score) {
                 return -1;
             }
+            if (this.score < b.score) {
+                return 1;
+            }
             if (this.str.length > b.str.length) {
                 return -1;
             }
-            if (this.str.localeCompare(b.str) < 0) {
-                return -1;
+            if (this.str.length < b.str.length) {
+                return 1;
             }
-            return 0;
+            return this.str.localeCompare(b.str);
         },
 
         toString: function () {

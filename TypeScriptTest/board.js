@@ -91,7 +91,7 @@ var Board = (function () {
 
             // nobble it until there are no words on it
             while (this.markAllWords() !== 0) {
-                this.getWordTile(words[0], 0).letter = this.randomLetter();
+                this.getWordTile(words.head(), 0).letter = this.randomLetter();
             }
         },
 
@@ -181,15 +181,17 @@ var Board = (function () {
                     snapY = Math.floor((tileY + Tile.height / 2) / Tile.height) * Tile.height;
                     if (Math.abs(tileX - snapX) < Tile.width / 6 && Math.abs(tileY - snapY) < Tile.height / 6) {
                         swapTile = this.tileFromScreenPos(snapX, snapY);
-                        swapLetter = swapTile.letter;
-                        swapTile.letter = activeTile.letter;
-                        activeTile.letter = swapLetter;
-                        swapTile.selected = true;
-                        swapTile.layer = 1;
-                        activeTile.reset();
-                        activeTile = swapTile;
-                        activeTile.setPosition(snapX, snapY);
-                        this.markAllWords();
+                        if (swapTile !== null) {
+                            swapLetter = swapTile.letter;
+                            swapTile.letter = activeTile.letter;
+                            activeTile.letter = swapLetter;
+                            swapTile.selected = true;
+                            swapTile.layer = 1;
+                            activeTile.reset();
+                            activeTile = swapTile;
+                            activeTile.setPosition(snapX, snapY);
+                            this.markAllWords();
+                        }
                     } else {
                         if (swapTile !== null) {
                             swapTile.reset();
@@ -291,8 +293,7 @@ var Board = (function () {
             var w,
                 i,
                 t,
-                j,
-                sortedWords;
+                j;
 
             words.clear();
             foundWords.clear();
@@ -308,13 +309,16 @@ var Board = (function () {
             this.markWordPass(Orientation.vertical, this.width, this.height, 0, 1);
 
             // sort by score, length, alphabet
-            sortedWords = foundWords.sort(function (a, b) {
+            foundWords.sort(function (a, b) {
                 return b.compare(a);
             });
 
             // find the best, non-overlapping ones, discard the others
-            while (!sortedWords.empty()) {
-                w = sortedWords.popFront();
+            while (true) {
+                w = foundWords.popFront();
+                if (w === null) {
+                    break;
+                }
                 for (i = 0; i < w.str.length; ++i) {
                     t = this.getWordTile(w, i);
                     if (t.vertical.word !== null && w.orientation === Orientation.vertical) {

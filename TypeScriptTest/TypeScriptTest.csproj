@@ -18,6 +18,7 @@
     <JSLintSkip>\dictionary.js</JSLintSkip>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="ajax.js" />
     <Content Include="app.css" />
     <Content Include="Arial.js" />
     <Content Include="board.js" />
@@ -74,7 +75,7 @@
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptTarget>ES3</TypeScriptTarget>
     <TypeScriptRemoveComments>false</TypeScriptRemoveComments>
     <TypeScriptSourceMap>true</TypeScriptSourceMap>
     <TypeScriptModuleKind>AMD</TypeScriptModuleKind>

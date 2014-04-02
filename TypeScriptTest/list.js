@@ -112,32 +112,29 @@ var LinkedList = (function () {
 
             leftRoot = listNode(null);
             rightRoot = listNode(null);
-            tail = list.prev;
-            head = list.next;
+
             midPrev = midPoint.prev;
             leftRoot.prev = midPrev;
-            leftRoot.next = head;
-            head.prev = leftRoot;
+            leftRoot.next = list.next;
+            list.next.prev = leftRoot;
+
             midPrev.next = leftRoot;
-            rightRoot.prev = tail;
+            rightRoot.prev = list.prev;
             rightRoot.next = midPoint;
             midPoint.prev = rightRoot;
-            tail.next = rightRoot;
+            list.prev.next = rightRoot;
 
             merge_sort(leftSize, leftRoot);
             merge_sort(rightSize, rightRoot);
 
             merge(rightRoot, leftRoot);
 
-            tail = leftRoot.prev;
-            head = leftRoot.next;
-            head.prev = list;
-            tail.next = list;
-            list.prev = tail;
-            list.next = head;
+            leftRoot.next.prev = list;
+            leftRoot.prev.next = list;
+            list.prev = leftRoot.prev;
+            list.next = leftRoot.next;
 
-        } else if (size === 2 &&
-            sortCallback.call(sortContext, list.prev.item, list.next.item) > 0) {
+        } else if (size === 2 && sortCallback.call(sortContext, list.prev.item, list.next.item) > 0) {
 
             head = list.next;
             tail = list.prev;

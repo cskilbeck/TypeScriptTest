@@ -111,7 +111,7 @@ var LinkedList = (function () {
                 midPoint = midPoint.next;
             }
 
-            leftRoot = listNode(null);
+            leftRoot = listNode(null);  // should be able to get rid of this by making the merge function work on 2 contiguous sections of a list
             rightRoot = listNode(null);
             tail = list.prev;
             head = list.next;

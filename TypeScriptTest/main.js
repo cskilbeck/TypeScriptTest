@@ -37,7 +37,7 @@ var Game = (function () {
                 context.fillRect(0, 0, 800, 600);
 
                 Debug.text(680, 10, "Frames: " + frames.toString());
-                Debug.text(680, 25, "FPS: " + (1000/deltaTime).toFixed(3));
+                Debug.text(680, 25, "Delta: " + deltaTime.toString());
                 Debug.text(680, 40, "X: " + Mouse.x.toString());
                 Debug.text(680, 55, "Y: " + Mouse.y.toString());
 

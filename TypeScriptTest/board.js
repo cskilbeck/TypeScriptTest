@@ -141,7 +141,9 @@ var Board = (function () {
                 snapY,
                 tileX,
                 tileY,
-                swapLetter;
+                swapLetter,
+                word,
+                y;
             if (Mouse.left.released) {
                 if (activeTile !== null) {
                     activeTile.reset();
@@ -194,6 +196,13 @@ var Board = (function () {
                         activeTile.setPosition(tileX, tileY);
                     }
                 }
+            }
+            y = 100;
+            Debug.text(680, y, "Score: " + this.score.toString());
+            y += 20;
+            for (word = words.headNode(); word.item != null; word = word.next) {
+                Debug.text(680, y, word.item.toString());
+                y += 15;
             }
         },
 

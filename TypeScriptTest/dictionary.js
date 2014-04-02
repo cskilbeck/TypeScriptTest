@@ -21908,6 +21908,7 @@
     "maddest": "(adj) Superlative of @mad@\n",
     "madding": "(v) Present tense of @mad@\n",
     "maddish": "(adj) Somewhat @mad@\n",
+    "made": "(v) Past tense of @make@\n",
     "madly": "(adv) In a @mad@ @manner@; without @reason@ or understanding; @wildly@.\n",
     "madman": "(n) A male who is @insane@ or mentally disturbed.\n",
     "madmen": "(n) Plural of @madman@\n",

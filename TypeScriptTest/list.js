@@ -136,7 +136,8 @@ var LinkedList = (function () {
             list.prev = tail;
             list.next = head;
 
-        } else if (size === 2 && sortCallback.call(sortContext, list.prev.item, list.next.item) > 0) {
+        } else if (size === 2 &&
+            sortCallback.call(sortContext, list.prev.item, list.next.item) > 0) {
 
             head = list.next;
             tail = list.prev;

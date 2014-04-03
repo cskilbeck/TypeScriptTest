@@ -157,7 +157,7 @@ var LinkedList = (function () {
             merge_sort(this.size, this.root);
         },
 
-        isEmpty: function () {
+        empty: function () {
             return this.size === 0;
         },
 
@@ -230,7 +230,7 @@ var LinkedList = (function () {
         },
 
         popFront: function () {
-            if (!this.isEmpty()) {
+            if (!this.empty()) {
                 var node = this.root.next;
                 node.prev.next = node.next;
                 node.next.prev = node.prev;
@@ -241,7 +241,7 @@ var LinkedList = (function () {
         },
 
         popBack: function () {
-            if (!this.isEmpty()) {
+            if (!this.empty()) {
                 var node = this.root.prev;
                 node.prev.next = node.next;
                 node.next.prev = node.prev;

@@ -150,9 +150,9 @@ var Mouse = (function () {
                 released: false,
                 prev: false
             },
-            init: function (canvasName, screenDivName) {
-                canvas = document.getElementById(canvasName);
-                screen = document.getElementById(screenDivName);
+            init: function (canvasElement, screenElement) {
+                canvas = canvasElement;
+                screen = screenElement;
                 setMouseCapture(screen, canvas, Mouse);
             },
             update: function () {

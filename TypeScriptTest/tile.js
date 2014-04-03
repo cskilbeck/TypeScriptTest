@@ -26,8 +26,12 @@ var Tile = (function () {
                 x: this.pos.x,
                 y: this.pos.y
             };
-
-            // a tile can be part of a horizontal and/or vertical word
+            this.target = {
+                x: this.pos.x,
+                y: this.pos.y
+            };
+            this.targetTime = 0;
+            this.startTime = 0;
             this.horizontal = {
                 word: null,
                 index: 0,
@@ -93,6 +97,29 @@ var Tile = (function () {
         resetPosition: function () {
             this.pos.x = this.org.x;
             this.pos.y = this.org.y;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        setTarget: function (x, y, duration) {
+            this.target.x = x;
+            this.target.y = y;
+            this.startTime = Game.currentTime();
+            this.targetTime = this.startTime + duration;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        update: function () {
+            var d,
+                now = Game.currentTime();
+            if (this.targetTime !== 0 && this.targetTime < now) {
+                d = this.targetTime - this.startTime;
+                this.setPosition(lerp(this.origin, this.target, (this.targetTime - now)) / d);
+                Debug.text(this.pos.x, this.pos.y, this.targetTime);
+            } else {
+                this.setPosition(this.target.x, this.target.y);
+            }
         },
 
         //////////////////////////////////////////////////////////////////////

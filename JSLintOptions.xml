@@ -205,7 +205,7 @@
           <string>forin.</string>
         </key>
         <value>
-          <boolean>false</boolean>
+          <boolean>true</boolean>
         </value>
       </item>
       <item>
@@ -688,7 +688,7 @@
     <MaxDepth xsi:nil="true" />
     <MaxStatements xsi:nil="true" />
     <MaxParams xsi:nil="true" />
-    <SelectedLinter>JSHint</SelectedLinter>
+    <SelectedLinter>JSLint</SelectedLinter>
     <FindTodos>false</FindTodos>
     <PreDefined>
       <string>console</string>
@@ -716,6 +716,9 @@
       <string>requestAnimFrame</string>
       <string>Board</string>
       <string>XMLHttpRequest</string>
+      <string>Game</string>
+      <string>lerp</string>
+      <string>ease</string>
     </PreDefined>
   </JSLintOptions>
   <BuildFileTypes>JS</BuildFileTypes>

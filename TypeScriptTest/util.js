@@ -42,19 +42,14 @@ function ease(x) {
 
 //////////////////////////////////////////////////////////////////////
 
-function lerp(start, end, duration, time) {
+function lerp(start, end, s) {
     "use strict";
 
-    var s = time / duration,
-        xd = end.x - start.x,
+    var xd = end.x - start.x,
         yd = end.y - start.y,
-        xn = xd * s,
-        yn = yd * s,
-        e = ease(s),
-        x = start.x + xn * e,
-        y = start.y + yn * e;
+        e = ease(s);
     return {
-        x: x,
-        y: y
+        x: start.x + xd * e,
+        y: start.y + yd * e
     };
 }

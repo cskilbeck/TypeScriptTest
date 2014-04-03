@@ -27,22 +27,6 @@ var Word = (function () {
 
     Word.prototype = {
 
-        compare: function (b) {
-            if (this.score > b.score) {
-                return -1;
-            }
-            if (this.score < b.score) {
-                return 1;
-            }
-            if (this.str.length > b.str.length) {
-                return -1;
-            }
-            if (this.str.length < b.str.length) {
-                return 1;
-            }
-            return this.str.localeCompare(b.str);
-        },
-
         toString: function () {
             return this.str + "(" + this.score.toString() + ")";
         }

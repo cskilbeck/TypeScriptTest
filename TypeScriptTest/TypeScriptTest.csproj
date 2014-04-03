@@ -23,6 +23,7 @@
     <Content Include="Arial.js" />
     <Content Include="board.js" />
     <Content Include="debug.js" />
+    <Content Include="facebook.js" />
     <Content Include="Fixedsys.js" />
     <Content Include="game.js" />
     <Content Include="img\allColour.png" />

@@ -244,12 +244,10 @@ var Board = (function () {
                             }
                             newSwapTile.swap(activeTile);
                             activeTile.reset();
-
                             if (swapTile !== newSwapTile) {
                                 activeTile.swap(swapTile);
                                 swapTile.swapped = true;
                             }
-
                             activeTile = newSwapTile;
                             activeTile.setPosition(snapX, snapY);
                             this.markAllWords();
@@ -270,12 +268,6 @@ var Board = (function () {
                 Debug.text(680, y, w.toString());
                 y += 15;
             });
-            if (swapTile !== null) {
-                Debug.text(swapTile.pos.x + 10, swapTile.pos.y + 20, "S");
-            }
-            if (activeTile !== null) {
-                Debug.text(activeTile.pos.x, activeTile.pos.y, "A");
-            }
         },
 
         //////////////////////////////////////////////////////////////////////

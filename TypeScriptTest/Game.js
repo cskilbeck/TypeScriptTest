@@ -1,4 +1,12 @@
 ﻿//////////////////////////////////////////////////////////////////////
+// Fix tile grabbing/moving
+// Tile lerping
+// Undo/Redo
+// Scoreboard
+// Flying scores
+// Title screen
+// Leaderboard
+// Facebook OAuth
 
 var Game = (function () {
     "use strict";

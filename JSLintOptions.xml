@@ -721,6 +721,7 @@
       <string>ease</string>
       <string>Sprite</string>
       <string>constrain</string>
+      <string>FB</string>
     </PreDefined>
   </JSLintOptions>
   <BuildFileTypes>JS HTML</BuildFileTypes>

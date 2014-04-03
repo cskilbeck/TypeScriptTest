@@ -15006,7 +15006,7 @@
     "gentes": "(n) Plural of @gens@\n",
     "gentian": "(n) Any of various @herb@s of the family Gentianaceae found in temperate and mountainous regions with violet or blue flowers.\n",
     "gentile": "(n) A non-Jewish @person@.\n(adj) non-Jewish\n",
-    "gentle": "(v) to become gentle  (rfex)\n(adj) tender and @amiable@; of a considerate or @kindly@ disposition\n",
+    "gentle": "(v) to become gentle\n(adj) tender and @amiable@; of a considerate or @kindly@ disposition\n",
     "gentled": "(v) Past tense of @gentle@\n",
     "gentler": "(adj) Comparative of @gentle@\n",
     "gentles": "(v) 3rd person singular of @gentle@\n",

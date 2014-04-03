@@ -11,6 +11,7 @@ var Tile = (function () {
         End = 3,
         font = new Font(Arial),
         tiles = ImageLoader.load("allColour"),
+        tileSprite = new Sprite(tiles),
 
     //////////////////////////////////////////////////////////////////////
 
@@ -44,6 +45,17 @@ var Tile = (function () {
                 position: 0
             };
         };
+
+    //////////////////////////////////////////////////////////////////////
+    // static init
+
+    Tile.width = 96;
+    Tile.height = 96;
+
+    tileSprite.framesWide = 5;
+    tileSprite.framesHigh = 5;
+    tileSprite.frameWidth = Tile.width;
+    tileSprite.frameHeight = Tile.height;
 
     //////////////////////////////////////////////////////////////////////
 
@@ -132,21 +144,30 @@ var Tile = (function () {
             this.layer = 0;
         },
 
-
         //////////////////////////////////////////////////////////////////////
         // draw tile background
 
         drawTile: function (context) {
-            var sx = this.horizontal.position * Tile.width,
-                sy = this.vertical.position * Tile.height;
+            var sx = this.horizontal.position,
+                sy = this.vertical.position;
             if (this.horizontal.word === null && this.vertical.word === null) {
-                sy = 384;
+                sy = 4;
             }
             if (this.selected) {
-                sx = 384;
+                sx = 4;
                 sy = 0;
             }
-            context.drawImage(tiles, sx, sy, Tile.width, Tile.height, this.pos.x, this.pos.y, Tile.width, Tile.height);
+            tileSprite.setFrameXY(sx, sy);
+            if (this.selected) {
+                tileSprite.scaleX = 1.2;
+                tileSprite.scaleY = 1.2;
+            } else {
+                tileSprite.scaleX = 1;
+                tileSprite.scaleY = 1;
+            }
+            tileSprite.x = this.pos.x + Tile.width / 2;
+            tileSprite.y = this.pos.y + Tile.height / 2;
+            tileSprite.drawSafe(context);
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -174,9 +195,6 @@ var Tile = (function () {
 
     //////////////////////////////////////////////////////////////////////
     // static const
-
-    Tile.width = 96;
-    Tile.height = 96;
 
     return Tile;
 

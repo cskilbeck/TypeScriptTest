@@ -719,6 +719,7 @@
       <string>Game</string>
       <string>lerp</string>
       <string>ease</string>
+      <string>Sprite</string>
     </PreDefined>
   </JSLintOptions>
   <BuildFileTypes>JS</BuildFileTypes>

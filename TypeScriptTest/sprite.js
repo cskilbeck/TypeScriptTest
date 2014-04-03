@@ -87,6 +87,8 @@ var Sprite = (function () {
         this.frameWidth = 0;
         this.frameHeight = 0;
         this.frame = 0;
+        this.frameX = 0;
+        this.frameY = 0;
         this.flipX = false;
         this.flipY = false;
         this[listNodeName || 'spriteListNode'] = listNode(this);
@@ -116,11 +118,22 @@ var Sprite = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
+        setFrameXY: function (x, y) {
+            this.frameX = x * this.frameWidth;
+            this.frameY = y * this.frameHeight;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        setFrame: function (frame) {
+            this.setFrameXY((frame % this.framesWide) >>> 0, (frame / this.framesWide) >>> 0);
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
         draw: function (context) {
-            var fw,
-                fh,
-                frameX,
-                frameY,
+            var fw = this.frameWidth === 0 ? this.width : this.frameWidth,
+                fh = this.frameHeight === 0 ? this.height : this.frameHeight,
                 xtweak,
                 ytweak;
             if (this.loaded() && this.visible) {
@@ -128,10 +141,6 @@ var Sprite = (function () {
                 context.translate(this.x, this.y);
                 context.rotate(this.rotation);
                 context.scale(this.scaleX * (this.flipX ? -1 : 1), this.scaleY * (this.flipY ? -1 : 1));
-                fw = this.frameWidth === 0 ? this.width() : this.frameWidth;
-                fh = this.frameHeight === 0 ? this.height() : this.frameHeight;
-                frameX = ((this.frame % this.framesWide) >>> 0) * fw;
-                frameY = ((this.frame / this.framesWide) >>> 0) * fh;
                 context.globalAlpha = this.transparency / 255;
                 xtweak = 0;
                 ytweak = 0;
@@ -141,10 +150,8 @@ var Sprite = (function () {
                 if (this.scaleY > 1) {
                     ytweak = 0.5 - (0.5 / this.scaleY);
                 }
-                frameX += xtweak;
-                frameY += ytweak;
                 context.drawImage(this.image,
-                    frameX, frameY,
+                    this.frameX + xtweak, this.frameY + ytweak,
                     fw - xtweak * 2, fh - ytweak * 2,
                     -this.pivotX * fw, -this.pivotY * fh,
                     fw, fh);

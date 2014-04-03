@@ -230,10 +230,12 @@ var Board = (function () {
                             swapLetter = swapTile.letter;
                             swapTile.letter = activeTile.letter;
                             activeTile.letter = swapLetter;
-                            activeTile.resetPosition();
+                            activeTile.reset();
                             activeTile = swapTile;
                             activeTile.setPosition(snapX, snapY);
                             this.markAllWords();
+                            activeTile.selected = true;
+                            activeTile.layer = 1;
                         }
                     } else {
                         if (swapTile !== null) {
@@ -244,9 +246,9 @@ var Board = (function () {
                     }
                 }
             }
-            for (i = 0; i < Board.tiles.length; ++i) {
-                //Board.tiles[i].update();
-            }
+            //for (i = 0; i < Board.tiles.length; ++i) {
+            //    Board.tiles[i].update();
+            //}
             y = 20;
             Debug.text(680, y, "Score: " + Board.score.toString());
             y += 20;

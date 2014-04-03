@@ -1,13 +1,5 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-function InvalidListNodeNameException() {
-    "use strict";
-
-    return "InvalidListNodeNameException";
-}
-
-//////////////////////////////////////////////////////////////////////
-
 function listNode(obj) {
     "use strict";
 
@@ -20,11 +12,11 @@ function listNode(obj) {
 
 //////////////////////////////////////////////////////////////////////
 
-function listNodeSet(obj, n, p) {
+function makeListNode(n, p) {
     "use strict";
 
     var r = {
-        item: obj,
+        item: null,
         next: n,
         prev: p
     };
@@ -39,9 +31,6 @@ var LinkedList = (function () {
     "use strict";
 
     var LinkedList = function (nodeName) {
-        if (typeof nodeName !== 'string') {
-            throw new InvalidListNodeNameException();
-        }
         this.nodeName = nodeName;
         this.root = listNode(null);
         this.root.next = this.root;
@@ -63,8 +52,8 @@ var LinkedList = (function () {
             head,
             tail,
             insertPoint,
-            runHead,
-            runStart,
+            runBegin,
+            runEnd,
             i;
 
         if (size > 2) {
@@ -77,37 +66,37 @@ var LinkedList = (function () {
                 midPoint = midPoint.next;
             }
 
-            left = listNodeSet(null, list.next, midPoint.prev);
-            right = listNodeSet(null, midPoint, list.prev);
+            left = makeListNode(list.next, midPoint.prev);
+            right = makeListNode(midPoint, list.prev);
 
             merge_sort(leftSize, left);
             merge_sort(rightSize, right);
 
             insertPoint = right;
-            runHead = left.next;
+            runEnd = left.next;
 
-            while (runHead !== left) {
+            while (runEnd !== left) {
 
                 do {
                     insertPoint = insertPoint.next;
-                } while (insertPoint !== right && sortCallback.call(sortContext, insertPoint.item, runHead.item) > 0);
+                } while (insertPoint !== right && sortCallback.call(sortContext, insertPoint.item, runEnd.item) > 0);
 
                 if (insertPoint !== right) {
 
-                    runStart = runHead;
+                    runBegin = runEnd;
                     do {
-                        runHead = runHead.next;
-                    } while (runHead !== left && sortCallback.call(sortContext, runHead.item, insertPoint.item) > 0);
+                        runEnd = runEnd.next;
+                    } while (runEnd !== left && sortCallback.call(sortContext, runEnd.item, insertPoint.item) > 0);
 
-                    runStart.prev = insertPoint.prev;
-                    insertPoint.prev.next = runStart;
-                    insertPoint.prev = runHead.prev;
-                    runHead.prev.next = insertPoint;
+                    runBegin.prev = insertPoint.prev;
+                    insertPoint.prev.next = runBegin;
+                    insertPoint.prev = runEnd.prev;
+                    runEnd.prev.next = insertPoint;
 
                 } else {
 
-                    runHead.prev = right.prev;
-                    right.prev.next = runHead;
+                    runEnd.prev = right.prev;
+                    right.prev.next = runEnd;
                     right.prev = left.prev;
                     left.prev.next = right;
                     break;

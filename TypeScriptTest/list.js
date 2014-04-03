@@ -20,6 +20,21 @@ function listNode(obj) {
 
 //////////////////////////////////////////////////////////////////////
 
+function listNodeSet(obj, n, p) {
+    "use strict";
+
+    var r = {
+        item: obj,
+        next: n,
+        prev: p
+    };
+    n.prev = r;
+    p.next = r;
+    return r;
+}
+
+//////////////////////////////////////////////////////////////////////
+
 var LinkedList = (function () {
     "use strict";
 
@@ -38,66 +53,18 @@ var LinkedList = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    function merge(left, right) {
-
-        var insertPoint = right,
-            runHead = left.next,
-            leftEnd = left,
-            rightEnd = right,
-            runStart,
-            runEnd,
-            prev,
-            otherTail,
-            rightRoot,
-            myTail;
-
-        while (runHead !== leftEnd) {
-
-            do {
-                insertPoint = insertPoint.next;
-            } while (insertPoint !== rightEnd && sortCallback.call(sortContext, insertPoint.item, runHead.item) > 0);
-
-            if (insertPoint !== rightEnd) {
-
-                runStart = runHead;
-
-                do {
-                    runEnd = runHead;
-                    runHead = runHead.next;
-                } while (runHead !== leftEnd && sortCallback.call(sortContext, runHead.item, insertPoint.item) > 0);
-
-                prev = insertPoint.prev;
-                runStart.prev = prev;
-                prev.next = runStart;
-                insertPoint.prev = runEnd;
-                runEnd.next = insertPoint;
-
-            } else {
-
-                otherTail = left.prev;
-                rightRoot = right;
-                myTail = right.prev;
-                runHead.prev = myTail;
-                myTail.next = runHead;
-                rightRoot.prev = otherTail;
-                otherTail.next = rightRoot;
-                break;
-            }
-        }
-    }
-
-    //////////////////////////////////////////////////////////////////////
-
     function merge_sort(size, list) {
 
         var leftSize,
             rightSize,
             midPoint,
-            leftRoot,
-            rightRoot,
-            tail,
+            left,
+            right,
             head,
-            midPrev,
+            tail,
+            insertPoint,
+            runHead,
+            runStart,
             i;
 
         if (size > 2) {
@@ -110,29 +77,47 @@ var LinkedList = (function () {
                 midPoint = midPoint.next;
             }
 
-            leftRoot = listNode(null);
-            rightRoot = listNode(null);
+            left = listNodeSet(null, list.next, midPoint.prev);
+            right = listNodeSet(null, midPoint, list.prev);
 
-            midPrev = midPoint.prev;
-            leftRoot.prev = midPrev;
-            leftRoot.next = list.next;
-            list.next.prev = leftRoot;
+            merge_sort(leftSize, left);
+            merge_sort(rightSize, right);
 
-            midPrev.next = leftRoot;
-            rightRoot.prev = list.prev;
-            rightRoot.next = midPoint;
-            midPoint.prev = rightRoot;
-            list.prev.next = rightRoot;
+            insertPoint = right;
+            runHead = left.next;
 
-            merge_sort(leftSize, leftRoot);
-            merge_sort(rightSize, rightRoot);
+            while (runHead !== left) {
 
-            merge(rightRoot, leftRoot);
+                do {
+                    insertPoint = insertPoint.next;
+                } while (insertPoint !== right && sortCallback.call(sortContext, insertPoint.item, runHead.item) > 0);
 
-            leftRoot.next.prev = list;
-            leftRoot.prev.next = list;
-            list.prev = leftRoot.prev;
-            list.next = leftRoot.next;
+                if (insertPoint !== right) {
+
+                    runStart = runHead;
+                    do {
+                        runHead = runHead.next;
+                    } while (runHead !== left && sortCallback.call(sortContext, runHead.item, insertPoint.item) > 0);
+
+                    runStart.prev = insertPoint.prev;
+                    insertPoint.prev.next = runStart;
+                    insertPoint.prev = runHead.prev;
+                    runHead.prev.next = insertPoint;
+
+                } else {
+
+                    runHead.prev = right.prev;
+                    right.prev.next = runHead;
+                    right.prev = left.prev;
+                    left.prev.next = right;
+                    break;
+                }
+            }
+
+            right.next.prev = list;
+            right.prev.next = list;
+            list.prev = right.prev;
+            list.next = right.next;
 
         } else if (size === 2 && sortCallback.call(sortContext, list.prev.item, list.next.item) > 0) {
 

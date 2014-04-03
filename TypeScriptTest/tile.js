@@ -15,6 +15,7 @@ var Tile = (function () {
     //////////////////////////////////////////////////////////////////////
 
         Tile = function (letter, x, y) {
+            this.listNode = listNode(this);
             this.letter = letter;
             this.layer = 0;
             this.selected = false;

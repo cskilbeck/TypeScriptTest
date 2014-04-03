@@ -20,6 +20,7 @@ var Tile = (function () {
             this.letter = letter;
             this.layer = 0;
             this.selected = false;
+            this.swapped = false;
             this.pos = {
                 x: x * Tile.width,
                 y: y * Tile.height
@@ -141,7 +142,16 @@ var Tile = (function () {
         reset: function () {
             this.resetPosition();
             this.selected = false;
+            this.swapped = false;
             this.layer = 0;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        swap: function (b) {
+            var t = b.letter;
+            b.letter = this.letter;
+            this.letter = t;
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -156,6 +166,10 @@ var Tile = (function () {
             if (this.selected) {
                 sx = 4;
                 sy = 0;
+            }
+            if (this.swapped) {
+                sx = 4;
+                sy = 2;
             }
             tileSprite.setFrameXY(sx, sy);
             if (this.selected) {

@@ -43,6 +43,8 @@ var Game = (function () {
                 board.update(deltaTime);
                 board.draw(context);
 
+                Debug.draw();
+
                 frames += 1;
                 requestAnimFrame(Game.run);
             },

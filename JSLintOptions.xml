@@ -720,9 +720,10 @@
       <string>lerp</string>
       <string>ease</string>
       <string>Sprite</string>
+      <string>constrain</string>
     </PreDefined>
   </JSLintOptions>
-  <BuildFileTypes>JS</BuildFileTypes>
+  <BuildFileTypes>JS HTML</BuildFileTypes>
   <SaveFileTypes>JS</SaveFileTypes>
   <FakeCSSCharset>false</FakeCSSCharset>
   <IgnoreErrorStart>/*ignore jslint start*/</IgnoreErrorStart>

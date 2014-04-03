@@ -53,3 +53,15 @@ function lerp(start, end, s) {
         y: start.y + yd * e
     };
 }
+
+//////////////////////////////////////////////////////////////////////
+
+function constrain(x, min, max) {
+    if (x < min) {
+        x = min;
+    }
+    if (x > max) {
+        x = max;
+    }
+    return x;
+}

@@ -56,6 +56,17 @@ var Board = (function () {
         };
 
     //////////////////////////////////////////////////////////////////////
+    // public static
+
+    Board.width = 7;
+    Board.height = 5;
+    Board.score = 0;
+    Board.tiles = [];
+    Board.tiles.length = Board.width * Board.height;
+    Board.pixelWidth = (Board.width - 1) * Tile.width;
+    Board.pixelHeight = (Board.height - 1) * Tile.height;
+
+    //////////////////////////////////////////////////////////////////////
     // private functions
 
     //////////////////////////////////////////////////////////////////////
@@ -189,9 +200,9 @@ var Board = (function () {
                 snapY,
                 tileX,
                 tileY,
-                swapLetter,
-                y,
-                i;
+                //swapLetter,
+                newSwapTile,
+                y;
             if (Mouse.left.released) {
                 if (activeTile !== null) {
                     activeTile.reset();
@@ -220,35 +231,38 @@ var Board = (function () {
                 if (Mouse.left.held && activeTile !== null) {
                     activeTile.selected = true;
                     activeTile.layer = 1;
-                    tileX = Mouse.x - offsetX;
-                    tileY = Mouse.y - offsetY;
+                    tileX = constrain(Mouse.x - offsetX, 0, Board.pixelWidth);
+                    tileY = constrain(Mouse.y - offsetY, 0, Board.pixelHeight);
                     snapX = Math.floor((tileX + Tile.width / 2) / Tile.width) * Tile.width;
                     snapY = Math.floor((tileY + Tile.height / 2) / Tile.height) * Tile.height;
-                    if (Math.abs(tileX - snapX) < Tile.width / 6 && Math.abs(tileY - snapY) < Tile.height / 6) {
-                        swapTile = this.tileFromScreenPos(snapX, snapY);
-                        if (swapTile !== null) {
-                            swapLetter = swapTile.letter;
-                            swapTile.letter = activeTile.letter;
-                            activeTile.letter = swapLetter;
+                    if (Math.abs(tileX - snapX) < Tile.width / 3 && Math.abs(tileY - snapY) < Tile.height / 3) {
+                        newSwapTile = this.tileFromScreenPos(snapX, snapY);
+                        if (newSwapTile !== null && newSwapTile !== activeTile) {
+                            if (swapTile === null && swapTile !== activeTile) {
+                                swapTile = activeTile;
+                                swapTile.swapped = true;
+                            }
+                            newSwapTile.swap(activeTile);
                             activeTile.reset();
-                            activeTile = swapTile;
+
+                            if (swapTile !== newSwapTile) {
+                                activeTile.swap(swapTile);
+                                swapTile.swapped = true;
+                            }
+
+                            activeTile = newSwapTile;
                             activeTile.setPosition(snapX, snapY);
                             this.markAllWords();
                             activeTile.selected = true;
                             activeTile.layer = 1;
+                        } else {
+                            activeTile.setPosition(snapX, snapY);
                         }
                     } else {
-                        if (swapTile !== null) {
-                            swapTile.reset();
-                        }
-                        swapTile = null;
                         activeTile.setPosition(tileX, tileY);
                     }
                 }
             }
-            //for (i = 0; i < Board.tiles.length; ++i) {
-            //    Board.tiles[i].update();
-            //}
             y = 20;
             Debug.text(680, y, "Score: " + Board.score.toString());
             y += 20;
@@ -256,6 +270,12 @@ var Board = (function () {
                 Debug.text(680, y, w.toString());
                 y += 15;
             });
+            if (swapTile !== null) {
+                Debug.text(swapTile.pos.x + 10, swapTile.pos.y + 20, "S");
+            }
+            if (activeTile !== null) {
+                Debug.text(activeTile.pos.x, activeTile.pos.y, "A");
+            }
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -362,15 +382,6 @@ var Board = (function () {
         }
 
     };
-
-    //////////////////////////////////////////////////////////////////////
-    // public static
-
-    Board.width = 7;
-    Board.height = 5;
-    Board.score = 0;
-    Board.tiles = [];
-    Board.tiles.length = Board.width * Board.height;
 
     //////////////////////////////////////////////////////////////////////
 

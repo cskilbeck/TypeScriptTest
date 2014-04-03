@@ -63,6 +63,11 @@ var Mouse = (function () {
             element.setCapture();
         }
 
+        document.oncontextmenu = function (e) {
+            e.cancelBubble = true;
+            return false;
+        };
+
         addListener(element, "mousedown", function (event) {
             if (element.setCapture) {
                 element.setCapture();
@@ -74,6 +79,7 @@ var Mouse = (function () {
             if (event.which === 3) {
                 pub.right.held = true;
             }
+            return false;
         });
 
         addListener(element, "losecapture", function () {

@@ -58,7 +58,7 @@ var Matrix = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        transformArray: function (p) {
+        transform: function (p) {
             var i;
             for (i = 0; i < p.length; ++i) {
                 p[i] = this.apply(p[i]);

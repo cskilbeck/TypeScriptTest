@@ -7,7 +7,7 @@ var Sprite = (function () {
         this.position = { x: 0, y: 0 };
         this.scale = { x: 0, y: 0 };
         this.pivot = { x: 0.5, y: 0.5 };
-        this.flip = { x: false, y: false };
+        this.flip = { horizontal: false, vertical: false };
         this.UV = { x: 0, y: 0 };
         this.rotation = 0.0;
         this.visible = true;
@@ -21,6 +21,7 @@ var Sprite = (function () {
         this.zIndex = 0;
         this.loaded = false;
         this[listNodeName || 'spriteListNode'] = listNode(this);
+
         graphic.addEventListener("load", function () {
             this.width = graphic.width;
             this.height = graphic.height;
@@ -28,6 +29,7 @@ var Sprite = (function () {
             this.frameHeight = this.frameHeight || this.height;
             this.loaded = true;
         }.bind(this), false);
+
         if (graphic.complete) {
             this.width = graphic.width;
             this.height = graphic.height;
@@ -42,8 +44,8 @@ var Sprite = (function () {
 
     function getScale(s) {
         return {
-            x: s.scale.x * (s.flip.x ? -1 : 1),
-            y: s.scale.y * (s.flip.y ? -1 : 1)
+            x: s.scale.x * (s.flip.horizontal ? -1 : 1),
+            y: s.scale.y * (s.flip.vertical ? -1 : 1)
         };
     }
 
@@ -101,26 +103,31 @@ var Sprite = (function () {
         },
 
         //////////////////////////////////////////////////////////////////////
-        // sigh - emulate context transform
 
         pick: function (p, border) {
-            var b = border || 0,
-                matrix,
-                left,
+            var left,
                 right,
                 top,
                 bottom;
             if (this.loaded && this.visible) {
-                matrix = new Matrix().translate(this.position).rotate(this.rotation).scale(getScale(this));
                 left = -this.pivot.x * this.frameWidth;
                 top = -this.pivot.y * this.frameHeight;
                 right = left + this.frameWidth;
                 bottom = top + this.frameHeight;
-                return Util.pointInQuad(matrix.transformArray([
-                    { x: left, y: top },
-                    { x: right, y: top },
-                    { x: right, y: bottom },
-                    { x: left, y: bottom } ]), p, border);
+                return Util.pointInConvexPoly(
+                    new Matrix().
+                        translate(this.position).
+                        rotate(this.rotation).
+                        scale(this.scale).
+                        transform([
+                            { x: left, y: top },
+                            { x: right, y: top },
+                            { x: right, y: bottom },
+                            { x: left, y: bottom }
+                        ]),
+                    p,
+                    border
+                );
             }
             return false;
         },

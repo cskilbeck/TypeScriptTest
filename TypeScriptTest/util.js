@@ -62,12 +62,12 @@ var Util = (function () {
         //////////////////////////////////////////////////////////////////////
         // assumes a certain winding order...
 
-        pointInQuad: function (points, p, border) {
+        pointInConvexPoly: function (points, p, border) {
 
             var i,
                 b = border || 0;
 
-            for (i = 0; i < 4; ++i) {
+            for (i = 0; i < points.length; ++i) {
                 if (Util.crossProduct(points[i], points[(i + 1) % 4], p) < b) {
                     return false;
                 }

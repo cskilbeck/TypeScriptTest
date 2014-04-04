@@ -7,6 +7,8 @@
 // Title screen
 // Leaderboard
 // Facebook OAuth
+// Button
+// TextBox
 
 var Game = (function () {
     "use strict";
@@ -17,38 +19,54 @@ var Game = (function () {
         screen,
         canvas,
         context,
+        buttons,
 
         Game = {
 
-            init: function (canvasName, screenDivName) {
-                screen = document.getElementById(screenDivName);
-                canvas = document.getElementById(canvasName);
+            onUndo: function () {
+                console.log("Undo!");
+            },
+
+            onRedo: function () {
+                console.log("Redo!");
+            },
+
+            cls: function () {
+                context.setTransform(1, 0, 0, 1, 0, 0);
+                context.globalCompositeOperation = 'source-over';
+                context.globalAlpha = 1;
+                context.fillStyle = 'rgb(64, 128, 64)';
+                context.fillRect(0, 0, 800, 600);
+            },
+
+            init: function (canvasElement, screenDivElement) {
+                screen = screenDivElement;
+                canvas = canvasElement;
                 context = canvas.getContext('2d');
                 Debug.context = context;
                 Mouse.init(canvas, screen);
                 Keyboard.init();
                 board = new Board();
                 board.randomize(1);
+                buttons = new ButtonList();
+                buttons.add(new Button(ImageLoader.load("undo"), 710, 200, Game.onUndo));
+                buttons.add(new Button(ImageLoader.load("redo"), 760, 200, Game.onRedo));
             },
 
             run: function () {
 
                 var now = window.performance.now(),
                     deltaTime = now - currentTime;
-
                 currentTime = now;
 
                 Keyboard.update();
                 Mouse.update();
-
-                context.globalCompositeOperation = 'source-over';
-                context.globalAlpha = 1;
-                context.fillStyle = 'rgb(64, 128, 64)';
-                context.fillRect(0, 0, 800, 600);
-
-                Debug.text(10, 490, Game.currentTime().toFixed(0));
-
                 board.update(deltaTime);
+                buttons.update();
+
+                Game.cls();
+
+                buttons.draw(context);
                 board.draw(context);
 
                 Debug.draw();

@@ -1,73 +1,5 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-function SpriteList(listNodeName) {
-    "use strict";
-
-    LinkedList.call(this, listNodeName || 'spriteListNode');
-}
-
-//////////////////////////////////////////////////////////////////////
-
-SpriteList.prototype = Object.create(LinkedList.prototype);
-
-//////////////////////////////////////////////////////////////////////
-
-SpriteList.prototype.draw = function (context) {
-    "use strict";
-
-    context.save();
-    this.reverseForEach(function (s) {
-        s.draw();
-    });
-    context.restore();
-};
-
-//////////////////////////////////////////////////////////////////////
-
-SpriteList.prototype.isLoaded = function () {
-    "use strict";
-
-    return this.reverseForEach(function (s) {
-        return s.loaded();
-    });
-};
-
-//////////////////////////////////////////////////////////////////////
-
-SpriteList.prototype.add = LinkedList.prototype.pushFront;
-SpriteList.prototype.addToBack = LinkedList.prototype.pushBack;
-
-//////////////////////////////////////////////////////////////////////
-
-var ImageLoader = (function () {
-    "use strict";
-
-    var images = {};
-
-    return {
-
-        get: function (name) {
-            return images[name];
-        },
-
-        load: function (name) {
-            var image;
-            if (name !== undefined) {
-                if (images.hasOwnProperty(name)) {
-                    return images[name];
-                }
-                image = new Image();
-                images[name] = image;
-                image.src = 'img/' + name + '.png';
-                return image;
-            }
-            return null;
-        }
-    };
-}());
-
-//////////////////////////////////////////////////////////////////////
-
 var Sprite = (function () {
     "use strict";
 
@@ -91,8 +23,28 @@ var Sprite = (function () {
         this.frameY = 0;
         this.flipX = false;
         this.flipY = false;
+        this.zIndex = 0;
         this[listNodeName || 'spriteListNode'] = listNode(this);
     };
+
+    //////////////////////////////////////////////////////////////////////
+    // private static
+
+    function getScale(s) {
+        return {
+            x: s.scaleX * (s.flipX ? -1 : 1),
+            y: s.scaleY * (s.flipY ? -1 : 1)
+        };
+    }
+
+    //////////////////////////////////////////////////////////////////////
+
+    function getFrame(s) {
+        return {
+            w: s.frameWidth === 0 ? s.width() : s.frameWidth,
+            h: s.frameHeight === 0 ? s.height() : s.frameHeight
+        };
+    }
 
     //////////////////////////////////////////////////////////////////////
 
@@ -132,15 +84,17 @@ var Sprite = (function () {
         //////////////////////////////////////////////////////////////////////
 
         draw: function (context) {
-            var fw = this.frameWidth === 0 ? this.width : this.frameWidth,
-                fh = this.frameHeight === 0 ? this.height : this.frameHeight,
+            var frame,
                 xtweak,
-                ytweak;
+                ytweak,
+                scale;
             if (this.loaded() && this.visible) {
+                frame = getFrame(this);
+                scale = getScale(this);
                 context.setTransform(1, 0, 0, 1, 0, 0);
                 context.translate(this.x, this.y);
                 context.rotate(this.rotation);
-                context.scale(this.scaleX * (this.flipX ? -1 : 1), this.scaleY * (this.flipY ? -1 : 1));
+                context.scale(scale.x, scale.y);
                 context.globalAlpha = this.transparency / 255;
                 xtweak = 0;
                 ytweak = 0;
@@ -152,10 +106,47 @@ var Sprite = (function () {
                 }
                 context.drawImage(this.image,
                     this.frameX + xtweak, this.frameY + ytweak,
-                    fw - xtweak * 2, fh - ytweak * 2,
-                    -this.pivotX * fw, -this.pivotY * fh,
-                    fw, fh);
+                    frame.w - xtweak * 2, frame.h - ytweak * 2,
+                    -this.pivotX * frame.w, -this.pivotY * frame.h,
+                    frame.w, frame.h);
             }
+        },
+
+        //////////////////////////////////////////////////////////////////////
+        // sigh - emulate context transform
+
+        pick: function (p, border) {
+            var b = border || 0,
+                points,
+                matrix,
+                scale,
+                frame,
+                left,
+                right,
+                top,
+                bottom,
+                i;
+            if (this.loaded()) {
+                scale = getScale(this);
+                frame = getFrame(this);
+                matrix = new Matrix();
+                matrix.translate(this.x, this.y);
+                matrix.rotate(this.rotation);
+                matrix.scale(scale.x, scale.y);
+                left = -this.pivotX * frame.w;
+                top = -this.pivotY * frame.h;
+                right = left + frame.w;
+                bottom = top + frame.h;
+                points = [];
+                points.length = 4;
+                points[0] = { x: left, y: top };
+                points[1] = { x: right, y: top };
+                points[2] = { x: right, y: bottom };
+                points[3] = { x: left, y: bottom };
+                matrix.transformArray(points);
+                return Util.pointInQuad(points, p, border);
+            }
+            return false;
         },
 
         //////////////////////////////////////////////////////////////////////

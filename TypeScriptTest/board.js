@@ -200,7 +200,6 @@ var Board = (function () {
                 snapY,
                 tileX,
                 tileY,
-                //swapLetter,
                 newSwapTile,
                 y;
             if (Mouse.left.released) {
@@ -231,8 +230,8 @@ var Board = (function () {
                 if (Mouse.left.held && activeTile !== null) {
                     activeTile.selected = true;
                     activeTile.layer = 1;
-                    tileX = constrain(Mouse.x - offsetX, 0, Board.pixelWidth);
-                    tileY = constrain(Mouse.y - offsetY, 0, Board.pixelHeight);
+                    tileX = Util.constrain(Mouse.x - offsetX, 0, Board.pixelWidth);
+                    tileY = Util.constrain(Mouse.y - offsetY, 0, Board.pixelHeight);
                     snapX = Math.floor((tileX + Tile.width / 2) / Tile.width) * Tile.width;
                     snapY = Math.floor((tileY + Tile.height / 2) / Tile.height) * Tile.height;
                     if (Math.abs(tileX - snapX) < Tile.width / 3 && Math.abs(tileY - snapY) < Tile.height / 3) {

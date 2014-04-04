@@ -509,7 +509,7 @@
           <string>sloppy</string>
         </key>
         <value>
-          <boolean>true</boolean>
+          <boolean>false</boolean>
         </value>
       </item>
       <item>
@@ -681,14 +681,14 @@
         </value>
       </item>
     </BoolOptions2>
-    <ErrorOnUnused>true</ErrorOnUnused>
+    <ErrorOnUnused>false</ErrorOnUnused>
     <IndentSize>4</IndentSize>
     <MaxLength>200</MaxLength>
     <MaxComplexity xsi:nil="true" />
     <MaxDepth xsi:nil="true" />
     <MaxStatements xsi:nil="true" />
     <MaxParams xsi:nil="true" />
-    <SelectedLinter>JSLint</SelectedLinter>
+    <SelectedLinter>JSHint</SelectedLinter>
     <FindTodos>false</FindTodos>
     <PreDefined>
       <string>console</string>
@@ -717,14 +717,16 @@
       <string>Board</string>
       <string>XMLHttpRequest</string>
       <string>Game</string>
-      <string>lerp</string>
-      <string>ease</string>
       <string>Sprite</string>
-      <string>constrain</string>
       <string>FB</string>
+      <string>SpriteList</string>
+      <string>ButtonList</string>
+      <string>Button</string>
+      <string>Matrix</string>
+      <string>Util</string>
     </PreDefined>
   </JSLintOptions>
-  <BuildFileTypes>JS HTML</BuildFileTypes>
+  <BuildFileTypes>JS</BuildFileTypes>
   <SaveFileTypes>JS</SaveFileTypes>
   <FakeCSSCharset>false</FakeCSSCharset>
   <IgnoreErrorStart>/*ignore jslint start*/</IgnoreErrorStart>

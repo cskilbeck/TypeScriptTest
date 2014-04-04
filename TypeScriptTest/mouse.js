@@ -110,6 +110,7 @@ var Mouse = (function () {
             p = canvas.relMouseCoords(e);
             pub.x = p.x;
             pub.y = p.y;
+            pub.position = { x: p.x, y: p.y };
             if (e.y < 0 || e.y > view.height || e.x < 0 || e.x > view.width) {
                 if (element.releaseCapture) {    // allow IE to see mouse clicks outside client area
                     element.releaseCapture();
@@ -144,6 +145,14 @@ var Mouse = (function () {
             y: 0,
             deltaX: 0,
             deltaY: 0,
+            position: {
+                x: 0,
+                y: 0
+            },
+            delta: {
+                x: 0,
+                y: 0
+            },
             left: {
                 held: false,
                 pressed: false,
@@ -166,6 +175,10 @@ var Mouse = (function () {
                 updateButton(Mouse.right);
                 Mouse.deltax = Mouse.x - oldx;
                 Mouse.deltay = Mouse.y - oldy;
+                Mouse.delta = {
+                    x: Mouse.deltaX,
+                    y: Mouse.deltaY
+                };
                 oldx = Mouse.x;
                 oldy = Mouse.y;
             }

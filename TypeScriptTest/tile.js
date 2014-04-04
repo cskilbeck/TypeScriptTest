@@ -129,7 +129,7 @@ var Tile = (function () {
                 now = Game.currentTime();
             if (this.targetTime !== 0 && this.targetTime < now) {
                 d = this.targetTime - this.startTime;
-                this.setPosition(lerp(this.origin, this.target, (this.targetTime - now)) / d);
+                this.setPosition(Util.lerp(this.origin, this.target, (this.targetTime - now)) / d);
                 Debug.text(this.pos.x, this.pos.y, this.targetTime);
             } else {
                 this.setPosition(this.target.x, this.target.y);

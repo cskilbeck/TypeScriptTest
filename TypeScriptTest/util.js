@@ -1,67 +1,68 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-window.requestAnimFrame = (function () {
+var Util = (function () {
     "use strict";
 
-    return window.requestAnimationFrame ||
-        window.webkitRequestAnimationFrame ||
-        window.mozRequestAnimationFrame ||
-        window.oRequestAnimationFrame ||
-        window.msRequestAnimationFrame ||
-        function (callback) {
-            window.setTimeout(callback, 1000 / 60);
-        };
-}());
-
-//////////////////////////////////////////////////////////////////////
-
-window.performance = window.performance || {};
-
-performance.now = (function () {
-    "use strict";
-
-    return performance.now ||
-            performance.mozNow ||
-            performance.msNow ||
-            performance.oNow ||
-            performance.webkitNow ||
-        function () {
-            return new Date().getTime();
-        };
-}());
-
-//////////////////////////////////////////////////////////////////////
-
-function ease(x) {
-    "use strict";
-
-    var x2 = x * x,
-        x3 = x2 * x;
-    return 3 * x2 - 2 * x3;
-}
-
-//////////////////////////////////////////////////////////////////////
-
-function lerp(start, end, s) {
-    "use strict";
-
-    var xd = end.x - start.x,
-        yd = end.y - start.y,
-        e = ease(s);
     return {
-        x: start.x + xd * e,
-        y: start.y + yd * e
+
+        //////////////////////////////////////////////////////////////////////
+
+        ease: function (x) {
+
+            var x2 = x * x,
+                x3 = x2 * x;
+            return 3 * x2 - 2 * x3;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        lerp: function (start, end, s) {
+
+            var xd = end.x - start.x,
+                yd = end.y - start.y,
+                e = Util.ease(s);
+            return {
+                x: start.x + xd * e,
+                y: start.y + yd * e
+            };
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        constrain: function (x, min, max) {
+
+            if (x < min) {
+                x = min;
+            }
+            if (x > max) {
+                x = max;
+            }
+            return x;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        crossProduct: function (a, b, p) {
+
+            return (b.x - a.x) * (p.y - a.y) - (b.y - a.y) * (p.x - a.x);
+        },
+
+        //////////////////////////////////////////////////////////////////////
+        // assumes a certain winding order...
+
+        pointInQuad: function (points, p, border) {
+
+            var i,
+                b = border || 0;
+
+            for (i = 0; i < 4; ++i) {
+                if (Util.crossProduct(points[i], points[(i + 1) % 4], p) < b) {
+                    return false;
+                }
+            }
+            return true;
+        }
     };
-}
 
-//////////////////////////////////////////////////////////////////////
+}());
 
-function constrain(x, min, max) {
-    if (x < min) {
-        x = min;
-    }
-    if (x > max) {
-        x = max;
-    }
-    return x;
-}

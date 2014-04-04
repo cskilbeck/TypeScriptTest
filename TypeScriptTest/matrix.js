@@ -15,6 +15,13 @@ var Matrix = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
+        setIdentity: function () {
+            this.m = [1, 0, 0, 1, 0, 0];
+            return this;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
         translate: function (t) {
             this.m[4] += this.m[0] * t.x + this.m[2] * t.y;
             this.m[5] += this.m[1] * t.x + this.m[3] * t.y;
@@ -66,6 +73,7 @@ var Matrix = (function () {
             }
             return p;
         }
+
     };
 
     return Matrix;

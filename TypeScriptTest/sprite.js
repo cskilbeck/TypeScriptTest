@@ -20,6 +20,8 @@ var Sprite = (function () {
         this.frame = 0;
         this.zIndex = 0;
         this.loaded = false;
+        this.dirty = true;
+        this.m = new Matrix();
         this[listNodeName || 'spriteListNode'] = listNode(this);
 
         graphic.addEventListener("load", function () {
@@ -51,7 +53,45 @@ var Sprite = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
+    function setTransform(context, m) {
+        context.setTransform(m.m[0], m.m[1], m.m[2], m.m[3], m.m[4], m.m[5]);
+    }
+
+    //////////////////////////////////////////////////////////////////////
+
     Sprite.prototype = {
+
+        //////////////////////////////////////////////////////////////////////
+
+        setPosition: function (x, y) {
+            this.position.x = x;
+            this.position.y = y;
+            this.dirty = true;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        setScale: function (x, y) {
+            this.scale.x = x;
+            this.scale.y = y || x;
+            this.dirty = true;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        setPivot: function (x, y) {
+            this.pivot.x = x;
+            this.pivot.y = y;
+            this.dirty = true;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        setFlip: function (horiz, vert) {
+            this.flip.horizontal = horiz;
+            this.flip.vertical = vert;
+            this.dirty = true;
+        },
 
         //////////////////////////////////////////////////////////////////////
 
@@ -68,9 +108,18 @@ var Sprite = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        setScale: function (x, y) {
-            this.scale.x = x;
-            this.scale.y = y || x;
+        setRotation: function (radians) {
+            this.rotation = radians;
+            this.dirty = true;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        setupMatrix: function () {
+            if (this.dirty) {
+                this.m.setIdentity().translate(this.position).rotate(this.rotation).scale(this.scale);
+                this.dirty = false;
+            }
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -79,12 +128,10 @@ var Sprite = (function () {
             var scale,
                 xtweak,
                 ytweak;
-            if (this.loaded && this.visible) {
+            if (this.visible) {
+                this.setupMatrix();
                 scale = getScale(this);
-                context.setTransform(1, 0, 0, 1, 0, 0);
-                context.translate(this.position.x, this.position.y);
-                context.rotate(this.rotation);
-                context.scale(scale.x, scale.y);
+                setTransform(context, this.m);
                 context.globalAlpha = this.transparency / 255;
                 xtweak = 0;
                 ytweak = 0;
@@ -104,32 +151,22 @@ var Sprite = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        pick: function (p, border) {
-            var left,
-                right,
-                top,
-                bottom;
-            if (this.loaded && this.visible) {
-                left = -this.pivot.x * this.frameWidth;
-                top = -this.pivot.y * this.frameHeight;
-                right = left + this.frameWidth;
-                bottom = top + this.frameHeight;
-                return Util.pointInConvexPoly(
-                    new Matrix().
-                        translate(this.position).
-                        rotate(this.rotation).
-                        scale(this.scale).
-                        transform([
-                            { x: left, y: top },
-                            { x: right, y: top },
-                            { x: right, y: bottom },
-                            { x: left, y: bottom }
-                        ]),
-                    p,
-                    border
-                );
-            }
-            return false;
+        pick: function (point, border) {
+            var l,
+                r,
+                t,
+                b,
+                m;
+            l = -this.pivot.x * this.frameWidth;
+            t = -this.pivot.y * this.frameHeight;
+            r = l + this.frameWidth;
+            b = t + this.frameHeight;
+            this.setupMatrix();
+            return Util.pointInConvexPoly(
+                this.m.transform([{ x: l, y: t }, { x: r, y: t }, { x: r, y: b }, { x: l, y: b }]),
+                point,
+                border
+            );
         },
 
         //////////////////////////////////////////////////////////////////////

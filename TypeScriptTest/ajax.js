@@ -5,10 +5,10 @@ var ajax = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    function send(url, callback, context, method, data, sync) {
+    function send(url, callback, context, method, data) {
 
         var xr = new XMLHttpRequest();
-        xr.open(method, url, sync);
+        xr.open(method, url);
         xr.onreadystatechange = function () {
             if (xr.readyState === XMLHttpRequest.DONE) {
                 callback.call(context, xr.responseText);
@@ -26,26 +26,26 @@ var ajax = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        get: function (url, data, callback, context, sync) {
+        get: function (url, data, callback, context) {
 
             var query = [],
                 key;
             for (key in data) {
                 query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
             }
-            send(url + '?' + query.join('&'), callback, context, 'GET', null, sync);
+            send(url + '?' + query.join('&'), callback, context, 'GET', null);
         },
 
         //////////////////////////////////////////////////////////////////////
 
-        post: function (url, data, callback, context, sync) {
+        post: function (url, data, callback, context) {
 
             var query = [],
                 key;
             for (key in data) {
                 query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
             }
-            send(url, callback, context, 'POST', query.join('&'), sync);
+            send(url, callback, context, 'POST', query.join('&'));
         }
     };
 

@@ -172,15 +172,8 @@ var Tile = (function () {
                 sy = 2;
             }
             tileSprite.setFrameXY(sx, sy);
-            if (this.selected) {
-                tileSprite.scale.x = 1.2;
-                tileSprite.scale.y = 1.2;
-            } else {
-                tileSprite.scale.x = 1;
-                tileSprite.scale.y = 1;
-            }
-            tileSprite.position.x = this.pos.x + Tile.width / 2;
-            tileSprite.position.y = this.pos.y + Tile.height / 2;
+            tileSprite.setScale(this.selected ? 1.2 : 1);
+            tileSprite.setPosition(this.pos.x + Tile.width / 2, this.pos.y + Tile.height / 2);
             tileSprite.drawSafe(context);
         },
 

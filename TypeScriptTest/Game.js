@@ -14,6 +14,7 @@ var Game = (function () {
     "use strict";
 
     var currentTime = window.performance.now(),
+        deltaTime,
         frames = 0,
         board,
         screen,
@@ -54,29 +55,30 @@ var Game = (function () {
             },
 
             run: function () {
-
-                var now = window.performance.now(),
+                var now;
+                if (ImageLoader.complete()) {
+                    now = window.performance.now();
                     deltaTime = now - currentTime;
-                currentTime = now;
-
-                Keyboard.update();
-                Mouse.update();
-                board.update(deltaTime);
-                buttons.update();
-
-                Game.cls();
-
-                buttons.draw(context);
-                board.draw(context);
-
-                Debug.draw();
-
-                frames += 1;
+                    currentTime = now;
+                    Keyboard.update();
+                    Mouse.update();
+                    Game.cls();
+                    board.update(deltaTime);
+                    buttons.update();
+                    buttons.draw(context);
+                    board.draw(context);
+                    Debug.draw();
+                    frames += 1;
+                }
                 requestAnimFrame(Game.run);
             },
 
-            currentTime: function () {
+            time: function () {
                 return currentTime;
+            },
+
+            deltaTime: function () {
+                return deltaTime;
             }
         };
 

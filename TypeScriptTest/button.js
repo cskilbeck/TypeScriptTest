@@ -13,8 +13,7 @@ var Button = (function () {
 
     function Button(img, x, y, clicked, context) {
         Sprite.call(this, img);
-        this.position.x = x;
-        this.position.y = y;
+        this.setPosition(x, y);
         this.enabled = true;
         this.state = idle;
         this.clicked = clicked;
@@ -25,43 +24,35 @@ var Button = (function () {
 
     return Util.extendClass(Sprite, Button, {
 
-        setState: function (state) {
-            this.state = state;
-            switch (this.state) {
-            case idle:
-                this.setScale(1);
-                break;
-            case hover:
-                this.setScale(1.2);
-                break;
-            case pressed:
-                this.setScale(1.1);
-                break;
-            }
-        },
-
         update: function () {
             this.transparency = this.enabled ? 255 : 128;
-            if (this.loaded && this.visible && this.enabled) {
+            if (this.visible && this.enabled) {
                 switch (this.state) {
                 case idle:
+                    this.setScale(1);
                     if (!Mouse.left.held && this.pick(Mouse.position)) {
-                        this.setState(hover);
+                        this.state = hover;
                     }
                     break;
                 case hover:
+                    this.setScale(1.25);
                     if (!this.pick(Mouse.position)) {
-                        this.setState(idle);
+                        this.state = idle;
                     } else if (Mouse.left.pressed) {
-                        this.setState(pressed);
+                        this.state = pressed;
                     }
                     break;
                 case pressed:
+                    this.setScale(1.25);
                     if (!this.pick(Mouse.position)) {
-                        this.setState(idle);
-                    } else if (Mouse.left.released) {
-                        this.clicked.call(this.context);
-                        this.setState(hover);
+                        this.setScale(1);
+                        this.state = idle;
+                    } else {
+                        this.setScale(0.9);
+                        if (Mouse.left.released) {
+                            this.clicked.call(this.context);
+                            this.state = hover;
+                        }
                     }
                     break;
                 }

@@ -237,7 +237,7 @@
           <string>immed</string>
         </key>
         <value>
-          <boolean>false</boolean>
+          <boolean>true</boolean>
         </value>
       </item>
       <item>
@@ -688,7 +688,7 @@
     <MaxDepth xsi:nil="true" />
     <MaxStatements xsi:nil="true" />
     <MaxParams xsi:nil="true" />
-    <SelectedLinter>JSHint</SelectedLinter>
+    <SelectedLinter>JSLint</SelectedLinter>
     <FindTodos>false</FindTodos>
     <PreDefined>
       <string>console</string>

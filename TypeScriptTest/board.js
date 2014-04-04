@@ -48,6 +48,10 @@ var Board = (function () {
         offsetY,
         i,
         j,
+        undoBuffer = [],    // 255 strings
+        undoIndex = 0,      // where the current undo is
+        undoHead = 0,       // where to push the next undo
+        asciiA = "a".charCodeAt(0),
 
     //////////////////////////////////////////////////////////////////////
     // constructor
@@ -75,10 +79,9 @@ var Board = (function () {
 
     function getScore(str) {
         var s = 0,
-            A = 97, // "a".getCodeAt(0)
             i;
         for (i = 0; i < str.length; ++i) {
-            s += letters[str.charCodeAt(i) - A].score;
+            s += letters[str.charCodeAt(i) - asciiA].score;
         }
         return s * str.length;
     }
@@ -131,7 +134,7 @@ var Board = (function () {
     // init the distribution table
     for (i = 0; i < letters.length; ++i) {
         for (j = 0; j < letters[i].frequency; ++j) {
-            distribution.push(String.fromCharCode(i + 97)); //"a".charCodeAt(0)
+            distribution.push(String.fromCharCode(i + asciiA));
         }
     }
 
@@ -172,6 +175,16 @@ var Board = (function () {
                 s += Board.tiles[i].letter;
             }
             return s;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        setFromString: function (s) {
+            var i;
+            for (i = 0; i < Board.tiles.length; ++i) {
+                Board.tiles[i].letter = s[i];
+            }
+            Board.markAllWords();
         },
 
         //////////////////////////////////////////////////////////////////////

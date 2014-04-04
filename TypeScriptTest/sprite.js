@@ -3,28 +3,38 @@
 var Sprite = (function () {
     "use strict";
 
-    var sprite = function (graphic, listNodeName) {
-        this.x = 0.0;
-        this.y = 0.0;
-        this.scaleX = 1.0;
-        this.scaleY = 1.0;
+    var Sprite = function (graphic, listNodeName) {
+        this.position = { x: 0, y: 0 };
+        this.scale = { x: 0, y: 0 };
+        this.pivot = { x: 0.5, y: 0.5 };
+        this.flip = { x: false, y: false };
+        this.UV = { x: 0, y: 0 };
         this.rotation = 0.0;
-        this.pivotX = 0.5;
-        this.pivotY = 0.5;
         this.visible = true;
         this.transparency = 255;
         this.image = graphic;
         this.framesWide = 1;
         this.framesHigh = 1;
-        this.frameWidth = 0;
-        this.frameHeight = 0;
+        this.frameWidth = null;
+        this.frameHeight = null;
         this.frame = 0;
-        this.frameX = 0;
-        this.frameY = 0;
-        this.flipX = false;
-        this.flipY = false;
         this.zIndex = 0;
+        this.loaded = false;
         this[listNodeName || 'spriteListNode'] = listNode(this);
+        graphic.addEventListener("load", function () {
+            this.width = graphic.width;
+            this.height = graphic.height;
+            this.frameWidth = this.frameWidth || this.width;
+            this.frameHeight = this.frameHeight || this.height;
+            this.loaded = true;
+        }.bind(this), false);
+        if (graphic.complete) {
+            this.width = graphic.width;
+            this.height = graphic.height;
+            this.frameWidth = this.width;
+            this.frameHeight = this.height;
+            this.loaded = true;
+        }
     };
 
     //////////////////////////////////////////////////////////////////////
@@ -32,47 +42,20 @@ var Sprite = (function () {
 
     function getScale(s) {
         return {
-            x: s.scaleX * (s.flipX ? -1 : 1),
-            y: s.scaleY * (s.flipY ? -1 : 1)
+            x: s.scale.x * (s.flip.x ? -1 : 1),
+            y: s.scale.y * (s.flip.y ? -1 : 1)
         };
     }
 
     //////////////////////////////////////////////////////////////////////
 
-    function getFrame(s) {
-        return {
-            w: s.frameWidth === 0 ? s.width() : s.frameWidth,
-            h: s.frameHeight === 0 ? s.height() : s.frameHeight
-        };
-    }
-
-    //////////////////////////////////////////////////////////////////////
-
-    sprite.prototype = {
-
-        //////////////////////////////////////////////////////////////////////
-
-        loaded: function () {
-            return this.image !== null && this.image.complete;
-        },
-
-        //////////////////////////////////////////////////////////////////////
-
-        width: function () {
-            return this.image.width;
-        },
-
-        //////////////////////////////////////////////////////////////////////
-
-        height: function () {
-            return this.image.height;
-        },
+    Sprite.prototype = {
 
         //////////////////////////////////////////////////////////////////////
 
         setFrameXY: function (x, y) {
-            this.frameX = x * this.frameWidth;
-            this.frameY = y * this.frameHeight;
+            this.UV.x = x * this.frameWidth;
+            this.UV.y = y * this.frameHeight;
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -83,32 +66,37 @@ var Sprite = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
+        setScale: function (x, y) {
+            this.scale.x = x;
+            this.scale.y = y || x;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
         draw: function (context) {
-            var frame,
+            var scale,
                 xtweak,
-                ytweak,
-                scale;
-            if (this.loaded() && this.visible) {
-                frame = getFrame(this);
+                ytweak;
+            if (this.loaded && this.visible) {
                 scale = getScale(this);
                 context.setTransform(1, 0, 0, 1, 0, 0);
-                context.translate(this.x, this.y);
+                context.translate(this.position.x, this.position.y);
                 context.rotate(this.rotation);
                 context.scale(scale.x, scale.y);
                 context.globalAlpha = this.transparency / 255;
                 xtweak = 0;
                 ytweak = 0;
-                if (this.scaleX > 1) {
-                    xtweak = 0.5 - (0.5 / this.scaleX);
+                if (this.scale.x > 1) {
+                    xtweak = 0.5 - (0.5 / this.scale.x);
                 }
-                if (this.scaleY > 1) {
-                    ytweak = 0.5 - (0.5 / this.scaleY);
+                if (this.scale.y > 1) {
+                    ytweak = 0.5 - (0.5 / this.scale.y);
                 }
                 context.drawImage(this.image,
-                    this.frameX + xtweak, this.frameY + ytweak,
-                    frame.w - xtweak * 2, frame.h - ytweak * 2,
-                    -this.pivotX * frame.w, -this.pivotY * frame.h,
-                    frame.w, frame.h);
+                    this.UV.x + xtweak, this.UV.y + ytweak,
+                    this.frameWidth - xtweak * 2, this.frameHeight - ytweak * 2,
+                    -this.pivot.x * this.frameWidth, -this.pivot.y * this.frameWidth,
+                    this.frameWidth, this.frameWidth);
             }
         },
 
@@ -117,34 +105,22 @@ var Sprite = (function () {
 
         pick: function (p, border) {
             var b = border || 0,
-                points,
                 matrix,
-                scale,
-                frame,
                 left,
                 right,
                 top,
-                bottom,
-                i;
-            if (this.loaded()) {
-                scale = getScale(this);
-                frame = getFrame(this);
-                matrix = new Matrix();
-                matrix.translate(this.x, this.y);
-                matrix.rotate(this.rotation);
-                matrix.scale(scale.x, scale.y);
-                left = -this.pivotX * frame.w;
-                top = -this.pivotY * frame.h;
-                right = left + frame.w;
-                bottom = top + frame.h;
-                points = [];
-                points.length = 4;
-                points[0] = { x: left, y: top };
-                points[1] = { x: right, y: top };
-                points[2] = { x: right, y: bottom };
-                points[3] = { x: left, y: bottom };
-                matrix.transformArray(points);
-                return Util.pointInQuad(points, p, border);
+                bottom;
+            if (this.loaded && this.visible) {
+                matrix = new Matrix().translate(this.position).rotate(this.rotation).scale(getScale(this));
+                left = -this.pivot.x * this.frameWidth;
+                top = -this.pivot.y * this.frameHeight;
+                right = left + this.frameWidth;
+                bottom = top + this.frameHeight;
+                return Util.pointInQuad(matrix.transformArray([
+                    { x: left, y: top },
+                    { x: right, y: top },
+                    { x: right, y: bottom },
+                    { x: left, y: bottom } ]), p, border);
             }
             return false;
         },
@@ -160,7 +136,7 @@ var Sprite = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    return sprite;
+    return Sprite;
 
 }());
 

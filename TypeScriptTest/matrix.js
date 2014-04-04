@@ -15,19 +15,19 @@ var Matrix = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        translate: function (x, y) {
-            this.m[4] += this.m[0] * x + this.m[2] * y;
-            this.m[5] += this.m[1] * x + this.m[3] * y;
+        translate: function (t) {
+            this.m[4] += this.m[0] * t.x + this.m[2] * t.y;
+            this.m[5] += this.m[1] * t.x + this.m[3] * t.y;
             return this;
         },
 
         //////////////////////////////////////////////////////////////////////
 
-        scale: function (x, y) {
-            this.m[0] *= x;
-            this.m[1] *= x;
-            this.m[2] *= y;
-            this.m[3] *= y;
+        scale: function (s) {
+            this.m[0] *= s.x;
+            this.m[1] *= s.x;
+            this.m[2] *= s.y;
+            this.m[3] *= s.y;
             return this;
         },
 
@@ -64,6 +64,7 @@ var Matrix = (function () {
                 p[i] = this.apply(p[i]);
 
             }
+            return p;
         }
     };
 

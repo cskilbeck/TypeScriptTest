@@ -7,6 +7,18 @@ var Util = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
+        extendClass: function (parent, child, proto) {
+
+            var i;
+            child.prototype = Object.create(parent.prototype);
+            for (i in proto) {
+                child.prototype[i] = proto[i];
+            }
+            return child;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
         ease: function (x) {
 
             var x2 = x * x,

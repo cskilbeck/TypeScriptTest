@@ -7,39 +7,38 @@ var SpriteList = (function () {
         LinkedList.call(this, listNodeName || 'spriteListNode');
     };
 
-    SpriteList.prototype = Object.create(LinkedList.prototype);
-
     //////////////////////////////////////////////////////////////////////
 
-    SpriteList.prototype.draw = function (context) {
-        context.save();
-        this.reverseForEach(function (s) {
-            s.draw(context);
-        });
-        context.restore();
-    };
+    return Util.extendClass(LinkedList, SpriteList, {
 
-    //////////////////////////////////////////////////////////////////////
+        draw : function (context) {
+            context.save();
+            this.reverseForEach(function (s) {
+                s.draw(context);
+            });
+            context.restore();
+        },
 
-    SpriteList.prototype.reorder = function () {
-        this.sort(function (a, b) {
-            return a.zIndex - b.zIndex;
-        });
-    };
+        //////////////////////////////////////////////////////////////////////
 
-    //////////////////////////////////////////////////////////////////////
+        sort : function () {
+            LinkedList.prototype.sort.call(function (a, b) {
+                return a.zIndex - b.zIndex;
+            });
+        },
 
-    SpriteList.prototype.isLoaded = function () {
-        return this.reverseForEach(function (s) {
-            return s.loaded();
-        });
-    };
+        //////////////////////////////////////////////////////////////////////
 
-    //////////////////////////////////////////////////////////////////////
+        isLoaded: function () {
+            return this.reverseForEach(function (s) {
+                return s.loaded;
+            });
+        },
 
-    SpriteList.prototype.add = LinkedList.prototype.pushFront;
-    SpriteList.prototype.addToBack = LinkedList.prototype.pushBack;
+        //////////////////////////////////////////////////////////////////////
 
-    return SpriteList;
+        add: LinkedList.prototype.pushFront,
+        addToBack: LinkedList.prototype.pushBack
+    });
 
 }());

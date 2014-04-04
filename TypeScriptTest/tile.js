@@ -173,14 +173,14 @@ var Tile = (function () {
             }
             tileSprite.setFrameXY(sx, sy);
             if (this.selected) {
-                tileSprite.scaleX = 1.2;
-                tileSprite.scaleY = 1.2;
+                tileSprite.scale.x = 1.2;
+                tileSprite.scale.y = 1.2;
             } else {
-                tileSprite.scaleX = 1;
-                tileSprite.scaleY = 1;
+                tileSprite.scale.x = 1;
+                tileSprite.scale.y = 1;
             }
-            tileSprite.x = this.pos.x + Tile.width / 2;
-            tileSprite.y = this.pos.y + Tile.height / 2;
+            tileSprite.position.x = this.pos.x + Tile.width / 2;
+            tileSprite.position.y = this.pos.y + Tile.height / 2;
             tileSprite.drawSafe(context);
         },
 

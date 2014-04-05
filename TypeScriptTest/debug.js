@@ -3,37 +3,25 @@
 var Debug = (function () {
     "use strict";
 
-    function debugEntry(x, y, str) {
-        return {
-            x: x,
-            y: y,
-            str: str
-        };
-    }
-
-    var font = new Font("Fixedsys"),
-        debugEntries = [],
+    var font,
+        context,
+        d = [],
 
         Debug = {
 
-            context: null,
+            init: function (ctx, loader) {
+                font = new Font("Fixedsys", loader);
+                context = ctx;
+            },
 
             text: function (x, y, str) {
-                debugEntries.push(debugEntry(x, y, str));
+                d.push(x, y, str);
             },
 
             draw: function () {
-                var i,
-                    dbe;
-                for (i = 0; i < debugEntries.length; ++i) {
-                    dbe = debugEntries[i];
-                    font.drawText(this.context, dbe.x, dbe.y, dbe.str);
+                while (d.length > 0) {
+                    font.drawText(this.context, d.shift(), d.shift(), d.shift());
                 }
-                debugEntries.length = 0;
-            },
-
-            log: function (str) {
-                console.log(str);
             }
         };
 

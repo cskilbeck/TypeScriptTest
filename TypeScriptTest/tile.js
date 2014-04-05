@@ -9,9 +9,8 @@ var Tile = (function () {
         Beginning = 1,
         Middle = 2,
         End = 3,
-        font = new Font("Arial"),
-        tiles = ImageLoader.load("allColour"),
-        tileSprite = new Sprite(tiles),
+        font,
+        tileSprite,
 
     //////////////////////////////////////////////////////////////////////
 
@@ -48,15 +47,19 @@ var Tile = (function () {
         };
 
     //////////////////////////////////////////////////////////////////////
-    // static init
+    // static
 
     Tile.width = 96;
     Tile.height = 96;
 
-    tileSprite.framesWide = 5;
-    tileSprite.framesHigh = 5;
-    tileSprite.frameWidth = Tile.width;
-    tileSprite.frameHeight = Tile.height;
+    Tile.load = function (loader) {
+        font = new Font("Arial", loader);
+        tileSprite = new Sprite('allColour', loader);
+        tileSprite.framesWide = 5;
+        tileSprite.framesHigh = 5;
+        tileSprite.frameWidth = Tile.width;
+        tileSprite.frameHeight = Tile.height;
+    };
 
     //////////////////////////////////////////////////////////////////////
 

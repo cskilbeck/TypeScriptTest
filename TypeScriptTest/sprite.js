@@ -3,7 +3,7 @@
 var Sprite = (function () {
     "use strict";
 
-    var Sprite = function (graphic, listNodeName) {
+    var Sprite = function (name, loader, listNodeName) {
         this.position = { x: 0, y: 0 };
         this.scale = { x: 0, y: 0 };
         this.pivot = { x: 0.5, y: 0.5 };
@@ -12,7 +12,6 @@ var Sprite = (function () {
         this.rotation = 0.0;
         this.visible = true;
         this.transparency = 255;
-        this.image = graphic;
         this.framesWide = 1;
         this.framesHigh = 1;
         this.frameWidth = null;
@@ -23,22 +22,15 @@ var Sprite = (function () {
         this.dirty = true;
         this.m = new Matrix();
         this[listNodeName || 'spriteListNode'] = listNode(this);
-
-        graphic.addEventListener("load", function () {
-            this.width = graphic.width;
-            this.height = graphic.height;
+        this.image = null;
+        loader.image(name, function (img) {
+            this.image = img;
+            this.width = this.image.width;
+            this.height = this.image.height;
             this.frameWidth = this.frameWidth || this.width;
             this.frameHeight = this.frameHeight || this.height;
             this.loaded = true;
-        }.bind(this), false);
-
-        if (graphic.complete) {
-            this.width = graphic.width;
-            this.height = graphic.height;
-            this.frameWidth = this.width;
-            this.frameHeight = this.height;
-            this.loaded = true;
-        }
+        }, this);
     };
 
     //////////////////////////////////////////////////////////////////////

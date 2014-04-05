@@ -2,16 +2,14 @@
 
     var dictionary = null;
 
-    ajax.get("img/dictionary.json", {}, function (d) { dictionary = JSON.parse(d); });
-
     return {
 
-        isLoaded: function() {
-            return dictionary !== null;
+        load: function (loader) {
+            dictionary = loader.JSON("dictionary");
         },
 
         isWord: function (str) {
-            return Dictionary.isLoaded() ? dictionary.hasOwnProperty(str) : false;
+            return dictionary.hasOwnProperty(str);
         },
 
         getDefinition: function (str) {

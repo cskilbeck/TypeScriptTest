@@ -11,8 +11,8 @@ var Button = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    function Button(img, x, y, clicked, context) {
-        Sprite.call(this, img);
+    function Button(name, loader, x, y, clicked, context) {
+        Sprite.call(this, name, loader);
         this.setPosition(x, y);
         this.enabled = true;
         this.state = idle;

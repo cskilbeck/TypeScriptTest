@@ -48,6 +48,7 @@
     <Content Include="spritelist.js" />
     <Content Include="util.js" />
     <Content Include="word.js" />
+    <Content Include="loader.js" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="dictionary.js" />

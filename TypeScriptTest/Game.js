@@ -20,6 +20,7 @@ var Game = (function () {
         canvas,
         context,
         buttons,
+        loader,
 
         Game = {
 
@@ -43,27 +44,30 @@ var Game = (function () {
                 screen = screenDivElement;
                 canvas = canvasElement;
                 context = canvas.getContext('2d');
-                Debug.context = context;
-                Mouse.init(canvas, screen);
-                Keyboard.init();
+                loader = new Loader();
+                Debug.init(context, loader);
                 buttons = new ButtonList();
-                buttons.add(new Button(ImageLoader.load("undo"), 710, 200, Game.onUndo));
-                buttons.add(new Button(ImageLoader.load("redo"), 760, 200, Game.onRedo));
-                Game.load();
+                buttons.add(new Button("undo", loader, 710, 200, Game.onUndo));
+                buttons.add(new Button("redo", loader, 760, 200, Game.onRedo));
+                Dictionary.load(loader);
+                Tile.load(loader);
+                Game.waitForLoader();
             },
 
-            load: function () {
-                if (ImageLoader.complete() && Dictionary.isLoaded()) {
-                    Game.postLoad();
+            waitForLoader: function () {
+                if (loader.complete()) {
+                    Game.onLoaded();
                 } else {
                     Game.cls();
                     context.fillStyle = 'white';
                     context.fillRect(10, 10, 200, 200); // loader progress bar here...
-                    requestAnimFrame(Game.load);
+                    requestAnimFrame(Game.waitForLoader);
                 }
             },
 
-            postLoad: function () {
+            onLoaded: function () {
+                Mouse.init(canvas, screen);
+                Keyboard.init();
                 Board.randomize(1);
                 Game.onFrame();
             },

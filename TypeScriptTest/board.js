@@ -113,7 +113,7 @@ var Board = (function () {
                         str += Board.tiles[m].letter;
                         m += offset;
                     }
-                    if (Dictionary[str] !== undefined) {
+                    if (Dictionary.isWord(str)) {
                         foundWords.pushBack(new Word(str, x, y, orientation, getScore(str)));
                     }
                 }

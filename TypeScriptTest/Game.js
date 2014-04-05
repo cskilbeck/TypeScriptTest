@@ -56,21 +56,29 @@ var Game = (function () {
 
             run: function () {
                 var now;
-                if (ImageLoader.complete()) {
-                    now = window.performance.now();
-                    deltaTime = now - currentTime;
-                    currentTime = now;
-                    Keyboard.update();
-                    Mouse.update();
+                if (ImageLoader.complete() && Dictionary.isLoaded()) {
+                    requestAnimFrame(Game.onFrame);
+                } else {
                     Game.cls();
-                    board.update(deltaTime);
-                    buttons.update();
-                    buttons.draw(context);
-                    board.draw(context);
-                    Debug.draw();
-                    frames += 1;
+                    context.fillStyle = 'white';
+                    context.fillText(10, 10, "Loading");
+                    requestAnimFrame(Game.run);
                 }
-                requestAnimFrame(Game.run);
+            },
+
+            onFrame: function() {
+                var now = window.performance.now();
+                deltaTime = now - currentTime;
+                currentTime = now;
+                Keyboard.update();
+                Mouse.update();
+                Game.cls();
+                board.update(deltaTime);
+                buttons.update();
+                buttons.draw(context);
+                board.draw(context);
+                Debug.draw();
+                frames += 1;
             },
 
             time: function () {

@@ -5,5 +5,4 @@ window.onload = function () {
 
     window.fbAsyncInit();
     Game.init(document.getElementById("myCanvas"), document.getElementById("screen"));
-    Game.run();
 };

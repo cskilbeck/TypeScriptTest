@@ -52,6 +52,7 @@ var Game = (function () {
                 buttons = new ButtonList();
                 buttons.add(new Button(ImageLoader.load("undo"), 710, 200, Game.onUndo));
                 buttons.add(new Button(ImageLoader.load("redo"), 760, 200, Game.onRedo));
+                Game.run();
             },
 
             run: function () {
@@ -62,11 +63,12 @@ var Game = (function () {
                     Game.cls();
                     context.fillStyle = 'white';
                     context.fillText(10, 10, "Loading");
+                    console.log("Game loading complete");
                     requestAnimFrame(Game.run);
                 }
             },
 
-            onFrame: function() {
+            onFrame: function () {
                 var now = window.performance.now();
                 deltaTime = now - currentTime;
                 currentTime = now;
@@ -79,6 +81,7 @@ var Game = (function () {
                 board.draw(context);
                 Debug.draw();
                 frames += 1;
+                requestAnimFrame(Game.onFrame);
             },
 
             time: function () {

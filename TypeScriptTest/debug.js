@@ -20,7 +20,7 @@ var Debug = (function () {
 
             draw: function () {
                 while (d.length > 0) {
-                    font.drawText(this.context, d.shift(), d.shift(), d.shift());
+                    font.drawText(context, d.shift(), d.shift(), d.shift());
                 }
             }
         };

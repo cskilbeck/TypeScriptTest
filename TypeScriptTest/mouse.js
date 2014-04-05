@@ -141,10 +141,7 @@ var Mouse = (function () {
         oldy = 0,
 
         Mouse = {
-            x: 0,
-            y: 0,
-            deltaX: 0,
-            deltaY: 0,
+
             position: {
                 x: 0,
                 y: 0

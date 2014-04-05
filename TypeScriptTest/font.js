@@ -7,10 +7,11 @@ var Font = (function () {
 
     var Font = function (name, loader) {
         this.images = [];
-        this.font = loader.JSON(name, function (font) {
+        loader.loadJSON(name, function (font) {
+            this.font = font;
             var i;
             for (i = 0; i < font.pageCount; ++i) {
-                this.images.push(loader.image(font.name + i.toString()));
+                this.images.push(loader.loadImage(font.name + i.toString()));
             }
         }, this);
     };

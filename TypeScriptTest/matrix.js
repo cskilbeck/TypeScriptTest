@@ -69,7 +69,6 @@ var Matrix = (function () {
             var i;
             for (i = 0; i < p.length; ++i) {
                 p[i] = this.apply(p[i]);
-
             }
             return p;
         }

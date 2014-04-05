@@ -29,14 +29,6 @@ var SpriteList = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        isLoaded: function () {
-            return this.reverseForEach(function (s) {
-                return s.loaded;
-            });
-        },
-
-        //////////////////////////////////////////////////////////////////////
-
         add: LinkedList.prototype.pushFront,
         addToBack: LinkedList.prototype.pushBack
     });

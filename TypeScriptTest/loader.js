@@ -15,6 +15,15 @@ var Loader = (function () {
 
 	//////////////////////////////////////////////////////////////////////
 
+	function cache(l, name) {
+		if (l.items.hasOwnProperty(name)) {
+			return l.items[name];
+		}
+		return null;
+	}
+
+	//////////////////////////////////////////////////////////////////////
+
 	Loader.prototype = {
 
 		//////////////////////////////////////////////////////////////////////
@@ -25,23 +34,8 @@ var Loader = (function () {
 
 		//////////////////////////////////////////////////////////////////////
 
-		status: function () {
-			return this.loaded.toString() + "/" + this.requests.toString() + ":";
-		},
-
-		//////////////////////////////////////////////////////////////////////
-
-		cache: function (name) {
-			if (this.items.hasOwnProperty(name)) {
-				return this.items[name];
-			}
-			return null;
-		},
-
-		//////////////////////////////////////////////////////////////////////
-
 		loadImage: function (name, callback, context) {
-			var image = this.cache(name);
+			var image = cache(this, name);
 			if (image === null) {
 				image = new Image();
 				this.items[name] = image;
@@ -60,7 +54,7 @@ var Loader = (function () {
 		//////////////////////////////////////////////////////////////////////
 
 		loadJSON: function (name, callback, context) {
-			var d = this.cache(name);
+			var d = cache(this, name);
 			if (d === null) {
 				d = {};
 				++this.requests;

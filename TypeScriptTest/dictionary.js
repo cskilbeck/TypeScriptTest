@@ -5,9 +5,7 @@
     return {
 
         load: function (loader) {
-            loader.loadJSON("dictionary", function (d) {
-                dictionary = d;
-            });
+            loader.loadJSON("dictionary", function (d) { dictionary = d; });
         },
 
         isWord: function (str) {

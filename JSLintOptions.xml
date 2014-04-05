@@ -724,6 +724,7 @@
       <string>Button</string>
       <string>Matrix</string>
       <string>Util</string>
+      <string>ajax</string>
     </PreDefined>
   </JSLintOptions>
   <BuildFileTypes>JS</BuildFileTypes>

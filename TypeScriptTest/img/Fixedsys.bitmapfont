@@ -22,7 +22,7 @@
         <Parameter Name="Measure" Type="Boolean" value="False" />
       </LayerNode>
       <FontNode id="4" inputs="0" outputs="2" X="48" Y="147">
-        <Parameter Name="Render Type" Type="RenderType" value="0" />
+        <Parameter Name="Render Type" Type="RenderType" value="2" />
         <Parameter Name="Font" Type="TTFont" family="Fixedsys" face="Regular" size="15" />
         <Parameter Name="Options" Type="FontDescriptor" Outline="0" AntiAlias="1" Rounded="0" />
       </FontNode>

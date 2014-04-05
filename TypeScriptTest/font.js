@@ -5,18 +5,34 @@ var Font = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    var Font = function (fontData) {
+    var Font = function (name) {
         var i;
-        this.font = fontData;
+        this.font = null;
         this.images = [];
-        for (i = 0; i < fontData.pageCount; ++i) {
-            this.images.push(ImageLoader.load(fontData.name + i.toString()));
-        }
+        ajax.get('img/' + name + '.json', {}, function (data) {
+            this.font = JSON.parse(data);
+            for (i = 0; i < this.font.pageCount; ++i) {
+                this.images.push(ImageLoader.load(this.font.name + i.toString()));
+            }
+        }, this);
     };
 
     //////////////////////////////////////////////////////////////////////
 
     Font.prototype = {
+
+        isLoaded: function () {
+            var i;
+            if (this.font === null) {
+                return false;
+            }
+            for (i = 0; i < this.font.imageCount; ++i) {
+                if (!this.images[i].complete) {
+                    return false;
+                }
+            }
+            return true;
+        },
 
         drawText: function (ctx, x, y, str) {
             var l,
@@ -27,19 +43,21 @@ var Font = (function () {
                 yc,
                 glyph,
                 s;
-            for (l = 0; l < this.font.layerCount; ++l) {
-                layer = this.font.Layers[l];
-                xc = x + layer.offsetX;
-                yc = y + layer.offsetY;
-                for (i = 0; i < str.length; ++i) {
-                    c = str.charCodeAt(i);
-                    if (this.font.charMap.hasOwnProperty(c)) {
-                        glyph = this.font.glyphs[this.font.charMap[c]];
-                        if (l < glyph.imageCount) {
-                            s = glyph.images[l];
-                            ctx.drawImage(this.images[s.page], s.x, s.y, s.w, s.h, xc + s.offsetX, yc + s.offsetY, s.w, s.h);
+            if (this.isLoaded()) {
+                for (l = 0; l < this.font.layerCount; ++l) {
+                    layer = this.font.Layers[l];
+                    xc = x + layer.offsetX;
+                    yc = y + layer.offsetY;
+                    for (i = 0; i < str.length; ++i) {
+                        c = str.charCodeAt(i);
+                        if (this.font.charMap.hasOwnProperty(c)) {
+                            glyph = this.font.glyphs[this.font.charMap[c]];
+                            if (l < glyph.imageCount) {
+                                s = glyph.images[l];
+                                ctx.drawImage(this.images[s.page], s.x, s.y, s.w, s.h, xc + s.offsetX, yc + s.offsetY, s.w, s.h);
+                            }
+                            xc += glyph.advance;
                         }
-                        xc += glyph.advance;
                     }
                 }
             }
@@ -51,26 +69,28 @@ var Font = (function () {
 
         measureText: function (str) {
             var l,
-                w,
-                h,
+                w = 0,
+                h = 0,
                 layer,
                 xc,
                 i,
                 c,
                 glyph,
                 s;
-            l = this.font.layerCount - 1;
-            w = 0;
-            h = this.font.height;
-            layer = this.font.Layers[l];
-            xc = layer.offsetX;
-            for (i = 0; i < str.length; ++i) {
-                c = str.charCodeAt(i);
-                if (this.font.charMap.hasOwnProperty(c)) {
-                    glyph = this.font.glyphs[this.font.charMap[c]];
-                    s = glyph.images[l];
-                    w = xc + s.w;
-                    xc += glyph.advance;
+            if (this.isLoaded()) {
+                l = this.font.layerCount - 1;
+                w = 0;
+                h = this.font.height;
+                layer = this.font.Layers[l];
+                xc = layer.offsetX;
+                for (i = 0; i < str.length; ++i) {
+                    c = str.charCodeAt(i);
+                    if (this.font.charMap.hasOwnProperty(c)) {
+                        glyph = this.font.glyphs[this.font.charMap[c]];
+                        s = glyph.images[l];
+                        w = xc + s.w;
+                        xc += glyph.advance;
+                    }
                 }
             }
             return { width: w, height: h };

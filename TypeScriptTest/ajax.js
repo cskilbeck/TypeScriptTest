@@ -7,7 +7,9 @@ var ajax = (function () {
 
     function send(url, callback, context, method, data) {
 
-        var xr = new XMLHttpRequest();
+        var xr;
+        xr = new XMLHttpRequest();
+        //xr = new ActiveXObject("Microsoft.XmlHttp");
         xr.open(method, url);
         xr.onreadystatechange = function () {
             if (xr.readyState === XMLHttpRequest.DONE) {

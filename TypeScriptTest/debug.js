@@ -11,7 +11,7 @@ var Debug = (function () {
         };
     }
 
-    var font = new Font(Fixedsys),
+    var font = new Font("Fixedsys"),
         debugEntries = [],
 
         Debug = {

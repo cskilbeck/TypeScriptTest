@@ -9,7 +9,7 @@ var Tile = (function () {
         Beginning = 1,
         Middle = 2,
         End = 3,
-        font = new Font(Arial),
+        font = new Font("Arial"),
         tiles = ImageLoader.load("allColour"),
         tileSprite = new Sprite(tiles),
 

@@ -20,17 +20,18 @@
   <ItemGroup>
     <Content Include="ajax.js" />
     <Content Include="app.css" />
-    <Content Include="Arial.js" />
     <Content Include="board.js" />
     <Content Include="button.js" />
     <Content Include="buttonlist.js" />
     <Content Include="debug.js" />
     <Content Include="facebook.js" />
-    <Content Include="Fixedsys.js" />
     <Content Include="game.js" />
     <Content Include="imageloader.js" />
     <Content Include="img\allColour.png" />
+    <None Include="img\Arial.json" />
     <Content Include="img\Arial0.png" />
+    <None Include="img\dictionary.json" />
+    <None Include="img\Fixedsys.json" />
     <Content Include="img\Fixedsys0.png" />
     <Content Include="img\redo.png" />
     <Content Include="img\undo.png" />
@@ -50,8 +51,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="dictionary.js" />
-    <Content Include="Arial.bitmapfont" />
-    <Content Include="Fixedsys.bitmapfont" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="tile.js" />

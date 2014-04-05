@@ -35,6 +35,7 @@ var Board = (function () {
             { score: 10, frequency: 1 }     //Z
         ],
 
+        asciiA = "a".charCodeAt(0),
         distribution = [],
         foundWords = new LinkedList("listNode"),
         words = new LinkedList("listNode"),
@@ -50,28 +51,7 @@ var Board = (function () {
         j,
         undoBuffer = [],    // 255 strings
         undoIndex = 0,      // where the current undo is
-        undoHead = 0,       // where to push the next undo
-        asciiA = "a".charCodeAt(0),
-
-    //////////////////////////////////////////////////////////////////////
-    // constructor
-
-        Board = function () {
-        };
-
-    //////////////////////////////////////////////////////////////////////
-    // public static
-
-    Board.width = 7;
-    Board.height = 5;
-    Board.score = 0;
-    Board.tiles = [];
-    Board.tiles.length = Board.width * Board.height;
-    Board.pixelWidth = (Board.width - 1) * Tile.width;
-    Board.pixelHeight = (Board.height - 1) * Tile.height;
-
-    //////////////////////////////////////////////////////////////////////
-    // private functions
+        undoHead = 0;       // where to push the next undo
 
     //////////////////////////////////////////////////////////////////////
     //
@@ -139,15 +119,33 @@ var Board = (function () {
     }
 
     //////////////////////////////////////////////////////////////////////
-    // public member functions
+    // public static
 
-    Board.prototype = {
+    return {
+
+        //////////////////////////////////////////////////////////////////////
+
+        width: 7,
+        height: 5,
+        score: 0,
+        tiles: [],
+
+        //////////////////////////////////////////////////////////////////////
+
+        pixelWidth: function () {
+            return (Board.width - 1) * Tile.width;
+        },
+
+        pixelHeight: function () {
+            return (Board.height - 1) * Tile.height;
+        },
 
         //////////////////////////////////////////////////////////////////////
         // fill with random letters which don't make any words
 
         randomize: function (seed) {
 
+            Board.tiles.length = Board.width * Board.height;
             // make a random board
             random.seed(seed);
             for (i = 0; i < Board.tiles.length; ++i) {
@@ -160,8 +158,8 @@ var Board = (function () {
             }
 
             // nobble it until there are no words on it
-            while (this.markAllWords() !== 0) {
-                this.getWordTile(words.head(), 0).letter = randomLetter();
+            while (Board.markAllWords() !== 0) {
+                Board.getWordTile(words.head(), 0).letter = randomLetter();
             }
         },
 
@@ -199,7 +197,7 @@ var Board = (function () {
 
         tileFromScreenPos: function (x, y) {
             if (x >= 0 && y >= 0 && x < Board.width * Tile.width && y < Board.height * Tile.height) {
-                return this.tile((x / Tile.width) >>> 0, (y / Tile.height) >>> 0);
+                return Board.tile((x / Tile.width) >>> 0, (y / Tile.height) >>> 0);
             }
             return null;
         },
@@ -226,7 +224,7 @@ var Board = (function () {
                 activeTile = null;
             }
             if (Mouse.left.pressed) {
-                clickedTile = this.tileFromScreenPos(Mouse.x, Mouse.y);
+                clickedTile = Board.tileFromScreenPos(Mouse.x, Mouse.y);
                 if (clickedTile !== null) {
                     if (activeTile !== null && activeTile !== clickedTile) {
                         activeTile.selected = false;
@@ -243,12 +241,12 @@ var Board = (function () {
                 if (Mouse.left.held && activeTile !== null) {
                     activeTile.selected = true;
                     activeTile.layer = 1;
-                    tileX = Util.constrain(Mouse.x - offsetX, 0, Board.pixelWidth);
-                    tileY = Util.constrain(Mouse.y - offsetY, 0, Board.pixelHeight);
+                    tileX = Util.constrain(Mouse.x - offsetX, 0, Board.pixelWidth());
+                    tileY = Util.constrain(Mouse.y - offsetY, 0, Board.pixelHeight());
                     snapX = Math.floor((tileX + Tile.width / 2) / Tile.width) * Tile.width;
                     snapY = Math.floor((tileY + Tile.height / 2) / Tile.height) * Tile.height;
                     if (Math.abs(tileX - snapX) < Tile.width / 3 && Math.abs(tileY - snapY) < Tile.height / 3) {
-                        newSwapTile = this.tileFromScreenPos(snapX, snapY);
+                        newSwapTile = Board.tileFromScreenPos(snapX, snapY);
                         if (newSwapTile !== null && newSwapTile !== activeTile) {
                             if (swapTile === null && swapTile !== activeTile) {
                                 swapTile = activeTile;
@@ -262,7 +260,7 @@ var Board = (function () {
                             }
                             activeTile = newSwapTile;
                             activeTile.setPosition(snapX, snapY);
-                            this.markAllWords();
+                            Board.markAllWords();
                             activeTile.selected = true;
                             activeTile.layer = 1;
                         } else {
@@ -366,7 +364,7 @@ var Board = (function () {
             while (!foundWords.empty()) {
                 w = foundWords.popFront();
                 for (i = 0; i < w.str.length; ++i) {
-                    t = this.getWordTile(w, i);
+                    t = Board.getWordTile(w, i);
                     if (t.vertical.word !== null && w.orientation === Orientation.vertical) {
                         break;
                     }
@@ -378,16 +376,11 @@ var Board = (function () {
                     words.pushBack(w);
                     Board.score += w.score;
                     for (j = 0; j < w.str.length; ++j) {
-                        this.getWordTile(w, j).setWord(w, j);
+                        Board.getWordTile(w, j).setWord(w, j);
                     }
                 }
             }
             return Board.score;
         }
-
     };
-
-    //////////////////////////////////////////////////////////////////////
-
-    return Board;
 }());

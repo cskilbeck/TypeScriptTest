@@ -3,6 +3,8 @@
 var Util = (function () {
     "use strict";
 
+    var b64c = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
     return {
 
         //////////////////////////////////////////////////////////////////////
@@ -73,8 +75,48 @@ var Util = (function () {
                 }
             }
             return true;
+        },
+
+        /**
+         * btoa(data): String
+         *
+         * Base64 encode a binary string (all char codes must be < 255).
+         *
+         * @param  {String} data The data to convert
+         * @return {String} The base64 binary
+         */
+        btoa: function (data) {
+            var i,
+                res = "",
+                length = data.length,
+                c0,
+                c1,
+                c2;
+            for (i = 0; i < length - 2; i += 3) {
+                c0 = data.charCodeAt(i) & 0xff;
+                c1 = data.charCodeAt(i + 1) & 0xff;
+                c2 = data.charCodeAt(i + 2) & 0xff;
+                res += b64c[c0 >>> 2];
+                res += b64c[((c0 & 3) << 4) | (c1 >>> 4)];
+                res += b64c[((c1 & 15) << 2) | (c2 >>> 6)];
+                res += b64c[c2 & 63];
+            }
+            switch (length % 3) {
+            case 2:
+                res += b64c[data.charCodeAt(i) >>> 2];
+                res += b64c[((data.charCodeAt(i) & 3) << 4) |
+                            (data.charCodeAt(i + 1) >>> 4)];
+                res += b64c[((data.charCodeAt(i + 1) & 15) << 2)];
+                res += "=";
+                break;
+            case 1:
+                res += b64c[data.charCodeAt(i) >>> 2];
+                res += b64c[((data.charCodeAt(i) & 3) << 4)];
+                res += "==";
+                break;
+            }
+            return res;
         }
     };
-
 }());
 

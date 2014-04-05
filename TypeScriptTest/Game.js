@@ -16,7 +16,6 @@ var Game = (function () {
     var currentTime = window.performance.now(),
         deltaTime,
         frames = 0,
-        board,
         screen,
         canvas,
         context,
@@ -47,25 +46,26 @@ var Game = (function () {
                 Debug.context = context;
                 Mouse.init(canvas, screen);
                 Keyboard.init();
-                board = new Board();
-                board.randomize(1);
                 buttons = new ButtonList();
                 buttons.add(new Button(ImageLoader.load("undo"), 710, 200, Game.onUndo));
                 buttons.add(new Button(ImageLoader.load("redo"), 760, 200, Game.onRedo));
-                Game.run();
+                Game.load();
             },
 
-            run: function () {
-                var now;
+            load: function () {
                 if (ImageLoader.complete() && Dictionary.isLoaded()) {
-                    requestAnimFrame(Game.onFrame);
+                    Game.postLoad();
                 } else {
                     Game.cls();
                     context.fillStyle = 'white';
-                    context.fillText(10, 10, "Loading");
-                    console.log("Game loading complete");
-                    requestAnimFrame(Game.run);
+                    context.fillRect(10, 10, 200, 200); // loader progress bar here...
+                    requestAnimFrame(Game.load);
                 }
+            },
+
+            postLoad: function () {
+                Board.randomize(1);
+                Game.onFrame();
             },
 
             onFrame: function () {
@@ -75,10 +75,10 @@ var Game = (function () {
                 Keyboard.update();
                 Mouse.update();
                 Game.cls();
-                board.update(deltaTime);
+                Board.update(deltaTime);
                 buttons.update();
+                Board.draw(context);
                 buttons.draw(context);
-                board.draw(context);
                 Debug.draw();
                 frames += 1;
                 requestAnimFrame(Game.onFrame);

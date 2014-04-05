@@ -5,12 +5,14 @@ var ajax = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    function send(url, callback, context, method, data) {
+    function send(url, callback, context, method, data, mimetype) {
 
         var xr;
         xr = new XMLHttpRequest();
-        //xr = new ActiveXObject("Microsoft.XmlHttp");
         xr.open(method, url);
+        if (mimetype != null) {
+            xr.overrideMimeType(mimetype);
+        }
         xr.onreadystatechange = function () {
             if (xr.readyState === XMLHttpRequest.DONE) {
                 callback.call(context, xr.responseText);
@@ -28,26 +30,26 @@ var ajax = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        get: function (url, data, callback, context) {
+        get: function (url, data, callback, context, mimetype) {
 
             var query = [],
                 key;
             for (key in data) {
                 query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
             }
-            send(url + '?' + query.join('&'), callback, context, 'GET', null);
+            send(url + '?' + query.join('&'), callback, context, 'GET', null, mimetype);
         },
 
         //////////////////////////////////////////////////////////////////////
 
-        post: function (url, data, callback, context) {
+        post: function (url, data, callback, context, mimeType) {
 
             var query = [],
                 key;
             for (key in data) {
                 query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
             }
-            send(url, callback, context, 'POST', query.join('&'));
+            send(url, callback, context, 'POST', query.join('&'), mimeType);
         }
     };
 

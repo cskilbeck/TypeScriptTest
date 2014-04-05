@@ -14,21 +14,21 @@ var ImageLoader = (function () {
         },
 
         load: function (name) {
-            var image;
-            if (name !== undefined) {
-                if (images.hasOwnProperty(name)) {
-                    return images[name];
-                }
-                ++requested;
-                image = new Image();
-                images[name] = image;
-                image.addEventListener("load", function () {
-                    ++loaded;
-                }, false);
-                image.src = 'img/' + name + '.png';
-                return image;
+            var image,
+                dataLen,
+                binary,
+                i;
+            if (images.hasOwnProperty(name)) {
+                return images[name];
             }
-            return null;
+            ++requested;
+            image = new Image();
+            images[name] = image;
+            ajax.get('img/' + name + '.png', {}, function (data) {
+                image.src = 'data:image/png;base64,' + Util.btoa(data);
+                ++loaded;
+            }, null, 'text/plain; charset=x-user-defined');
+            return image;
         },
 
         complete: function () {

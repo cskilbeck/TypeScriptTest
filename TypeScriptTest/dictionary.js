@@ -2,7 +2,7 @@
 
     var dictionary = null;
 
-    ajax.get("img/dictionary.json", {}, function (data) { dictionary = JSON.parse(data); });
+    ajax.get("img/dictionary.json", {}, function (d) { dictionary = JSON.parse(d); });
 
     return {
 

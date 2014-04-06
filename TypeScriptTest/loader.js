@@ -22,7 +22,13 @@ var Loader = (function () {
 		return null;
 	}
 
-	//////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////
+
+	function progress(loaded, total) {
+	    this.bytesReceived += loaded;
+	}
+
+    //////////////////////////////////////////////////////////////////////
 
 	Loader.prototype = {
 
@@ -32,7 +38,7 @@ var Loader = (function () {
 			return this.requests === this.loaded;
 		},
 
-		//////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////
 
 		loadImage: function (name, callback, context) {
 			var image = cache(this, name);
@@ -46,7 +52,7 @@ var Loader = (function () {
 						callback.call(context, image);
 					}
 					++this.loaded;
-				}, this, 'text/plain; charset=x-user-defined');
+				}, progress, this, 'text/plain; charset=x-user-defined');
 			}
 			return image;
 		},
@@ -65,7 +71,7 @@ var Loader = (function () {
 						callback.call(context, d);
 					}
 					++this.loaded;
-				}, this);
+				}, progress, this);
 			}
 		}
 	};

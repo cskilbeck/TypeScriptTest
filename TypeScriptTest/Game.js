@@ -60,7 +60,8 @@ var Game = (function () {
                 } else {
                     Game.cls();
                     context.fillStyle = 'white';
-                    context.fillRect(10, 10, 200, 200); // loader progress bar here...
+                    context.font = "20px Arial";
+                    context.fillText("Loaded " + loader.bytesReceived.toString() + " bytes...", 50, 50);
                     requestAnimFrame(Game.waitForLoader);
                 }
             },

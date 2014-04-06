@@ -11,7 +11,7 @@ var ajax = (function () {
         xr = new XMLHttpRequest();
         xr.open(method, url);
         if (mimetype !== null) {
-            xr.overrideMimeType(mimetype);
+            //xr.overrideMimeType(mimetype);
         }
         xr.onreadystatechange = function () {
             if (xr.readyState === XMLHttpRequest.DONE) {

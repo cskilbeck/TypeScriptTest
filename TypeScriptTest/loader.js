@@ -92,7 +92,7 @@ var Loader = (function () {
                         callback.call(context, image);
                     }
                     ++this.loaded;
-                }, progress, this, 'text/plain; charset=x-user-defined');
+                }, progress, this);
             }
             return image;
         },

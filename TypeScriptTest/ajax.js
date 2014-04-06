@@ -7,20 +7,19 @@ var ajax = (function () {
 
     function send(url, callback, progressCallback, context, method, data, mimetype) {
 
-        var xr,
-            t;
+        var xr;
         xr = new XMLHttpRequest();
         xr.open(method, url);
-        if (mimetype != null) {
+        if (mimetype !== null) {
             xr.overrideMimeType(mimetype);
         }
         xr.onreadystatechange = function () {
             if (xr.readyState === XMLHttpRequest.DONE) {
-                callback.call(context, xr.responseText);
+                callback.call(context, url, xr.responseText);
             }
         };
         xr.onprogress = function (e) {
-            progressCallback.call(context, e.loaded, e.lengthComputable ? e.total : 0);
+            progressCallback.call(context, url, e);
         };
         if (method === 'POST') {
             xr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -35,14 +34,20 @@ var ajax = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        get: function (url, data, callback, progressCallback, context, mimetype) {
-
+        url: function (url, data) {
             var query = [],
                 key;
             for (key in data) {
                 query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
             }
-            return send(url + '?' + query.join('&'), callback, progressCallback, context, 'GET', null, mimetype);
+            return url + (query.length > 0 ? ('?' + query.join('&')) : '');
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        get: function (url, callback, progressCallback, context, mimetype) {
+
+            send(url, callback, progressCallback, context, 'GET', null, mimetype);
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -54,7 +59,7 @@ var ajax = (function () {
             for (key in data) {
                 query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
             }
-            return send(url, callback, progressCallback, context, 'POST', query.join('&'), mimeType);
+            send(url, callback, progressCallback, context, 'POST', query.join('&'), mimeType);
         }
     };
 

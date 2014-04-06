@@ -61,7 +61,11 @@ var Game = (function () {
                     Game.cls();
                     context.fillStyle = 'white';
                     context.font = "20px Arial";
-                    context.fillText("Loaded " + loader.bytesReceived.toString() + " bytes...", 50, 50);
+                    context.fillText("Loading...", 50, 50);
+                    context.fillStyle = 'black';
+                    context.fillRect(50, 200, 400, 20);
+                    context.fillStyle = 'green';
+                    context.fillRect(50, 200, loader.percentComplete() * 4, 20);
                     requestAnimFrame(Game.waitForLoader);
                 }
             },

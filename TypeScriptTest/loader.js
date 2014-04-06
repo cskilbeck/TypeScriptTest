@@ -87,12 +87,14 @@ var Loader = (function () {
                 image = new Image();
                 ++this.requests;
                 url = ajax.get(url, function (url, data) {
+                    console.log("Got " + url);
                     image.src = 'data:image/png;base64,' + Util.btoa(data);
+                    console.log("image is " + image.width + "," + image.height);
                     if (callback !== undefined) {
                         callback.call(context, image);
                     }
                     ++this.loaded;
-                }, progress, this);
+                }, progress, this, true);
             }
             return image;
         },
@@ -112,7 +114,7 @@ var Loader = (function () {
                         callback.call(context, d);
                     }
                     ++this.loaded;
-                }, progress, this);
+                }, progress, this, false);
             }
         }
     };

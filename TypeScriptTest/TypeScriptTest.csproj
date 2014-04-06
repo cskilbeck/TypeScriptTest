@@ -26,6 +26,7 @@
     <Content Include="debug.js" />
     <Content Include="facebook.js" />
     <Content Include="game.js" />
+    <Content Include="ie.js" />
     <Content Include="imageloader.js" />
     <Content Include="img\allColour.png" />
     <None Include="img\Arial.json" />

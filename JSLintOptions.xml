@@ -726,6 +726,8 @@
       <string>Util</string>
       <string>ajax</string>
       <string>Loader</string>
+      <string>Uint8Array</string>
+      <string>VBArray</string>
     </PreDefined>
   </JSLintOptions>
   <BuildFileTypes>JS</BuildFileTypes>

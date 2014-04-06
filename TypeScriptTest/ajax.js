@@ -5,17 +5,21 @@ var ajax = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    function send(url, callback, progressCallback, context, method, data, mimetype) {
+    function send(url, callback, progressCallback, context, method, data, binary) {
 
         var xr;
         xr = new XMLHttpRequest();
         xr.open(method, url);
-        if (mimetype !== null) {
-            //xr.overrideMimeType(mimetype);
+        if (binary) {
+            xr.responseType = 'arraybuffer';
         }
         xr.onreadystatechange = function () {
             if (xr.readyState === XMLHttpRequest.DONE) {
-                callback.call(context, url, xr.responseText);
+                if (binary) {
+                    callback.call(context, url, new Uint8Array(this.response));
+                } else {
+                    callback.call(context, url, xr.responseText);
+                }
             }
         };
         xr.onprogress = function (e) {
@@ -45,21 +49,21 @@ var ajax = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        get: function (url, callback, progressCallback, context, mimetype) {
+        get: function (url, callback, progressCallback, context, binary) {
 
-            send(url, callback, progressCallback, context, 'GET', null, mimetype);
+            send(url, callback, progressCallback, context, 'GET', null, binary);
         },
 
         //////////////////////////////////////////////////////////////////////
 
-        post: function (url, data, callback, progressCallback, context, mimeType) {
+        post: function (url, data, callback, progressCallback, context, binary) {
 
             var query = [],
                 key;
             for (key in data) {
                 query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
             }
-            send(url, callback, progressCallback, context, 'POST', query.join('&'), mimeType);
+            send(url, callback, progressCallback, context, 'POST', query.join('&'), binary);
         }
     };
 

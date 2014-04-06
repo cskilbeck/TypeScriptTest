@@ -23,6 +23,7 @@ var Sprite = (function () {
         this.m = new Matrix();
         this[listNodeName || 'spriteListNode'] = listNode(this);
         loader.loadImage(name, function (img) {
+            console.log("loaded " + name + " width = " + img.width + ", height = " + img.height);
             this.image = img;
             this.width = this.image.width;
             this.height = this.image.height;

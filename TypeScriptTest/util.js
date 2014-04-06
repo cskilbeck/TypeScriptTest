@@ -80,10 +80,10 @@ var Util = (function () {
         /**
          * btoa(data): String
          *
-         * Base64 encode a binary string (all char codes must be < 255).
+         * Base64 encode some data
          *
-         * @param  {String} data The data to convert
-         * @return {String} The base64 binary
+         * @param  {UInt8Array} data The data to convert
+         * @return {String} The base64 string
          */
         btoa: function (data) {
             var i,
@@ -93,9 +93,9 @@ var Util = (function () {
                 c1,
                 c2;
             for (i = 0; i < length - 2; i += 3) {
-                c0 = data.charCodeAt(i) & 0xff;
-                c1 = data.charCodeAt(i + 1) & 0xff;
-                c2 = data.charCodeAt(i + 2) & 0xff;
+                c0 = data[i] & 0xff;
+                c1 = data[i + 1] & 0xff;
+                c2 = data[i + 2] & 0xff;
                 res += b64c[c0 >>> 2];
                 res += b64c[((c0 & 3) << 4) | (c1 >>> 4)];
                 res += b64c[((c1 & 15) << 2) | (c2 >>> 6)];
@@ -103,15 +103,14 @@ var Util = (function () {
             }
             switch (length % 3) {
             case 2:
-                res += b64c[data.charCodeAt(i) >>> 2];
-                res += b64c[((data.charCodeAt(i) & 3) << 4) |
-                            (data.charCodeAt(i + 1) >>> 4)];
-                res += b64c[((data.charCodeAt(i + 1) & 15) << 2)];
+                res += b64c[(data[i] & 0xff) >>> 2];
+                res += b64c[((data[i] & 3) << 4) | (data[i + 1] >>> 4)];
+                res += b64c[((data[i + 1] & 15) << 2)];
                 res += "=";
                 break;
             case 1:
-                res += b64c[data.charCodeAt(i) >>> 2];
-                res += b64c[((data.charCodeAt(i) & 3) << 4)];
+                res += b64c[(data[i] & 0xff) >>> 2];
+                res += b64c[((data[i] & 3) << 4)];
                 res += "==";
                 break;
             }

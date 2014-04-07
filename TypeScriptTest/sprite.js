@@ -22,10 +22,10 @@ var Sprite = (function () {
         this.dirty = true;
         this.width = 0;
         this.height = 0;
-        this.m = new Matrix();
+        this.drawMat = new Matrix();
+        this.pickMat = new Matrix();
         this[listNodeName || 'spriteListNode'] = listNode(this);
         this.image = loader.loadImage(name, function (img) {
-            console.log("loaded " + name + " width = " + img.width + ", height = " + img.height);
             this.width = img.width;
             this.height = img.height;
             this.frameWidth = this.frameWidth || this.width;
@@ -40,22 +40,6 @@ var Sprite = (function () {
             this.loaded = true;
         }.bind(this);
     };
-
-    //////////////////////////////////////////////////////////////////////
-    // private static
-
-    function getScale(s) {
-        return {
-            x: s.scale.x * (s.flip.horizontal ? -1 : 1),
-            y: s.scale.y * (s.flip.vertical ? -1 : 1)
-        };
-    }
-
-    //////////////////////////////////////////////////////////////////////
-
-    function setTransform(context, m) {
-        context.setTransform(m.m[0], m.m[1], m.m[2], m.m[3], m.m[4], m.m[5]);
-    }
 
     //////////////////////////////////////////////////////////////////////
 
@@ -115,11 +99,31 @@ var Sprite = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        setupMatrix: function () {
+        calculateMatrices: function () {
+            var m,
+                s = {};
             if (this.dirty) {
-                this.m.setIdentity().translate(this.position).rotate(this.rotation).scale(this.scale);
+                s.x = this.scale.x * (this.flip.horizontal ? -1 : 1);
+                s.y = this.scale.y * (this.flip.vertical ? -1 : 1);
+                m = new Matrix().translate(this.position).rotate(this.rotation);
+                this.drawMat = m.scale(s);
+                this.pickMat = m.scale(this.scale);
                 this.dirty = false;
             }
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        drawMatrix: function () {
+            this.calculateMatrices();
+            return this.drawMat;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        pickMatrix: function () {
+            this.calculateMatrices();
+            return this.pickMat;
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -127,14 +131,15 @@ var Sprite = (function () {
         draw: function (context) {
             var scale,
                 xtweak,
-                ytweak;
+                ytweak,
+                m;
             if (this.visible) {
-                this.setupMatrix();
-                scale = getScale(this);
-                setTransform(context, this.m);
+                m = this.drawMatrix().m;
+                context.setTransform(m[0], m[1], m[2], m[3], m[4], m[5]);
                 context.globalAlpha = this.transparency / 255;
                 xtweak = 0;
                 ytweak = 0;
+                // correct dodgy bleeding problem
                 if (this.scale.x > 1) {
                     xtweak = 0.5 - (0.5 / this.scale.x);
                 }
@@ -155,15 +160,13 @@ var Sprite = (function () {
             var l,
                 r,
                 t,
-                b,
-                m;
+                b;
             l = -this.pivot.x * this.frameWidth;
             t = -this.pivot.y * this.frameHeight;
             r = l + this.frameWidth;
             b = t + this.frameHeight;
-            this.setupMatrix();
             return Util.pointInConvexPoly(
-                this.m.transform([{ x: l, y: t }, { x: r, y: t }, { x: r, y: b }, { x: l, y: b }]),
+                this.pickMatrix().transform([{ x: l, y: t }, { x: r, y: t }, { x: r, y: b }, { x: l, y: b }]),
                 point,
                 border
             );

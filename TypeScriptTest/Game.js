@@ -24,14 +24,6 @@ var Game = (function () {
 
         Game = {
 
-            onUndo: function () {
-                console.log("Undo!");
-            },
-
-            onRedo: function () {
-                console.log("Redo!");
-            },
-
             cls: function () {
                 context.setTransform(1, 0, 0, 1, 0, 0);
                 context.globalCompositeOperation = 'source-over';
@@ -48,16 +40,21 @@ var Game = (function () {
                 Dictionary.load(loader);
                 Debug.init(context, loader);
                 buttons = new ButtonList();
-                buttons.add(new Button("undo", loader, 710, 200, Game.onUndo));
-                buttons.add(new Button("redo", loader, 760, 200, Game.onRedo));
+                buttons.add(new Button("undo", loader, 710, 200, Board.undo));
+                buttons.add(new Button("redo", loader, 760, 200, Board.redo));
+                buttons.head().setFlip(false, true);
                 Tile.load(loader);
                 loader.start();
-                Game.waitForLoader();
+                Game.load();
             },
 
-            waitForLoader: function () {
+            load: function () {
                 if (loader.loadingComplete()) {
-                    Game.onLoaded();
+                    loader = null;
+                    Mouse.init(canvas, screen);
+                    Keyboard.init();
+                    Board.randomize(1);
+                    Game.run();
                 } else {
                     Game.cls();
                     context.fillStyle = 'white';
@@ -67,18 +64,11 @@ var Game = (function () {
                     context.fillRect(50, 200, 400, 20);
                     context.fillStyle = 'green';
                     context.fillRect(50, 200, loader.percentComplete() * 4, 20);
-                    requestAnimFrame(Game.waitForLoader);
+                    requestAnimFrame(Game.load);
                 }
             },
 
-            onLoaded: function () {
-                Mouse.init(canvas, screen);
-                Keyboard.init();
-                Board.randomize(1);
-                Game.onFrame();
-            },
-
-            onFrame: function () {
+            run: function () {
                 var now = window.performance.now();
                 deltaTime = now - currentTime;
                 currentTime = now;
@@ -91,7 +81,7 @@ var Game = (function () {
                 buttons.draw(context);
                 Debug.draw();
                 frames += 1;
-                requestAnimFrame(Game.onFrame);
+                requestAnimFrame(Game.run);
             },
 
             time: function () {

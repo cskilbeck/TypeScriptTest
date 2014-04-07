@@ -7,8 +7,6 @@ var Loader = (function () {
 
     var Loader = function () {
             this.items = {};
-            this.requests = 0;
-            this.loaded = 0;
             this.totalBytes = 0;
             this.bytesReceived = 0;
         },
@@ -37,6 +35,13 @@ var Loader = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
+    Item.prototype.onComplete = function () {
+        this.doCallback();
+        this.loaded = true;
+    };
+
+    //////////////////////////////////////////////////////////////////////
+
     function progress(url, e) {
         /*jshint validthis: true */
         if (e.lengthComputable && this.size === undefined) {
@@ -50,10 +55,7 @@ var Loader = (function () {
     function processImage(url, data) {
         /*jshint validthis: true */
         this.object.src = 'data:image/png;base64,' + Util.btoa(data);
-        console.log("Got " + url);
-        console.log("image is " + this.object.width + "," + this.object.height);
-        this.doCallback();
-        this.loaded = true;
+        this.onComplete();
     }
 
     //////////////////////////////////////////////////////////////////////
@@ -61,8 +63,7 @@ var Loader = (function () {
     function processJSON(url, data) {
         /*jshint validthis: true */
         Util.shallowCopy(JSON.parse(data), this.object);    // fuckit
-        this.doCallback();
-        this.loaded = true;
+        this.onComplete();
     }
 
     //////////////////////////////////////////////////////////////////////
@@ -77,12 +78,6 @@ var Loader = (function () {
     //////////////////////////////////////////////////////////////////////
 
     Loader.prototype = {
-
-        //////////////////////////////////////////////////////////////////////
-
-        complete: function () {
-            return this.requests === this.loaded;
-        },
 
         //////////////////////////////////////////////////////////////////////
 
@@ -117,9 +112,7 @@ var Loader = (function () {
         start: function () {
             var i,
                 img;
-            console.log("Loader.start<<");
             for (i in this.items) {
-                console.log("Kick " + this.items[i].url);
                 switch (this.items[i].type) {
                 case 'png':
                     ajax.get(this.items[i].url, processImage, progress, this.items[i], true);
@@ -130,7 +123,6 @@ var Loader = (function () {
                     break;
                 }
             }
-            console.log(">>end of Loader.start");
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -141,7 +133,6 @@ var Loader = (function () {
             if (image === null) {
                 image = new Image();
                 this.items[url] = new Item(url, image, "png", callback, context, data);
-                ++this.requests;
             } else {
                 this.items[url].doCallback();
             }
@@ -152,15 +143,14 @@ var Loader = (function () {
 
         loadJSON: function (name, callback, context, data) {
             var url = ajax.url('img/' + name + '.json', data || {}),
-                d = cache(this.items, url);
-            if (d === null) {
-                d = {};
-                this.items[url] = new Item(url, d, "json", callback, context, data);
-                ++this.requests;
+                obj = cache(this.items, url);
+            if (obj === null) {
+                obj = {};
+                this.items[url] = new Item(url, obj, "json", callback, context, data);
             } else {
                 this.items[url].doCallback();
             }
-            return d;
+            return obj;
         }
     };
 

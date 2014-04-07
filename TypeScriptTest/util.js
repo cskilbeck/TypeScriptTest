@@ -77,6 +77,26 @@ var Util = (function () {
             return true;
         },
 
+        //////////////////////////////////////////////////////////////////////
+
+        getResponseAsArray: function (xr) {
+
+            if (xr.response !== undefined) {
+                return new Uint8Array(xr.response);
+            }
+            if (xr.mozResponseArrayBuffer !== undefined) {
+                return new Uint8Array(xr.mozResponseArrayBuffer);
+            }
+            if (xr.mozResponse !== undefined) {
+                return new Uint8Array(xr.mozResponse);
+            }
+            if (xr.responseArrayBuffer !== undefined) {
+                return new Uint8Array(xr.responseArrayBuffer);
+            }
+            return new Uint8Array(new VBArray(xr.responseBody).toArray());
+        },
+
+        //////////////////////////////////////////////////////////////////////
         /**
          * btoa(data): String
          *
@@ -88,7 +108,7 @@ var Util = (function () {
         btoa: function (data) {
             var i,
                 res = "",
-                length = data.length,
+                length = data.length || data.byteLength,
                 c0,
                 c1,
                 c2;

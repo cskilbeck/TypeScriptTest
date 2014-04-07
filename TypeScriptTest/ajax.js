@@ -16,7 +16,7 @@ var ajax = (function () {
         xr.onreadystatechange = function () {
             if (xr.readyState === XMLHttpRequest.DONE) {
                 if (binary) {
-                    callback.call(context, url, new Uint8Array(this.response));
+                    callback.call(context, url, Util.getResponseAsArray(xr));
                 } else {
                     callback.call(context, url, xr.responseText);
                 }
@@ -40,11 +40,17 @@ var ajax = (function () {
 
         url: function (url, data) {
             var query = [],
-                key;
+                key,
+                u,
+                q = "",
+                a = "?";
             for (key in data) {
                 query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
+                q = "?";
+                a = "&";
             }
-            return url + (query.length > 0 ? ('?' + query.join('&')) : '');
+            u = url + q + query.join('&') + a + (new Date()).getTime() + '=1';
+            return u;
         },
 
         //////////////////////////////////////////////////////////////////////

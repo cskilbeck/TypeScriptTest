@@ -6,13 +6,12 @@ var Font = (function () {
     //////////////////////////////////////////////////////////////////////
 
     var Font = function (name, loader) {
+        this.font = null;
         this.images = [];
+        this.images.push(loader.loadImage(name + '0')); // ugh - name has to be the same as the file...
         loader.loadJSON(name, function (font) {
             this.font = font;
-            var i;
-            for (i = 0; i < font.pageCount; ++i) {
-                this.images.push(loader.loadImage(font.name + i.toString()));
-            }
+            // multi-page fonts not supported...
         }, this);
     };
 

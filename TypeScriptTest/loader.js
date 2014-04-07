@@ -34,6 +34,7 @@ var Loader = (function () {
     //////////////////////////////////////////////////////////////////////
 
     function progress(url, e) {
+        /*jshint validthis: true */
         if (e.lengthComputable && this.items[url].size === undefined) {
             this.items[url].size = e.total;
         }

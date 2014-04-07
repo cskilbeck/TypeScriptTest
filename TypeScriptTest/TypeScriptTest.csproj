@@ -27,6 +27,7 @@
     <Content Include="facebook.js" />
     <Content Include="game.js" />
     <Content Include="img\allColour.png" />
+    <None Include="Fatcos.pubxml" />
     <None Include="img\Arial.json" />
     <Content Include="img\Arial0.png" />
     <None Include="img\dictionary.json" />

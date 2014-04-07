@@ -131,6 +131,21 @@ var Loader = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
+        status: function (ctx, x, y, h) {
+            var s = "",
+                i,
+                t,
+                r;
+            for (i in this.items) {
+                r = this.items[i].bytesReceived.toString();
+                t = this.items[i].size ? "/" + this.items[i].size.toString() : "";
+                ctx.fillText(this.items[i].url + " : " + r + t, x, y);
+                y += h;
+            }
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
         start: function () {
             var i;
             for (i in this.items) {

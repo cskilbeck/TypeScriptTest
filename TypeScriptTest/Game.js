@@ -75,11 +75,13 @@ var Game = (function () {
                     Game.cls();
                     context.fillStyle = 'white';
                     context.font = "20px Arial";
-                    context.fillText("Loading...", 50, 50);
+                    context.fillText("Loading...", 50, 70);
+                    context.font = "15px Arial";
+                    loader.status(context, 50, 100, 15);
                     context.fillStyle = 'black';
-                    context.fillRect(50, 200, 400, 20);
+                    context.fillRect(50, 20, 400, 20);
                     context.fillStyle = 'green';
-                    context.fillRect(50, 200, loader.percentComplete() * 4, 20);
+                    context.fillRect(50, 20, loader.percentComplete() * 4, 20);
                     requestAnimFrame(Game.load);
                 }
             },

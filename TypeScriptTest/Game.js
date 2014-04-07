@@ -15,7 +15,9 @@
 // Font: alignment, embedded control characters, links
 //
 // timer.js
-// 
+// playfield.js ?
+// drawing.js ?
+//
 
 var Game = (function () {
     "use strict";
@@ -53,7 +55,7 @@ var Game = (function () {
                 context = canvas.getContext('2d');
                 Mouse.init(canvas, screen);
                 Keyboard.init();
-                loader = new Loader();
+                loader = new Loader('img/');
                 Dictionary.load(loader);
                 Debug.init(context, loader);
                 buttons = new ButtonList();

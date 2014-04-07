@@ -9,11 +9,11 @@
         },
 
         isWord: function (str) {
-            return dictionary.hasOwnProperty(str);
+            return dictionary.words.hasOwnProperty(str);
         },
 
         getDefinition: function (str) {
-            return Dictionary.isWord(str) ? dictionary[str] : "??";
+            return Dictionary.isWord(str) ? dictionary.words[str] : "??";
         }
     }
 

@@ -5,25 +5,45 @@ var Loader = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    var Loader = function () {
+    var Loader = function (baseDir) {
+            this.baseDir = baseDir;
             this.items = {};
-            this.totalBytes = 0;
-            this.bytesReceived = 0;
         },
 
     //////////////////////////////////////////////////////////////////////
 
-        Item = function (url, object, type, callback, context, data) {
+        Item = function (url, object, callback, context, data) {
             this.url = url;
             this.object = object;
             this.size = undefined;
             this.bytesReceived = 0;
-            this.type = type;
             this.callback = callback;
             this.context = context;
             this.data = data;
             this.loaded = false;
+            this.ext = url.match(/(?:(?:[\w\W]+)\.)([\w\W]+?)(\?|$)/)[1].toLowerCase();
+            this.binary = undefined;
+            this.started = false;
+            switch (this.ext) {
+            case 'png':
+                this.binary = true;
+                this.finalize = Item.processImage;
+                break;
+            case 'json':
+                this.binary = false;
+                this.finalize = Item.processJSON;
+                break;
+            }
         };
+
+    //////////////////////////////////////////////////////////////////////
+
+    Item.prototype.load = function () {
+        if (!this.started) {
+            this.started = true;
+            ajax.get(this.url, Item.onLoaded, Item.onProgress, this, this.binary);
+        }
+    };
 
     //////////////////////////////////////////////////////////////////////
 
@@ -42,29 +62,31 @@ var Loader = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    function progress(url, e) {
-        /*jshint validthis: true */
+    Item.onProgress = function (url, e) {
         if (e.lengthComputable && this.size === undefined) {
             this.size = e.total;
         }
         this.bytesReceived = e.loaded;
-    }
+    };
 
     //////////////////////////////////////////////////////////////////////
 
-    function processImage(url, data) {
-        /*jshint validthis: true */
+    Item.onLoaded = function (url, data) {
+        this.finalize.call(this, data);
+        this.onComplete();
+    };
+
+    //////////////////////////////////////////////////////////////////////
+
+    Item.processImage = function (data) {
         this.object.src = 'data:image/png;base64,' + Util.btoa(data);
-        this.onComplete();
-    }
+    };
 
     //////////////////////////////////////////////////////////////////////
 
-    function processJSON(url, data) {
-        /*jshint validthis: true */
+    Item.processJSON = function (data) {
         Util.shallowCopy(JSON.parse(data), this.object);    // fuckit
-        this.onComplete();
-    }
+    };
 
     //////////////////////////////////////////////////////////////////////
 
@@ -110,29 +132,20 @@ var Loader = (function () {
         //////////////////////////////////////////////////////////////////////
 
         start: function () {
-            var i,
-                img;
+            var i;
             for (i in this.items) {
-                switch (this.items[i].type) {
-                case 'png':
-                    ajax.get(this.items[i].url, processImage, progress, this.items[i], true);
-                    break;
-
-                case 'json':
-                    ajax.get(this.items[i].url, processJSON, progress, this.items[i], false);
-                    break;
-                }
+                this.items[i].load();
             }
         },
 
         //////////////////////////////////////////////////////////////////////
 
         loadImage: function (name, callback, context, data) {
-            var url = ajax.url('img/' + name + '.png', data || {}),
+            var url = ajax.url(this.baseDir + name + '.png', data),
                 image = cache(this.items, url);
             if (image === null) {
                 image = new Image();
-                this.items[url] = new Item(url, image, "png", callback, context, data);
+                this.items[url] = new Item(url, image, callback, context, data);
             } else {
                 this.items[url].doCallback();
             }
@@ -142,11 +155,11 @@ var Loader = (function () {
         //////////////////////////////////////////////////////////////////////
 
         loadJSON: function (name, callback, context, data) {
-            var url = ajax.url('img/' + name + '.json', data || {}),
+            var url = ajax.url(this.baseDir + name + '.json', data),
                 obj = cache(this.items, url);
             if (obj === null) {
                 obj = {};
-                this.items[url] = new Item(url, obj, "json", callback, context, data);
+                this.items[url] = new Item(url, obj, callback, context, data);
             } else {
                 this.items[url].doCallback();
             }

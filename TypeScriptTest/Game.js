@@ -1,14 +1,21 @@
 ﻿//////////////////////////////////////////////////////////////////////
-// Fix tile grabbing/moving
-// Tile lerping
+// UIElement stack
+// TextButton
+// TextBox
 // Undo/Redo
 // Scoreboard
-// Flying scores
 // Title screen
-// Leaderboard
+// Mobile: Android/Chrome, iOS/Safari, Windows Phone: IE
+// Variable viewport size
+// Fix tile grabbing/moving
+// Tile lerping
+// Flying scores/fizz/particles
 // Facebook OAuth
-// Button
-// TextBox
+// Leaderboards
+// Font: alignment, embedded control characters, links
+//
+// timer.js
+// 
 
 var Game = (function () {
     "use strict";
@@ -24,6 +31,14 @@ var Game = (function () {
 
         Game = {
 
+            time: function () {
+                return currentTime;
+            },
+
+            deltaTime: function () {
+                return deltaTime;
+            },
+
             cls: function () {
                 context.setTransform(1, 0, 0, 1, 0, 0);
                 context.globalCompositeOperation = 'source-over';
@@ -36,13 +51,14 @@ var Game = (function () {
                 screen = screenDivElement;
                 canvas = canvasElement;
                 context = canvas.getContext('2d');
+                Mouse.init(canvas, screen);
+                Keyboard.init();
                 loader = new Loader();
                 Dictionary.load(loader);
                 Debug.init(context, loader);
                 buttons = new ButtonList();
                 buttons.add(new Button("undo", loader, 710, 200, Board.undo));
                 buttons.add(new Button("redo", loader, 760, 200, Board.redo));
-                buttons.head().setFlip(false, true);
                 Tile.load(loader);
                 loader.start();
                 Game.load();
@@ -51,8 +67,6 @@ var Game = (function () {
             load: function () {
                 if (loader.loadingComplete()) {
                     loader = null;
-                    Mouse.init(canvas, screen);
-                    Keyboard.init();
                     Board.randomize(1);
                     Game.run();
                 } else {
@@ -82,14 +96,6 @@ var Game = (function () {
                 Debug.draw();
                 frames += 1;
                 requestAnimFrame(Game.run);
-            },
-
-            time: function () {
-                return currentTime;
-            },
-
-            deltaTime: function () {
-                return deltaTime;
             }
         };
 

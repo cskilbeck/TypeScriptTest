@@ -9,7 +9,7 @@ var Font = (function () {
         this.font = null;
         this.images = [];
         this.images.push(loader.loadImage(name + '0')); // ugh - name has to be the same as the file...
-        this.font = loader.loadJSON(name);
+        this.font = loader.loadJSON(name);              // and multipage fonts not supported...
     };
 
     //////////////////////////////////////////////////////////////////////

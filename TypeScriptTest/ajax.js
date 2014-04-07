@@ -38,7 +38,7 @@ var ajax = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        url: function (url, data) {
+        url: function (url, data, force) {
             var query = [],
                 key,
                 u,
@@ -49,7 +49,7 @@ var ajax = (function () {
                 q = "?";
                 a = "&";
             }
-            u = url + q + query.join('&') + a + (new Date()).getTime() + '=1';
+            u = url + q + query.join('&') + (force ? (a + (new Date()).getTime() + '=1') : "");
             return u;
         },
 

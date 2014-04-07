@@ -45,17 +45,18 @@ var Game = (function () {
                 canvas = canvasElement;
                 context = canvas.getContext('2d');
                 loader = new Loader();
+                Dictionary.load(loader);
                 Debug.init(context, loader);
                 buttons = new ButtonList();
                 buttons.add(new Button("undo", loader, 710, 200, Game.onUndo));
                 buttons.add(new Button("redo", loader, 760, 200, Game.onRedo));
-                Dictionary.load(loader);
                 Tile.load(loader);
+                loader.start();
                 Game.waitForLoader();
             },
 
             waitForLoader: function () {
-                if (loader.complete()) {
+                if (loader.loadingComplete()) {
                     Game.onLoaded();
                 } else {
                     Game.cls();

@@ -21,6 +21,15 @@ var Util = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
+        shallowCopy: function (parent, child) {
+            var i;
+            for (i in parent) {
+                child[i] = parent[i];
+            }
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
         ease: function (x) {
 
             var x2 = x * x,

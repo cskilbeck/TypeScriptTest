@@ -20,17 +20,25 @@ var Sprite = (function () {
         this.zIndex = 0;
         this.loaded = false;
         this.dirty = true;
+        this.width = 0;
+        this.height = 0;
         this.m = new Matrix();
         this[listNodeName || 'spriteListNode'] = listNode(this);
-        loader.loadImage(name, function (img) {
+        this.image = loader.loadImage(name, function (img) {
             console.log("loaded " + name + " width = " + img.width + ", height = " + img.height);
-            this.image = img;
-            this.width = this.image.width;
-            this.height = this.image.height;
+            this.width = img.width;
+            this.height = img.height;
             this.frameWidth = this.frameWidth || this.width;
             this.frameHeight = this.frameHeight || this.height;
             this.loaded = true;
         }, this);
+        this.image.onload = function (e) {
+            this.width = this.image.width;
+            this.height = this.image.width;
+            this.frameWidth = this.frameWidth || this.width;
+            this.frameHeight = this.frameHeight || this.height;
+            this.loaded = true;
+        }.bind(this);
     };
 
     //////////////////////////////////////////////////////////////////////

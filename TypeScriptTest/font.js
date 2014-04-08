@@ -12,6 +12,12 @@ var Font = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
+    Font.load = function (name, loader) {
+        return new Font(loader.load(name + ".json"), loader.load(name + "0.png"));
+    };
+
+    //////////////////////////////////////////////////////////////////////
+
     Font.prototype = {
 
         drawText: function (ctx, x, y, str) {

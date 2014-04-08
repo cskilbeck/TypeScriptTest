@@ -9,8 +9,8 @@ var Debug = (function () {
 
         Debug = {
 
-            init: function (ctx, loader) {
-                font = new Font(loader.load("Fixedsys.json"), loader.load("Fixedsys0.png"));
+            init: function (ctx, fnt) {
+                font = fnt;
                 context = ctx;
             },
 

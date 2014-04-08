@@ -27,7 +27,6 @@
     <Content Include="facebook.js" />
     <Content Include="game.js" />
     <Content Include="img\allColour.png" />
-    <None Include="Fatcow.pubxml" />
     <None Include="img\Arial.json" />
     <Content Include="img\Arial0.png" />
     <None Include="img\dictionary.json" />
@@ -49,7 +48,6 @@
     <Content Include="util.js" />
     <Content Include="word.js" />
     <Content Include="loader.js" />
-    <None Include="Web.Fatcow.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="dictionary.js" />

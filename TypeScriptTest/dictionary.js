@@ -4,8 +4,8 @@
 
     return {
 
-        load: function (loader) {
-            dictionary = loader.load("dictionary.json");
+        init: function (dict) {
+            dictionary = dict;
         },
 
         isWord: function (str) {

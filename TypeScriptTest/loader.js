@@ -185,7 +185,7 @@ var Loader = (function () {
             }
             return item.object;
         }
-};
+    };
 
     return Loader;
 }());

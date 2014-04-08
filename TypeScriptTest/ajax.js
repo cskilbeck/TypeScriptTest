@@ -15,7 +15,6 @@ var ajax = (function () {
         }
         xr.onreadystatechange = function () {
             if (xr.readyState === XMLHttpRequest.DONE) {
-                console.log("ajax loaded " + url);
                 if (binary) {
                     callback.call(context, url, Util.getResponseAsArray(xr));
                 } else {
@@ -24,7 +23,6 @@ var ajax = (function () {
             }
         };
         xr.onprogress = function (e) {
-            console.log("ajax progress (" + e.total + ") : " + url);
             progressCallback.call(context, url, e);
         };
         if (method === 'POST') {

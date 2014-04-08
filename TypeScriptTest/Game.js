@@ -67,24 +67,14 @@ var Game = (function () {
             },
 
             load: function () {
-                if (loader.loadingComplete()) {
-                    //requestAnimFrame(Game.load);
+                if (!loader.loadingComplete()) {
+                    Game.cls();
+                    loader.status(context, 50, 50);
+                    requestAnimFrame(Game.load);
+                } else {
                     loader = null;
                     Board.randomize(1);
                     Game.run();
-                } else {
-                    Game.cls();
-                    context.fillStyle = 'white';
-                    context.font = "20px Arial";
-                    context.fontBaseLine = 'top';
-                    context.fillText("Loading...", 50, 30);
-                    loader.status(context, 50, 100);
-                    context.strokeStyle = 'white';
-                    context.lineWidth = 1;
-                    context.fillStyle = 'orange';
-                    context.strokeRect(50, 75, 400, 20);
-                    context.fillRect(51, 76, loader.percentComplete() * 398 / 400, 18);
-                    requestAnimFrame(Game.load);
                 }
             },
 

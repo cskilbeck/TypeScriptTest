@@ -119,7 +119,7 @@ var Loader = (function () {
                 received += this.items[i].bytesReceived;
             }
             total = total || received;
-            return received > 0 ? received * 100 / total : 0;
+            return (received > 0) ? received * 100 / total : 0;
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -136,29 +136,38 @@ var Loader = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        status: function (ctx, x, y) {
+        status: function (context, x, y) {
             var i,
+                yy,
                 item,
                 recvd,
                 total,
                 percent;
-            ctx.resetTransform();
-            ctx.strokeStyle = 'white';
-            ctx.font = '15px Arial';
-            ctx.lineWidth = 1;
-            ctx.textBaseline = 'middle';
+            context.resetTransform();
+            context.strokeStyle = 'white';
+            context.fillStyle = 'white';
+            context.lineWidth = 1;
+            context.font = "20px Arial";
+            context.fontBaseLine = 'top';
+            context.fillText("Loading... " + this.percentComplete().toFixed(2) + "%", x, y);
+            context.fillStyle = 'orange';
+            context.strokeRect(x, y + 25, 400, 20);
+            context.fillRect(x, y + 26, this.percentComplete() * 3.98, 18);
+            context.font = '15px Arial';
+            context.fontBaseLine = 'middle';
+            yy = y + 50;
             for (i in this.items) {
                 item = this.items[i];
                 if (!item.loaded) {
                     recvd = item.bytesReceived;
                     total = item.size || recvd;
                     percent = recvd * 100 / total;
-                    ctx.strokeRect(x, y, 102, 22);
-                    ctx.fillStyle = 'white';
-                    ctx.fillRect(x + 1, y + 1, percent, 20);
-                    ctx.fillStyle = item.inProgress ? 'white' : 'black';
-                    ctx.fillText(item.url + " : " + recvd.toString() + " of " + total.toString(), x + 110, y + 10);
-                    y += 25;
+                    context.strokeRect(x, yy, 102, 22);
+                    context.fillStyle = 'white';
+                    context.fillRect(x + 1, yy + 1, percent, 20);
+                    context.fillStyle = item.inProgress ? 'white' : 'black';
+                    context.fillText(item.url + " : " + recvd.toString() + " of " + total.toString(), x + 110, yy + 12);
+                    yy += 25;
                 }
             }
         },

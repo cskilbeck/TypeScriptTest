@@ -131,16 +131,27 @@ var Loader = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        status: function (ctx, x, y, h) {
+        status: function (ctx, x, y) {
             var s = "",
                 i,
                 t,
-                r;
+                r,
+                p;
+            ctx.resetTransform();
+            ctx.strokeStyle = 'white';
+            ctx.fillStyle = 'white';
+            ctx.font = '15px Arial';
+            ctx.lineWidth = 1;
+            ctx.textBaseline = 'middle';
             for (i in this.items) {
-                r = this.items[i].bytesReceived.toString();
-                t = this.items[i].size ? "/" + this.items[i].size.toString() : "";
-                ctx.fillText(this.items[i].url + " : " + r + t, x, y);
-                y += h;
+                r = this.items[i].bytesReceived;
+                t = this.items[i].size;
+                t = t || r;
+                p = r * 100 / t;
+                ctx.strokeRect(x, y, 102, 22);
+                ctx.fillRect(x + 1, y + 1, p, 20);
+                ctx.fillText(this.items[i].url + " : " + r.toString() + " of " + t.toString(), x + 110, y + 10);
+                y += 25;
             }
         },
 

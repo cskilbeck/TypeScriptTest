@@ -2,10 +2,10 @@
 // UIElement stack
 // TextButton
 // TextBox
-// Undo/Redo
+// Undo/Redo/SaveBest
 // Scoreboard
 // Title screen
-// Mobile: Android/Chrome, iOS/Safari, Windows Phone: IE
+// Mobile: Android/Chrome, iOS/Safari, Windows Phone: IE // Touch Support
 // Variable viewport size
 // Fix tile grabbing/moving
 // Tile lerping
@@ -59,8 +59,8 @@ var Game = (function () {
                 Dictionary.load(loader);
                 Debug.init(context, loader);
                 buttons = new ButtonList();
-                buttons.add(new Button("undo", loader, 710, 200, Board.undo));
-                buttons.add(new Button("redo", loader, 760, 200, Board.redo));
+                buttons.add(new Button(loader.load("undo.png"), null, 710, 200, Board.undo));
+                buttons.add(new Button(loader.load("redo.png"), null, 760, 200, Board.redo));
                 Tile.load(loader);
                 loader.start();
                 Game.load();
@@ -81,7 +81,7 @@ var Game = (function () {
                     loader.status(context, 50, 100);
                     context.strokeStyle = 'white';
                     context.lineWidth = 1;
-                    context.fillStyle = 'black';
+                    context.fillStyle = 'orange';
                     context.strokeRect(50, 75, 400, 20);
                     context.fillRect(51, 76, loader.percentComplete() * 398 / 400, 18);
                     requestAnimFrame(Game.load);

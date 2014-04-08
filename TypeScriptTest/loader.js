@@ -12,26 +12,32 @@ var Loader = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-        Item = function (url, object, callback, context, data) {
+        Item = function (url, callback, context, data) {
             this.url = url;
-            this.object = object;
-            this.size = undefined;
+            this.size = null;
             this.bytesReceived = 0;
             this.callback = callback;
             this.context = context;
             this.data = data;
             this.loaded = false;
-            this.ext = url.match(/(?:(?:[\w\W]+)\.)([\w\W]+?)(\?|$)/)[1].toLowerCase();
+            this.inProgress = false;
             this.binary = undefined;
             this.started = false;
-            switch (this.ext) {
+            switch (Util.getExtension(url)) {
             case 'png':
+                this.object = new Image();
                 this.binary = true;
                 this.finalize = Item.processImage;
                 break;
             case 'json':
+                this.object = {};
                 this.binary = false;
                 this.finalize = Item.processJSON;
+                break;
+            default:
+                this.item = { text: "" };
+                this.binary = false;
+                this.finalize = Item.procesString;
                 break;
             }
         };
@@ -56,6 +62,7 @@ var Loader = (function () {
     //////////////////////////////////////////////////////////////////////
 
     Item.prototype.onComplete = function () {
+        this.inProgress = true;
         this.doCallback();
         this.loaded = true;
     };
@@ -63,7 +70,8 @@ var Loader = (function () {
     //////////////////////////////////////////////////////////////////////
 
     Item.onProgress = function (url, e) {
-        if (e.lengthComputable && this.size === undefined) {
+        this.inProgress = true;
+        if (e.lengthComputable && this.size === null) {
             this.size = e.total;
         }
         this.bytesReceived = e.loaded;
@@ -90,12 +98,9 @@ var Loader = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    function cache(items, url) {
-        if (items.hasOwnProperty(url)) {
-            return items[url].object;
-        }
-        return null;
-    }
+    Item.processString = function (data) {
+        this.object.text = data;
+    };
 
     //////////////////////////////////////////////////////////////////////
 
@@ -132,26 +137,29 @@ var Loader = (function () {
         //////////////////////////////////////////////////////////////////////
 
         status: function (ctx, x, y) {
-            var s = "",
-                i,
-                t,
-                r,
-                p;
+            var i,
+                item,
+                recvd,
+                total,
+                percent;
             ctx.resetTransform();
             ctx.strokeStyle = 'white';
-            ctx.fillStyle = 'white';
             ctx.font = '15px Arial';
             ctx.lineWidth = 1;
             ctx.textBaseline = 'middle';
             for (i in this.items) {
-                r = this.items[i].bytesReceived;
-                t = this.items[i].size;
-                t = t || r;
-                p = r * 100 / t;
-                ctx.strokeRect(x, y, 102, 22);
-                ctx.fillRect(x + 1, y + 1, p, 20);
-                ctx.fillText(this.items[i].url + " : " + r.toString() + " of " + t.toString(), x + 110, y + 10);
-                y += 25;
+                item = this.items[i];
+                if (!item.loaded) {
+                    recvd = item.bytesReceived;
+                    total = item.size || recvd;
+                    percent = recvd * 100 / total;
+                    ctx.strokeRect(x, y, 102, 22);
+                    ctx.fillStyle = 'white';
+                    ctx.fillRect(x + 1, y + 1, percent, 20);
+                    ctx.fillStyle = item.inProgress ? 'white' : 'black';
+                    ctx.fillText(item.url + " : " + recvd.toString() + " of " + total.toString(), x + 110, y + 10);
+                    y += 25;
+                }
             }
         },
 
@@ -166,32 +174,18 @@ var Loader = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        loadImage: function (name, callback, context, data) {
-            var url = ajax.url(this.baseDir + name + '.png', data),
-                image = cache(this.items, url);
-            if (image === null) {
-                image = new Image();
-                this.items[url] = new Item(url, image, callback, context, data);
+        load: function (name, callback, context, data) {
+            var url = ajax.url(this.baseDir + name, data),
+                item = this.items[url] || null;
+            if (item !== null) {
+                item.doCallback();
             } else {
-                this.items[url].doCallback();
+                item = new Item(url, callback, context, data);
+                this.items[url] = item;
             }
-            return image;
-        },
-
-        //////////////////////////////////////////////////////////////////////
-
-        loadJSON: function (name, callback, context, data) {
-            var url = ajax.url(this.baseDir + name + '.json', data),
-                obj = cache(this.items, url);
-            if (obj === null) {
-                obj = {};
-                this.items[url] = new Item(url, obj, callback, context, data);
-            } else {
-                this.items[url].doCallback();
-            }
-            return obj;
+            return item.object;
         }
-    };
+};
 
     return Loader;
 }());

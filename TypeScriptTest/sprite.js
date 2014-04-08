@@ -3,7 +3,7 @@
 var Sprite = (function () {
     "use strict";
 
-    var Sprite = function (name, loader, listNodeName) {
+    var Sprite = function (image, listNodeName) {
         this.position = { x: 0, y: 0 };
         this.scale = { x: 0, y: 0 };
         this.pivot = { x: 0.5, y: 0.5 };
@@ -20,25 +20,10 @@ var Sprite = (function () {
         this.zIndex = 0;
         this.loaded = false;
         this.dirty = true;
-        this.width = 0;
-        this.height = 0;
         this.drawMat = new Matrix();
         this.pickMat = new Matrix();
         this[listNodeName || 'spriteListNode'] = listNode(this);
-        this.image = loader.loadImage(name, function (img) {
-            this.width = img.width;
-            this.height = img.height;
-            this.frameWidth = this.frameWidth || this.width;
-            this.frameHeight = this.frameHeight || this.height;
-            this.loaded = true;
-        }, this);
-        this.image.onload = function (e) {
-            this.width = this.image.width;
-            this.height = this.image.width;
-            this.frameWidth = this.frameWidth || this.width;
-            this.frameHeight = this.frameHeight || this.height;
-            this.loaded = true;
-        }.bind(this);
+        this.image = image;
     };
 
     //////////////////////////////////////////////////////////////////////
@@ -130,27 +115,27 @@ var Sprite = (function () {
 
         draw: function (context) {
             var scale,
-                xtweak,
-                ytweak,
-                m;
+                xt,
+                yt,
+                m,
+                w,
+                h;
             if (this.visible) {
+                w = this.frameWidth || this.image.width;
+                h = this.frameHeight || this.image.height;
                 m = this.drawMatrix().m;
                 context.setTransform(m[0], m[1], m[2], m[3], m[4], m[5]);
                 context.globalAlpha = this.transparency / 255;
-                xtweak = 0;
-                ytweak = 0;
+                xt = 0;
+                yt = 0;
                 // correct dodgy bleeding problem
                 if (this.scale.x > 1) {
-                    xtweak = 0.5 - (0.5 / this.scale.x);
+                    xt = 0.5 - (0.5 / this.scale.x);
                 }
                 if (this.scale.y > 1) {
-                    ytweak = 0.5 - (0.5 / this.scale.y);
+                    yt = 0.5 - (0.5 / this.scale.y);
                 }
-                context.drawImage(this.image,
-                    this.UV.x + xtweak, this.UV.y + ytweak,
-                    this.frameWidth - xtweak * 2, this.frameHeight - ytweak * 2,
-                    -this.pivot.x * this.frameWidth, -this.pivot.y * this.frameWidth,
-                    this.frameWidth, this.frameWidth);
+                context.drawImage(this.image, this.UV.x + xt, this.UV.y + yt, w - xt * 2, h - yt * 2, -this.pivot.x * w, -this.pivot.y * h, w, h);
             }
         },
 

@@ -5,9 +5,9 @@ var Font = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    var Font = function (name, loader) {
-        this.page = loader.loadImage(name + '0');     // ugh - name has to be the same as the file...
-        this.font = loader.loadJSON(name);          // and multipage fonts not supported...
+    var Font = function (font, page) {
+        this.page = page;
+        this.font = font;
     };
 
     //////////////////////////////////////////////////////////////////////

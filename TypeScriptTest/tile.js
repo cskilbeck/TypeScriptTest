@@ -53,8 +53,8 @@ var Tile = (function () {
     Tile.height = 96;
 
     Tile.load = function (loader) {
-        font = new Font("Arial", loader);
-        tileSprite = new Sprite('allColour', loader);
+        font = new Font(loader.load("Arial.json"), loader.load("Arial0.png"));
+        tileSprite = new Sprite(loader.load('allColour.png'));
         tileSprite.framesWide = 5;
         tileSprite.framesHigh = 5;
         tileSprite.frameWidth = Tile.width;

@@ -11,9 +11,8 @@ var Button = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    function Button(image, text, x, y, clicked, context) {
+    function Button(image, x, y, clicked, context) {
         Sprite.call(this, image);
-        this.text = text;
         this.setPosition(x, y);
         this.setScale(1);
         this.enabled = true;

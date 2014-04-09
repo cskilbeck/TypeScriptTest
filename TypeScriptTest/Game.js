@@ -59,8 +59,8 @@ var Game = (function () {
                 Dictionary.init(loader.load("dictionary.json"));
                 Debug.init(context, Font.load("Fixedsys", loader));
                 buttons = new ButtonList();
-                buttons.add(new Button(loader.load("undo.png"), null, 710, 200, Board.undo));
-                buttons.add(new Button(loader.load("redo.png"), null, 760, 200, Board.redo));
+                buttons.add(new Button(loader.load("undo.png"), 710, 200, Board.undo));
+                buttons.add(new Button(loader.load("redo.png"), 760, 200, Board.redo));
                 Tile.load(loader);
                 loader.start();
                 Game.load();

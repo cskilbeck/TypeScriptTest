@@ -17,10 +17,22 @@ var Font = (function () {
     };
 
     //////////////////////////////////////////////////////////////////////
+    // alignment options
+
+    Font.left = 0;
+    Font.right = 1;
+    Font.center = 2;
+
+    Font.top = 3;
+    Font.bottom = 4;
+    Font.middle = 5;
+    Font.baseline = 6;
+
+    //////////////////////////////////////////////////////////////////////
 
     Font.prototype = {
 
-        drawText: function (ctx, x, y, str) {
+        drawText: function (ctx, str, position, rotation, scale, horizontalAlign, verticalAlign) {
             var l,
                 layer,
                 i,
@@ -28,11 +40,48 @@ var Font = (function () {
                 xc,
                 yc,
                 glyph,
-                s;
+                s,
+                measureIt = false,
+                p,
+                d = { width: 0, height: 0 },
+                xo = 0,
+                yo = 0;
+            switch (horizontalAlign) {
+            case Font.left:
+            case undefined:
+                break;
+            case Font.right:
+                measureIt = true;
+                xo = -1;
+                break;
+            case Font.center:
+                measureIt = true;
+                xo = -0.5;
+                break;
+            }
+            switch (verticalAlign) {
+            case Font.top:
+            case undefined:
+                break;
+            case Font.bottom:
+                measureIt = true;
+                yo = -1;
+                break;
+            case Font.middle:
+                measureIt = true;
+                yo = -0.5;
+                break;
+            case Font.baseline:
+                break;
+            }
+            if (measureIt) {
+                d = this.measureText(str);
+            }
+            Util.setTransform(ctx, position, rotation, scale);
             for (l = 0; l < this.font.layerCount; ++l) {
                 layer = this.font.Layers[l];
-                xc = x + layer.offsetX;
-                yc = y + layer.offsetY;
+                xc = d.width * xo + layer.offsetX;
+                yc = d.height * yo + layer.offsetY;
                 for (i = 0; i < str.length; ++i) {
                     c = this.font.charMap[str.charCodeAt(i)];
                     if (c !== undefined) {

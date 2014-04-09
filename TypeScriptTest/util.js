@@ -107,6 +107,13 @@ var Util = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
+        setTransform: function (context, pos, rot, scale) {
+            var m = Matrix.makeTransform(pos, rot || 0, scale || { x: 1, y: 1 });
+            context.setTransform(m.m[0], m.m[1], m.m[2], m.m[3], m.m[4], m.m[5]);
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
         getExtension: function (url) {
             return url.match(/(?:(?:[\w\W]+)\.)([\w\W]+?)(\?|$)/)[1].toLowerCase();
         },

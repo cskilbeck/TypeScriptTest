@@ -1,4 +1,5 @@
 ﻿//////////////////////////////////////////////////////////////////////
+// list.sort is not stable - why?
 // UIElement stack
 // TextButton
 // TextBox
@@ -7,7 +8,7 @@
 // Title screen
 // Mobile: Android/Chrome, iOS/Safari, Windows Phone: IE // Touch Support
 // Variable viewport size
-// Fix tile grabbing/moving
+// Fix tile grabbing/moving/swapping
 // Tile lerping
 // Flying scores/fizz/particles
 // Facebook OAuth
@@ -30,6 +31,7 @@ var Game = (function () {
         context,
         buttons,
         loader,
+        font,
 
         Game = {
 
@@ -56,6 +58,7 @@ var Game = (function () {
                 Mouse.init(canvas, screen);
                 Keyboard.init();
                 loader = new Loader('img/');
+                font = Font.load("Arial", loader);
                 Dictionary.init(loader.load("dictionary.json"));
                 Debug.init(context, Font.load("Fixedsys", loader));
                 buttons = new ButtonList();
@@ -79,7 +82,8 @@ var Game = (function () {
             },
 
             run: function () {
-                var now = window.performance.now();
+                var now = window.performance.now(),
+                    s = Math.sin(Game.time() / 1000) * 0.5 + 1;
                 deltaTime = now - currentTime;
                 currentTime = now;
                 Keyboard.update();
@@ -89,6 +93,7 @@ var Game = (function () {
                 buttons.update();
                 Board.draw(context);
                 buttons.draw(context);
+                font.drawText(context, "HELLO", { x: 400, y: 300 }, Game.time() / 1000, { x: s, y: s }, Font.center, Font.middle);
                 Debug.draw();
                 frames += 1;
                 requestAnimFrame(Game.run);

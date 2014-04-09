@@ -177,7 +177,7 @@ var Tile = (function () {
             tileSprite.setFrameXY(sx, sy);
             tileSprite.setScale(this.selected ? 1.2 : 1);
             tileSprite.setPosition(this.pos.x + Tile.width / 2, this.pos.y + Tile.height / 2);
-            tileSprite.drawSafe(context);
+            tileSprite.draw(context);
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -189,9 +189,11 @@ var Tile = (function () {
                 u = this.letter.toUpperCase(),
                 dim = font.measureText(u);
             font.drawText(context,
-                this.pos.x + Tile.width / 2 - dim.width / 2 + xOffset,
-                this.pos.y + Tile.height / 2 - dim.height / 2 + yOffset,
-                u);
+                u,
+                {
+                    x: this.pos.x + Tile.width / 2 - dim.width / 2 + xOffset,
+                    y: this.pos.y + Tile.height / 2 - dim.height / 2 + yOffset
+                });
         },
 
         //////////////////////////////////////////////////////////////////////

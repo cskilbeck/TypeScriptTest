@@ -15,12 +15,12 @@ var Debug = (function () {
             },
 
             text: function (x, y, str) {
-                d.push(x, y, str);
+                d.push(str, { x: x, y: y });
             },
 
             draw: function () {
                 while (d.length > 0) {
-                    font.drawText(context, d.shift(), d.shift(), d.shift());
+                    font.drawText(context, d.shift(), d.shift());
                 }
             }
         };

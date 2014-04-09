@@ -143,7 +143,7 @@ var Loader = (function () {
                 recvd,
                 total,
                 percent;
-            context.resetTransform();
+            context.setTransform(1, 0, 0, 1, 0, 0);
             context.strokeStyle = 'white';
             context.fillStyle = 'white';
             context.lineWidth = 1;

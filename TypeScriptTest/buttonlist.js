@@ -5,7 +5,6 @@ var ButtonList = (function () {
 
     var ButtonList = function () {
         SpriteList.call(this);
-        this.visible = true;
     };
 
     //////////////////////////////////////////////////////////////////////

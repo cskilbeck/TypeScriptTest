@@ -32,6 +32,8 @@ var Font = (function () {
 
     Font.prototype = {
 
+        //////////////////////////////////////////////////////////////////////
+
         renderString: function (ctx, str, x, y) {
             var l,
                 i,
@@ -59,43 +61,29 @@ var Font = (function () {
             }
         },
 
+        //////////////////////////////////////////////////////////////////////
+
         drawText: function (ctx, str, position, rotation, scale, horizontalAlign, verticalAlign) {
-            var l,
-                layer,
-                i,
-                c,
-                xc,
-                yc,
-                glyph,
-                s,
-                measureIt = false,
-                p,
-                d = { width: 0, height: 0 },
+            var d,
                 xo = 0,
                 yo = 0;
             switch (horizontalAlign) {
             case Font.right:
-                measureIt = true;
                 xo = -1;
                 break;
             case Font.center:
-                measureIt = true;
                 xo = -0.5;
                 break;
             }
             switch (verticalAlign) {
             case Font.bottom:
-                measureIt = true;
                 yo = -1;
                 break;
             case Font.middle:
-                measureIt = true;
                 yo = -0.5;
                 break;
             }
-            if (measureIt) {
-                d = this.measureText(str);
-            }
+            d = this.measureText(str);
             Util.setTransform(ctx, position, rotation, scale);
             this.renderString(ctx, str, d.width * xo, d.height * yo);
         },

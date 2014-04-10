@@ -12,11 +12,9 @@ var SpriteList = (function () {
     return Util.extendClass(LinkedList, SpriteList, {
 
         draw : function (context) {
-            context.save();
             this.reverseForEach(function (s) {
                 s.draw(context);
             });
-            context.restore();
         },
 
         //////////////////////////////////////////////////////////////////////

@@ -1,7 +1,6 @@
 ﻿//////////////////////////////////////////////////////////////////////
 // list.sort is not stable - why?
 // UIElement stack
-// TextButton
 // TextBox
 // Undo/Redo/SaveBest
 // Scoreboard

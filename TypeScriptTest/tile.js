@@ -186,14 +186,21 @@ var Tile = (function () {
         drawLetter: function (context) {
             var xOffset = -1,
                 yOffset = 6,
-                u = this.letter.toUpperCase(),
-                dim = font.measureText(u);
+                u = this.letter.toUpperCase();
             font.drawText(context,
-                u,
-                {
-                    x: this.pos.x + Tile.width / 2 - dim.width / 2 + xOffset,
-                    y: this.pos.y + Tile.height / 2 - dim.height / 2 + yOffset
-                });
+                    u,
+                    {
+                        x: this.pos.x + Tile.width / 2 + xOffset,
+                        y: this.pos.y + Tile.height / 2 + yOffset
+                    },
+                    0,
+                    {
+                        x: 1,
+                        y: 1
+                    },
+                    Font.center,
+                    Font.middle
+                );
         },
 
         //////////////////////////////////////////////////////////////////////

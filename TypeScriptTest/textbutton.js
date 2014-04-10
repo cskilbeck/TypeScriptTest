@@ -5,21 +5,17 @@ var TextButton = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    function TextButton(text, font, image, x, y, clicked, context) {
-        Button.call(this, image, x, y, clicked, context);
+    var TextButton = function (text, font, x, y, clicked, context) {
+        Button.call(this, clicked, context);
+        Label.call(this, text, font);
+        this.setPosition(x, y);
         this.text = text;
         this.font = font;
     }
 
-    //////////////////////////////////////////////////////////////////////
+    Util.extendClass(Button, TextButton);
+    Util.extendClass(Label, TextButton);
 
-    return Util.extendClass(Button, TextButton, {
-
-        draw: function (context) {
-            Button.prototype.draw.call(this, context);
-            this.font.drawText(context, this.text, this.position, this.rotation, this.scale, Font.center, Font.middle);
-        }
-
-    });
+    return TextButton;
 
 }());

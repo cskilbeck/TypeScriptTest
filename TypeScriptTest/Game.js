@@ -32,6 +32,7 @@ var Game = (function () {
         buttons,
         loader,
         font,
+        label,
 
         Game = {
 
@@ -62,8 +63,10 @@ var Game = (function () {
                 Dictionary.init(loader.load("dictionary.json"));
                 Debug.init(context, Font.load("Fixedsys", loader));
                 buttons = new ButtonList();
-                buttons.add(new Button(loader.load("undo.png"), 710, 200, Board.undo));
-                buttons.add(new Button(loader.load("redo.png"), 760, 200, Board.redo));
+                buttons.add(new SpriteButton(loader.load("undo.png"), 710, 200, Board.undo));
+                buttons.add(new SpriteButton(loader.load("redo.png"), 760, 200, Board.redo));
+                label = new TextButton("HELLO", font, 720, 300);
+                label.setScale(0.5);
                 Tile.load(loader);
                 loader.start();
                 Game.load();
@@ -82,18 +85,21 @@ var Game = (function () {
             },
 
             run: function () {
-                var now = window.performance.now(),
-                    s = Math.sin(Game.time() / 1000) * 0.5 + 1;
+                var now = window.performance.now();
                 deltaTime = now - currentTime;
                 currentTime = now;
                 Keyboard.update();
                 Mouse.update();
                 Game.cls();
+
                 Board.update(deltaTime);
                 buttons.update();
+                label.update();
+
                 Board.draw(context);
                 buttons.draw(context);
-                font.drawText(context, "HELLO", { x: 400, y: 300 }, Game.time() / 1000, { x: s, y: s }, Font.center, Font.middle);
+                label.draw(context);
+
                 Debug.draw();
                 frames += 1;
                 requestAnimFrame(Game.run);

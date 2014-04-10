@@ -72,21 +72,21 @@ var LinkedList = (function () {
             merge_sort(leftSize, left);
             merge_sort(rightSize, right);
 
-            insertPoint = right;
-            runEnd = left.next;
+            insertPoint = left;
+            runEnd = right.next;
 
-            while (runEnd !== left) {
+            while (runEnd !== right) {
 
                 do {
                     insertPoint = insertPoint.next;
-                } while (insertPoint !== right && sortCallback.call(sortContext, insertPoint.item, runEnd.item) > 0);
+                } while (insertPoint !== left && sortCallback.call(sortContext, insertPoint.item, runEnd.item) > 0);
 
-                if (insertPoint !== right) {
+                if (insertPoint !== left) {
 
                     runBegin = runEnd;
                     do {
                         runEnd = runEnd.next;
-                    } while (runEnd !== left && sortCallback.call(sortContext, runEnd.item, insertPoint.item) > 0);
+                    } while (runEnd !== right && sortCallback.call(sortContext, runEnd.item, insertPoint.item) > 0);
 
                     runBegin.prev = insertPoint.prev;
                     insertPoint.prev.next = runBegin;
@@ -95,18 +95,18 @@ var LinkedList = (function () {
 
                 } else {
 
-                    runEnd.prev = right.prev;
-                    right.prev.next = runEnd;
-                    right.prev = left.prev;
-                    left.prev.next = right;
+                    runEnd.prev = left.prev;
+                    left.prev.next = runEnd;
+                    left.prev = right.prev;
+                    right.prev.next = left;
                     break;
                 }
             }
 
-            right.next.prev = list;
-            right.prev.next = list;
-            list.prev = right.prev;
-            list.next = right.next;
+            left.next.prev = list;
+            left.prev.next = list;
+            list.prev = left.prev;
+            list.next = left.next;
 
         } else if (size === 2 && sortCallback.call(sortContext, list.prev.item, list.next.item) > 0) {
 

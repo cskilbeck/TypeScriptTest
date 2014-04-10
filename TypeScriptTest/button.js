@@ -11,10 +11,7 @@ var Button = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    function Button(image, x, y, clicked, context) {
-        Sprite.call(this, image);
-        this.setPosition(x, y);
-        this.setScale(1);
+    function Button(clicked, context) {
         this.enabled = true;
         this.state = idle;
         this.clicked = clicked;
@@ -23,35 +20,35 @@ var Button = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    return Util.extendClass(Sprite, Button, {
+    Button.prototype = {
 
         update: function () {
             this.transparency = this.enabled ? 255 : 128;
             if (this.visible && this.enabled) {
                 switch (this.state) {
                 case idle:
-                    this.setScale(1);
-                    if (!Mouse.left.held && this.pick(Mouse.position)) {
+                    if (!Mouse.left.held && this.pick(Mouse.position, 2)) {
                         this.state = hover;
                     }
                     break;
                 case hover:
-                    this.setScale(1.25);
-                    if (!this.pick(Mouse.position)) {
+                    if (!this.pick(Mouse.position, 2)) {
                         this.state = idle;
                     } else if (Mouse.left.pressed) {
+                        this.move(2, 2);
                         this.state = pressed;
                     }
                     break;
                 case pressed:
-                    this.setScale(1.25);
-                    if (!this.pick(Mouse.position)) {
-                        this.setScale(1);
+                    if (!this.pick(Mouse.position, 4)) {
+                        this.move(-2, -2);
                         this.state = idle;
                     } else {
-                        this.setScale(0.9);
                         if (Mouse.left.released) {
-                            this.clicked.call(this.context);
+                            if (this.clicked) {
+                                this.clicked.call(this.context);
+                            }
+                            this.move(-2, -2);
                             this.state = hover;
                         }
                     }
@@ -59,6 +56,8 @@ var Button = (function () {
                 }
             }
         }
-    });
+    };
+
+    return Button;
 
 }());

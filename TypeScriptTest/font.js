@@ -32,6 +32,33 @@ var Font = (function () {
 
     Font.prototype = {
 
+        renderString: function (ctx, str, x, y) {
+            var l,
+                i,
+                layer,
+                xc,
+                yc,
+                c,
+                s,
+                glyph;
+            for (l = 0; l < this.font.layerCount; ++l) {
+                layer = this.font.Layers[l];
+                xc = x + layer.offsetX;
+                yc = y + layer.offsetY;
+                for (i = 0; i < str.length; ++i) {
+                    c = this.font.charMap[str.charCodeAt(i)];
+                    if (c !== undefined) {
+                        glyph = this.font.glyphs[c];
+                        if (l < glyph.imageCount) {
+                            s = glyph.images[l];
+                            ctx.drawImage(this.page, s.x, s.y, s.w, s.h, xc + s.offsetX, yc + s.offsetY, s.w, s.h);
+                        }
+                        xc += glyph.advance;
+                    }
+                }
+            }
+        },
+
         drawText: function (ctx, str, position, rotation, scale, horizontalAlign, verticalAlign) {
             var l,
                 layer,
@@ -70,22 +97,7 @@ var Font = (function () {
                 d = this.measureText(str);
             }
             Util.setTransform(ctx, position, rotation, scale);
-            for (l = 0; l < this.font.layerCount; ++l) {
-                layer = this.font.Layers[l];
-                xc = d.width * xo + layer.offsetX;
-                yc = d.height * yo + layer.offsetY;
-                for (i = 0; i < str.length; ++i) {
-                    c = this.font.charMap[str.charCodeAt(i)];
-                    if (c !== undefined) {
-                        glyph = this.font.glyphs[c];
-                        if (l < glyph.imageCount) {
-                            s = glyph.images[l];
-                            ctx.drawImage(this.page, s.x, s.y, s.w, s.h, xc + s.offsetX, yc + s.offsetY, s.w, s.h);
-                        }
-                        xc += glyph.advance;
-                    }
-                }
-            }
+            this.renderString(ctx, str, d.width * xo, d.height * yo);
         },
 
         //////////////////////////////////////////////////////////////////////

@@ -5,25 +5,24 @@ var Debug = (function () {
 
     var font,
         context,
-        d = [],
+        d = [];
 
-        Debug = {
+    return {
 
-            init: function (ctx, fnt) {
-                font = fnt;
-                context = ctx;
-            },
+        init: function (ctx, fnt) {
+            font = fnt;
+            context = ctx;
+        },
 
-            text: function (x, y, str) {
-                d.push(str, { x: x, y: y });
-            },
+        text: function (x, y, str) {
+            d.push(str, x, y);
+        },
 
-            draw: function () {
-                while (d.length > 0) {
-                    font.drawText(context, d.shift(), d.shift());
-                }
+        draw: function () {
+            context.setTransform(1, 0, 0, 1, 0, 0);
+            while (d.length > 0) {
+                font.renderString(context, d.shift(), d.shift(), d.shift());
             }
-        };
-
-    return Debug;
+        }
+    };
 }());

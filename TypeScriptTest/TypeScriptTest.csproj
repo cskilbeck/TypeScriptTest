@@ -24,6 +24,7 @@
     <Content Include="button.js" />
     <Content Include="buttonlist.js" />
     <Content Include="debug.js" />
+    <Content Include="drawable.js" />
     <Content Include="facebook.js" />
     <Content Include="game.js" />
     <Content Include="img\allColour.png" />
@@ -36,6 +37,7 @@
     <Content Include="img\undo.png" />
     <Content Include="index.html" />
     <Content Include="keyboard.js" />
+    <Content Include="label.js" />
     <Content Include="list.js" />
     <Content Include="main.js" />
     <Content Include="matrix.js" />
@@ -44,6 +46,7 @@
     <Content Include="random.js" />
     <Content Include="sprite.js" />
     <Content Include="font.js" />
+    <Content Include="spritebutton.js" />
     <Content Include="spritelist.js" />
     <Content Include="textbutton.js" />
     <Content Include="util.js" />
@@ -84,11 +87,11 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <TypeScriptTarget>ES3</TypeScriptTarget>
     <TypeScriptRemoveComments>false</TypeScriptRemoveComments>
-    <TypeScriptSourceMap>true</TypeScriptSourceMap>
-    <TypeScriptModuleKind>AMD</TypeScriptModuleKind>
+    <TypeScriptSourceMap>False</TypeScriptSourceMap>
+    <TypeScriptModuleKind>none</TypeScriptModuleKind>
     <PublishDatabases>false</PublishDatabases>
     <ExcludeGeneratedDebugSymbol>true</ExcludeGeneratedDebugSymbol>
-    <TypeScriptCompileOnSaveEnabled>False</TypeScriptCompileOnSaveEnabled>
+    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <TypeScriptTarget>ES5</TypeScriptTarget>

@@ -5,6 +5,22 @@ var Util = (function () {
 
     var b64c = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
+    //////////////////////////////////////////////////////////////////////
+
+    function sqr(x)
+    {
+        return x * x
+    }
+
+    //////////////////////////////////////////////////////////////////////
+
+    function dist2(v, w)
+    {
+        return sqr(v.x - w.x) + sqr(v.y - w.y)
+    }
+
+    //////////////////////////////////////////////////////////////////////
+
     return {
 
         //////////////////////////////////////////////////////////////////////
@@ -12,7 +28,10 @@ var Util = (function () {
         extendClass: function (parent, child, proto) {
 
             var i;
-            child.prototype = Object.create(parent.prototype);
+            var p = Object.create(parent.prototype);
+            for(i in p) {
+                child.prototype[i] = p[i];
+            }
             for (i in proto) {
                 child.prototype[i] = proto[i];
             }
@@ -66,8 +85,7 @@ var Util = (function () {
         //////////////////////////////////////////////////////////////////////
 
         crossProduct: function (a, b, p) {
-
-            return (b.x - a.x) * (p.y - a.y) - (b.y - a.y) * (p.x - a.x);
+            return ((b.x - a.x) * (p.y - a.y) - (b.y - a.y) * (p.x - a.x)) / Math.sqrt(dist2(a, b));
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -76,10 +94,12 @@ var Util = (function () {
         pointInConvexPoly: function (points, p, border) {
 
             var i,
+                c,
                 b = border || 0;
 
             for (i = 0; i < points.length; ++i) {
-                if (Util.crossProduct(points[i], points[(i + 1) % 4], p) < b) {
+                c = Util.crossProduct(points[i], points[(i + 1) % 4], p);
+                if (c < -b) {
                     return false;
                 }
             }
@@ -108,8 +128,8 @@ var Util = (function () {
         //////////////////////////////////////////////////////////////////////
 
         setTransform: function (context, pos, rot, scale) {
-            var m = Matrix.makeTransform(pos, rot || 0, scale || { x: 1, y: 1 });
-            context.setTransform(m.m[0], m.m[1], m.m[2], m.m[3], m.m[4], m.m[5]);
+            var m = (new Matrix().translate(pos).rotate(rot || 0).scale(scale || { x: 0, y: 0 })).m;
+            context.setTransform(m[0], m[1], m[2], m[3], m[4], m[5]);
         },
 
         //////////////////////////////////////////////////////////////////////

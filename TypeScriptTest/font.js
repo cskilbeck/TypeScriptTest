@@ -47,9 +47,6 @@ var Font = (function () {
                 xo = 0,
                 yo = 0;
             switch (horizontalAlign) {
-            case Font.left:
-            case undefined:
-                break;
             case Font.right:
                 measureIt = true;
                 xo = -1;
@@ -60,9 +57,6 @@ var Font = (function () {
                 break;
             }
             switch (verticalAlign) {
-            case Font.top:
-            case undefined:
-                break;
             case Font.bottom:
                 measureIt = true;
                 yo = -1;
@@ -70,8 +64,6 @@ var Font = (function () {
             case Font.middle:
                 measureIt = true;
                 yo = -0.5;
-                break;
-            case Font.baseline:
                 break;
             }
             if (measureIt) {

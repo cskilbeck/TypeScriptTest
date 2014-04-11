@@ -1,7 +1,5 @@
 ﻿//////////////////////////////////////////////////////////////////////
 // list.sort is not stable - why?
-// UIElement stack
-// TextBox
 // Undo/Redo/SaveBest
 // Scoreboard
 // Title screen
@@ -11,8 +9,11 @@
 // Tile lerping
 // Flying scores/fizz/particles
 // Facebook OAuth
-// Leaderboards
+// AWS/Leaderboards
 // Font: alignment, embedded control characters, links
+// Drawable: Panel
+// Drawable: TextBox
+// 
 //
 // timer.js
 // playfield.js ?
@@ -110,6 +111,9 @@ var Game = (function () {
                 Mouse.update();
                 Game.cls();
 
+                buttons.update(deltaTime);
+                Board.update(deltaTime);
+
                 if (Board.changed) {
                     words = new ButtonList();
                     y = 50;
@@ -124,8 +128,6 @@ var Game = (function () {
                     score.text = "Score: " + Board.score.toString();
                 }
 
-                Board.update(deltaTime);
-                buttons.update(deltaTime);
                 words.update(deltaTime);
 
                 words.draw(context);

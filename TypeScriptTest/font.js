@@ -72,7 +72,7 @@ var Font = (function () {
         //      #position:35,50# - move cursor to 35,50
         // @link@ - return array of bounding rectangles of the links
 
-        scanString: function(ctx, str, charCallback, commandCallback) {
+        scanString: function (ctx, str, charCallback, commandCallback) {
 
             var scan = 0,
                 hash = 1,
@@ -92,14 +92,14 @@ var Font = (function () {
                 escaped,
                 o = {
                     context: ctx,
-                    xc:0,
-                    yc:0,
+                    xc: 0,
+                    yc: 0
                 },
                 linkX,
                 linkY,
                 link,
                 links,
-                command,
+                commandStr,
                 param;
             for (l = 0; l < this.font.layerCount; ++l) {
                 layer = this.font.Layers[l];
@@ -114,7 +114,7 @@ var Font = (function () {
                         escaped = true;
                         inEscape = false;
                     } else {
-                        if (c == '\\') {
+                        if (c === '\\') {
                             inEscape = true;
                             escaped = false;
                         }
@@ -122,58 +122,58 @@ var Font = (function () {
 
                     switch (state) {
 
-                        case scan:
-                            if (!escaped) {
-                                if (c === '@') {
-                                    link = "";
-                                    linkX = o.xc;
-                                    linkY = o.yc;
-                                    state = at;
-                                    break;
-                                }
-                                if (c === '#') {
-                                    command = "";
-                                    param = "";
-                                    state = hash;
-                                    break;
-                                }
-                                if (c === '\n') {
-                                    o.xc = 0;
-                                    o.yc += this.font.height;
-                                }
+                    case scan:
+                        if (!escaped) {
+                            if (c === '@') {
+                                link = "";
+                                linkX = o.xc;
+                                linkY = o.yc;
+                                state = at;
+                                break;
                             }
-                            break;
+                            if (c === '#') {
+                                commandStr = "";
+                                param = "";
+                                state = hash;
+                                break;
+                            }
+                            if (c === '\n') {
+                                o.xc = 0;
+                                o.yc += this.font.height;
+                            }
+                        }
+                        break;
 
-                        case at:
-                            if (c === '@' && !escaped) {
-                                links.push({ x: linkX, y: linkY, str: link });
-                                state = scan;
-                            } else {
-                                link += c;
-                            }
-                            break;
+                    case at:
+                        if (c === '@' && !escaped) {
+                            links.push({ x: linkX, y: linkY, str: link });
+                            state = scan;
+                        } else {
+                            link += c;
+                        }
+                        break;
 
-                        case hash:
-                            if (c === ':' && !escaped) {
-                                state = params;
-                            } else if (c === '#' && !escaped) {
-                                commandCallback.call(this, o, command, param);
-                                state = scan;
-                            } else {
-                                command += c;
-                            }
-                            break;
+                    case hash:
+                        if (c === ':' && !escaped) {
+                            state = params;
+                        } else if (c === '#' && !escaped) {
+                            commandCallback.call(this, o, commandStr, param);
+                            state = scan;
+                        } else {
+                            commandStr += c;
+                        }
+                        break;
 
-                        case params:
-                            if (c === '#' && !escaped) {
-                                commandCallback.call(this, o, command, param);
-                                state = scan;
-                            } else {
-                                param += c;
-                            }
-                            break;
+                    case params:
+                        if (c === '#' && !escaped) {
+                            commandCallback.call(this, o, commandStr, param);
+                            state = scan;
+                        } else {
+                            param += c;
+                        }
+                        break;
                     }
-                    xc += this.drawChar(ctx, c, l, xc, yc);
+                    o.xc += this.drawChar(ctx, c, l, o.xc, o.yc);
                 }
             }
         },

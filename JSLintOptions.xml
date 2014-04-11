@@ -728,6 +728,10 @@
       <string>Loader</string>
       <string>Uint8Array</string>
       <string>VBArray</string>
+      <string>SpriteButton</string>
+      <string>TextButton</string>
+      <string>Label</string>
+      <string>Drawable</string>
     </PreDefined>
   </JSLintOptions>
   <BuildFileTypes>JS</BuildFileTypes>

@@ -18,6 +18,7 @@ var Drawable = (function () {
         this.drawMat = null;
         this.pickMat = null;
         this.drawableListNode = listNode(this);
+        this.children = new LinkedList("drawableListNode");
     };
 
     //////////////////////////////////////////////////////////////////////
@@ -25,10 +26,40 @@ var Drawable = (function () {
     Drawable.prototype = {
 
         //////////////////////////////////////////////////////////////////////
+        // override these...
 
-        size: undefined,
-        draw: undefined,
+        size: function () {
+            return { x: 0, y: 0 };
+        },
 
+        //////////////////////////////////////////////////////////////////////
+
+        onDraw: function () {
+            return;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        draw: function (context) {
+            this.doDraw(context, Matrix.identity());
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        doDraw: function (context, matrix) {
+            var m,
+                c;
+            if (this.visible) {
+                m = matrix.multiply(this.drawMatrix());
+                context.globalAlpha = this.transparency / 255;
+                context.setTransform(m.m[0], m.m[1], m.m[2], m.m[3], m.m[4], m.m[5]);
+                this.onDraw(context);
+                for (c = this.children.begin(); c !== this.children.end(); c = c.next) {
+                    c.item.doDraw(context, m);
+                }
+            }
+        },
+        
         //////////////////////////////////////////////////////////////////////
 
         width: function () {
@@ -101,7 +132,7 @@ var Drawable = (function () {
             if (this.dirty) {
                 s.x = this.scale.x * (this.flip.horizontal ? -1 : 1);
                 s.y = this.scale.y * (this.flip.vertical ? -1 : 1);
-                m = new Matrix().translate(this.position).rotate(this.rotation);
+                m = Matrix.identity().translate(this.position).rotate(this.rotation);
                 this.drawMat = m.scale(s);
                 this.pickMat = m.scale(this.scale);
                 this.dirty = false;
@@ -113,23 +144,6 @@ var Drawable = (function () {
         drawMatrix: function () {
             this.calculateMatrices();
             return this.drawMat;
-        },
-
-        //////////////////////////////////////////////////////////////////////
-
-        setTransform: function (context) {
-            var m = this.drawMatrix().m;
-            context.setTransform(m[0], m[1], m[2], m[3], m[4], m[5]);
-        },
-
-        //////////////////////////////////////////////////////////////////////
-
-        setupContext: function(context) {
-            if (this.visible) {
-                this.setTransform(context);
-                context.globalAlpha = this.transparency / 255;
-            }
-            return this.visible;
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -153,7 +167,16 @@ var Drawable = (function () {
                 point,
                 border
             );
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        addChild: function (d) {
+            this.children.pushBack(d);
         }
+
+        //////////////////////////////////////////////////////////////////////
+
     };
 
     //////////////////////////////////////////////////////////////////////

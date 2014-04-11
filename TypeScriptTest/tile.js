@@ -188,19 +188,19 @@ var Tile = (function () {
                 yOffset = 6,
                 u = this.letter.toUpperCase();
             font.drawText(context,
-                    u,
-                    {
-                        x: this.pos.x + Tile.width / 2 + xOffset,
-                        y: this.pos.y + Tile.height / 2 + yOffset
-                    },
-                    0,
-                    {
-                        x: 1,
-                        y: 1
-                    },
-                    Font.center,
-                    Font.middle
-                );
+                u,
+                {
+                    x: this.pos.x + Tile.width / 2 + xOffset,
+                    y: this.pos.y + Tile.height / 2 + yOffset
+                },
+                0,
+                {
+                    x: 1,
+                    y: 1
+                },
+                Font.center,
+                Font.middle
+            );
         },
 
         //////////////////////////////////////////////////////////////////////

@@ -19,7 +19,7 @@ var Label = (function () {
         //////////////////////////////////////////////////////////////////////
 
         size: function () {
-            if(this.dimensions === null) {
+            if (this.dimensions === null) {
                 this.dimensions = this.font.measureText(this.text);
             }
             return this.dimensions;
@@ -27,11 +27,8 @@ var Label = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        draw: function(context) {
-            if (this.setupContext(context)) {
-                this.font.renderString(context, this.text, -this.width() * this.pivot.x, -this.height() * this.pivot.y);
-            }
-            return this.visible;
+        onDraw: function (context) {
+            this.font.renderString(context, this.text, -this.width() * this.pivot.x, -this.height() * this.pivot.y);
         }
     });
 

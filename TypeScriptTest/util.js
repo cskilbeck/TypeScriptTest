@@ -9,14 +9,14 @@ var Util = (function () {
 
     function sqr(x)
     {
-        return x * x
+        return x * x;
     }
 
     //////////////////////////////////////////////////////////////////////
 
     function dist2(v, w)
     {
-        return sqr(v.x - w.x) + sqr(v.y - w.y)
+        return sqr(v.x - w.x) + sqr(v.y - w.y);
     }
 
     //////////////////////////////////////////////////////////////////////
@@ -27,9 +27,9 @@ var Util = (function () {
 
         extendClass: function (parent, child, proto) {
 
-            var i;
-            var p = Object.create(parent.prototype);
-            for(i in p) {
+            var i,
+                p = Object.create(parent.prototype);
+            for (i in p) {
                 child.prototype[i] = p[i];
             }
             for (i in proto) {
@@ -128,7 +128,7 @@ var Util = (function () {
         //////////////////////////////////////////////////////////////////////
 
         setTransform: function (context, pos, rot, scale) {
-            var m = (new Matrix().translate(pos).rotate(rot || 0).scale(scale || { x: 0, y: 0 })).m;
+            var m = (Matrix.identity().translate(pos).rotate(rot || 0).scale(scale || { x: 0, y: 0 })).m;
             context.setTransform(m[0], m[1], m[2], m[3], m[4], m[5]);
         },
 

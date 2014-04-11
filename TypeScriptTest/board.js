@@ -128,6 +128,7 @@ var Board = (function () {
         width: 7,
         height: 5,
         score: 0,
+        changed: false,
         tiles: [],
 
         //////////////////////////////////////////////////////////////////////
@@ -200,6 +201,12 @@ var Board = (function () {
                 return Board.tile((x / Tile.width) >>> 0, (y / Tile.height) >>> 0);
             }
             return null;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        wordList: function () {
+            return words;
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -283,13 +290,6 @@ var Board = (function () {
                     }
                 }
             }
-            y = 20;
-            Debug.text(680, y, "Score: " + Board.score.toString());
-            y += 20;
-            words.forEach(function (w) {
-                Debug.text(680, y, w.toString());
-                y += 15;
-            });
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -324,6 +324,8 @@ var Board = (function () {
                 i,
                 t,
                 j;
+
+            Board.changed = true;
 
             words.clear();
             foundWords.clear();

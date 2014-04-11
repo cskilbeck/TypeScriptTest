@@ -5,14 +5,20 @@ var Matrix = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    var Matrix = function () {
-        this.m = [1, 0, 0, 1, 0, 0];
+    var Matrix = function (arr) {
+        this.m = arr;
     };
 
     //////////////////////////////////////////////////////////////////////
 
-    Matrix.makeTransform = function (translation, rotation, scale) {
-        return new Matrix().translate(translation).rotate(rotation).scale(scale);
+    Matrix.identity = function () {
+        return new Matrix([1, 0, 0, 1, 0, 0]);
+    };
+
+    //////////////////////////////////////////////////////////////////////
+
+    Matrix.transRotScale = function (translation, rotation, scale) {
+        return Matrix.identity().translate(translation).rotate(rotation).scale(scale);
     };
 
     //////////////////////////////////////////////////////////////////////
@@ -22,58 +28,70 @@ var Matrix = (function () {
         //////////////////////////////////////////////////////////////////////
 
         copy: function (t) {
-            var m = new Matrix();
-            m.m[0] = this.m[0];
-            m.m[1] = this.m[1];
-            m.m[2] = this.m[2];
-            m.m[3] = this.m[3];
-            m.m[4] = this.m[4];
-            m.m[5] = this.m[5];
-            return m;
+            return new Matrix([
+                this.m[0],
+                this.m[1],
+                this.m[2],
+                this.m[3],
+                this.m[4],
+                this.m[5]
+            ]);
         },
 
         //////////////////////////////////////////////////////////////////////
 
-        setIdentity: function () {
-            this.m = [1, 0, 0, 1, 0, 0];
-            return this;
+        multiply: function (b) {
+            var x = this.m,
+                y = b.m;
+            return new Matrix([
+                x[0] * y[0] + x[2] * y[1],
+                x[1] * y[0] + x[3] * y[1],
+                x[0] * y[2] + x[2] * y[3],
+                x[1] * y[2] + x[3] * y[3],
+                x[0] * y[4] + x[2] * y[5] + x[4],
+                x[1] * y[4] + x[3] * y[5] + x[5]
+            ]);
         },
 
         //////////////////////////////////////////////////////////////////////
 
         translate: function (t) {
-            var m = this.copy();
-            m.m[4] += m.m[0] * t.x + m.m[2] * t.y;
-            m.m[5] += m.m[1] * t.x + m.m[3] * t.y;
-            return m;
+            return new Matrix([
+                this.m[0],
+                this.m[1],
+                this.m[2],
+                this.m[3],
+                this.m[4] + this.m[0] * t.x + this.m[2] * t.y,
+                this.m[5] + this.m[1] * t.x + this.m[3] * t.y
+            ]);
         },
 
         //////////////////////////////////////////////////////////////////////
 
         scale: function (s) {
-            var m = this.copy();
-            m.m[0] *= s.x;
-            m.m[1] *= s.x;
-            m.m[2] *= s.y;
-            m.m[3] *= s.y;
-            return m;
+            return new Matrix([
+                this.m[0] * s.x,
+                this.m[1] * s.x,
+                this.m[2] * s.y,
+                this.m[3] * s.y,
+                this.m[4],
+                this.m[5]
+            ]);
         },
 
         //////////////////////////////////////////////////////////////////////
 
         rotate: function (radians) {
-            var m = this.copy(),
-                cos = Math.cos(radians),
-                sin = Math.sin(radians),
-                m11 = m.m[0] * cos + m.m[2] * sin,
-                m12 = m.m[1] * cos + m.m[3] * sin,
-                m21 = -m.m[0] * sin + m.m[2] * cos,
-                m22 = -m.m[1] * sin + m.m[3] * cos;
-            m.m[0] = m11;
-            m.m[1] = m12;
-            m.m[2] = m21;
-            m.m[3] = m22;
-            return m;
+            var cos = Math.cos(radians),
+                sin = Math.sin(radians);
+            return new Matrix([
+                this.m[0] * cos + this.m[2] * sin,
+                this.m[1] * cos + this.m[3] * sin,
+                -this.m[0] * sin + this.m[2] * cos,
+                -this.m[1] * sin + this.m[3] * cos,
+                this.m[4],
+                this.m[5]
+            ]);
         },
 
         //////////////////////////////////////////////////////////////////////

@@ -24,6 +24,12 @@ var Loader = (function () {
             this.binary = undefined;
             this.started = false;
             switch (Util.getExtension(url)) {
+            case 'jpg':
+            case 'jpeg':
+                this.object = new Image();
+                this.binary = true;
+                this.finalize = Item.processJPEG;
+                break;
             case 'png':
                 this.object = new Image();
                 this.binary = true;
@@ -34,10 +40,16 @@ var Loader = (function () {
                 this.binary = false;
                 this.finalize = Item.processJSON;
                 break;
-            default:
-                this.item = { text: "" };
+            case 'txt':
+            case 'text':
+                this.object = "";
                 this.binary = false;
-                this.finalize = Item.procesString;
+                this.finalize = Item.processString;
+                break;
+            default:
+                this.object = new Uint8Array();
+                this.binary = true;
+                this.finalize = Item.processBinary;
                 break;
             }
         };
@@ -92,6 +104,12 @@ var Loader = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
+    Item.processJPEG = function (data) {
+        this.object.src = 'data:image/jpeg;base64,' + Util.btoa(data);
+    };
+
+    //////////////////////////////////////////////////////////////////////
+
     Item.processJSON = function (data) {
         Util.shallowCopy(JSON.parse(data), this.object);    // fuckit
     };
@@ -99,7 +117,13 @@ var Loader = (function () {
     //////////////////////////////////////////////////////////////////////
 
     Item.processString = function (data) {
-        this.object.text = data;
+        this.object += data;
+    };
+
+    //////////////////////////////////////////////////////////////////////
+
+    Item.processBinary = function (data) {
+        this.object.setArray(data);
     };
 
     //////////////////////////////////////////////////////////////////////

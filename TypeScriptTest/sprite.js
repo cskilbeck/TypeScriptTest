@@ -51,24 +51,20 @@ var Sprite = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        draw: function (context) {
-            var xt,
-                yt,
+        onDraw: function (context, matrix) {
+            var xt = (this.scale.x > 1) ? 0.5 - (0.5 / this.scale.x) : 0,
+                yt = (this.scale.y > 1) ? 0.5 - (0.5 / this.scale.y) : 0,
                 w = this.width(),
                 h = this.height();
-            if (this.setupContext(context)) {
-                xt = (this.scale.x > 1) ? 0.5 - (0.5 / this.scale.x) : 0;
-                yt = (this.scale.y > 1) ? 0.5 - (0.5 / this.scale.y) : 0;
-                context.drawImage(this.image,
-                    this.UV.x + xt,
-                    this.UV.y + yt,
-                    w - xt * 2,
-                    h - yt * 2,
-                    -this.pivot.x * w,
-                    -this.pivot.y * h,
-                    w,
-                    h);
-            }
+            context.drawImage(this.image,
+                this.UV.x + xt,
+                this.UV.y + yt,
+                w - xt * 2,
+                h - yt * 2,
+                -this.pivot.x * w,
+                -this.pivot.y * h,
+                w,
+                h);
         }
     });
 

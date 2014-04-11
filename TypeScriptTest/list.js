@@ -145,6 +145,14 @@ var LinkedList = (function () {
             return this.root.next;
         },
 
+        begin: function () {
+            return this.root.next;
+        },
+
+        end: function () {
+            return this.root;
+        },
+
         tailNode: function () {
             return this.root.prev;
         },

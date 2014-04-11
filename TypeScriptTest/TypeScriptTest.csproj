@@ -32,6 +32,8 @@
     <Content Include="img\Arial0.png" />
     <None Include="img\dictionary.json" />
     <None Include="img\Fixedsys.json" />
+    <None Include="img\Consolas.json" />
+    <Content Include="img\Consolas0.png" />
     <Content Include="img\Fixedsys0.png" />
     <Content Include="img\redo.png" />
     <Content Include="img\undo.png" />

@@ -11,13 +11,15 @@ var Button = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    function Button(clicked, context, border) {
+    function Button(click, hover, context, border) {
         this.enabled = true;
         this.state = idle;
-        this.clicked = clicked;
+        this.clicked = click;
+        this.hovered = hover;
         this.context = context;
         this.border = border || 2;
         this.buttonListNode = listNode(this);
+        this.hoverTime = 0;
     }
 
     //////////////////////////////////////////////////////////////////////
@@ -35,7 +37,7 @@ var Button = (function () {
         onPressed: function () {
         },
 
-        update: function () {
+        update: function (deltaTime) {
             this.transparency = this.enabled ? 255 : 128;
             if (this.visible && this.enabled) {
                 switch (this.state) {
@@ -43,15 +45,28 @@ var Button = (function () {
                     if (!Mouse.left.held && this.pick(Mouse.position, this.border)) {
                         this.onHover();
                         this.state = hover;
+                        this.hoverTime = 0;
                     }
                     break;
                 case hover:
                     if (!this.pick(Mouse.position, this.border)) {
+                        if (this.hoverTime >= 0 && this.hover) {
+                            this.hover.call(this.context, false);
+                        }
                         this.onIdle();
                         this.state = idle;
                     } else if (Mouse.left.pressed) {
+                        if (this.hoverTime >= 0 && this.hover) {
+                            this.hover.call(this.context, false);
+                        }
                         this.onPressed();
                         this.state = pressed;
+                    } else {
+                        this.hoverTime += deltaTime;
+                        if (this.hoverTime > 1 && this.hover) {
+                            this.hover.call(this.context, true);
+                            this.hoverTime = NaN;
+                        }
                     }
                     break;
                 case pressed:

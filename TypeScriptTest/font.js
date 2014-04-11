@@ -6,9 +6,9 @@ var Font = (function () {
     //////////////////////////////////////////////////////////////////////
 
     var Font = function (font, page) {
-        this.page = page;
-        this.font = font;
-    };
+            this.page = page;
+            this.font = font;
+        };
 
     //////////////////////////////////////////////////////////////////////
 
@@ -59,6 +59,140 @@ var Font = (function () {
                     }
                 }
             }
+        },
+
+        //////////////////////////////////////////////////////////////////////
+        // set the transform before you call this
+
+        // \#
+        // \@
+        // \X = X
+        // #command:param(s)#
+        // eg:
+        //      #position:35,50# - move cursor to 35,50
+        // @link@ - return array of bounding rectangles of the links
+
+        scanString: function(ctx, str, charCallback, commandCallback) {
+
+            var scan = 0,
+                hash = 1,
+                command = 2,
+                params = 3,
+                at = 4,
+                escape = 5,
+
+                state,
+                i,
+                c,
+                l,
+                layer,
+                s,
+                glyph,
+                inEscape,
+                escaped,
+                o = {
+                    context: ctx,
+                    xc:0,
+                    yc:0,
+                },
+                linkX,
+                linkY,
+                link,
+                links,
+                command,
+                param;
+            for (l = 0; l < this.font.layerCount; ++l) {
+                layer = this.font.Layers[l];
+                o.xc = layer.offsetX;
+                o.yc = layer.offsetY;
+
+                for (i = 0; i < str.length; ++i) {
+
+                    c = str[i];
+
+                    if (inEscape) {
+                        escaped = true;
+                        inEscape = false;
+                    } else {
+                        if (c == '\\') {
+                            inEscape = true;
+                            escaped = false;
+                        }
+                    }
+
+                    switch (state) {
+
+                        case scan:
+                            if (!escaped) {
+                                if (c === '@') {
+                                    link = "";
+                                    linkX = o.xc;
+                                    linkY = o.yc;
+                                    state = at;
+                                    break;
+                                }
+                                if (c === '#') {
+                                    command = "";
+                                    param = "";
+                                    state = hash;
+                                    break;
+                                }
+                                if (c === '\n') {
+                                    o.xc = 0;
+                                    o.yc += this.font.height;
+                                }
+                            }
+                            break;
+
+                        case at:
+                            if (c === '@' && !escaped) {
+                                links.push({ x: linkX, y: linkY, str: link });
+                                state = scan;
+                            } else {
+                                link += c;
+                            }
+                            break;
+
+                        case hash:
+                            if (c === ':' && !escaped) {
+                                state = params;
+                            } else if (c === '#' && !escaped) {
+                                commandCallback.call(this, o, command, param);
+                                state = scan;
+                            } else {
+                                command += c;
+                            }
+                            break;
+
+                        case params:
+                            if (c === '#' && !escaped) {
+                                commandCallback.call(this, o, command, param);
+                                state = scan;
+                            } else {
+                                param += c;
+                            }
+                            break;
+                    }
+                    xc += this.drawChar(ctx, c, l, xc, yc);
+                }
+            }
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        drawChar: function (ctx, ch, layer, xc, yc) {
+            var c = this.font.charMap[c.charCodeAt(0)],
+                glyph,
+                s;
+            if (c !== undefined) {
+                glyph = this.font.glyphs[ch];
+                if (layer < glyph.imageCount) {
+                    s = glyph.images[layer];
+                    ctx.drawImage(this.page, s.x, s.y, s.w, s.h, xc + s.offsetX, yc + s.offsetY, s.w, s.h);
+                }
+                return glyph.advance;
+            }
+            return 0;
         },
 
         //////////////////////////////////////////////////////////////////////

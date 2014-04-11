@@ -52,6 +52,7 @@ var Game = (function () {
             },
 
             init: function (canvasElement, screenDivElement) {
+                var img;
                 screen = screenDivElement;
                 canvas = canvasElement;
                 context = canvas.getContext('2d');
@@ -61,11 +62,16 @@ var Game = (function () {
                 font = Font.load("Arial", loader);
                 Dictionary.init(loader.load("dictionary.json"));
                 Debug.init(context, Font.load("Fixedsys", loader));
+                img = new Sprite(loader.load("button.png"));
+                img.framesWide = 1;
+                img.framesHigh = 3;
+                img.frameWidth = 128;
+                img.frameHeight = 64;
                 buttons = new ButtonList();
-                buttons.add(new SpriteButton(loader.load("undo.png"), 710, 200, Board.undo));
-                buttons.add(new SpriteButton(loader.load("redo.png"), 760, 200, Board.redo));
-                label = new TextButton("HELLO", font, 720, 300);
-                label.setScale(0.5);
+                buttons.add(new SpriteButton(loader.load("undo.png"), "scale", 710, 200, Board.undo));
+                buttons.add(new SpriteButton(loader.load("redo.png"), "scale", 760, 200, Board.redo));
+                buttons.add(new SpriteButton(loader.load("button.png"), "frame", 740, 300, Board.undo));
+                buttons.add(new TextButton("HELLO", font, 720, 500).setScale(0.5));
                 Tile.load(loader);
                 loader.start();
                 Game.load();
@@ -93,11 +99,9 @@ var Game = (function () {
 
                 Board.update(deltaTime);
                 buttons.update();
-                label.update();
 
                 Board.draw(context);
                 buttons.draw(context);
-                label.draw(context);
 
                 Debug.draw();
                 frames += 1;

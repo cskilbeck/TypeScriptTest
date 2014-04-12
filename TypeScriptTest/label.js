@@ -5,7 +5,7 @@ var Label = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    var Label = function (text, font, listNodeName) {
+    var Label = function (text, font) {
         Drawable.call(this);
         this.text = text;
         this.font = font;
@@ -14,7 +14,7 @@ var Label = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    return Util.extendClass(Drawable, Label, {
+    Util.extendClass(Drawable, Label, {
 
         //////////////////////////////////////////////////////////////////////
 
@@ -31,5 +31,7 @@ var Label = (function () {
             this.font.renderString(context, this.text, -this.width() * this.pivot.x, -this.height() * this.pivot.y);
         }
     });
+
+    return Label;
 
 }());

@@ -211,6 +211,10 @@ var LinkedList = (function () {
             this.size += 1;
         },
 
+        add: function (obj) {
+            this.pushBack(obj);
+        },
+
         popFront: function () {
             if (!this.empty()) {
                 var node = this.root.next;

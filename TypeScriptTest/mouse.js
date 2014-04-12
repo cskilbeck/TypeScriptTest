@@ -58,7 +58,7 @@ var Mouse = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    function setMouseCapture(element, canvas, pub) {
+    function setMouseCapture(element, canvas, mouse) {
         if (element.setCapture) {
             element.setCapture();
         }
@@ -74,10 +74,10 @@ var Mouse = (function () {
             }
             event = fixupMouseEvent(event);
             if (event.which === 1) {
-                pub.left.held = true;
+                mouse.left.held = true;
             }
             if (event.which === 3) {
-                pub.right.held = true;
+                mouse.right.held = true;
             }
             return false;
         });
@@ -91,10 +91,10 @@ var Mouse = (function () {
         addListener(element, "mouseup", function (event) {
             event = fixupMouseEvent(event);
             if (event.which === 1) {
-                pub.left.held = false;
+                mouse.left.held = false;
             }
             if (event.which === 3) {
-                pub.right.held = false;
+                mouse.right.held = false;
             }
         });
 
@@ -108,9 +108,8 @@ var Mouse = (function () {
             }
             e = fixupMouseEvent(event);
             p = canvas.relMouseCoords(e);
-            pub.x = p.x;
-            pub.y = p.y;
-            pub.position = { x: p.x, y: p.y };
+            mouse.position.x = p.x;
+            mouse.position.y = p.y;
             if (e.y < 0 || e.y > view.height || e.x < 0 || e.x > view.width) {
                 if (element.releaseCapture) {    // allow IE to see mouse clicks outside client area
                     element.releaseCapture();
@@ -120,66 +119,82 @@ var Mouse = (function () {
                     element.setCapture();
                 }
             }
-
         });
     }
 
     //////////////////////////////////////////////////////////////////////
 
     function updateButton(b) {
-        var delta = b.held ^ b.prev;
-        b.pressed = delta & b.held;
-        b.released = delta & !b.held;
+        var delta = b.held !== b.prev;
+        b.pressed = delta && b.held;
+        b.released = delta && !b.held;
         b.prev = b.held;
     }
 
     //////////////////////////////////////////////////////////////////////
 
-    var canvas = null,
+    var IMouse = function () {
+            this.position = { x: 0, y: 0 };
+            this.delta = { x: 0, y: 0 };
+            this.left = { held: false, pressed: false, released: false, prev: false };
+            this.right = { held: false, pressed: false, released: false, prev: false };
+        },
+
+        canvas = null,
         screen = null,
-        oldx = 0,
-        oldy = 0,
+        old = { x: 0, y: 0 },
+        frozen = new IMouse(),
+        active = new IMouse(),
+        cur = active,
 
         Mouse = {
 
-            position: {
-                x: 0,
-                y: 0
-            },
-            delta: {
-                x: 0,
-                y: 0
-            },
-            left: {
-                held: false,
-                pressed: false,
-                released: false,
-                prev: false
-            },
-            right: {
-                held: false,
-                pressed: false,
-                released: false,
-                prev: false
-            },
             init: function (canvasElement, screenElement) {
                 canvas = canvasElement;
                 screen = screenElement;
-                setMouseCapture(screen, canvas, Mouse);
+                setMouseCapture(screen, canvas, active);
             },
             update: function () {
-                updateButton(Mouse.left);
-                updateButton(Mouse.right);
-                Mouse.deltax = Mouse.x - oldx;
-                Mouse.deltay = Mouse.y - oldy;
-                Mouse.delta = {
-                    x: Mouse.deltaX,
-                    y: Mouse.deltaY
-                };
-                oldx = Mouse.x;
-                oldy = Mouse.y;
+                updateButton(active.left);
+                updateButton(active.right);
+                active.delta.x = active.position.x - old.x;
+                active.delta.y = active.position.y - old.y;
+                old.x = active.position.x;
+                old.y = active.position.y;
+            },
+            freeze: function () {
+                cur = frozen;
+            },
+            unfreeze: function () {
+                cur = active;
             }
         };
+
+    //////////////////////////////////////////////////////////////////////
+
+    Object.defineProperty(Mouse, "position", {
+        get: function () {
+            return cur.position;
+        }
+    });
+
+    Object.defineProperty(Mouse, "delta", {
+        get: function () {
+            return cur.delta;
+        }
+    });
+
+    Object.defineProperty(Mouse, "left", {
+        get: function () {
+            return cur.left;
+        }
+    });
+
+    Object.defineProperty(Mouse, "right", {
+        get: function () {
+            return cur.right;
+        }
+    });
 
     //////////////////////////////////////////////////////////////////////
 

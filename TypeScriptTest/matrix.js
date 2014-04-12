@@ -96,6 +96,12 @@ var Matrix = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
+        shear: function (s) {
+            return Matrix.identity();   // tbd
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
         apply: function (p) {
             return {
                 x: p.x * this.m[0] + p.y * this.m[2] + this.m[4],

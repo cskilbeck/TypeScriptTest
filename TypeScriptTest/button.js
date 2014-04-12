@@ -16,9 +16,8 @@ var Button = (function () {
         this.state = idle;
         this.clicked = click;
         this.hovered = hover;
-        this.context = context;
+        this.context = context || this;
         this.border = border || 2;
-        this.buttonListNode = listNode(this);
         this.hoverTime = 0;
     }
 
@@ -37,8 +36,7 @@ var Button = (function () {
         onPressed: function () {
         },
 
-        update: function (deltaTime) {
-            this.transparency = this.enabled ? 255 : 128;
+        onUpdate: function (deltaTime) {
             if (this.visible && this.enabled) {
                 switch (this.state) {
                 case idle:

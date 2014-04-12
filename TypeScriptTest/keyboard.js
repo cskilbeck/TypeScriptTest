@@ -12,6 +12,7 @@ var Keyboard = (function () {
         q = [],
         clr = [],
         lastKey,
+        frozen,
 
         keyLookup = {
             none: 0,
@@ -181,26 +182,38 @@ var Keyboard = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
+        freeze: function () {
+            frozen = true;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        unfreeze: function () {
+            frozen = false;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
         held: function (key) {
-            return held[keyLookup[key.toLowerCase()]];
+            return frozen ? false : held[keyLookup[key.toLowerCase()]];
         },
 
         //////////////////////////////////////////////////////////////////////
 
         pressed: function (key) {
-            return pressed[keyLookup[key.toLowerCase()]];
+            return frozen ? false : pressed[keyLookup[key.toLowerCase()]];
         },
 
         //////////////////////////////////////////////////////////////////////
 
         released: function (key) {
-            return released[keyLookup[key.toLowerCase()]];
+            return frozen ? false : released[keyLookup[key.toLowerCase()]];
         },
 
         //////////////////////////////////////////////////////////////////////
 
         lastKeyPressed: function () {
-            return lastKey;
+            return frozen ? "" : lastKey;
         }
     };
 

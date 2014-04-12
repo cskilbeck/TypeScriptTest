@@ -5,7 +5,7 @@ var Sprite = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    var Sprite = function (image, listNodeName) {
+    var Sprite = function (image) {
         Drawable.call(this);
         this.image = image;
         this.UV = { x: 0, y: 0 };
@@ -14,7 +14,6 @@ var Sprite = (function () {
         this.frameWidth = null;
         this.frameHeight = null;
         this.frame = 0;
-        this[listNodeName || 'spriteListNode'] = listNode(this);
     };
 
     //////////////////////////////////////////////////////////////////////
@@ -25,7 +24,7 @@ var Sprite = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    return Util.extendClass(Drawable, Sprite, {
+    Util.extendClass(Drawable, Sprite, {
 
         //////////////////////////////////////////////////////////////////////
 
@@ -67,6 +66,8 @@ var Sprite = (function () {
                 h);
         }
     });
+
+    return Sprite;
 
 }());
 

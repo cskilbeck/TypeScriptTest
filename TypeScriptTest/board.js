@@ -243,15 +243,15 @@ var Board = (function () {
                 activeTile = null;
             }
             if (Mouse.left.pressed) {
-                clickedTile = Board.tileFromScreenPos(Mouse.x, Mouse.y);
+                clickedTile = Board.tileFromScreenPos(Mouse.position.x, Mouse.position.y);
                 if (clickedTile !== null) {
                     if (activeTile !== null && activeTile !== clickedTile) {
                         activeTile.selected = false;
                         activeTile.layer = 0;
                     }
                     activeTile = clickedTile;
-                    clickX = Mouse.x;
-                    clickY = Mouse.y;
+                    clickX = Mouse.position.x;
+                    clickY = Mouse.position.y;
                     offsetX = clickX - activeTile.pos.x;
                     offsetY = clickY - activeTile.pos.y;
                     activeTile.selected = true;
@@ -260,8 +260,8 @@ var Board = (function () {
                 if (Mouse.left.held && activeTile !== null) {
                     activeTile.selected = true;
                     activeTile.layer = 1;
-                    tileX = Util.constrain(Mouse.x - offsetX, 0, Board.pixelWidth());
-                    tileY = Util.constrain(Mouse.y - offsetY, 0, Board.pixelHeight());
+                    tileX = Util.constrain(Mouse.position.x - offsetX, 0, Board.pixelWidth());
+                    tileY = Util.constrain(Mouse.position.y - offsetY, 0, Board.pixelHeight());
                     snapX = Math.floor((tileX + Tile.width / 2) / Tile.width) * Tile.width;
                     snapY = Math.floor((tileY + Tile.height / 2) / Tile.height) * Tile.height;
                     if (Math.abs(tileX - snapX) < Tile.width / 3 && Math.abs(tileY - snapY) < Tile.height / 3) {

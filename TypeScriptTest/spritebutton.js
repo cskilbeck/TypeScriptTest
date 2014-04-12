@@ -15,11 +15,7 @@ var SpriteButton = (function () {
 
     Util.extendClass(Sprite, SpriteButton);
 
-    return Util.extendClass(Button, SpriteButton, {
-
-        update: function () {
-            Button.prototype.update.call(this);
-        },
+    Util.extendClass(Button, SpriteButton, {
 
         onIdle: function () {
             switch (this.type) {
@@ -63,5 +59,7 @@ var SpriteButton = (function () {
             }
         }
     });
+
+    return SpriteButton;
 
 }());

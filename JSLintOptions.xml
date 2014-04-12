@@ -719,8 +719,6 @@
       <string>Game</string>
       <string>Sprite</string>
       <string>FB</string>
-      <string>SpriteList</string>
-      <string>ButtonList</string>
       <string>Button</string>
       <string>Matrix</string>
       <string>Util</string>
@@ -732,6 +730,9 @@
       <string>TextButton</string>
       <string>Label</string>
       <string>Drawable</string>
+      <string>Panel</string>
+      <string>PanelButton</string>
+      <string>Timer</string>
     </PreDefined>
   </JSLintOptions>
   <BuildFileTypes>JS</BuildFileTypes>

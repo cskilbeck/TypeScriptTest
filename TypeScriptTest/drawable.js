@@ -9,7 +9,7 @@ var Drawable = (function () {
         this.position = { x: 0, y: 0 };
         this.rotation = 0;
         this.scale = { x: 1, y: 1 };
-        this.flip = { horizontal: false, vertical: false };
+        this.drawScale = { x: 1, y: 1 };
         this.dirty = true;
         this.visible = true;
         this.zIndex = 0;
@@ -17,9 +17,16 @@ var Drawable = (function () {
         this.pivot = { x: 0.5, y: 0.5 };
         this.drawMat = null;
         this.pickMat = null;
+        this.parent = null;
+        this.closed = false;
         this.drawableListNode = listNode(this);
         this.children = new LinkedList("drawableListNode");
     };
+
+    //////////////////////////////////////////////////////////////////////
+
+    Drawable.halt = 1;
+    Drawable.modal = 2;
 
     //////////////////////////////////////////////////////////////////////
 
@@ -29,13 +36,49 @@ var Drawable = (function () {
         // override these...
 
         size: function () {
-            return { x: 0, y: 0 };
+            return { width: 0, height: 0 };
         },
 
         //////////////////////////////////////////////////////////////////////
 
         onDraw: function () {
             return;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        onUpdate: function () {
+            return;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        update: function () {
+            var c,
+                n,
+                r;
+            this.onUpdate();
+            this.children.removeIf(function (c) {
+                if (c.closed) {
+                    c.onClosed();
+                    return true;
+                }
+                return false;
+            });
+            this.children.sort(function (c) {
+                return c.zIndex;
+            });
+            for (c = this.children.begin(); c !== this.children.end() ; c = c.next) {
+                r = c.item.update();
+                if (r === Drawable.halt) {
+                    break;
+                } else if (r === Drawable.modal) {
+                    Mouse.freeze();
+                    Keyboard.freeze();
+                }
+            }
+            Mouse.unfreeze();
+            Keyboard.unfreeze();
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -54,7 +97,7 @@ var Drawable = (function () {
                 context.globalAlpha = this.transparency / 255;
                 context.setTransform(m.m[0], m.m[1], m.m[2], m.m[3], m.m[4], m.m[5]);
                 this.onDraw(context);
-                for (c = this.children.begin(); c !== this.children.end(); c = c.next) {
+                for (c = this.children.begin() ; c !== this.children.end() ; c = c.next) {
                     c.item.doDraw(context, m);
                 }
             }
@@ -118,8 +161,8 @@ var Drawable = (function () {
         //////////////////////////////////////////////////////////////////////
 
         setFlip: function (horiz, vert) {
-            this.flip.horizontal = horiz;
-            this.flip.vertical = vert;
+            this.drawScale.x = horiz ? -1 : 1;
+            this.drawScale.y = vert ? -1 : 1;
             this.dirty = true;
             return this;
         },
@@ -127,13 +170,13 @@ var Drawable = (function () {
         //////////////////////////////////////////////////////////////////////
 
         calculateMatrices: function () {
-            var m,
-                s = {};
+            var m;
             if (this.dirty) {
-                s.x = this.scale.x * (this.flip.horizontal ? -1 : 1);
-                s.y = this.scale.y * (this.flip.vertical ? -1 : 1);
                 m = Matrix.identity().translate(this.position).rotate(this.rotation);
-                this.drawMat = m.scale(s);
+                this.drawMat = m.scale({
+                    x: this.scale.x * this.drawScale.x,
+                    y: this.scale.y * this.drawScale.y
+                });
                 this.pickMat = m.scale(this.scale);
                 this.dirty = false;
             }
@@ -171,8 +214,22 @@ var Drawable = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        addChild: function (d) {
-            this.children.pushBack(d);
+        removeChild: function (c) {
+            c.parent = null;
+            this.children.remove(c);
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        addChild: function (c) {
+            c.parent = this;
+            this.children.add(c);
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        close: function () {
+            this.closed = true;
         }
 
         //////////////////////////////////////////////////////////////////////

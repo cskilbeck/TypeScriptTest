@@ -35,7 +35,6 @@ var Util = (function () {
             for (i in proto) {
                 child.prototype[i] = proto[i];
             }
-            return child;
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -123,6 +122,17 @@ var Util = (function () {
                 return new Uint8Array(xr.responseArrayBuffer);
             }
             return new Uint8Array(new VBArray(xr.responseBody).toArray());
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        clearContext: function (context, r, g, b) {
+            context.setTransform(1, 0, 0, 1, 0, 0);
+            context.globalCompositeOperation = 'copy';
+            context.fillStyle = 'rgb(' + r.toString() + ',' + g.toString() + ',' + b.toString() + ')';
+            context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+            context.globalCompositeOperation = 'source-over';
+            context.globalAlpha = 1;
         },
 
         //////////////////////////////////////////////////////////////////////

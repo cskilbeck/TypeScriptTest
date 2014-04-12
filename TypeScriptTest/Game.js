@@ -13,7 +13,7 @@
 // Font: alignment, embedded control characters, links
 // Drawable: Panel
 // Drawable: TextBox
-// 
+//
 //
 // timer.js
 // playfield.js ?
@@ -23,9 +23,7 @@
 var Game = (function () {
     "use strict";
 
-    var currentTime = window.performance.now(),
-        deltaTime,
-        frames = 0,
+    var frames = 0,
         screen,
         canvas,
         context,
@@ -40,22 +38,6 @@ var Game = (function () {
 
         Game = {
 
-            time: function () {
-                return currentTime;
-            },
-
-            deltaTime: function () {
-                return deltaTime;
-            },
-
-            cls: function () {
-                context.setTransform(1, 0, 0, 1, 0, 0);
-                context.globalCompositeOperation = 'source-over';
-                context.globalAlpha = 1;
-                context.fillStyle = 'rgb(64, 128, 64)';
-                context.fillRect(0, 0, 800, 600);
-            },
-
             init: function (canvasElement, screenDivElement) {
 
                 screen = screenDivElement;
@@ -64,26 +46,23 @@ var Game = (function () {
 
                 Mouse.init(canvas, screen);
                 Keyboard.init();
-
+                Timer.init();
                 loader = new Loader('img/');
+                Debug.init(context, Font.load("Fixedsys", loader));
 
                 font = Font.load("Arial", loader);
                 Dictionary.init(loader.load("dictionary.json"));
                 Tile.load(loader);
-                Debug.init(context, Font.load("Fixedsys", loader));
                 wordButton = loader.load("wordbutton.png");
                 consolas = Font.load("Consolas", loader);
-
                 score = new Label("Score: 0", consolas);
                 score.setPivot(0.5, 0);
                 score.setPosition(730, 11);
-
-                words = new ButtonList();
-
-                buttons = new ButtonList();
-                buttons.add(new SpriteButton(loader.load("undo.png"), "scale", 600, 500, Board.undo, null));
-                buttons.add(new SpriteButton(loader.load("redo.png"), "scale", 640, 500, Board.redo, null));
-                buttons.add(new TextButton("HELLO", font, 720, 500).setScale(0.5));
+                words = new Drawable();
+                buttons = new Drawable();
+                buttons.addChild(new SpriteButton(loader.load("undo.png"), "scale", 600, 500, Board.undo, null));
+                buttons.addChild(new SpriteButton(loader.load("redo.png"), "scale", 640, 500, Board.redo, null));
+                buttons.addChild(new TextButton("HELLO", font, 720, 500).setScale(0.5));
 
                 loader.start();
                 Game.load();
@@ -91,7 +70,7 @@ var Game = (function () {
 
             load: function () {
                 if (!loader.loadingComplete()) {
-                    Game.cls();
+                    Util.clearContext(context, 32, 128, 64);
                     loader.status(context, 50, 50);
                     requestAnimFrame(Game.load);
                 } else {
@@ -102,42 +81,55 @@ var Game = (function () {
             },
 
             run: function () {
-                var now = window.performance.now(),
-                    button,
+                var button,
                     y;
-                deltaTime = now - currentTime;
-                currentTime = now;
+                Timer.update();
                 Keyboard.update();
                 Mouse.update();
-                Game.cls();
+                Util.clearContext(context, 32, 128, 64);
 
-                buttons.update(deltaTime);
-                Board.update(deltaTime);
+                buttons.update(Timer.delta);
+                Board.update(Timer.delta);
 
                 if (Board.changed) {
-                    words = new ButtonList();
+                    words = new Drawable();
                     y = 50;
                     Board.wordList().forEach(function (w) {
-                        button = new SpriteButton(wordButton, "scale", 736, y, Board.undo);
+                        button = new SpriteButton(wordButton, "scale", 736, y, Game.showDefinition);
                         button.addChild(new Label(w.str, consolas).setPosition(-56, 1).setPivot(0, 0.5));
                         button.addChild(new Label(w.score.toString(), consolas).setPosition(56, 1).setPivot(1, 0.5));
+                        button.word = w;
                         y += button.height() + 2;
-                        words.add(button);
+                        words.addChild(button);
                     });
                     Board.changed = false;
                     score.text = "Score: " + Board.score.toString();
                 }
 
-                words.update(deltaTime);
+                words.update(Timer.delta);
 
                 words.draw(context);
                 Board.draw(context);
                 buttons.draw(context);
                 score.draw(context);
 
+                buttons.children.removeIf(function (b) {
+                    return b.removeThis;
+                });
+
                 Debug.draw();
                 frames += 1;
                 requestAnimFrame(Game.run);
+            },
+
+            definitionClicked: function () {
+                this.removeThis = true;
+            },
+
+            showDefinition: function () {
+                var panel = new PanelButton(400, 300, 640, 480, 'black', Game.definitionClicked);
+                panel.transparency = 192;
+                buttons.addChild(panel);
             }
         };
 

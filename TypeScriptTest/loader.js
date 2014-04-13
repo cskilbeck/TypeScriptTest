@@ -42,7 +42,7 @@ var Loader = (function () {
                 break;
             case 'txt':
             case 'text':
-                this.object = "";
+                this.object = "";       // this doesn't work because strings are immutable
                 this.binary = false;
                 this.finalize = Item.processString;
                 break;

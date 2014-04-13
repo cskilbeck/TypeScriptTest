@@ -11,8 +11,8 @@ var GameScreen = (function () {
         words,
         wordButton,
         score,
-        y,
         button,
+        board,
 
     //////////////////////////////////////////////////////////////////////
 
@@ -22,13 +22,18 @@ var GameScreen = (function () {
             wordButton = loader.load("wordbutton.png");
             consolas = Font.load("Consolas", loader);
             arial = Font.load("Arial", loader);
-            words = new Drawable();
+
+            board = new Board();
+
             score = new Label("Score: 0", consolas);
             score.setPivot(0, 0);
             score.setPosition(690, 11);
             this.addChild(score);
+
             this.addChild(new SpriteButton(loader.load("undo.png"), "scale", 600, 500, this.undo, null));
             this.addChild(new SpriteButton(loader.load("redo.png"), "scale", 640, 500, this.redo, null));
+
+            words = new Drawable();
             this.addChild(words);
         };
 
@@ -39,7 +44,7 @@ var GameScreen = (function () {
         //////////////////////////////////////////////////////////////////////
 
         onLoaded: function () {
-            Board.randomize(1);
+            board.randomize(1);
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -57,11 +62,11 @@ var GameScreen = (function () {
         //////////////////////////////////////////////////////////////////////
 
         onUpdate: function (deltaTime) {
-            Board.update(deltaTime);
-            if (Board.changed) {
+            var y = 50;
+            board.update(deltaTime);
+            if (board.changed) {
                 words.children.clear();
-                y = 50;
-                Board.wordList().forEach(function (w) {
+                board.wordList().forEach(function (w) {
                     button = new SpriteButton(wordButton, "scale", 736, y, function () {
                         var def = consolas.wrapText(Dictionary.getDefinition(w.str), 600, '\n    '),
                             panel = new PanelButton(80, 60, 640, 480, 'black', function () {
@@ -80,15 +85,15 @@ var GameScreen = (function () {
                     y += button.height() + 2;
                     words.addChild(button);
                 }, this);
-                Board.changed = false;
-                score.text = "Score: " + Board.score.toString();
+                board.changed = false;
+                score.text = "Score: " + board.score.toString();
             }
         },
 
         //////////////////////////////////////////////////////////////////////
 
         onDraw: function (context) {
-            Board.draw(context);
+            board.draw(context);
         }
 
     });

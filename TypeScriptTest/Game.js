@@ -31,7 +31,6 @@ var Game = (function () {
         Game = {
 
             init: function (canvasElement, screenDivElement) {
-
                 screenDiv = screenDivElement;
                 canvas = canvasElement;
                 context = canvas.getContext('2d');
@@ -42,7 +41,6 @@ var Game = (function () {
                 Debug.init(context, Font.load("Fixedsys", loader));
                 Dictionary.init(loader.load("dictionary.json"));
                 root = new Drawable();
-                root.name = "bob";
                 root.addChild(new GameScreen(loader));
                 loader.start();
                 Game.load();

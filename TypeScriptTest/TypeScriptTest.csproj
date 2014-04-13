@@ -47,7 +47,6 @@
     <Content Include="panel.js" />
     <Content Include="polyfill.js" />
     <Content Include="random.js" />
-    <Content Include="screen.js" />
     <Content Include="sprite.js" />
     <Content Include="font.js" />
     <Content Include="spritebutton.js" />

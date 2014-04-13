@@ -134,11 +134,11 @@ var Mouse = (function () {
     //////////////////////////////////////////////////////////////////////
 
     var IMouse = function () {
-            this.position = { x: 0, y: 0 };
-            this.delta = { x: 0, y: 0 };
-            this.left = { held: false, pressed: false, released: false, prev: false };
-            this.right = { held: false, pressed: false, released: false, prev: false };
-        },
+        this.position = { x: 0, y: 0 };
+        this.delta = { x: 0, y: 0 };
+        this.left = { held: false, pressed: false, released: false, prev: false };
+        this.right = { held: false, pressed: false, released: false, prev: false };
+    },
 
         canvas = null,
         screen = null,

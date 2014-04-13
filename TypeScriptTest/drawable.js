@@ -12,21 +12,18 @@ var Drawable = (function () {
         this.drawScale = { x: 1, y: 1 };
         this.dirty = true;
         this.visible = true;
-        this.zIndex = 0;
+        this.myZindex = 0;
+        this.reorder = false;
         this.transparency = 255;
         this.pivot = { x: 0.5, y: 0.5 };
         this.drawMat = null;
         this.pickMat = null;
         this.parent = null;
         this.closed = false;
+        this.modal = false;
         this.drawableListNode = listNode(this);
         this.children = new LinkedList("drawableListNode");
     };
-
-    //////////////////////////////////////////////////////////////////////
-
-    Drawable.halt = 1;
-    Drawable.modal = 2;
 
     //////////////////////////////////////////////////////////////////////
 
@@ -47,17 +44,47 @@ var Drawable = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        onUpdate: function () {
+        onUpdate: function (deltaTime) {
             return;
         },
 
         //////////////////////////////////////////////////////////////////////
 
-        update: function () {
+        onClosed: function () {
+            return;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        onLoaded: function () {
+            return;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        loaded: function () {
+            var c;
+            this.onLoaded();
+            for (c = this.children.begin() ; c !== this.children.end() ; c = c.next) {
+                c.item.loaded();
+            }
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        update: function (deltaTime) {
+            this.doUpdate(deltaTime);
+            Mouse.unfreeze();
+            Keyboard.unfreeze();
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        doUpdate: function (deltaTime) {
             var c,
                 n,
-                r;
-            this.onUpdate();
+                r,
+                frozen;
             this.children.removeIf(function (c) {
                 if (c.closed) {
                     c.onClosed();
@@ -65,20 +92,15 @@ var Drawable = (function () {
                 }
                 return false;
             });
-            this.children.sort(function (c) {
-                return c.zIndex;
-            });
-            for (c = this.children.begin(); c !== this.children.end() ; c = c.next) {
-                r = c.item.update();
-                if (r === Drawable.halt) {
-                    break;
-                } else if (r === Drawable.modal) {
+            for (c = this.children.tailNode(); c !== this.children.end() ; c = c.prev) {
+                c.item.doUpdate(deltaTime);
+                if (c.item.modal && !frozen) {
                     Mouse.freeze();
                     Keyboard.freeze();
+                    frozen = true;
                 }
             }
-            Mouse.unfreeze();
-            Keyboard.unfreeze();
+            this.onUpdate(deltaTime);
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -93,6 +115,12 @@ var Drawable = (function () {
             var m,
                 c;
             if (this.visible) {
+                if (this.reorder) {
+                    this.children.sort(function (c) {
+                        return this.myZindex;
+                    });
+                    this.reorder = false;
+                }
                 m = matrix.multiply(this.drawMatrix());
                 context.globalAlpha = this.transparency / 255;
                 context.setTransform(m.m[0], m.m[1], m.m[2], m.m[3], m.m[4], m.m[5]);
@@ -228,6 +256,12 @@ var Drawable = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
+        addSibling: function (c) {
+            this.parent.addChild(c);
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
         close: function () {
             this.closed = true;
         }
@@ -235,6 +269,18 @@ var Drawable = (function () {
         //////////////////////////////////////////////////////////////////////
 
     };
+
+    //////////////////////////////////////////////////////////////////////
+
+    Object.defineProperty(Drawable, "zIndex", {
+        set: function (z) {
+            this.myZindex = z;
+            this.reorder = true;
+        },
+        get: function () {
+            return this.myZindex;
+        }
+    });
 
     //////////////////////////////////////////////////////////////////////
 

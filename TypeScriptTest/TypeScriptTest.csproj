@@ -26,6 +26,7 @@
     <Content Include="drawable.js" />
     <Content Include="facebook.js" />
     <Content Include="game.js" />
+    <Content Include="gamescreen.js" />
     <Content Include="img\allColour.png" />
     <None Include="img\Arial.json" />
     <Content Include="img\Arial0.png" />

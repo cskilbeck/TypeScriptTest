@@ -48,132 +48,21 @@ var Font = (function () {
                 xc = x + layer.offsetX;
                 yc = y + layer.offsetY;
                 for (i = 0; i < str.length; ++i) {
-                    c = this.font.charMap[str.charCodeAt(i)];
-                    if (c !== undefined) {
-                        glyph = this.font.glyphs[c];
-                        if (l < glyph.imageCount) {
-                            s = glyph.images[l];
-                            ctx.drawImage(this.page, s.x, s.y, s.w, s.h, xc + s.offsetX, yc + s.offsetY, s.w, s.h);
-                        }
-                        xc += glyph.advance;
-                    }
-                }
-            }
-        },
+                    if (str[i] === '\n') {
+                        xc = x + layer.offsetX;
+                        yc += this.font.height;
 
-        //////////////////////////////////////////////////////////////////////
-        // set the transform before you call this
-
-        // \#
-        // \@
-        // \X = X
-        // #command:param(s)#
-        // eg:
-        //      #position:35,50# - move cursor to 35,50
-        // @link@ - return array of bounding rectangles of the links
-
-        scanString: function (ctx, str, charCallback, commandCallback) {
-
-            var scan = 0,
-                hash = 1,
-                command = 2,
-                params = 3,
-                at = 4,
-                escape = 5,
-
-                state,
-                i,
-                c,
-                l,
-                layer,
-                s,
-                glyph,
-                inEscape,
-                escaped,
-                o = {
-                    context: ctx,
-                    xc: 0,
-                    yc: 0
-                },
-                linkX,
-                linkY,
-                link,
-                links,
-                commandStr,
-                param;
-            for (l = 0; l < this.font.layerCount; ++l) {
-                layer = this.font.Layers[l];
-                o.xc = layer.offsetX;
-                o.yc = layer.offsetY;
-
-                for (i = 0; i < str.length; ++i) {
-
-                    c = str[i];
-
-                    if (inEscape) {
-                        escaped = true;
-                        inEscape = false;
                     } else {
-                        if (c === '\\') {
-                            inEscape = true;
-                            escaped = false;
+                        c = this.font.charMap[str.charCodeAt(i)];
+                        if (c !== undefined) {
+                            glyph = this.font.glyphs[c];
+                            if (l < glyph.imageCount) {
+                                s = glyph.images[l];
+                                ctx.drawImage(this.page, s.x, s.y, s.w, s.h, xc + s.offsetX, yc + s.offsetY, s.w, s.h);
+                            }
+                            xc += glyph.advance;
                         }
                     }
-
-                    switch (state) {
-
-                    case scan:
-                        if (!escaped) {
-                            if (c === '@') {
-                                link = "";
-                                linkX = o.xc;
-                                linkY = o.yc;
-                                state = at;
-                                break;
-                            }
-                            if (c === '#') {
-                                commandStr = "";
-                                param = "";
-                                state = hash;
-                                break;
-                            }
-                            if (c === '\n') {
-                                o.xc = 0;
-                                o.yc += this.font.height;
-                            }
-                        }
-                        break;
-
-                    case at:
-                        if (c === '@' && !escaped) {
-                            links.push({ x: linkX, y: linkY, str: link });
-                            state = scan;
-                        } else {
-                            link += c;
-                        }
-                        break;
-
-                    case hash:
-                        if (c === ':' && !escaped) {
-                            state = params;
-                        } else if (c === '#' && !escaped) {
-                            commandCallback.call(this, o, commandStr, param);
-                            state = scan;
-                        } else {
-                            commandStr += c;
-                        }
-                        break;
-
-                    case params:
-                        if (c === '#' && !escaped) {
-                            commandCallback.call(this, o, commandStr, param);
-                            state = scan;
-                        } else {
-                            param += c;
-                        }
-                        break;
-                    }
-                    o.xc += this.drawChar(ctx, c, l, o.xc, o.yc);
                 }
             }
         },
@@ -223,30 +112,71 @@ var Font = (function () {
         },
 
         //////////////////////////////////////////////////////////////////////
-        // just measure the top layer, don't handle \n yet
+        // just measure the top layer
 
-        measureText: function (str) {
+        measureText: function (str, start) {
             var l = this.font.layerCount - 1,
+                maxWidth = 0,
                 w = 0,
                 h = this.font.height,
                 layer = this.font.Layers[l],
+                yc = layer.offsetY,
                 xc = layer.offsetX,
                 i,
                 c,
                 glyph,
                 s;
-            for (i = 0; i < str.length; ++i) {
-                c = this.font.charMap[str.charCodeAt(i)];
-                if (c !== undefined) {
-                    glyph = this.font.glyphs[c];
-                    if (l < glyph.imageCount) {
-                        s = glyph.images[l];
-                        w = xc + s.w;
+            for (i = start || 0; i < str.length; ++i) {
+                if (str[i] === "\n") {
+                    xc = layer.offsetX;
+                    yc += this.font.height;
+                } else {
+                    c = this.font.charMap[str.charCodeAt(i)];
+                    if (c !== undefined) {
+                        glyph = this.font.glyphs[c];
+                        if (l < glyph.imageCount) {
+                            s = glyph.images[l];
+                            w = xc + s.w;
+                            if (w > maxWidth) {
+                                maxWidth = w;
+                            }
+                        }
+                        xc += glyph.advance;
                     }
-                    xc += glyph.advance;
                 }
             }
-            return { width: w, height: h };
+            return { width: maxWidth, height: yc + this.font.height };
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        wrapText: function (str, width, lineBreak) {
+            var lastGood = 1,
+                i,
+                newGood,
+                newText;
+            while (this.measureText(str).width >= width) {
+                newGood = -1;
+                for (i = lastGood; i < str.length; ++i) {
+                    if (str[i] === " ") {
+                        newText = str.slice(0, i);
+                        if (this.measureText(newText).width >= width) {
+                            break;
+                        }
+                        newGood = i;
+                    }
+                }
+                if (newGood === -1) {
+                    break;
+                }
+                lastGood = newGood;
+                if (lastGood >= str.length) {
+                    break;
+                }
+                str = str.slice(0, lastGood) + lineBreak + str.slice(lastGood + 1);
+                lastGood += lineBreak.length;
+            }
+            return str;
         }
     };
 

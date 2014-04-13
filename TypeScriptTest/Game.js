@@ -10,9 +10,8 @@
 // Flying scores/fizz/particles
 // Facebook OAuth
 // AWS/Leaderboards
-// Font: alignment, embedded control characters, links
-// Drawable: Panel
-// Drawable: TextBox
+// Font: embedded control characters, links
+// Drawable: TextBox (scrollable, links, stack etc)
 //
 //
 // timer.js
@@ -28,7 +27,6 @@ var Game = (function () {
         context,
         loader,
         root,
-        gameScreen,
 
         Game = {
 
@@ -37,19 +35,15 @@ var Game = (function () {
                 screenDiv = screenDivElement;
                 canvas = canvasElement;
                 context = canvas.getContext('2d');
-
                 Mouse.init(canvas, screenDiv);
                 Keyboard.init();
                 Timer.init();
                 loader = new Loader('img/');
                 Debug.init(context, Font.load("Fixedsys", loader));
                 Dictionary.init(loader.load("dictionary.json"));
-
                 root = new Drawable();
-
-                gameScreen = new GameScreen(loader);
-
-                root.addChild(gameScreen);
+                root.name = "bob";
+                root.addChild(new GameScreen(loader));
                 loader.start();
                 Game.load();
             },
@@ -67,8 +61,6 @@ var Game = (function () {
             },
 
             run: function () {
-                var button,
-                    y;
                 Timer.update();
                 Keyboard.update();
                 Mouse.update();

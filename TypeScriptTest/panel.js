@@ -25,9 +25,7 @@ var Panel = (function () {
         //////////////////////////////////////////////////////////////////////
 
         onDraw: function (context) {
-            var a = this.transparency / 255.0;
             context.fillStyle = this.colour;
-            context.globalAlpha = a;
             context.fillRect(-this.pivot.x * this.width(), -this.pivot.y * this.height(), this.width(), this.height());
         }
     });

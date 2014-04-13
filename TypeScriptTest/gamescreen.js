@@ -65,8 +65,8 @@ var GameScreen = (function () {
                     button = new SpriteButton(wordButton, "scale", 736, y, function () {
                         var def = consolas.wrapText(Dictionary.getDefinition(w.str), 600, '\n    '),
                             panel = new PanelButton(80, 60, 640, 480, 'black', function () {
-                            this.close();
-                        }).setPivot(0, 0);
+                                this.close();
+                            }).setPivot(0, 0);
                         panel.transparency = 192;
                         panel.addChild(new Label(def, consolas).setPosition(8, 36).setPivot(0, 0));
                         panel.addChild(new Label(w.str.toUpperCase(), arial).setPosition(8, 8).setPivot(0, 0).setScale(0.5));

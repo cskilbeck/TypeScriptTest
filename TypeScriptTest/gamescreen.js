@@ -58,13 +58,12 @@ var GameScreen = (function () {
 
         onUpdate: function (deltaTime) {
             Board.update(deltaTime);
-
             if (Board.changed) {
                 words.children.clear();
                 y = 50;
                 Board.wordList().forEach(function (w) {
                     button = new SpriteButton(wordButton, "scale", 736, y, function () {
-                        var def = consolas.wrapText(Dictionary.getDefinition(w.str), 600, '     \n'),
+                        var def = consolas.wrapText(Dictionary.getDefinition(w.str), 600, '\n    '),
                             panel = new PanelButton(80, 60, 640, 480, 'black', function () {
                             this.close();
                         }).setPivot(0, 0);

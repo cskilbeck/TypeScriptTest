@@ -8,6 +8,7 @@ var Font = (function () {
     var Font = function (font, page) {
             this.page = page;
             this.font = font;
+            this.font.lineSpacing = 2;
         };
 
     //////////////////////////////////////////////////////////////////////
@@ -50,7 +51,7 @@ var Font = (function () {
                 for (i = 0; i < str.length; ++i) {
                     if (str[i] === '\n') {
                         xc = x + layer.offsetX;
-                        yc += this.font.height;
+                        yc += this.font.height + this.font.lineSpacing;
 
                     } else {
                         c = this.font.charMap[str.charCodeAt(i)];
@@ -129,7 +130,7 @@ var Font = (function () {
             for (i = start || 0; i < str.length; ++i) {
                 if (str[i] === "\n") {
                     xc = layer.offsetX;
-                    yc += this.font.height;
+                    yc += this.font.height + this.font.lineSpacing;
                 } else {
                     c = this.font.charMap[str.charCodeAt(i)];
                     if (c !== undefined) {

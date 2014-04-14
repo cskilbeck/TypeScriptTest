@@ -13,9 +13,7 @@ var SpriteButton = (function () {
         this.origin = { x: x, y: y };
     };
 
-    Util.extendClass(Sprite, SpriteButton);
-
-    Util.extendClass(Button, SpriteButton, {
+    SpriteButton.prototype = {
 
         onIdle: function () {
             switch (this.type) {
@@ -58,8 +56,8 @@ var SpriteButton = (function () {
                 break;
             }
         }
-    });
+    };
 
-    return SpriteButton;
+    return SpriteButton.extend(Button).extend(Sprite);
 
 }());

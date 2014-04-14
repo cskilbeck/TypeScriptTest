@@ -112,8 +112,8 @@ var Drawable = (function () {
                 p;
             if (this.visible) {
                 if (this.reorder) {
-                    this.children.sort(function (c) {
-                        return this.myZindex;
+                    this.children.sort(function (a, b) {
+                        return b.myZindex - a.myZindex;
                     });
                     this.reorder = false;
                 }
@@ -123,7 +123,6 @@ var Drawable = (function () {
                 context.setTransform(d.m[0], d.m[1], d.m[2], d.m[3], d.m[4], d.m[5]);
                 context.globalAlpha = this.transparency / 255;
                 this.onDraw(context);
-                Debug.text(this.position.x, this.position.y, this.myZindex.toString());
                 for (c = this.children.begin() ; c !== this.children.end() ; c = c.next) {
                     c.item.draw(context, m);
                 }
@@ -272,7 +271,8 @@ var Drawable = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    Object.defineProperty(Drawable, "zIndex", {
+    Object.defineProperty(Drawable.prototype, "zIndex", {
+        enumerable: true,
         set: function (z) {
             this.myZindex = z;
             this.parent.reorder = true;

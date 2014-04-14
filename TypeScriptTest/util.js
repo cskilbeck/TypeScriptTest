@@ -7,6 +7,29 @@ var Util = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
+    Object.defineProperty(Object.prototype, // Define Object.prototype.extend
+        "extend",
+        {
+            writable: true,
+            enumerable: false,
+            configurable: true,
+            value: function (o) {
+                var names = Object.getOwnPropertyNames(o.prototype),
+                    i,
+                    desc;
+                for (i = 0; i < names.length; i++) {
+                    if (names[i] in this.prototype) {
+                        continue;
+                    }
+                    desc = Object.getOwnPropertyDescriptor(o.prototype, names[i]);
+                    Object.defineProperty(this.prototype, names[i], desc);
+                }
+                return this;
+            }
+        });
+
+    //////////////////////////////////////////////////////////////////////
+
     function sqr(x)
     {
         return x * x;
@@ -22,20 +45,6 @@ var Util = (function () {
     //////////////////////////////////////////////////////////////////////
 
     return {
-
-        //////////////////////////////////////////////////////////////////////
-
-        extendClass: function (parent, child, proto) {
-
-            var i,
-                p = Object.create(parent.prototype);
-            for (i in p) {
-                child.prototype[i] = p[i];
-            }
-            for (i in proto) {
-                child.prototype[i] = proto[i];
-            }
-        },
 
         //////////////////////////////////////////////////////////////////////
 

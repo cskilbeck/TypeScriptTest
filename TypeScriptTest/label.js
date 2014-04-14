@@ -7,20 +7,20 @@ var Label = (function () {
 
     var Label = function (text, font) {
         Drawable.call(this);
-        this.text = text;
+        this.str = text;
         this.font = font;
         this.dimensions = null;
     };
 
     //////////////////////////////////////////////////////////////////////
 
-    Util.extendClass(Drawable, Label, {
+    Label.prototype = {
 
         //////////////////////////////////////////////////////////////////////
 
         size: function () {
             if (this.dimensions === null) {
-                this.dimensions = this.font.measureText(this.text);
+                this.dimensions = this.font.measureText(this.str);
             }
             return this.dimensions;
         },
@@ -28,10 +28,22 @@ var Label = (function () {
         //////////////////////////////////////////////////////////////////////
 
         onDraw: function (context) {
-            this.font.renderString(context, this.text, 0, 0);
+            this.font.renderString(context, this.str, 0, 0);
+        }
+    };
+
+    //////////////////////////////////////////////////////////////////////
+
+    Object.defineProperty(Label.prototype, "text", {
+        get: function () {
+            return this.str;
+        },
+        set: function (s) {
+            this.str = s;
+            this.dimensions = null;
         }
     });
 
-    return Label;
+    return Label.extend(Drawable);
 
 }());

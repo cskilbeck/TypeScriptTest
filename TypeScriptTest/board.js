@@ -112,7 +112,7 @@ var Board = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    Util.extendClass(Drawable, Board, {
+    Board.prototype = {
 
         //////////////////////////////////////////////////////////////////////
 
@@ -397,8 +397,8 @@ var Board = (function () {
             }
             return this.score;
         }
-    });
+    };
 
-    return Board;
+    return Board.extend(Drawable);
 
 }());

@@ -23,7 +23,7 @@ var Tile = (function () {
             this.framesHigh = 5;
             this.frameWidth = tileWidth;
             this.frameHeight = tileHeight;
-            this.letter = letter;
+            this.myLetter = letter;
             this.selected = false;
             this.swapped = false;
             this.setPosition(x * tileWidth + tileWidth / 2, y * tileHeight + tileHeight / 2);
@@ -52,7 +52,7 @@ var Tile = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    Util.extendClass(Sprite, Tile, {
+    Tile.prototype = {
 
         //////////////////////////////////////////////////////////////////////
         // mark this tile as part of word w at index i
@@ -104,7 +104,7 @@ var Tile = (function () {
             this.resetPosition();
             this.selected = false;
             this.swapped = false;
-            this.layer = 0;
+            this.zIndex = 0;
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -134,11 +134,23 @@ var Tile = (function () {
             }
             this.setFrameXY(sx, sy);
             this.setScale(this.selected ? 1.2 : 1);
-            this.label.text = this.letter.toUpperCase();
         }
+    };
 
+    //////////////////////////////////////////////////////////////////////
+
+    Object.defineProperty(Tile.prototype, "letter", {
+        get: function () {
+            return this.myLetter;
+        },
+        set: function (s) {
+            this.myLetter = s;
+            this.label.text = s.toUpperCase();
+        }
     });
 
-    return Tile;
+    //////////////////////////////////////////////////////////////////////
+
+    return Tile.extend(Sprite);
 
 }());

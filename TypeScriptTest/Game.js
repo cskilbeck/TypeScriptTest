@@ -48,7 +48,7 @@ var Game = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    Util.extendClass(Drawable, Game, {
+    Game.prototype = {
 
         //////////////////////////////////////////////////////////////////////
 
@@ -98,8 +98,8 @@ var Game = (function () {
             }
         }
 
-    });
+    };
 
-    return Game;
+    return Game.extend(Drawable);
 
 }());

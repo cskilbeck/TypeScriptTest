@@ -14,7 +14,7 @@ var Panel = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    Util.extendClass(Drawable, Panel, {
+    Panel.prototype = {
 
         //////////////////////////////////////////////////////////////////////
 
@@ -28,9 +28,9 @@ var Panel = (function () {
             context.fillStyle = this.colour;
             context.fillRect(0, 0, this.width(), this.height());
         }
-    });
+    };
 
-    return Panel;
+    return Panel.extend(Drawable);
 
 }());
 
@@ -48,9 +48,6 @@ var PanelButton = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    Util.extendClass(Panel, PanelButton);
-    Util.extendClass(Button, PanelButton);
-
-    return PanelButton;
+    return PanelButton.extend(Panel).extend(Button);
 
 }());

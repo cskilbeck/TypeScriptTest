@@ -24,7 +24,7 @@ var Sprite = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    Util.extendClass(Drawable, Sprite, {
+    Sprite.prototype = {
 
         //////////////////////////////////////////////////////////////////////
 
@@ -65,9 +65,9 @@ var Sprite = (function () {
                 w,
                 h);
         }
-    });
+    };
 
-    return Sprite;
+    return Sprite.extend(Drawable);
 
 }());
 

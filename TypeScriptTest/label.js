@@ -7,9 +7,11 @@ var Label = (function () {
 
     var Label = function (text, font) {
         Drawable.call(this);
-        this.str = text;
-        this.font = font;
-        this.dimensions = null;
+        this.labelData = {
+            str: text,
+            font: font,
+            dimensions: null
+        };
     };
 
     //////////////////////////////////////////////////////////////////////
@@ -19,16 +21,17 @@ var Label = (function () {
         //////////////////////////////////////////////////////////////////////
 
         size: function () {
-            if (this.dimensions === null) {
-                this.dimensions = this.font.measureText(this.str);
+            var self = this.labelData;
+            if (self.dimensions === null) {
+                self.dimensions = this.font.measureText(this.text);
             }
-            return this.dimensions;
+            return self.dimensions;
         },
 
         //////////////////////////////////////////////////////////////////////
 
         onDraw: function (context) {
-            this.font.renderString(context, this.str, 0, 0);
+            this.font.renderString(context, this.text, 0, 0);
         }
     };
 
@@ -36,14 +39,30 @@ var Label = (function () {
 
     Object.defineProperty(Label.prototype, "text", {
         get: function () {
-            return this.str;
+            return this.labelData.str;
         },
         set: function (s) {
-            this.str = s;
-            this.dimensions = null;
+            this.labelData.str = s;
+            this.labelData.dimensions = null;
         }
     });
 
-    return Label.extend(Drawable);
+    //////////////////////////////////////////////////////////////////////
+
+    Object.defineProperty(Label.prototype, "font", {
+        get: function () {
+            return this.labelData.font;
+        },
+        set: function (f) {
+            this.labelData.font = f;
+            this.labelData.dimensions = null;
+        }
+    });
+
+    //////////////////////////////////////////////////////////////////////
+
+    Util.extendPrototype(Label, Drawable);
+
+    return Label;
 
 }());

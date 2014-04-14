@@ -1,5 +1,4 @@
 ﻿//////////////////////////////////////////////////////////////////////
-// list.sort is not stable - why?
 // Undo/Redo/SaveBest
 // Title screen
 // Mobile: Android/Chrome, iOS/Safari, Windows Phone: IE // Touch Support
@@ -73,7 +72,7 @@ var Game = (function () {
         onUpdate: function (deltaTime) {
             var y = 50;
             if (board.changed) {
-                words.children.clear();
+                words.removeChildren();
                 board.wordList().forEach(function (w) {
                     button = new SpriteButton(wordButton, "scale", 736, y, function () {
                         var def = consolas.wrapText(Dictionary.getDefinition(w.str), 600, '\n    '),
@@ -83,8 +82,8 @@ var Game = (function () {
                         panel.transparency = 192;
                         panel.addChild(new Label(def, consolas).setPosition(8, 36).setPivot(0, 0));
                         panel.addChild(new Label(w.str.toUpperCase(), arial).setPosition(8, 8).setPivot(0, 0).setScale(0.5));
-                        panel.zIndex = 1;
                         panel.modal = true;
+                        panel.zIndex = 1;
                         this.addSibling(panel);
                     }, null, this);
                     button.addChild(new Label(w.str, consolas).setPosition(-56, 1).setPivot(0, 0.5));
@@ -100,6 +99,8 @@ var Game = (function () {
 
     };
 
-    return Game.extend(Drawable);
+    Util.extendPrototype(Game, Drawable);
+
+    return Game;
 
 }());

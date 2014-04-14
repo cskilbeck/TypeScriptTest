@@ -58,6 +58,9 @@ var SpriteButton = (function () {
         }
     };
 
-    return SpriteButton.extend(Button).extend(Sprite);
+    Util.extendPrototype(SpriteButton, Button);
+    Util.extendPrototype(SpriteButton, Sprite);
+
+    return SpriteButton;
 
 }());

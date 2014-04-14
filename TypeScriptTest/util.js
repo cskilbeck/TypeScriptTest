@@ -7,44 +7,23 @@ var Util = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    Object.defineProperty(Object.prototype, // Define Object.prototype.extend
-        "extend",
-        {
-            writable: true,
-            enumerable: false,
-            configurable: true,
-            value: function (o) {
-                var names = Object.getOwnPropertyNames(o.prototype),
-                    i,
-                    desc;
-                for (i = 0; i < names.length; i++) {
-                    if (names[i] in this.prototype) {
-                        continue;
-                    }
-                    desc = Object.getOwnPropertyDescriptor(o.prototype, names[i]);
-                    Object.defineProperty(this.prototype, names[i], desc);
-                }
-                return this;
-            }
-        });
-
-    //////////////////////////////////////////////////////////////////////
-
-    function sqr(x)
-    {
-        return x * x;
-    }
-
-    //////////////////////////////////////////////////////////////////////
-
-    function dist2(v, w)
-    {
-        return sqr(v.x - w.x) + sqr(v.y - w.y);
-    }
-
-    //////////////////////////////////////////////////////////////////////
-
     return {
+
+        //////////////////////////////////////////////////////////////////////
+        // need a way to call super.method()
+
+        extendPrototype: function (child, parent) {
+            var names = Object.getOwnPropertyNames(parent.prototype),
+                i,
+                desc;
+            for (i = 0; i < names.length; i++) {
+                if (names[i] in child.prototype) {
+                    continue;
+                }
+                desc = Object.getOwnPropertyDescriptor(parent.prototype, names[i]);
+                Object.defineProperty(child.prototype, names[i], desc);
+            }
+        },
 
         //////////////////////////////////////////////////////////////////////
 
@@ -92,8 +71,11 @@ var Util = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        crossProduct: function (a, b, p) {
-            return ((b.x - a.x) * (p.y - a.y) - (b.y - a.y) * (p.x - a.x)) / Math.sqrt(dist2(a, b));
+        lineDistance: function (a, b, p) {
+            var dx = b.x - a.x,
+                dy = b.y - a.y,
+                l = Math.sqrt(dx * dx + dy * dy);
+            return (dx * (p.y - a.y) - dy * (p.x - a.x)) / l;
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -103,10 +85,11 @@ var Util = (function () {
 
             var i,
                 c,
-                b = border || 0;
+                b = border || 0,
+                l = points.length;
 
-            for (i = 0; i < points.length; ++i) {
-                c = Util.crossProduct(points[i], points[(i + 1) % 4], p);
+            for (i = 0; i < l; ++i) {
+                c = Util.lineDistance(points[i], points[(i + 1) % l], p);
                 if (c < -b) {
                     return false;
                 }
@@ -142,13 +125,6 @@ var Util = (function () {
             context.fillRect(0, 0, context.canvas.width, context.canvas.height);
             context.globalCompositeOperation = 'source-over';
             context.globalAlpha = 1;
-        },
-
-        //////////////////////////////////////////////////////////////////////
-
-        setTransform: function (context, pos, rot, scale) {
-            var m = (Matrix.identity().translate(pos).rotate(rot || 0).scale(scale || { x: 0, y: 0 })).m;
-            context.setTransform(m[0], m[1], m[2], m[3], m[4], m[5]);
         },
 
         //////////////////////////////////////////////////////////////////////

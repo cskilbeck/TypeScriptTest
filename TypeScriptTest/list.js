@@ -57,21 +57,21 @@ var List = (function () {
             merge_sort(leftSize, left);
             merge_sort(rightSize, right);
 
-            insertPoint = left;
-            runEnd = right.next;
+            insertPoint = right;
+            runEnd = left.next;
 
-            while (runEnd !== right) {
+            while (runEnd !== left) {
 
                 do {
                     insertPoint = insertPoint.next;
-                } while (insertPoint !== left && sortCallback.call(sortContext, insertPoint.item, runEnd.item) > 0);
+                } while (insertPoint !== right && sortCallback.call(sortContext, insertPoint.item, runEnd.item) > 0);
 
-                if (insertPoint !== left) {
+                if (insertPoint !== right) {
 
                     runBegin = runEnd;
                     do {
                         runEnd = runEnd.next;
-                    } while (runEnd !== right && sortCallback.call(sortContext, runEnd.item, insertPoint.item) > 0);
+                    } while (runEnd !== left && sortCallback.call(sortContext, runEnd.item, insertPoint.item) >= 0);
 
                     runBegin.prev = insertPoint.prev;
                     insertPoint.prev.next = runBegin;
@@ -80,18 +80,18 @@ var List = (function () {
 
                 } else {
 
-                    runEnd.prev = left.prev;
-                    left.prev.next = runEnd;
-                    left.prev = right.prev;
-                    right.prev.next = left;
+                    runEnd.prev = right.prev;
+                    right.prev.next = runEnd;
+                    right.prev = left.prev;
+                    left.prev.next = right;
                     break;
                 }
             }
 
-            left.next.prev = list;
-            left.prev.next = list;
-            list.prev = left.prev;
-            list.next = left.next;
+            right.next.prev = list;
+            right.prev.next = list;
+            list.prev = right.prev;
+            list.next = right.next;
 
         } else if (size === 2 && sortCallback.call(sortContext, list.prev.item, list.next.item) > 0) {
 

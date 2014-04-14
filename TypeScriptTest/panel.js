@@ -30,7 +30,9 @@ var Panel = (function () {
         }
     };
 
-    return Panel.extend(Drawable);
+    Util.extendPrototype(Panel, Drawable);
+
+    return Panel;
 
 }());
 
@@ -48,6 +50,9 @@ var PanelButton = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    return PanelButton.extend(Panel).extend(Button);
+    Util.extendPrototype(PanelButton, Button);
+    Util.extendPrototype(PanelButton, Panel);
+
+    return PanelButton;
 
 }());

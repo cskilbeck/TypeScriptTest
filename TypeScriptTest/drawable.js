@@ -6,23 +6,25 @@ var Drawable = (function () {
     //////////////////////////////////////////////////////////////////////
 
     var Drawable = function () {
-        this.position = { x: 0, y: 0 };
-        this.rotation = 0;
-        this.scale = { x: 1, y: 1 };
-        this.drawScale = { x: 1, y: 1 };
-        this.dirty = true;
-        this.visible = true;
-        this.myZindex = 0;
-        this.reorder = false;
-        this.transparency = 255;
-        this.pivot = { x: 0.5, y: 0.5 };
-        this.drawMat = null;
-        this.pickMat = null;
-        this.parent = null;
-        this.closed = false;
-        this.modal = false;
         this.drawableListNode = List.Node(this);
-        this.children = new List("drawableListNode");
+        this.drawableData = {
+            position: { x: 0, y: 0 },
+            rotation: 0,
+            scale: { x: 1, y: 1 },
+            drawScale: { x: 1, y: 1 },
+            dirty: true,
+            visible: true,
+            myZindex: 0,
+            reorder: false,
+            transparency: 255,
+            pivot: { x: 0.5, y: 0.5 },
+            drawMat: null,
+            pickMat: null,
+            parent: null,
+            closed: false,
+            modal: false,
+            children: new List("drawableListNode")
+        };
     };
 
     //////////////////////////////////////////////////////////////////////
@@ -63,9 +65,10 @@ var Drawable = (function () {
         //////////////////////////////////////////////////////////////////////
 
         loaded: function () {
-            var c;
+            var self = this.drawableData,
+                c;
             this.onLoaded();
-            for (c = this.children.begin() ; c !== this.children.end() ; c = c.next) {
+            for (c = self.children.begin() ; c !== self.children.end() ; c = c.next) {
                 c.item.loaded();
             }
         },
@@ -81,20 +84,21 @@ var Drawable = (function () {
         //////////////////////////////////////////////////////////////////////
 
         doUpdate: function (deltaTime) {
-            var c,
+            var self = this.drawableData,
+                c,
                 n,
                 r,
                 frozen;
-            this.children.removeIf(function (c) {
-                if (c.closed) {
+            self.children.removeIf(function (c) {
+                if (c.drawableData.closed) {
                     c.onClosed();
                     return true;
                 }
                 return false;
             });
-            for (c = this.children.tailNode(); c !== this.children.end() ; c = c.prev) {
+            for (c = self.children.tailNode() ; c !== self.children.end() ; c = c.prev) {
                 c.item.doUpdate(deltaTime);
-                if (c.item.modal && !frozen) {
+                if (c.item.drawableData.modal && !frozen) {
                     Mouse.freeze();
                     Keyboard.freeze();
                     frozen = true;
@@ -106,24 +110,25 @@ var Drawable = (function () {
         //////////////////////////////////////////////////////////////////////
 
         draw: function (context, matrix) {
-            var m,
+            var self = this.drawableData,
+                m,
                 d,
                 c,
                 p;
-            if (this.visible) {
-                if (this.reorder) {
-                    this.children.sort(function (a, b) {
-                        return b.myZindex - a.myZindex;
+            if (self.visible) {
+                if (self.reorder) {
+                    self.children.sort(function (a, b) {
+                        return b.drawableData.myZindex - a.drawableData.myZindex;
                     });
-                    this.reorder = false;
+                    self.reorder = false;
                 }
-                p = { x: -this.pivot.x * this.width(), y: -this.pivot.y * this.height() };
+                p = { x: -self.pivot.x * this.width(), y: -self.pivot.y * this.height() };
                 m = matrix.multiply(this.drawMatrix());
                 d = m.translate(p);
                 context.setTransform(d.m[0], d.m[1], d.m[2], d.m[3], d.m[4], d.m[5]);
-                context.globalAlpha = this.transparency / 255;
+                context.globalAlpha = self.transparency / 255;
                 this.onDraw(context);
-                for (c = this.children.begin() ; c !== this.children.end() ; c = c.next) {
+                for (c = self.children.begin() ; c !== self.children.end() ; c = c.next) {
                     c.item.draw(context, m);
                 }
             }
@@ -144,68 +149,69 @@ var Drawable = (function () {
         //////////////////////////////////////////////////////////////////////
 
         setPivot: function (x, y) {
-            this.pivot.x = x;
-            this.pivot.y = y;
-            this.dirty = true;
+            this.drawableData.pivot.x = x;
+            this.drawableData.pivot.y = y;
+            this.drawableData.dirty = true;
             return this;
         },
 
         //////////////////////////////////////////////////////////////////////
 
         setRotation: function (radians) {
-            this.rotation = radians;
-            this.dirty = true;
+            this.drawableData.rotation = radians;
+            this.drawableData.dirty = true;
             return this;
         },
 
         //////////////////////////////////////////////////////////////////////
 
         setPosition: function (x, y) {
-            this.position.x = x;
-            this.position.y = y;
-            this.dirty = true;
+            this.drawableData.position.x = x;
+            this.drawableData.position.y = y;
+            this.drawableData.dirty = true;
             return this;
         },
 
         //////////////////////////////////////////////////////////////////////
 
         move: function (x, y) {
-            this.position.x += x;
-            this.position.y += y;
-            this.dirty = true;
+            this.x += x;
+            this.y += y;
+            this.drawableData.dirty = true;
             return this;
         },
 
         //////////////////////////////////////////////////////////////////////
 
         setScale: function (x, y) {
-            this.scale.x = x;
-            this.scale.y = y || x;
-            this.dirty = true;
+            this.drawableData.scale.x = x;
+            this.drawableData.scale.y = y || x;
+            this.drawableData.dirty = true;
             return this;
         },
 
         //////////////////////////////////////////////////////////////////////
 
         setFlip: function (horiz, vert) {
-            this.drawScale.x = horiz ? -1 : 1;
-            this.drawScale.y = vert ? -1 : 1;
-            this.dirty = true;
+            this.drawableData.drawScale.x = horiz ? -1 : 1;
+            this.drawableData.drawScale.y = vert ? -1 : 1;
+            this.drawableData.dirty = true;
             return this;
         },
 
         //////////////////////////////////////////////////////////////////////
 
         calculateMatrices: function () {
-            var m,
+            var self = this.drawableData,
+                m,
                 p,
                 s;
-            if (this.dirty) {
-                s = { x: this.scale.x * this.drawScale.x, y: this.scale.y * this.drawScale.y };
-                m = Matrix.identity().translate(this.position).rotate(this.rotation);
-                this.drawMat = m.scale(s);
-                this.pickMat = m.scale(this.scale);
-                this.dirty = false;
+            if (self.dirty) {
+                s = { x: self.scale.x * self.drawScale.x, y: self.scale.y * self.drawScale.y };
+                m = Matrix.identity().translate(self.position).rotate(self.rotation);
+                self.drawMat = m.scale(s);
+                self.pickMat = m.scale(self.scale);
+                self.dirty = false;
             }
         },
 
@@ -213,23 +219,24 @@ var Drawable = (function () {
 
         drawMatrix: function () {
             this.calculateMatrices();
-            return this.drawMat;
+            return this.drawableData.drawMat;
         },
 
         //////////////////////////////////////////////////////////////////////
 
         pickMatrix: function () {
             this.calculateMatrices();
-            return this.pickMat;
+            return this.drawableData.pickMat;
         },
 
         //////////////////////////////////////////////////////////////////////
 
         pick: function (point, border) {
-            var w = this.width(),
+            var self = this.drawableData,
+                w = this.width(),
                 h = this.height(),
-                l = -this.pivot.x * w,
-                t = -this.pivot.y * h,
+                l = -self.pivot.x * w,
+                t = -self.pivot.y * h,
                 r = l + w,
                 b = t + h;
             return Util.pointInConvexPoly(
@@ -242,27 +249,37 @@ var Drawable = (function () {
         //////////////////////////////////////////////////////////////////////
 
         removeChild: function (c) {
-            c.parent = null;
-            this.children.remove(c);
+            c.drawableData.parent = null;
+            this.drawableData.children.remove(c);
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        removeChildren: function () {
+            var self = this.drawableData;
+            while (!self.children.empty()) {
+                this.removeChild(self.children.head());
+            }
         },
 
         //////////////////////////////////////////////////////////////////////
 
         addChild: function (c) {
-            c.parent = this;
-            this.children.add(c);
+            c.drawableData.parent = this;
+            this.drawableData.children.add(c);
+            this.drawableData.reorder = true;
         },
 
         //////////////////////////////////////////////////////////////////////
 
         addSibling: function (c) {
-            this.parent.addChild(c);
+            this.drawableData.parent.addChild(c);
         },
 
         //////////////////////////////////////////////////////////////////////
 
         close: function () {
-            this.closed = true;
+            this.drawableData.closed = true;
         }
 
         //////////////////////////////////////////////////////////////////////
@@ -271,14 +288,121 @@ var Drawable = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
+    Object.defineProperty(Drawable.prototype, "rotation", {
+        get: function () {
+            return this.drawableData.rotation;
+        },
+        set: function (r) {
+            this.drawableData.rotation = r;
+            this.drawableData.dirty = true;
+        }
+    });
+
+    //////////////////////////////////////////////////////////////////////
+
+    Object.defineProperty(Drawable.prototype, "x", {
+        get: function () {
+            return this.drawableData.position.x;
+        },
+        set: function (x) {
+            this.drawableData.position.x = x;
+            this.drawableData.dirty = true;
+        }
+    });
+
+    //////////////////////////////////////////////////////////////////////
+
+    Object.defineProperty(Drawable.prototype, "y", {
+        get: function () {
+            return this.drawableData.position.y;
+        },
+        set: function (y) {
+            this.drawableData.position.y = y;
+            this.drawableData.dirty = true;
+        }
+    });
+
+    //////////////////////////////////////////////////////////////////////
+
+    Object.defineProperty(Drawable.prototype, "position", {
+        get: function () {
+            return this.drawableData.position;
+        },
+        set: function (s) {
+            this.drawableData.position.x = s.x;
+            this.drawableData.position.y = s.y;
+            this.drawableData.dirty = true;
+        }
+    });
+
+    //////////////////////////////////////////////////////////////////////
+
+    Object.defineProperty(Drawable.prototype, "scale", {
+        configurable: false,
+        enumerable: true,
+        get: function () {
+            return this.drawableData.scale;
+        },
+        set: function (s) {
+            this.drawableData.scale.x = s.x;
+            this.drawableData.scale.y = s.y;
+            this.drawableData.dirty = true;
+        }
+    });
+
+    //////////////////////////////////////////////////////////////////////
+
     Object.defineProperty(Drawable.prototype, "zIndex", {
+        configurable: false,
         enumerable: true,
         set: function (z) {
-            this.myZindex = z;
-            this.parent.reorder = true;
+            var self = this.drawableData;
+            self.myZindex = z;
+            if (self.parent !== null) {
+                self.parent.drawableData.reorder = true;
+            }
         },
         get: function () {
-            return this.myZindex;
+            return this.drawableData.myZindex;
+        }
+    });
+
+    //////////////////////////////////////////////////////////////////////
+
+    Object.defineProperty(Drawable.prototype, "visible", {
+        configurable: false,
+        enumerable: true,
+        set: function (v) {
+            this.drawableData.visible = v;
+        },
+        get: function () {
+            return this.drawableData.visible;
+        }
+    });
+
+    //////////////////////////////////////////////////////////////////////
+
+    Object.defineProperty(Drawable.prototype, "transparency", {
+        configurable: false,
+        enumerable: true,
+        set: function (t) {
+            this.drawableData.transparency = t;
+        },
+        get: function () {
+            return this.drawableData.transparency;
+        }
+    });
+
+    //////////////////////////////////////////////////////////////////////
+
+    Object.defineProperty(Drawable.prototype, "modal", {
+        configurable: false,
+        enumerable: true,
+        set: function (m) {
+            this.drawableData.modal = m;
+        },
+        get: function () {
+            return this.drawableData.modal;
         }
     });
 

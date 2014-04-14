@@ -13,6 +13,9 @@ var TextButton = (function () {
         this.font = font;
     };
 
-    return TextButton.extend(Button).extend(Label);
+    Util.extendPrototype(TextButton, Button);
+    Util.extendPrototype(TextButton, Label);
+
+    return TextButton;
 
 }());

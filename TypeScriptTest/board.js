@@ -399,6 +399,8 @@ var Board = (function () {
         }
     };
 
-    return Board.extend(Drawable);
+    Util.extendPrototype(Board, Drawable);
+
+    return Board;
 
 }());

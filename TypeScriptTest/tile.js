@@ -24,7 +24,7 @@ var Tile = (function () {
             this.frameWidth = tileWidth;
             this.frameHeight = tileHeight;
             this.myLetter = letter;
-            this.selected = false;
+            this.isSelected = false;
             this.swapped = false;
             this.setPosition(x * tileWidth + tileWidth / 2, y * tileHeight + tileHeight / 2);
             this.org = {
@@ -133,9 +133,22 @@ var Tile = (function () {
                 sy = 2;
             }
             this.setFrameXY(sx, sy);
-            this.setScale(this.selected ? 1.2 : 1);
         }
     };
+
+    //////////////////////////////////////////////////////////////////////
+
+    Object.defineProperty(Tile.prototype, "selected", {
+        get: function () {
+            return this.isSelected;
+        },
+        set: function (s) {
+            if (s !== this.isSelected) {
+                this.isSelected = s;
+                this.setScale(s ? 1.2 : 1);
+            }
+        }
+    });
 
     //////////////////////////////////////////////////////////////////////
 
@@ -151,6 +164,8 @@ var Tile = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    return Tile.extend(Sprite);
+    Util.extendPrototype(Tile, Sprite);
+
+    return Tile;
 
 }());

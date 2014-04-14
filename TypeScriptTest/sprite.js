@@ -67,7 +67,9 @@ var Sprite = (function () {
         }
     };
 
-    return Sprite.extend(Drawable);
+    Util.extendPrototype(Sprite, Drawable);
+
+    return Sprite;
 
 }());
 

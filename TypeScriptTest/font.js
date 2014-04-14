@@ -183,6 +183,15 @@ var Font = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
+    Object.defineProperty(Font, "height", {
+        enumerable: true,
+        get: function () {
+            return this.font.height;
+        }
+    });
+
+    //////////////////////////////////////////////////////////////////////
+
     return Font;
 }());
 

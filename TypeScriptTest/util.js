@@ -129,6 +129,25 @@ var Util = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
+        roundRect: function (ctx, x, y, width, height, radius) {
+            var r = Math.min(radius, Math.min(width / 2, height / 2)),
+                xr = x + width,
+                yr = y + height;
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.lineTo(xr - r, y);
+            ctx.quadraticCurveTo(xr, y, xr, y + r);
+            ctx.lineTo(xr, yr - r);
+            ctx.quadraticCurveTo(xr, yr, xr - r, yr);
+            ctx.lineTo(x + r, yr);
+            ctx.quadraticCurveTo(x, yr, x, yr - r);
+            ctx.lineTo(x, y + r);
+            ctx.quadraticCurveTo(x, y, x + r, y);
+            ctx.closePath();
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
         getExtension: function (url) {
             return url.match(/(?:(?:[\w\W]+)\.)([\w\W]+?)(\?|$)/)[1].toLowerCase();
         },

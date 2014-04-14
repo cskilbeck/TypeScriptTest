@@ -8,7 +8,7 @@
 // OAuth/AWS/Leaderboards
 // Font: embedded control characters, links
 // Drawable: Window, TextBox (scrollable, links, stack etc)
-
+// Panel: rounded corners, outline
 //////////////////////////////////////////////////////////////////////
 
 var Game = (function () {
@@ -87,8 +87,7 @@ var Game = (function () {
                         panel.addChild(new Label(def, consolas).setPosition(8, 36).setPivot(0, 0));
                         panel.addChild(new Label(w.str.toUpperCase(), arial).setPosition(8, 8).setPivot(0, 0).setScale(0.5));
                         panel.modal = true;
-                        panel.zIndex = 1;
-                        this.addSibling(panel);
+                        this.addChild(panel);
                     }, null, this);
                     button.addChild(new Label(w.str, consolas).setPosition(-56, 1).setPivot(0, 0.5));
                     button.addChild(new Label(w.score.toString(), consolas).setPosition(56, 1).setPivot(1, 0.5));

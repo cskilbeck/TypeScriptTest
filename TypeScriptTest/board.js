@@ -123,11 +123,11 @@ var Board = (function () {
         //////////////////////////////////////////////////////////////////////
 
         pixelWidth: function () {
-            return this.width() - Tile.width;
+            return this.width - Tile.width;
         },
 
         pixelHeight: function () {
-            return this.height() - Tile.height;
+            return this.height - Tile.height;
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -181,7 +181,7 @@ var Board = (function () {
         // get the tile at a position on the screen
 
         tileFromScreenPos: function (x, y) {
-            if (x >= 0 && y >= 0 && x < this.width() && y < this.height()) {
+            if (x >= 0 && y >= 0 && x < this.width && y < this.height) {
                 return this.tile((x / Tile.width) >>> 0, (y / Tile.height) >>> 0);
             }
             return null;

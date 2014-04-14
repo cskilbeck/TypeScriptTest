@@ -51,19 +51,9 @@ var Sprite = (function () {
         //////////////////////////////////////////////////////////////////////
 
         onDraw: function (context, matrix) {
-            var xt = (this.scale.x > 1) ? 0.5 - (0.5 / this.scale.x) : 0,
-                yt = (this.scale.y > 1) ? 0.5 - (0.5 / this.scale.y) : 0,
-                w = this.width(),
-                h = this.height();
-            context.drawImage(this.image,
-                this.UV.x + xt,
-                this.UV.y + yt,
-                w - xt * 2,
-                h - yt * 2,
-                0,
-                0,
-                w,
-                h);
+            var w = this.width,
+                h = this.height;
+            context.drawImage(this.image, this.UV.x, this.UV.y, w, h, 0, 0, w, h);
         }
     };
 

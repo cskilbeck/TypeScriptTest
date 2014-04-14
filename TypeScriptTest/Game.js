@@ -32,17 +32,17 @@ var Game = (function () {
             consolas = Font.load("Consolas", loader);
             arial = Font.load("Arial", loader);
 
-            board = new Board(loader);
-            this.addChild(board);
+            this.addChild(new SpriteButton(loader.load("undo.png"), "scale", 600, 500, this.undo, null));
+            this.addChild(new SpriteButton(loader.load("redo.png"), "scale", 640, 500, this.redo, null));
 
             score = new Label("Score: 0", consolas).setPivot(0, 0).setPosition(690, 11);
             this.addChild(score);
 
-            this.addChild(new SpriteButton(loader.load("undo.png"), "scale", 600, 500, this.undo, null));
-            this.addChild(new SpriteButton(loader.load("redo.png"), "scale", 640, 500, this.redo, null));
-
             words = new Drawable();
             this.addChild(words);
+
+            board = new Board(loader);
+            this.addChild(board);
         };
 
     //////////////////////////////////////////////////////////////////////
@@ -89,14 +89,13 @@ var Game = (function () {
                     button.addChild(new Label(w.str, consolas).setPosition(-56, 1).setPivot(0, 0.5));
                     button.addChild(new Label(w.score.toString(), consolas).setPosition(56, 1).setPivot(1, 0.5));
                     button.word = w;
-                    y += button.height() + 2;
+                    y += button.height + 2;
                     words.addChild(button);
                 }, this);
                 board.changed = false;
                 score.text = "Score: " + board.score.toString();
             }
         }
-
     };
 
     Util.extendPrototype(Game, Drawable);

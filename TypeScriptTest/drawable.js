@@ -76,19 +76,11 @@ var Drawable = (function () {
         //////////////////////////////////////////////////////////////////////
 
         update: function (deltaTime) {
-            this.doUpdate(deltaTime);
-            Mouse.unfreeze();
-            Keyboard.unfreeze();
-        },
-
-        //////////////////////////////////////////////////////////////////////
-
-        doUpdate: function (deltaTime) {
             var self = this.drawableData,
                 c,
                 n,
                 r,
-                frozen;
+                frozen = false;
             self.children.removeIf(function (c) {
                 if (c.drawableData.closed) {
                     c.onClosed();
@@ -97,12 +89,16 @@ var Drawable = (function () {
                 return false;
             });
             for (c = self.children.tailNode() ; c !== self.children.end() ; c = c.prev) {
-                c.item.doUpdate(deltaTime);
+                c.item.update(deltaTime);
                 if (c.item.drawableData.modal && !frozen) {
                     Mouse.freeze();
                     Keyboard.freeze();
                     frozen = true;
                 }
+            }
+            if (frozen) {
+                Mouse.unfreeze();
+                Keyboard.unfreeze();
             }
             this.onUpdate(deltaTime);
         },
@@ -122,7 +118,7 @@ var Drawable = (function () {
                     });
                     self.reorder = false;
                 }
-                p = { x: -self.pivot.x * this.width(), y: -self.pivot.y * this.height() };
+                p = { x: -self.pivot.x * this.width, y: -self.pivot.y * this.height };
                 m = matrix.multiply(this.drawMatrix());
                 d = m.translate(p);
                 context.setTransform(d.m[0], d.m[1], d.m[2], d.m[3], d.m[4], d.m[5]);
@@ -134,18 +130,6 @@ var Drawable = (function () {
             }
         },
         
-        //////////////////////////////////////////////////////////////////////
-
-        width: function () {
-            return this.size().width;
-        },
-
-        //////////////////////////////////////////////////////////////////////
-
-        height: function () {
-            return this.size().height;
-        },
-
         //////////////////////////////////////////////////////////////////////
 
         setPivot: function (x, y) {
@@ -175,8 +159,10 @@ var Drawable = (function () {
         //////////////////////////////////////////////////////////////////////
 
         move: function (x, y) {
-            this.x += x;
-            this.y += y;
+            this.drawableData.position = {
+                x: this.drawableData.position.x + x,
+                y: this.drawableData.position.y + y
+            };
             this.drawableData.dirty = true;
             return this;
         },
@@ -233,8 +219,8 @@ var Drawable = (function () {
 
         pick: function (point, border) {
             var self = this.drawableData,
-                w = this.width(),
-                h = this.height(),
+                w = this.width,
+                h = this.height,
                 l = -self.pivot.x * w,
                 t = -self.pivot.y * h,
                 r = l + w,
@@ -312,6 +298,24 @@ var Drawable = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
+    Object.defineProperty(Drawable.prototype, "width", {
+        configurable: true,
+        get: function () {
+            return this.size().width;
+        }
+    });
+
+    //////////////////////////////////////////////////////////////////////
+
+    Object.defineProperty(Drawable.prototype, "height", {
+        configurable: true,
+        get: function () {
+            return this.size().height;
+        }
+    });
+
+    //////////////////////////////////////////////////////////////////////
+
     Object.defineProperty(Drawable.prototype, "y", {
         get: function () {
             return this.drawableData.position.y;
@@ -338,8 +342,6 @@ var Drawable = (function () {
     //////////////////////////////////////////////////////////////////////
 
     Object.defineProperty(Drawable.prototype, "scale", {
-        configurable: false,
-        enumerable: true,
         get: function () {
             return this.drawableData.scale;
         },

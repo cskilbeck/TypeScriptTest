@@ -121,7 +121,7 @@ var Font = (function () {
                 w = 0,
                 h = this.font.height,
                 layer = this.font.Layers[l],
-                yc = layer.offsetY,
+                yc = layer.offsetY + this.font.height,
                 xc = layer.offsetX,
                 i,
                 c,
@@ -146,7 +146,7 @@ var Font = (function () {
                     }
                 }
             }
-            return { width: maxWidth, height: yc + this.font.height };
+            return { width: maxWidth, height: yc };
         },
 
         //////////////////////////////////////////////////////////////////////

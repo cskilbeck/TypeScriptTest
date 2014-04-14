@@ -7,7 +7,7 @@
 // Flying scores/fizz/particles
 // OAuth/AWS/Leaderboards
 // Font: embedded control characters, links
-// Drawable: TextBox (scrollable, links, stack etc)
+// Drawable: Window, TextBox (scrollable, links, stack etc)
 
 //////////////////////////////////////////////////////////////////////
 
@@ -23,6 +23,7 @@ var Game = (function () {
         score,
         button,
         board,
+        menuButton,
 
     //////////////////////////////////////////////////////////////////////
 
@@ -34,6 +35,9 @@ var Game = (function () {
 
             this.addChild(new SpriteButton(loader.load("undo.png"), "scale", 600, 500, this.undo, null));
             this.addChild(new SpriteButton(loader.load("redo.png"), "scale", 640, 500, this.redo, null));
+
+            menuButton = new FancyTextButton("Menu", consolas, 730, 500, 100, 40, "black");
+            this.addChild(menuButton);
 
             score = new Label("Score: 0", consolas).setPivot(0, 0).setPosition(690, 11);
             this.addChild(score);
@@ -97,6 +101,8 @@ var Game = (function () {
             }
         }
     };
+
+    //////////////////////////////////////////////////////////////////////
 
     Util.extendPrototype(Game, Drawable);
 

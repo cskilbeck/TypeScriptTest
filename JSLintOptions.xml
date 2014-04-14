@@ -734,6 +734,7 @@
       <string>PanelButton</string>
       <string>Timer</string>
       <string>GameScreen</string>
+      <string>FancyTextButton</string>
     </PreDefined>
   </JSLintOptions>
   <BuildFileTypes>JS</BuildFileTypes>

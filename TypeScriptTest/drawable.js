@@ -96,11 +96,11 @@ var Drawable = (function () {
                     frozen = true;
                 }
             }
+            this.onUpdate(deltaTime);   // modal children freeze their parent
             if (frozen) {
                 Mouse.unfreeze();
                 Keyboard.unfreeze();
             }
-            this.onUpdate(deltaTime);
         },
 
         //////////////////////////////////////////////////////////////////////

@@ -36,7 +36,8 @@ var Board = (function () {
         ],
 
         asciiA = "a".charCodeAt(0),
-        distribution = [];
+        distribution = [],
+        foundWords = new List("listNode");
 
     //////////////////////////////////////////////////////////////////////
     // Get the score for a word
@@ -79,29 +80,21 @@ var Board = (function () {
         var arial = Font.load("Arial", loader),
             tilesPage = loader.load("allColour.png"),
             i;
+
         Drawable.call(this);
         this.setPivot(0, 0);
-
         this.tileWidth = 7;
         this.tileHeight = 5;
-
         this.score = 0;
         this.changed = false;
-
-        this.foundWords = new List("listNode");
         this.words = new List("listNode");
-
         this.random = new Random();
-
         this.activeTile = null;
         this.swapTile = null;
-
         this.clickX = 0;
         this.clickY = 0;
-
         this.offsetX = 0;
         this.offsetY = 0;
-
         this.tiles = [];
         this.tiles.length = this.tileWidth * this.tileHeight;
         for (i = 0; i < this.tiles.length; ++i) {
@@ -288,7 +281,7 @@ var Board = (function () {
         //////////////////////////////////////////////////////////////////////
         // Find all the words on the board and return a score
 
-        markWordPass: function (orientation, offset, limit, xMul, yMul, list) {
+        markWordPass: function (orientation, offset, limit, xMul, yMul) {
 
             var xLim = this.tileWidth - 2 * xMul,
                 yLim = this.tileHeight - 2 * yMul,
@@ -313,7 +306,7 @@ var Board = (function () {
                             m += offset;
                         }
                         if (Dictionary.isWord(str)) {
-                            list.pushBack(new Word(str, x, y, orientation, getScore(str)));
+                            foundWords.pushBack(new Word(str, x, y, orientation, getScore(str)));
                         }
                     }
                 }
@@ -325,8 +318,9 @@ var Board = (function () {
             var w,
                 i,
                 t,
-                j,
-                foundWords = new List("listNode");
+                j;
+
+            foundWords.clear();
 
             this.changed = true;
             this.words.clear();
@@ -338,8 +332,8 @@ var Board = (function () {
             }
 
             // find all words, including overlapping ones
-            this.markWordPass(Orientation.horizontal, 1, this.tileWidth, 1, 0, foundWords);
-            this.markWordPass(Orientation.vertical, this.tileWidth, this.tileHeight, 0, 1, foundWords);
+            this.markWordPass(Orientation.horizontal, 1, this.tileWidth, 1, 0);
+            this.markWordPass(Orientation.vertical, this.tileWidth, this.tileHeight, 0, 1);
 
             // sort by score, length, alphabet
             foundWords.sort(function (a, b) {

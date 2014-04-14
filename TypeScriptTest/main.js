@@ -22,7 +22,7 @@ var Main = (function () {
                 Debug.init(context, Font.load("Fixedsys", loader));
 
                 Dictionary.init(loader.load("dictionary.json"));
-                root = new Drawable();
+                root = new Panel(0, 0, canvas.width, canvas.height, "rgb(32, 128, 64)").setPivot(0, 0);
                 root.addChild(new Game(loader));
 
                 loader.start();
@@ -45,7 +45,6 @@ var Main = (function () {
                 Timer.update();
                 Keyboard.update();
                 Mouse.update();
-                Util.clearContext(context, 32, 128, 64);
                 root.update(Timer.delta);
                 root.draw(context, Matrix.identity());
                 Debug.draw();

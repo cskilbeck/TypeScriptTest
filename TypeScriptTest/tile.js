@@ -9,31 +9,28 @@ var Tile = (function () {
         Beginning = 1,
         Middle = 2,
         End = 3,
+        tileWidth = 96,
+        tileHeight = 96,
         font,
         tileSprite,
 
     //////////////////////////////////////////////////////////////////////
 
-        Tile = function (letter, x, y) {
-            this.listNode = listNode(this);
+        Tile = function (image, font, letter, x, y) {
+            Sprite.call(this, image);
+            this.font = font;
+            this.framesWidth = 5;
+            this.framesHigh = 5;
+            this.frameWidth = tileWidth;
+            this.frameHeight = tileHeight;
             this.letter = letter;
-            this.layer = 0;
             this.selected = false;
             this.swapped = false;
-            this.pos = {
-                x: x * Tile.width,
-                y: y * Tile.height
-            };
+            this.setPosition(x * tileWidth + tileWidth / 2, y * tileHeight + tileHeight / 2);
             this.org = {
-                x: this.pos.x,
-                y: this.pos.y
+                x: this.position.x,
+                y: this.position.y
             };
-            this.target = {
-                x: this.pos.x,
-                y: this.pos.y
-            };
-            this.targetTime = 0;
-            this.startTime = 0;
             this.horizontal = {
                 word: null,
                 index: 0,
@@ -44,26 +41,18 @@ var Tile = (function () {
                 index: 0,
                 position: 0
             };
+            this.label = new Label(letter, font).setPosition(-1, 6);
+            this.addChild(this.label);
         };
 
     //////////////////////////////////////////////////////////////////////
-    // static
 
-    Tile.width = 96;
-    Tile.height = 96;
-
-    Tile.load = function (loader) {
-        font = Font.load("Arial", loader);
-        tileSprite = Sprite.load('allColour', loader);
-        tileSprite.framesWide = 5;
-        tileSprite.framesHigh = 5;
-        tileSprite.frameWidth = Tile.width;
-        tileSprite.frameHeight = Tile.height;
-    };
+    Tile.width = tileWidth;
+    Tile.height = tileHeight;
 
     //////////////////////////////////////////////////////////////////////
 
-    Tile.prototype = {
+    Util.extendClass(Sprite, Tile, {
 
         //////////////////////////////////////////////////////////////////////
         // mark this tile as part of word w at index i
@@ -102,41 +91,10 @@ var Tile = (function () {
         },
 
         //////////////////////////////////////////////////////////////////////
-
-        setPosition: function (x, y) {
-            this.pos.x = x;
-            this.pos.y = y;
-        },
-
-        //////////////////////////////////////////////////////////////////////
         // put it back to its origin
 
         resetPosition: function () {
-            this.pos.x = this.org.x;
-            this.pos.y = this.org.y;
-        },
-
-        //////////////////////////////////////////////////////////////////////
-
-        setTarget: function (x, y, duration) {
-            this.target.x = x;
-            this.target.y = y;
-            this.startTime = Game.currentTime();
-            this.targetTime = this.startTime + duration;
-        },
-
-        //////////////////////////////////////////////////////////////////////
-
-        update: function () {
-            var d,
-                now = Game.currentTime();
-            if (this.targetTime !== 0 && this.targetTime < now) {
-                d = this.targetTime - this.startTime;
-                this.setPosition(Util.lerp(this.origin, this.target, (this.targetTime - now)) / d);
-                Debug.text(this.pos.x, this.pos.y, this.targetTime);
-            } else {
-                this.setPosition(this.target.x, this.target.y);
-            }
+            this.setPosition(this.org.x, this.org.y);
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -160,7 +118,7 @@ var Tile = (function () {
         //////////////////////////////////////////////////////////////////////
         // draw tile background
 
-        drawTile: function (context) {
+        onUpdate: function (deltaTime) {
             var sx = this.horizontal.position,
                 sy = this.vertical.position;
             if (this.horizontal.word === null && this.vertical.word === null) {
@@ -174,46 +132,12 @@ var Tile = (function () {
                 sx = 4;
                 sy = 2;
             }
-            tileSprite.setFrameXY(sx, sy);
-            tileSprite.setScale(this.selected ? 1.2 : 1);
-            tileSprite.setPosition(this.pos.x + Tile.width / 2, this.pos.y + Tile.height / 2);
-            tileSprite.draw(context);
-        },
-
-        //////////////////////////////////////////////////////////////////////
-        // draw the letter
-
-        drawLetter: function (context) {
-            var xOffset = -1,
-                yOffset = 6,
-                u = this.letter.toUpperCase();
-            font.drawText(context,
-                u,
-                {
-                    x: this.pos.x + Tile.width / 2 + xOffset,
-                    y: this.pos.y + Tile.height / 2 + yOffset
-                },
-                0,
-                {
-                    x: 1,
-                    y: 1
-                },
-                Font.center,
-                Font.middle
-            );
-        },
-
-        //////////////////////////////////////////////////////////////////////
-        // draw whole tile
-
-        draw: function (context) {
-            this.drawTile(context);
-            this.drawLetter(context);
+            this.setFrameXY(sx, sy);
+            this.setScale(this.selected ? 1.2 : 1);
+            this.label.text = this.letter.toUpperCase();
         }
-    };
 
-    //////////////////////////////////////////////////////////////////////
-    // static const
+    });
 
     return Tile;
 

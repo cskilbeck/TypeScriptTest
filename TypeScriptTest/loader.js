@@ -148,7 +148,7 @@ var Loader = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        loadingComplete: function () {
+        complete: function () {
             var i;
             for (i in this.items) {
                 if (!this.items[i].loaded) {

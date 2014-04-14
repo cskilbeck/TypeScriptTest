@@ -60,8 +60,8 @@ var Sprite = (function () {
                 this.UV.y + yt,
                 w - xt * 2,
                 h - yt * 2,
-                -this.pivot.x * w,
-                -this.pivot.y * h,
+                0,
+                0,
                 w,
                 h);
         }

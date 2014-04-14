@@ -1,38 +1,11 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-function listNode(obj) {
+var List = (function () {
     "use strict";
 
-    return {
-        item: obj,
-        next: null,
-        prev: null
-    };
-}
-
-//////////////////////////////////////////////////////////////////////
-
-function makeListNode(n, p) {
-    "use strict";
-
-    var r = {
-        item: null,
-        next: n,
-        prev: p
-    };
-    n.prev = r;
-    p.next = r;
-    return r;
-}
-
-//////////////////////////////////////////////////////////////////////
-
-var LinkedList = (function () {
-    "use strict";
-
-    var LinkedList = function (nodeName) {
+    var List = function (nodeName) {
         this.nodeName = nodeName;
-        this.root = listNode(null);
+        this.root = { item: null, next: null, prev: null };
         this.root.next = this.root;
         this.root.prev = this.root;
         this.size = 0;
@@ -41,6 +14,18 @@ var LinkedList = (function () {
         sortContext;
 
     //////////////////////////////////////////////////////////////////////
+
+    function makeListNode(n, p) {
+
+        var r = {
+            item: null,
+            next: n,
+            prev: p
+        };
+        n.prev = r;
+        p.next = r;
+        return r;
+    }
 
     function merge_sort(size, list) {
 
@@ -123,7 +108,7 @@ var LinkedList = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    LinkedList.prototype = {
+    List.prototype = {
 
         sort: function (callback, context) {
             sortCallback = callback;
@@ -338,7 +323,7 @@ var LinkedList = (function () {
         },
 
         select: function (newListNodeName, callback, context) {
-            var list = new LinkedList(newListNodeName),
+            var list = new List(newListNodeName),
                 node = this.root.next,
                 index = 0,
                 next;
@@ -378,5 +363,16 @@ var LinkedList = (function () {
             return s + '>';
         }
     };
-    return LinkedList;
+
+    //////////////////////////////////////////////////////////////////////
+
+    List.Node = function (obj) {
+        return {
+            item: obj,
+            next: null,
+            prev: null
+        };
+    };
+
+    return List;
 }());

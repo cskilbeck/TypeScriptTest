@@ -39,7 +39,6 @@ var Board = (function () {
         distribution = [];
 
     //////////////////////////////////////////////////////////////////////
-    //
     // Get the score for a word
 
     function getScore(str) {
@@ -62,7 +61,7 @@ var Board = (function () {
     // static initialization
 
     // init the distribution table
-    (function () {
+    function initLetterDistributionTable() {
         var i,
             j;
         for (i = 0; i < letters.length; ++i) {
@@ -70,38 +69,65 @@ var Board = (function () {
                 distribution.push(String.fromCharCode(i + asciiA));
             }
         }
-    }());
+    }
+
+    initLetterDistributionTable();
 
     //////////////////////////////////////////////////////////////////////
 
-    function Board() {
-        this.width = 7;
-        this.height = 5;
+    function Board(loader) {
+        var arial = Font.load("Arial", loader),
+            tilesPage = loader.load("allColour.png"),
+            i;
+        Drawable.call(this);
+        this.setPivot(0, 0);
+
+        this.tileWidth = 7;
+        this.tileHeight = 5;
+
         this.score = 0;
         this.changed = false;
-        this.tiles = [];
-        this.foundWords = new LinkedList("listNode");
-        this.words = new LinkedList("listNode");
-        this.sortedTiles = new LinkedList("listNode");
+
+        this.foundWords = new List("listNode");
+        this.words = new List("listNode");
+
         this.random = new Random();
+
         this.activeTile = null;
         this.swapTile = null;
+
         this.clickX = 0;
         this.clickY = 0;
+
         this.offsetX = 0;
         this.offsetY = 0;
+
+        this.tiles = [];
+        this.tiles.length = this.tileWidth * this.tileHeight;
+        for (i = 0; i < this.tiles.length; ++i) {
+            this.tiles[i] = new Tile(tilesPage, arial, "A", i % this.tileWidth, (i / this.tileWidth) >>> 0);
+            this.addChild(this.tiles[i]);
+        }
     }
 
     //////////////////////////////////////////////////////////////////////
 
-    Board.prototype = {
+    Util.extendClass(Drawable, Board, {
+
+        //////////////////////////////////////////////////////////////////////
+
+        size: function () {
+            return { width: this.tileWidth * Tile.width, height: this.tileHeight * Tile.height };
+        },
+
+        //////////////////////////////////////////////////////////////////////
 
         pixelWidth: function () {
-            return (this.width - 1) * Tile.width;
+            return this.width() - Tile.width;
         },
 
         pixelHeight: function () {
-            return (this.height - 1) * Tile.height;
+            return this.height() - Tile.height;
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -110,16 +136,10 @@ var Board = (function () {
         randomize: function (seed) {
             var i;
 
-            this.tiles.length = this.width * this.height;
-            // make a random board
+            // fill with random letters
             this.random.seed(seed);
             for (i = 0; i < this.tiles.length; ++i) {
-                this.tiles[i] = new Tile(randomLetter(this.random), i % this.width, (i / this.width) >>> 0);
-            }
-
-            // add to the list for sorting by layer
-            for (i = 0; i < this.tiles.length; ++i) {
-                this.sortedTiles.pushBack(this.tiles[i]);
+                this.tiles[i].letter = randomLetter(this.random);
             }
 
             // nobble it until there are no words on it
@@ -154,14 +174,14 @@ var Board = (function () {
         // Get the tile at x,y
 
         tile: function (x, y) {
-            return this.tiles[x + y * this.width];
+            return this.tiles[x + y * this.tileWidth];
         },
 
         //////////////////////////////////////////////////////////////////////
         // get the tile at a position on the screen
 
         tileFromScreenPos: function (x, y) {
-            if (x >= 0 && y >= 0 && x < this.width * Tile.width && y < this.height * Tile.height) {
+            if (x >= 0 && y >= 0 && x < this.width() && y < this.height()) {
                 return this.tile((x / Tile.width) >>> 0, (y / Tile.height) >>> 0);
             }
             return null;
@@ -188,7 +208,7 @@ var Board = (function () {
         //////////////////////////////////////////////////////////////////////
         // update
 
-        update: function () {
+        onUpdate: function (deltaTime) {
             var clickedTile,
                 snapX,
                 snapY,
@@ -211,23 +231,23 @@ var Board = (function () {
                 if (clickedTile !== null) {
                     if (this.activeTile !== null && this.activeTile !== clickedTile) {
                         this.activeTile.selected = false;
-                        this.activeTile.layer = 0;
+                        this.activeTile.zIndex = 0;
                     }
                     this.activeTile = clickedTile;
                     this.clickX = Mouse.position.x;
                     this.clickY = Mouse.position.y;
-                    this.offsetX = this.clickX - this.activeTile.pos.x;
-                    this.offsetY = this.clickY - this.activeTile.pos.y;
+                    this.offsetX = this.clickX - this.activeTile.position.x;
+                    this.offsetY = this.clickY - this.activeTile.position.y;
                     this.activeTile.selected = true;
                 }
             } else {
                 if (Mouse.left.held && this.activeTile !== null) {
                     this.activeTile.selected = true;
-                    this.activeTile.layer = 1;
-                    tileX = Util.constrain(Mouse.position.x - this.offsetX, 0, this.pixelWidth());
-                    tileY = Util.constrain(Mouse.position.y - this.offsetY, 0, this.pixelHeight());
-                    snapX = Math.floor((tileX + Tile.width / 2) / Tile.width) * Tile.width;
-                    snapY = Math.floor((tileY + Tile.height / 2) / Tile.height) * Tile.height;
+                    this.activeTile.zIndex = 1;
+                    tileX = Util.constrain(Mouse.position.x - this.offsetX, Tile.width / 2, this.pixelWidth() + Tile.width / 2);
+                    tileY = Util.constrain(Mouse.position.y - this.offsetY, Tile.height / 2, this.pixelHeight() + Tile.height / 2);
+                    snapX = Math.floor(tileX / Tile.width) * Tile.width + Tile.width / 2;
+                    snapY = Math.floor(tileY / Tile.height) * Tile.height + Tile.height / 2;
                     if (Math.abs(tileX - snapX) < Tile.width / 3 && Math.abs(tileY - snapY) < Tile.height / 3) {
                         newSwapTile = this.tileFromScreenPos(snapX, snapY);
                         if (newSwapTile !== null && newSwapTile !== this.activeTile) {
@@ -245,7 +265,7 @@ var Board = (function () {
                             this.activeTile.setPosition(snapX, snapY);
                             this.markAllWords();
                             this.activeTile.selected = true;
-                            this.activeTile.layer = 1;
+                            this.activeTile.zIndex = 1;
                         } else {
                             this.activeTile.setPosition(snapX, snapY);
                         }
@@ -257,26 +277,12 @@ var Board = (function () {
         },
 
         //////////////////////////////////////////////////////////////////////
-        // Draw the tiles, sorted by layer
-
-        draw: function (context) {
-
-            this.sortedTiles.sort(function (a, b) {
-                return b.layer - a.layer;
-            });
-
-            this.sortedTiles.forEach(function (t) {
-                t.draw(context);
-            });
-        },
-
-        //////////////////////////////////////////////////////////////////////
         // Get the tile at a certain index of a word
 
         getWordTile: function (w, i) {
             var yo = w.orientation,
                 xo = 1 - yo;
-            return this.tiles[(w.x + xo * i) + (w.y + yo * i) * this.width];
+            return this.tiles[(w.x + xo * i) + (w.y + yo * i) * this.tileWidth];
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -284,8 +290,8 @@ var Board = (function () {
 
         markWordPass: function (orientation, offset, limit, xMul, yMul, list) {
 
-            var xLim = this.width - 2 * xMul,
-                yLim = this.height - 2 * yMul,
+            var xLim = this.tileWidth - 2 * xMul,
+                yLim = this.tileHeight - 2 * yMul,
                 y,
                 x,
                 n,
@@ -297,7 +303,7 @@ var Board = (function () {
 
             for (y = 0; y < yLim; ++y) {
                 for (x = 0; x < xLim; ++x) {
-                    n = x + y * this.width;
+                    n = x + y * this.tileWidth;
                     t = x * xMul + y * yMul;
                     for (e = 3; e + t <= limit; ++e) {
                         m = n;
@@ -320,7 +326,7 @@ var Board = (function () {
                 i,
                 t,
                 j,
-                foundWords = new LinkedList("listNode");
+                foundWords = new List("listNode");
 
             this.changed = true;
             this.words.clear();
@@ -332,8 +338,8 @@ var Board = (function () {
             }
 
             // find all words, including overlapping ones
-            this.markWordPass(Orientation.horizontal, 1, this.width, 1, 0, foundWords);
-            this.markWordPass(Orientation.vertical, this.width, this.height, 0, 1, foundWords);
+            this.markWordPass(Orientation.horizontal, 1, this.tileWidth, 1, 0, foundWords);
+            this.markWordPass(Orientation.vertical, this.tileWidth, this.tileHeight, 0, 1, foundWords);
 
             // sort by score, length, alphabet
             foundWords.sort(function (a, b) {
@@ -391,7 +397,7 @@ var Board = (function () {
             }
             return this.score;
         }
-    };
+    });
 
     return Board;
 

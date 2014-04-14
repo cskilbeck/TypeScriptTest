@@ -19,7 +19,7 @@ var Word = (function () {
         this.orientation = orientation;
         this.score = score;
         this.index = 0;
-        this.listNode = listNode(this);
+        this.listNode = List.Node(this);
     };
 
     //////////////////////////////////////////////////////////////////////

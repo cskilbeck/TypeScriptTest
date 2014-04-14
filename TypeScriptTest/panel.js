@@ -26,7 +26,7 @@ var Panel = (function () {
 
         onDraw: function (context) {
             context.fillStyle = this.colour;
-            context.fillRect(-this.pivot.x * this.width(), -this.pivot.y * this.height(), this.width(), this.height());
+            context.fillRect(0, 0, this.width(), this.height());
         }
     });
 

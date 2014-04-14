@@ -28,7 +28,7 @@ var Label = (function () {
         //////////////////////////////////////////////////////////////////////
 
         onDraw: function (context) {
-            this.font.renderString(context, this.text, -this.width() * this.pivot.x, -this.height() * this.pivot.y);
+            this.font.renderString(context, this.text, 0, 0);
         }
     });
 

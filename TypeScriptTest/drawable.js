@@ -124,15 +124,13 @@ chs.Drawable = (function () {
                     });
                     self.reorder = false;
                 }
-                p = { x: -self.pivot.x * this.width, y: -self.pivot.y * this.height };
                 m = matrix.multiply(this.drawMatrix());
-                d = m.translate(p);
                 context.save();
-                context.setTransform(d.m[0], d.m[1], d.m[2], d.m[3], d.m[4], d.m[5]);
+                context.setTransform(m.m[0], m.m[1], m.m[2], m.m[3], m.m[4], m.m[5]);
                 context.globalAlpha = self.transparency / 255;
                 this.onDraw(context);
                 for (c = self.children.begin() ; c !== self.children.end() ; c = c.next) {
-                    c.item.draw(context, d);
+                    c.item.draw(context, m);
                 }
                 this.onPostDraw(context);
                 context.restore();
@@ -202,9 +200,10 @@ chs.Drawable = (function () {
                 p,
                 s;
             if (self.dirty) {
+                p = { x: -self.pivot.x * this.width, y: -self.pivot.y * this.height };
                 s = { x: self.scale.x * self.drawScale.x, y: self.scale.y * self.drawScale.y };
                 m = chs.Matrix.identity().translate(self.position).rotate(self.rotation);
-                self.drawMat = m.scale(s);
+                self.drawMat = m.scale(s).translate(p);
                 self.pickMat = m.scale(self.scale);
                 self.dirty = false;
             }

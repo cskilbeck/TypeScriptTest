@@ -694,47 +694,20 @@
       <string>console</string>
       <string>window</string>
       <string>document</string>
-      <string>Font</string>
-      <string>Fixedsys</string>
-      <string>Arial</string>
-      <string>ImageLoader</string>
+      <string>chs</string>
       <string>HTMLCanvasElement</string>
-      <string>List</string>
-      <string>listNode</string>
       <string>Image</string>
       <string>performance</string>
-      <string>Font</string>
-      <string>Orientation</string>
       <string>Tile</string>
       <string>Dictionary</string>
       <string>Word</string>
-      <string>Orientation</string>
-      <string>Random</string>
-      <string>Mouse</string>
-      <string>Debug</string>
-      <string>Keyboard</string>
       <string>requestAnimFrame</string>
       <string>Board</string>
       <string>XMLHttpRequest</string>
       <string>Game</string>
-      <string>Sprite</string>
       <string>FB</string>
-      <string>Button</string>
-      <string>Matrix</string>
-      <string>Util</string>
-      <string>ajax</string>
-      <string>Loader</string>
       <string>Uint8Array</string>
       <string>VBArray</string>
-      <string>SpriteButton</string>
-      <string>TextButton</string>
-      <string>Label</string>
-      <string>Drawable</string>
-      <string>Panel</string>
-      <string>PanelButton</string>
-      <string>Timer</string>
-      <string>GameScreen</string>
-      <string>FancyTextButton</string>
     </PreDefined>
   </JSLintOptions>
   <BuildFileTypes>JS</BuildFileTypes>

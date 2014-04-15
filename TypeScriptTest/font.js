@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-var Font = (function () {
+chs.Font = (function () {
     "use strict";
 
     //////////////////////////////////////////////////////////////////////
@@ -8,7 +8,7 @@ var Font = (function () {
     var Font = function (font, page) {
             this.page = page;
             this.font = font;
-            this.font.lineSpacing = 2;
+            this.lineSpacing = 2;
         };
 
     //////////////////////////////////////////////////////////////////////
@@ -35,7 +35,7 @@ var Font = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        renderString: function (ctx, str, x, y) {
+        renderString: function (ctx, str, x, y, lineSpace) {
             var l,
                 i,
                 layer,
@@ -43,18 +43,39 @@ var Font = (function () {
                 yc,
                 c,
                 s,
-                glyph;
+                glyph,
+                inLink = false,
+                escape = false,
+                skip = false,
+                ls = (lineSpace !== undefined) ? lineSpace : this.lineSpacing;
             for (l = 0; l < this.font.layerCount; ++l) {
                 layer = this.font.Layers[l];
                 xc = x + layer.offsetX;
                 yc = y + layer.offsetY;
                 for (i = 0; i < str.length; ++i) {
-                    if (str[i] === '\n') {
-                        xc = x + layer.offsetX;
-                        yc += this.font.height + this.font.lineSpacing;
-
-                    } else {
-                        c = this.font.charMap[str.charCodeAt(i)];
+                    c = str[i];
+                    if (!escape) {
+                        switch (c) {
+                        case '\n':
+                            xc = layer.offsetX;
+                            yc += this.font.height + ls;
+                            skip = true;
+                            break;
+                        case '\\':
+                            escape = true;
+                            skip = true;
+                            break;
+                        case '@':
+                            inLink = !inLink;
+                            skip = true;
+                            break;
+                        default:
+                            skip = false;
+                            break;
+                        }
+                    }
+                    if (!skip) {
+                        c = this.font.charMap[c.charCodeAt(0)];
                         if (c !== undefined) {
                             glyph = this.font.glyphs[c];
                             if (l < glyph.imageCount) {
@@ -70,24 +91,7 @@ var Font = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        drawChar: function (ctx, ch, layer, xc, yc) {
-            var c = this.font.charMap[c.charCodeAt(0)],
-                glyph,
-                s;
-            if (c !== undefined) {
-                glyph = this.font.glyphs[ch];
-                if (layer < glyph.imageCount) {
-                    s = glyph.images[layer];
-                    ctx.drawImage(this.page, s.x, s.y, s.w, s.h, xc + s.offsetX, yc + s.offsetY, s.w, s.h);
-                }
-                return glyph.advance;
-            }
-            return 0;
-        },
-
-        //////////////////////////////////////////////////////////////////////
-
-        drawText: function (ctx, str, position, rotation, scale, horizontalAlign, verticalAlign) {
+        drawText: function (ctx, str, position, rotation, scale, horizontalAlign, verticalAlign, lineSpace, links) {
             var d,
                 xo = 0,
                 yo = 0;
@@ -107,15 +111,15 @@ var Font = (function () {
                 yo = -0.5;
                 break;
             }
-            d = this.measureText(str);
-            Util.setTransform(ctx, position, rotation, scale);
-            this.renderString(ctx, str, d.width * xo, d.height * yo);
+            d = this.measureText(str, lineSpace, links);
+            chs.Util.setTransform(ctx, position, rotation, scale);
+            this.renderString(ctx, str, d.width * xo, d.height * yo, lineSpace);
         },
 
         //////////////////////////////////////////////////////////////////////
         // just measure the top layer
 
-        measureText: function (str, start) {
+        measureText: function (str, lineSpace, links) {
             var l = this.font.layerCount - 1,
                 maxWidth = 0,
                 w = 0,
@@ -126,13 +130,46 @@ var Font = (function () {
                 i,
                 c,
                 glyph,
-                s;
-            for (i = start || 0; i < str.length; ++i) {
-                if (str[i] === "\n") {
-                    xc = layer.offsetX;
-                    yc += this.font.height + this.font.lineSpacing;
-                } else {
-                    c = this.font.charMap[str.charCodeAt(i)];
+                s,
+                inLink = false,
+                escape = false,
+                skip = false,
+                ls = (lineSpace !== undefined) ? lineSpace : this.lineSpacing;
+
+            if (links !== undefined) {
+                links.length = 0;
+            }
+            for (i = 0; i < str.length; ++i) {
+                c = str[i];
+                if (!escape) {
+                    switch (c) {
+                    case '\n':
+                        xc = layer.offsetX;
+                        yc += this.font.height + ls;
+                        skip = true;
+                        break;
+                    case '\\':
+                        escape = true;
+                        skip = true;
+                        break;
+                    case '@':
+                        inLink = !inLink;
+                        skip = true;
+                        if (links !== undefined) {
+                            if (inLink) {
+                                links.push(xc, yc - this.font.height);
+                            } else {
+                                links.push(xc, yc);
+                            }
+                        }
+                        break;
+                    default:
+                        skip = false;
+                        break;
+                    }
+                }
+                if (!skip) {
+                    c = this.font.charMap[c.charCodeAt(0)];
                     if (c !== undefined) {
                         glyph = this.font.glyphs[c];
                         if (l < glyph.imageCount) {
@@ -151,17 +188,17 @@ var Font = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        wrapText: function (str, width, lineBreak) {
+        wrapText: function (str, width, lineBreak, lineSpace) {
             var lastGood = 1,
                 i,
                 newGood,
                 newText;
-            while (this.measureText(str).width >= width) {
+            while (this.measureText(str, lineSpace).width >= width) {
                 newGood = -1;
                 for (i = lastGood; i < str.length; ++i) {
                     if (str[i] === " ") {
                         newText = str.slice(0, i);
-                        if (this.measureText(newText).width >= width) {
+                        if (this.measureText(newText, lineSpace).width >= width) {
                             break;
                         }
                         newGood = i;

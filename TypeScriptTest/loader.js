@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-var Loader = (function () {
+chs.Loader = (function () {
     "use strict";
 
     //////////////////////////////////////////////////////////////////////
@@ -8,6 +8,8 @@ var Loader = (function () {
     var Loader = function (baseDir) {
             this.baseDir = baseDir;
             this.items = {};
+            this.context = null;
+            this.completion = null;
         },
 
     //////////////////////////////////////////////////////////////////////
@@ -23,7 +25,7 @@ var Loader = (function () {
             this.inProgress = false;
             this.binary = undefined;
             this.started = false;
-            switch (Util.getExtension(url)) {
+            switch (chs.Util.getExtension(url)) {
             case 'jpg':
             case 'jpeg':
                 this.object = new Image();
@@ -59,7 +61,7 @@ var Loader = (function () {
     Item.prototype.load = function () {
         if (!this.started) {
             this.started = true;
-            ajax.get(this.url, Item.onLoaded, Item.onProgress, this, this.binary);
+            chs.ajax.get(this.url, Item.onLoaded, Item.onProgress, this, this.binary);
         }
     };
 
@@ -99,19 +101,19 @@ var Loader = (function () {
     //////////////////////////////////////////////////////////////////////
 
     Item.processImage = function (data) {
-        this.object.src = 'data:image/png;base64,' + Util.btoa(data);
+        this.object.src = 'data:image/png;base64,' + chs.Util.btoa(data);
     };
 
     //////////////////////////////////////////////////////////////////////
 
     Item.processJPEG = function (data) {
-        this.object.src = 'data:image/jpeg;base64,' + Util.btoa(data);
+        this.object.src = 'data:image/jpeg;base64,' + chs.Util.btoa(data);
     };
 
     //////////////////////////////////////////////////////////////////////
 
     Item.processJSON = function (data) {
-        Util.shallowCopy(JSON.parse(data), this.object);    // fuckit
+        chs.Util.shallowCopy(JSON.parse(data), this.object);    // fuckit
     };
 
     //////////////////////////////////////////////////////////////////////
@@ -160,55 +162,71 @@ var Loader = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        status: function (context, x, y) {
+        doLoad: function () {
             var i,
+                x = 50,
+                y = 50,
                 yy,
                 item,
                 recvd,
                 total,
-                percent;
-            context.setTransform(1, 0, 0, 1, 0, 0);
-            context.strokeStyle = 'white';
-            context.fillStyle = 'white';
-            context.lineWidth = 1;
-            context.font = "20px Arial";
-            context.fontBaseLine = 'top';
-            context.fillText("Loading... " + this.percentComplete().toFixed(2) + "%", x, y);
-            context.fillStyle = 'orange';
-            context.strokeRect(x, y + 25, 400, 20);
-            context.fillRect(x, y + 26, this.percentComplete() * 3.98, 18);
-            context.font = '15px Arial';
-            context.fontBaseLine = 'middle';
-            yy = y + 50;
-            for (i in this.items) {
-                item = this.items[i];
-                if (!item.loaded) {
-                    recvd = item.bytesReceived;
-                    total = item.size || recvd;
-                    percent = recvd * 100 / total;
-                    context.strokeRect(x, yy, 102, 22);
-                    context.fillStyle = 'white';
-                    context.fillRect(x + 1, yy + 1, percent, 20);
-                    context.fillStyle = item.inProgress ? 'white' : 'black';
-                    context.fillText(item.url + " : " + recvd.toString() + " of " + total.toString(), x + 110, yy + 12);
-                    yy += 25;
+                percent,
+                context = this.context;
+            if (!this.complete()) {
+                context.setTransform(1, 0, 0, 1, 0, 0);
+                context.globalCompositeOperation = 'copy';
+                context.fillStyle = 'darkgrey';
+                context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+                context.globalCompositeOperation = 'source-over';
+                context.globalAlpha = 1;
+                context.strokeStyle = 'white';
+                context.fillStyle = 'white';
+                context.lineWidth = 1;
+                context.font = "20px Arial";
+                context.fontBaseLine = 'top';
+                context.fillText("Loading... " + this.percentComplete().toFixed(2) + "%", x, y);
+                context.fillStyle = 'orange';
+                context.strokeRect(x, y + 25, 400, 20);
+                context.fillRect(x, y + 26, this.percentComplete() * 3.98, 18);
+                context.font = '15px Arial';
+                context.fontBaseLine = 'middle';
+                yy = y + 50;
+                for (i in this.items) {
+                    item = this.items[i];
+                    if (!item.loaded) {
+                        recvd = item.bytesReceived;
+                        total = item.size || recvd;
+                        percent = recvd * 100 / total;
+                        context.strokeRect(x, yy, 102, 22);
+                        context.fillStyle = 'white';
+                        context.fillRect(x + 1, yy + 1, percent, 20);
+                        context.fillStyle = item.inProgress ? 'white' : 'black';
+                        context.fillText(item.url + " : " + recvd.toString() + " of " + total.toString(), x + 110, yy + 12);
+                        yy += 25;
+                    }
                 }
+                requestAnimFrame(this.doLoad.bind(this));
+            } else {
+                this.completion.call();
             }
         },
 
         //////////////////////////////////////////////////////////////////////
 
-        start: function () {
+        start: function (context, complete) {
             var i;
             for (i in this.items) {
                 this.items[i].load();
             }
+            this.context = context;
+            this.completion = complete;
+            this.doLoad();
         },
 
         //////////////////////////////////////////////////////////////////////
 
         load: function (name, callback, context, data) {
-            var url = ajax.url(this.baseDir + name, data),
+            var url = chs.ajax.url(this.baseDir + name, data),
                 item = this.items[url] || null;
             if (item !== null) {
                 item.doCallback();

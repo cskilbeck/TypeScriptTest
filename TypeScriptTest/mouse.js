@@ -1,23 +1,22 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-HTMLCanvasElement.prototype.relMouseCoords = function (event) {
+chs.Mouse = (function () {
     "use strict";
 
-    var totalOffsetX = 0,
-        totalOffsetY = 0,
-        currentElement = this;
-    do {
-        totalOffsetX += currentElement.offsetLeft - currentElement.scrollLeft;
-        totalOffsetY += currentElement.offsetTop - currentElement.scrollTop;
-        currentElement = currentElement.offsetParent;
-    } while (currentElement !== null);
-    return { x: event.x - totalOffsetX, y: event.y - totalOffsetY };
-};
+    //////////////////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////////////////
+    function relMouseCoords(elem, event) {
 
-var Mouse = (function () {
-    "use strict";
+        var totalOffsetX = 0,
+            totalOffsetY = 0,
+            currentElement = elem;
+        do {
+            totalOffsetX += currentElement.offsetLeft - currentElement.scrollLeft;
+            totalOffsetY += currentElement.offsetTop - currentElement.scrollTop;
+            currentElement = currentElement.offsetParent;
+        } while (currentElement !== null);
+        return { x: event.x - totalOffsetX, y: event.y - totalOffsetY };
+    }
 
     //////////////////////////////////////////////////////////////////////
 
@@ -107,7 +106,7 @@ var Mouse = (function () {
                 event.preventDefault();
             }
             e = fixupMouseEvent(event);
-            p = canvas.relMouseCoords(e);
+            p = relMouseCoords(canvas, e);
             mouse.position.x = p.x;
             mouse.position.y = p.y;
             if (e.y < 0 || e.y > view.height || e.x < 0 || e.x > view.width) {

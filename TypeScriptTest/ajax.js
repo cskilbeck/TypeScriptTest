@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-var ajax = (function () {
+chs.ajax = (function () {
     "use strict";
 
     //////////////////////////////////////////////////////////////////////
@@ -16,7 +16,7 @@ var ajax = (function () {
         xr.onreadystatechange = function () {
             if (xr.readyState === XMLHttpRequest.DONE) {
                 if (binary) {
-                    callback.call(context, url, Util.getResponseAsArray(xr));
+                    callback.call(context, url, chs.Util.getResponseAsArray(xr));
                 } else {
                     callback.call(context, url, xr.responseText);
                 }

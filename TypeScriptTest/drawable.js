@@ -1,12 +1,12 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-var Drawable = (function () {
+chs.Drawable = (function () {
     "use strict";
 
     //////////////////////////////////////////////////////////////////////
 
     var Drawable = function () {
-        this.drawableListNode = List.Node(this);
+        this.drawableListNode = chs.List.Node(this);
         this.drawableData = {
             position: { x: 0, y: 0 },
             rotation: 0,
@@ -17,13 +17,13 @@ var Drawable = (function () {
             myZindex: 0,
             reorder: false,
             transparency: 255,
-            pivot: { x: 0.5, y: 0.5 },
+            pivot: { x: 0, y: 0 },
             drawMat: null,
             pickMat: null,
             parent: null,
             closed: false,
             modal: false,
-            children: new List("drawableListNode")
+            children: new chs.List("drawableListNode")
         };
     };
 
@@ -35,12 +35,18 @@ var Drawable = (function () {
         // override these...
 
         size: function () {
-            return { width: 0, height: 0 };
+            return this.dimensions || { width: 0, height: 0 };
         },
 
         //////////////////////////////////////////////////////////////////////
 
-        onDraw: function () {
+        onDraw: function (context) {
+            return;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        onPostDraw: function (context) {
             return;
         },
 
@@ -91,15 +97,15 @@ var Drawable = (function () {
             for (c = self.children.tailNode() ; c !== self.children.end() ; c = c.prev) {
                 c.item.update(deltaTime);
                 if (c.item.drawableData.modal && !frozen) {
-                    Mouse.freeze();
-                    Keyboard.freeze();
+                    chs.Mouse.freeze();
+                    chs.Keyboard.freeze();
                     frozen = true;
                 }
             }
             this.onUpdate(deltaTime);   // modal children freeze their parent
             if (frozen) {
-                Mouse.unfreeze();
-                Keyboard.unfreeze();
+                chs.Mouse.unfreeze();
+                chs.Keyboard.unfreeze();
             }
         },
 
@@ -121,12 +127,15 @@ var Drawable = (function () {
                 p = { x: -self.pivot.x * this.width, y: -self.pivot.y * this.height };
                 m = matrix.multiply(this.drawMatrix());
                 d = m.translate(p);
+                context.save();
                 context.setTransform(d.m[0], d.m[1], d.m[2], d.m[3], d.m[4], d.m[5]);
                 context.globalAlpha = self.transparency / 255;
                 this.onDraw(context);
                 for (c = self.children.begin() ; c !== self.children.end() ; c = c.next) {
                     c.item.draw(context, m);
                 }
+                this.onPostDraw(context);
+                context.restore();
             }
         },
         
@@ -194,7 +203,7 @@ var Drawable = (function () {
                 s;
             if (self.dirty) {
                 s = { x: self.scale.x * self.drawScale.x, y: self.scale.y * self.drawScale.y };
-                m = Matrix.identity().translate(self.position).rotate(self.rotation);
+                m = chs.Matrix.identity().translate(self.position).rotate(self.rotation);
                 self.drawMat = m.scale(s);
                 self.pickMat = m.scale(self.scale);
                 self.dirty = false;
@@ -225,7 +234,7 @@ var Drawable = (function () {
                 t = -self.pivot.y * h,
                 r = l + w,
                 b = t + h;
-            return Util.pointInConvexPoly(
+            return chs.Util.pointInConvexPoly(
                 this.pickMatrix().transform([{ x: l, y: t }, { x: r, y: t }, { x: r, y: b }, { x: l, y: b }]),
                 point,
                 border

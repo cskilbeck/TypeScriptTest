@@ -1,53 +1,27 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-var Label = (function () {
+chs.Label = (function () {
     "use strict";
 
-    //////////////////////////////////////////////////////////////////////
-
-    var Label = function (text, font) {
-        Drawable.call(this);
+    var Label = function (text, font, lineSpace) {
+        chs.Drawable.call(this);
         this.labelData = {
-            str: text,
+            text: text,
             font: font,
+            lineSpace: lineSpace,
             dimensions: null
         };
     };
 
-    //////////////////////////////////////////////////////////////////////
-
-    Label.prototype = {
-
-        //////////////////////////////////////////////////////////////////////
-
-        size: function () {
-            var self = this.labelData;
-            if (self.dimensions === null) {
-                self.dimensions = this.font.measureText(this.text);
-            }
-            return self.dimensions;
-        },
-
-        //////////////////////////////////////////////////////////////////////
-
-        onDraw: function (context) {
-            this.font.renderString(context, this.text, 0, 0);
-        }
-    };
-
-    //////////////////////////////////////////////////////////////////////
-
     Object.defineProperty(Label.prototype, "text", {
         get: function () {
-            return this.labelData.str;
+            return this.labelData.text;
         },
         set: function (s) {
-            this.labelData.str = s;
+            this.labelData.text = s;
             this.labelData.dimensions = null;
         }
     });
-
-    //////////////////////////////////////////////////////////////////////
 
     Object.defineProperty(Label.prototype, "font", {
         get: function () {
@@ -59,10 +33,22 @@ var Label = (function () {
         }
     });
 
-    //////////////////////////////////////////////////////////////////////
+    chs.Util.extendPrototype(Label, chs.Drawable);
 
-    Util.extendPrototype(Label, Drawable);
+    return chs.Util.overridePrototype(Label, {
 
-    return Label;
+        size: function () {
+            var self = this.labelData;
+            if (self.dimensions === null) {
+                self.dimensions = self.font.measureText(self.text, self.lineSpace);
+            }
+            return self.dimensions;
+        },
+
+        onDraw: function (context) {
+            var self = this.labelData;
+            self.font.renderString(context, self.text, 0, 0, self.lineSpace);
+        }
+    });
 
 }());

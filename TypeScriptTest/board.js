@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-var Board = (function () {
+Board = (function () {
     "use strict";
 
     //////////////////////////////////////////////////////////////////////
@@ -37,7 +37,7 @@ var Board = (function () {
 
         asciiA = "a".charCodeAt(0),
         distribution = [],
-        foundWords = new List("listNode");
+        foundWords = new chs.List("listNode");
 
     //////////////////////////////////////////////////////////////////////
     // Get the score for a word
@@ -77,18 +77,17 @@ var Board = (function () {
     //////////////////////////////////////////////////////////////////////
 
     function Board(loader) {
-        var arial = Font.load("Arial", loader),
+        var arial = chs.Font.load("Arial", loader),
             tilesPage = loader.load("allColour.png"),
             i;
 
-        Drawable.call(this);
-        this.setPivot(0, 0);
+        chs.Drawable.call(this);
         this.tileWidth = 7;
         this.tileHeight = 5;
         this.score = 0;
         this.changed = false;
-        this.words = new List("listNode");
-        this.random = new Random();
+        this.words = new chs.List("listNode");
+        this.random = new chs.Random();
         this.activeTile = null;
         this.swapTile = null;
         this.clickX = 0;
@@ -105,7 +104,9 @@ var Board = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    Board.prototype = {
+    chs.Util.extendPrototype(Board, chs.Drawable);
+
+    return chs.Util.overridePrototype(Board, {
 
         //////////////////////////////////////////////////////////////////////
 
@@ -209,7 +210,7 @@ var Board = (function () {
                 tileY,
                 newSwapTile,
                 y;
-            if (Mouse.left.released) {
+            if (chs.Mouse.left.released) {
                 if (this.activeTile !== null) {
                     this.activeTile.reset();
                 }
@@ -219,26 +220,26 @@ var Board = (function () {
                 this.swapTile = null;
                 this.activeTile = null;
             }
-            if (Mouse.left.pressed) {
-                clickedTile = this.tileFromScreenPos(Mouse.position.x, Mouse.position.y);
+            if (chs.Mouse.left.pressed) {
+                clickedTile = this.tileFromScreenPos(chs.Mouse.position.x, chs.Mouse.position.y);
                 if (clickedTile !== null) {
                     if (this.activeTile !== null && this.activeTile !== clickedTile) {
                         this.activeTile.selected = false;
                         this.activeTile.zIndex = 0;
                     }
                     this.activeTile = clickedTile;
-                    this.clickX = Mouse.position.x;
-                    this.clickY = Mouse.position.y;
+                    this.clickX = chs.Mouse.position.x;
+                    this.clickY = chs.Mouse.position.y;
                     this.offsetX = this.clickX - this.activeTile.position.x;
                     this.offsetY = this.clickY - this.activeTile.position.y;
                     this.activeTile.selected = true;
                 }
             } else {
-                if (Mouse.left.held && this.activeTile !== null) {
+                if (chs.Mouse.left.held && this.activeTile !== null) {
                     this.activeTile.selected = true;
                     this.activeTile.zIndex = 1;
-                    tileX = Util.constrain(Mouse.position.x - this.offsetX, Tile.width / 2, this.pixelWidth() + Tile.width / 2);
-                    tileY = Util.constrain(Mouse.position.y - this.offsetY, Tile.height / 2, this.pixelHeight() + Tile.height / 2);
+                    tileX = chs.Util.constrain(chs.Mouse.position.x - this.offsetX, Tile.width / 2, this.pixelWidth() + Tile.width / 2);
+                    tileY = chs.Util.constrain(chs.Mouse.position.y - this.offsetY, Tile.height / 2, this.pixelHeight() + Tile.height / 2);
                     snapX = Math.floor(tileX / Tile.width) * Tile.width + Tile.width / 2;
                     snapY = Math.floor(tileY / Tile.height) * Tile.height + Tile.height / 2;
                     if (Math.abs(tileX - snapX) < Tile.width / 3 && Math.abs(tileY - snapY) < Tile.height / 3) {
@@ -332,8 +333,8 @@ var Board = (function () {
             }
 
             // find all words, including overlapping ones
-            this.markWordPass(Orientation.horizontal, 1, this.tileWidth, 1, 0);
-            this.markWordPass(Orientation.vertical, this.tileWidth, this.tileHeight, 0, 1);
+            this.markWordPass(Word.Orientation.horizontal, 1, this.tileWidth, 1, 0);
+            this.markWordPass(Word.Orientation.vertical, this.tileWidth, this.tileHeight, 0, 1);
 
             // sort by score, length, alphabet
             foundWords.sort(function (a, b) {
@@ -374,10 +375,10 @@ var Board = (function () {
                 w = foundWords.popFront();
                 for (i = 0; i < w.str.length; ++i) {
                     t = this.getWordTile(w, i);
-                    if (t.vertical.word !== null && w.orientation === Orientation.vertical) {
+                    if (t.vertical.word !== null && w.orientation === Word.Orientation.vertical) {
                         break;
                     }
-                    if (t.horizontal.word !== null && w.orientation === Orientation.horizontal) {
+                    if (t.horizontal.word !== null && w.orientation === Word.Orientation.horizontal) {
                         break;
                     }
                 }
@@ -391,10 +392,6 @@ var Board = (function () {
             }
             return this.score;
         }
-    };
-
-    Util.extendPrototype(Board, Drawable);
-
-    return Board;
+    });
 
 }());

@@ -1,12 +1,10 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-var Sprite = (function () {
+chs.Sprite = (function () {
     "use strict";
 
-    //////////////////////////////////////////////////////////////////////
-
     var Sprite = function (image) {
-        Drawable.call(this);
+        chs.Drawable.call(this);
         this.image = image;
         this.UV = { x: 0, y: 0 };
         this.framesWide = 1;
@@ -16,30 +14,22 @@ var Sprite = (function () {
         this.frame = 0;
     };
 
-    //////////////////////////////////////////////////////////////////////
-
     Sprite.load = function (name, loader) {
-        return new Sprite(loader.load(name + ".png"));
+        return new chs.Sprite(loader.load(name + ".png"));
     };
 
-    //////////////////////////////////////////////////////////////////////
-
-    Sprite.prototype = {
-
-        //////////////////////////////////////////////////////////////////////
+    chs.Util.extendPrototype(Sprite, chs.Drawable);
+    
+    return chs.Util.overridePrototype(Sprite, {
 
         setFrameXY: function (x, y) {
             this.UV.x = x * this.frameWidth;
             this.UV.y = y * this.frameHeight;
         },
 
-        //////////////////////////////////////////////////////////////////////
-
         setFrame: function (frame) {
             this.setFrameXY((frame % this.framesWide) >>> 0, (frame / this.framesWide) >>> 0);
         },
-
-        //////////////////////////////////////////////////////////////////////
 
         size: function () {
             return {
@@ -48,19 +38,11 @@ var Sprite = (function () {
             };
         },
 
-        //////////////////////////////////////////////////////////////////////
-
         onDraw: function (context, matrix) {
             var w = this.width,
                 h = this.height;
             context.drawImage(this.image, this.UV.x, this.UV.y, w, h, 0, 0, w, h);
         }
-    };
-
-    Util.extendPrototype(Sprite, Drawable);
-
-    return Sprite;
+    });
 
 }());
-
-//////////////////////////////////////////////////////////////////////

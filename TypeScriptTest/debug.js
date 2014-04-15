@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-var Debug = (function () {
+chs.Debug = (function () {
     "use strict";
 
     var font,
@@ -23,7 +23,7 @@ var Debug = (function () {
         },
 
         print: function (str) {
-            Debug.text(cursorX, cursorY, str);
+            chs.Debug.text(cursorX, cursorY, str);
             cursorY += font.height;
         },
 

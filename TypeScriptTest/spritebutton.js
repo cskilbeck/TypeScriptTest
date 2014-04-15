@@ -1,19 +1,20 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-var SpriteButton = (function () {
+chs.SpriteButton = (function () {
     "use strict";
 
-    //////////////////////////////////////////////////////////////////////
-
     var SpriteButton = function (image, type, x, y, click, hover, context) {
-        Button.call(this, click, hover, context);
-        Sprite.call(this, image);
+        chs.Button.call(this, click, hover, context);
+        chs.Sprite.call(this, image);
         this.type = type;
         this.setPosition(x, y);
         this.origin = { x: x, y: y };
     };
 
-    SpriteButton.prototype = {
+    chs.Util.extendPrototype(SpriteButton, chs.Button);
+    chs.Util.extendPrototype(SpriteButton, chs.Sprite);
+
+    return chs.Util.overridePrototype(SpriteButton, {
 
         onIdle: function () {
             switch (this.type) {
@@ -56,11 +57,6 @@ var SpriteButton = (function () {
                 break;
             }
         }
-    };
-
-    Util.extendPrototype(SpriteButton, Button);
-    Util.extendPrototype(SpriteButton, Sprite);
-
-    return SpriteButton;
+    });
 
 }());

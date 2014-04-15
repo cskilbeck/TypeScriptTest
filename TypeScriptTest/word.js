@@ -1,16 +1,7 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-var Orientation = {
-    horizontal: 0,
-    vertical: 1
-};
-
-//////////////////////////////////////////////////////////////////////
-
 var Word = (function () {
     "use strict";
-
-    //////////////////////////////////////////////////////////////////////
 
     var Word = function (str, x, y, orientation, score) {
         this.str = str;
@@ -19,11 +10,13 @@ var Word = (function () {
         this.orientation = orientation;
         this.score = score;
         this.index = 0;
-        this.listNode = List.Node(this);
+        this.listNode = chs.List.Node(this);
     };
 
-    //////////////////////////////////////////////////////////////////////
-    // words are sorted by score then length then alphabetically
+    Word.Orientation = {
+        horizontal: 0,
+        vertical: 1
+    };
 
     Word.prototype = {
 

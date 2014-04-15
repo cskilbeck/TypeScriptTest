@@ -1,9 +1,25 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-var Util = (function () {
+chs.Util = (function () {
     "use strict";
 
     var b64c = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+    //////////////////////////////////////////////////////////////////////
+
+    function extend(child, proto, force) {
+        var names,
+            i,
+            desc;
+        names = Object.getOwnPropertyNames(proto);
+        for (i = 0; i < names.length; ++i) {
+            if (names[i] in child.prototype && !force) {
+                continue;
+            }
+            desc = Object.getOwnPropertyDescriptor(proto, names[i]);
+            Object.defineProperty(child.prototype, names[i], desc);
+        }
+    }
 
     //////////////////////////////////////////////////////////////////////
 
@@ -12,17 +28,18 @@ var Util = (function () {
         //////////////////////////////////////////////////////////////////////
         // need a way to call super.method()
 
-        extendPrototype: function (child, parent) {
-            var names = Object.getOwnPropertyNames(parent.prototype),
-                i,
-                desc;
-            for (i = 0; i < names.length; i++) {
-                if (names[i] in child.prototype) {
-                    continue;
-                }
-                desc = Object.getOwnPropertyDescriptor(parent.prototype, names[i]);
-                Object.defineProperty(child.prototype, names[i], desc);
+        extendPrototype: function (child, parent, proto) {
+            if (proto !== undefined) {
+                extend(child, proto, false);
             }
+            extend(child, parent.prototype, false);
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        overridePrototype: function (child, proto) {
+            extend(child, proto, true);
+            return child;
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -49,7 +66,7 @@ var Util = (function () {
 
             var xd = end.x - start.x,
                 yd = end.y - start.y,
-                e = Util.ease(s);
+                e = chs.Util.ease(s);
             return {
                 x: start.x + xd * e,
                 y: start.y + yd * e
@@ -89,7 +106,7 @@ var Util = (function () {
                 l = points.length;
 
             for (i = 0; i < l; ++i) {
-                c = Util.lineDistance(points[i], points[(i + 1) % l], p);
+                c = chs.Util.lineDistance(points[i], points[(i + 1) % l], p);
                 if (c < -b) {
                     return false;
                 }
@@ -118,13 +135,15 @@ var Util = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        clearContext: function (context, r, g, b) {
-            context.setTransform(1, 0, 0, 1, 0, 0);
-            context.globalCompositeOperation = 'copy';
-            context.fillStyle = 'rgb(' + r.toString() + ',' + g.toString() + ',' + b.toString() + ')';
-            context.fillRect(0, 0, context.canvas.width, context.canvas.height);
-            context.globalCompositeOperation = 'source-over';
-            context.globalAlpha = 1;
+        rect: function (ctx, x, y, width, height) {
+            var xr = x + width,
+                yr = y + height;
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(xr, y);
+            ctx.lineTo(xr, yr);
+            ctx.lineTo(x, yr);
+            ctx.closePath();
         },
 
         //////////////////////////////////////////////////////////////////////

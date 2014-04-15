@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-var List = (function () {
+chs.List = (function () {
     "use strict";
 
     var List = function (nodeName) {

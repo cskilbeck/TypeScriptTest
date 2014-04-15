@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-var Tile = (function () {
+Tile = (function () {
     "use strict";
 
     //////////////////////////////////////////////////////////////////////
@@ -17,7 +17,7 @@ var Tile = (function () {
     //////////////////////////////////////////////////////////////////////
 
         Tile = function (image, font, letter, x, y) {
-            Sprite.call(this, image);
+            chs.Sprite.call(this, image);
             this.font = font;
             this.framesWidth = 5;
             this.framesHigh = 5;
@@ -26,6 +26,7 @@ var Tile = (function () {
             this.myLetter = letter;
             this.isSelected = false;
             this.swapped = false;
+            this.setPivot(0.5, 0.5);
             this.setPosition(x * tileWidth + tileWidth / 2, y * tileHeight + tileHeight / 2);
             this.org = {
                 x: this.position.x,
@@ -41,7 +42,7 @@ var Tile = (function () {
                 index: 0,
                 position: 0
             };
-            this.label = new Label(letter, font).setPosition(-1, 6);
+            this.label = new chs.Label(letter, font).setPosition(-1, 6).setPivot(0.5, 0.5);
             this.addChild(this.label);
         };
 
@@ -52,7 +53,35 @@ var Tile = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    Tile.prototype = {
+    Object.defineProperty(Tile.prototype, "selected", {
+        get: function () {
+            return this.isSelected;
+        },
+        set: function (s) {
+            if (s !== this.isSelected) {
+                this.isSelected = s;
+                this.setScale(s ? 1.2 : 1);
+            }
+        }
+    });
+
+    //////////////////////////////////////////////////////////////////////
+
+    Object.defineProperty(Tile.prototype, "letter", {
+        get: function () {
+            return this.myLetter;
+        },
+        set: function (s) {
+            this.myLetter = s;
+            this.label.text = s.toUpperCase();
+        }
+    });
+
+    //////////////////////////////////////////////////////////////////////
+
+    chs.Util.extendPrototype(Tile, chs.Sprite);
+
+    return chs.Util.overridePrototype(Tile, {
 
         //////////////////////////////////////////////////////////////////////
         // mark this tile as part of word w at index i
@@ -67,7 +96,7 @@ var Tile = (function () {
             } else {
                 pos = Middle;
             }
-            wrd = (w.orientation === Orientation.horizontal) ? this.horizontal : this.vertical;
+            wrd = (w.orientation === Word.Orientation.horizontal) ? this.horizontal : this.vertical;
             wrd.word = w;
             wrd.index = i;
             wrd.position = pos;
@@ -134,38 +163,6 @@ var Tile = (function () {
             }
             this.setFrameXY(sx, sy);
         }
-    };
-
-    //////////////////////////////////////////////////////////////////////
-
-    Object.defineProperty(Tile.prototype, "selected", {
-        get: function () {
-            return this.isSelected;
-        },
-        set: function (s) {
-            if (s !== this.isSelected) {
-                this.isSelected = s;
-                this.setScale(s ? 1.2 : 1);
-            }
-        }
     });
-
-    //////////////////////////////////////////////////////////////////////
-
-    Object.defineProperty(Tile.prototype, "letter", {
-        get: function () {
-            return this.myLetter;
-        },
-        set: function (s) {
-            this.myLetter = s;
-            this.label.text = s.toUpperCase();
-        }
-    });
-
-    //////////////////////////////////////////////////////////////////////
-
-    Util.extendPrototype(Tile, Sprite);
-
-    return Tile;
 
 }());

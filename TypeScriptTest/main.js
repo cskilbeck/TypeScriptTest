@@ -21,7 +21,6 @@ window.onload = function () {
                     chs.Timer.init();
                     loader = new chs.Loader('img/');
                     chs.Debug.init(context, chs.Font.load("Fixedsys", loader));
-                    Dictionary.init(loader.load("dictionary.json"));
                     root = new chs.Panel(0, 0, canvas.width, canvas.height, "rgb(32, 128, 48)");
                     root.addChild(new Game(loader));
                     loader.start(context, Main.loaded);

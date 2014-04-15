@@ -132,7 +132,7 @@ chs.Drawable = (function () {
                 context.globalAlpha = self.transparency / 255;
                 this.onDraw(context);
                 for (c = self.children.begin() ; c !== self.children.end() ; c = c.next) {
-                    c.item.draw(context, m);
+                    c.item.draw(context, d);
                 }
                 this.onPostDraw(context);
                 context.restore();

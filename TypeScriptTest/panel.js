@@ -7,15 +7,14 @@ chs.ClipRect = (function () {
 
     var ClipRect = function (x, y, w, h, radius) {
         chs.Drawable.call(this);
-        this.position.x = x;
-        this.position.y = y;
+        this.setPosition(x, y);
         this.dimensions = { width: w, height: h };
         this.radius = radius;
     };
     
-    chs.Util.extendPrototype(ClipRect, chs.Drawable);
+    chs.extend(ClipRect, chs.Drawable);
 
-    return chs.Util.overridePrototype(ClipRect, {
+    return chs.override(ClipRect, {
 
         onDraw: function (context) {
             if (this.radius > 0) {
@@ -38,8 +37,7 @@ chs.Panel = (function () {
 
     var Panel = function (x, y, w, h, fillColour, outlineColour, radius, lineWidth, lineTransparency) {
         chs.Drawable.call(this);
-        this.position.x = x;
-        this.position.y = y;
+        this.setPosition(x, y);
         this.dimensions = { width: w, height: h };
         this.fillColour = fillColour;
         this.lineColour = outlineColour;
@@ -72,9 +70,9 @@ chs.Panel = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.Util.extendPrototype(Panel, chs.Drawable);
+    chs.extend(Panel, chs.Drawable);
     
-    return chs.Util.overridePrototype(Panel, {
+    return chs.override(Panel, {
 
         onDraw: function (context) {
             chs.Util.roundRect(context, 0, 0, this.width, this.height, this.radius || 0);
@@ -108,9 +106,9 @@ chs.Line = (function () {
         this.lineWidth = width;
     };
 
-    chs.Util.extendPrototype(Line, chs.Drawable);
+    chs.extend(Line, chs.Drawable);
 
-    return chs.Util.overridePrototype(Line, {
+    return chs.override(Line, {
 
         onDraw: function (context) {
             context.beginPath();
@@ -134,8 +132,8 @@ chs.PanelButton = (function () {
         chs.Button.call(this, click, hover, context, border);
     };
 
-    chs.Util.extendPrototype(PanelButton, chs.Button);
-    chs.Util.extendPrototype(PanelButton, chs.Panel);
+    chs.extend(PanelButton, chs.Button);
+    chs.extend(PanelButton, chs.Panel);
 
     return PanelButton;
 
@@ -153,10 +151,10 @@ chs.LinkButton = (function () {
         this.dimensions = { width: w, height: h };
     };
 
-    chs.Util.extendPrototype(LinkButton, chs.Button);
-    chs.Util.extendPrototype(LinkButton, chs.Line);
+    chs.extend(LinkButton, chs.Button);
+    chs.extend(LinkButton, chs.Line);
 
-    return chs.Util.overridePrototype(LinkButton, {
+    return chs.override(LinkButton, {
 
         onIdle: function () {
             this.colour = "green";

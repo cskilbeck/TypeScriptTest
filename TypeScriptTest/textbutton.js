@@ -11,8 +11,8 @@ chs.TextButton = (function () {
         this.font = font;
     };
 
-    chs.Util.extendPrototype(TextButton, chs.Button);
-    chs.Util.extendPrototype(TextButton, chs.Label);
+    chs.extend(TextButton, chs.Button);
+    chs.extend(TextButton, chs.Label);
 
     return TextButton;
 
@@ -31,9 +31,9 @@ chs.FancyTextButton = (function () {
         this.addChild(this.label);
     };
 
-    chs.Util.extendPrototype(FancyTextButton, chs.PanelButton);
+    chs.extend(FancyTextButton, chs.PanelButton);
 
-    return chs.Util.overridePrototype(FancyTextButton, {
+    return chs.override(FancyTextButton, {
 
         onHover: function () {
             this.lineColour = "white";

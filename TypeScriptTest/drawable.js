@@ -18,8 +18,8 @@ chs.Drawable = (function () {
             reorder: false,
             transparency: 255,
             pivot: { x: 0, y: 0 },
-            drawMat: null,
-            pickMat: null,
+            matrix: chs.Matrix.identity(),
+            pickMatrix: chs.Matrix.identity(),
             parent: null,
             closed: false,
             modal: false,
@@ -41,12 +41,6 @@ chs.Drawable = (function () {
         //////////////////////////////////////////////////////////////////////
 
         onDraw: function (context) {
-            return;
-        },
-
-        //////////////////////////////////////////////////////////////////////
-
-        onPostDraw: function (context) {
             return;
         },
 
@@ -125,6 +119,7 @@ chs.Drawable = (function () {
                     self.reorder = false;
                 }
                 m = matrix.multiply(this.drawMatrix());
+                self.pickMatrix = m;
                 context.save();
                 context.setTransform(m.m[0], m.m[1], m.m[2], m.m[3], m.m[4], m.m[5]);
                 context.globalAlpha = self.transparency / 255;
@@ -132,11 +127,21 @@ chs.Drawable = (function () {
                 for (c = self.children.begin() ; c !== self.children.end() ; c = c.next) {
                     c.item.draw(context, m);
                 }
-                this.onPostDraw(context);
                 context.restore();
             }
         },
         
+        //////////////////////////////////////////////////////////////////////
+
+        debug: function () {
+            var self = this.drawableData,
+                c;
+            chs.Debug.text(self.matrix.m[4], self.matrix.m[5], self.dirty);
+            for (c = self.children.begin() ; c !== self.children.end() ; c = c.next) {
+                c.item.debug();
+            }
+        },
+
         //////////////////////////////////////////////////////////////////////
 
         setPivot: function (x, y) {
@@ -194,47 +199,33 @@ chs.Drawable = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        calculateMatrices: function () {
+        refreshMatrix: function () {
             var self = this.drawableData,
-                m,
                 p,
                 s;
-            if (self.dirty) {
-                p = { x: -self.pivot.x * this.width, y: -self.pivot.y * this.height };
-                s = { x: self.scale.x * self.drawScale.x, y: self.scale.y * self.drawScale.y };
-                m = chs.Matrix.identity().translate(self.position).rotate(self.rotation);
-                self.drawMat = m.scale(s).translate(p);
-                self.pickMat = m.scale(self.scale);
-                self.dirty = false;
-            }
+            p = { x: -self.pivot.x * this.width, y: -self.pivot.y * this.height };
+            s = { x: self.scale.x * self.drawScale.x, y: self.scale.y * self.drawScale.y };
+            self.matrix = chs.Matrix.identity().translate(self.position).rotate(self.rotation).scale(s).translate(p);
+            self.dirty = false;
         },
 
         //////////////////////////////////////////////////////////////////////
 
         drawMatrix: function () {
-            this.calculateMatrices();
-            return this.drawableData.drawMat;
-        },
-
-        //////////////////////////////////////////////////////////////////////
-
-        pickMatrix: function () {
-            this.calculateMatrices();
-            return this.drawableData.pickMat;
+            var self = this.drawableData;
+            if (self.dirty) {
+                this.refreshMatrix();
+            }
+            return self.matrix;
         },
 
         //////////////////////////////////////////////////////////////////////
 
         pick: function (point, border) {
-            var self = this.drawableData,
-                w = this.width,
-                h = this.height,
-                l = -self.pivot.x * w,
-                t = -self.pivot.y * h,
-                r = l + w,
-                b = t + h;
+            var w = this.width,
+                h = this.height;
             return chs.Util.pointInConvexPoly(
-                this.pickMatrix().transform([{ x: l, y: t }, { x: r, y: t }, { x: r, y: b }, { x: l, y: b }]),
+                this.drawableData.pickMatrix.transform([{ x: 0, y: 0 }, { x: w, y: 0 }, { x: w, y: h }, { x: 0, y: h }]),
                 point,
                 border
             );
@@ -259,9 +250,10 @@ chs.Drawable = (function () {
         //////////////////////////////////////////////////////////////////////
 
         addChild: function (c) {
+            var self = this.drawableData;
             c.drawableData.parent = this;
-            this.drawableData.children.add(c);
-            this.drawableData.reorder = true;
+            self.children.add(c);
+            self.reorder = true;
         },
 
         //////////////////////////////////////////////////////////////////////

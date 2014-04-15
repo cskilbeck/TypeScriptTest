@@ -6,15 +6,16 @@ chs.SpriteButton = (function () {
     var SpriteButton = function (image, type, x, y, click, hover, context) {
         chs.Button.call(this, click, hover, context);
         chs.Sprite.call(this, image);
+        this.setPivot(0.5, 0.5);
         this.type = type;
         this.setPosition(x, y);
         this.origin = { x: x, y: y };
     };
 
-    chs.Util.extendPrototype(SpriteButton, chs.Button);
-    chs.Util.extendPrototype(SpriteButton, chs.Sprite);
+    chs.extend(SpriteButton, chs.Button);
+    chs.extend(SpriteButton, chs.Sprite);
 
-    return chs.Util.overridePrototype(SpriteButton, {
+    return chs.override(SpriteButton, {
 
         onIdle: function () {
             switch (this.type) {
@@ -39,7 +40,7 @@ chs.SpriteButton = (function () {
                 this.setPosition(this.origin.x - 1, this.origin.y - 1);
                 break;
             case 'scale':
-                this.setScale(1.05);
+                this.setScale(1.25);
                 break;
             }
         },
@@ -53,7 +54,7 @@ chs.SpriteButton = (function () {
                 this.setPosition(this.origin.x + 2, this.origin.y + 2);
                 break;
             case 'scale':
-                this.setScale(1.025);
+                this.setScale(1.5);
                 break;
             }
         }

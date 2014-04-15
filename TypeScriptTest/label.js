@@ -33,9 +33,9 @@ chs.Label = (function () {
         }
     });
 
-    chs.Util.extendPrototype(Label, chs.Drawable);
+    chs.extend(Label, chs.Drawable);
 
-    return chs.Util.overridePrototype(Label, {
+    return chs.override(Label, {
 
         size: function () {
             var self = this.labelData;

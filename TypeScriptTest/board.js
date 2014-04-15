@@ -104,9 +104,9 @@ Board = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.Util.extendPrototype(Board, chs.Drawable);
+    chs.extend(Board, chs.Drawable);
 
-    return chs.Util.overridePrototype(Board, {
+    return chs.override(Board, {
 
         //////////////////////////////////////////////////////////////////////
 

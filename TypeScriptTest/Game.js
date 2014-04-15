@@ -46,6 +46,9 @@ var Game = (function () {
 
             Dictionary.init(loader.load("dictionary.json"));
 
+            board = new Board(loader);
+            this.addChild(board);
+
             this.addChild(new chs.SpriteButton(loader.load("undo.png"), "scale", 580, 490, this.undo, null));
             this.addChild(new chs.SpriteButton(loader.load("redo.png"), "scale", 620, 490, this.redo, null));
 
@@ -57,16 +60,13 @@ var Game = (function () {
 
             words = new chs.Drawable();
             this.addChild(words);
-
-            board = new Board(loader);
-            this.addChild(board);
         };
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.Util.extendPrototype(Game, chs.Drawable);
+    chs.extend(Game, chs.Drawable);
 
-    return chs.Util.overridePrototype(Game, {
+    return chs.override(Game, {
 
         //////////////////////////////////////////////////////////////////////
 

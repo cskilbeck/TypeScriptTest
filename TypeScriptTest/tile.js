@@ -80,9 +80,9 @@ Tile = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.Util.extendPrototype(Tile, chs.Sprite);
+    chs.extend(Tile, chs.Sprite);
 
-    return chs.Util.overridePrototype(Tile, {
+    return chs.override(Tile, {
 
         //////////////////////////////////////////////////////////////////////
         // mark this tile as part of word w at index i

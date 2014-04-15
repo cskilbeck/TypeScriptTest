@@ -5,42 +5,7 @@ chs.Util = (function () {
 
     var b64c = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-    //////////////////////////////////////////////////////////////////////
-
-    function extend(child, proto, force) {
-        var names,
-            i,
-            desc;
-        names = Object.getOwnPropertyNames(proto);
-        for (i = 0; i < names.length; ++i) {
-            if (names[i] in child.prototype && !force) {
-                continue;
-            }
-            desc = Object.getOwnPropertyDescriptor(proto, names[i]);
-            Object.defineProperty(child.prototype, names[i], desc);
-        }
-    }
-
-    //////////////////////////////////////////////////////////////////////
-
     return {
-
-        //////////////////////////////////////////////////////////////////////
-        // need a way to call super.method()
-
-        extendPrototype: function (child, parent, proto) {
-            if (proto !== undefined) {
-                extend(child, proto, false);
-            }
-            extend(child, parent.prototype, false);
-        },
-
-        //////////////////////////////////////////////////////////////////////
-
-        overridePrototype: function (child, proto) {
-            extend(child, proto, true);
-            return child;
-        },
 
         //////////////////////////////////////////////////////////////////////
 

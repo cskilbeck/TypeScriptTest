@@ -320,12 +320,9 @@ chs.Drawable = (function () {
         //////////////////////////////////////////////////////////////////////
         // check if it's in any children, or me
 
-        pick: function (point, border) {
+        pick: function (point) {
             var p = this.screenToClient(point);
-            return p.x >= -border &&
-                p.y >= -border &&
-                p.x < this.width + border &&
-                p.y < this.height + border;
+            return p.x >= 0 && p.y >= 0 && p.x < this.width && p.y < this.height;
         },
 
         //////////////////////////////////////////////////////////////////////

@@ -3,8 +3,8 @@
 chs.TextButton = (function () {
     "use strict";
 
-    var TextButton = function (text, font, x, y, click, hover, context) {
-        chs.Button.call(this, click, hover, context);
+    var TextButton = function (text, font, x, y, click, context) {
+        chs.Button.call(this, click, context);
         chs.Label.call(this, text, font);
         this.setPosition(x, y);
         this.text = text;
@@ -23,8 +23,8 @@ chs.TextButton = (function () {
 chs.FancyTextButton = (function () {
     "use strict";
 
-    var FancyTextButton = function (text, font, x, y, w, h, click, hover, context) {
-        chs.PanelButton.call(this, x, y, w, h, "darkGrey", "lightGrey", h / 3, 3, click, hover, context, 4);
+    var FancyTextButton = function (text, font, x, y, w, h, click, context) {
+        chs.PanelButton.call(this, x, y, w, h, "darkGrey", "lightGrey", h / 3, 3, click, context, 4);
         this.label = new chs.Label(text, font);
         this.label.setPosition(w / 2, h / 2);
         this.label.setPivot(0.5, 0.5);

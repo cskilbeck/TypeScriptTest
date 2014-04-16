@@ -3,8 +3,8 @@
 chs.SpriteButton = (function () {
     "use strict";
 
-    var SpriteButton = function (image, type, x, y, click, hover, context) {
-        chs.Button.call(this, click, hover, context);
+    var SpriteButton = function (image, type, x, y, click, context) {
+        chs.Button.call(this, click, context);
         chs.Sprite.call(this, image);
         this.setPivot(0.5, 0.5);
         this.type = type;

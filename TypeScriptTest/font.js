@@ -114,6 +114,7 @@ chs.Font = (function () {
                 inLink = false,
                 escape = false,
                 skip = false,
+                link = "",
                 sls = (softLineSpace !== undefined) ? softLineSpace : this.softLineSpacing,
                 ls = (lineSpace !== undefined) ? lineSpace : this.lineSpacing;
 
@@ -145,7 +146,8 @@ chs.Font = (function () {
                             if (inLink) {
                                 links.push(xc, yc);
                             } else {
-                                links.push(xc, yc + this.font.height);
+                                links.push(xc, yc + this.font.height, link);
+                                link = "";
                             }
                         }
                         break;
@@ -155,6 +157,9 @@ chs.Font = (function () {
                     }
                 }
                 if (!skip) {
+                    if (inLink) {
+                        link += c;
+                    }
                     c = this.font.charMap[c.charCodeAt(0)];
                     if (c !== undefined) {
                         glyph = this.font.glyphs[c];

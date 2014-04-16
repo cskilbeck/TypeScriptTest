@@ -11,14 +11,11 @@ chs.Button = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    function Button(click, hover, context, border) {
+    function Button(click, context) {
         this.enabled = true;
         this.state = idle;
         this.clicked = click;
-        this.hovered = hover;
         this.context = context || this;
-        this.border = border || 2;
-        this.hoverTime = 0;
     }
 
     //////////////////////////////////////////////////////////////////////
@@ -57,7 +54,7 @@ chs.Button = (function () {
         onLeftMouseUp: function () {
             if (this.state === pressed) {
                 if (this.clicked !== undefined) {
-                    this.clicked.call(this.context);
+                    this.clicked.call(this.context || this);
                 }
             }
             this.onHover();

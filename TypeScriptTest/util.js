@@ -63,16 +63,15 @@ chs.Util = (function () {
         //////////////////////////////////////////////////////////////////////
         // assumes a certain winding order...
 
-        pointInConvexPoly: function (points, p, border) {
+        pointInConvexPoly: function (points, p) {
 
             var i,
                 c,
-                b = border || 0,
                 l = points.length;
 
             for (i = 0; i < l; ++i) {
                 c = chs.Util.lineDistance(points[i], points[(i + 1) % l], p);
-                if (c < -b) {
+                if (c < 0) {
                     return false;
                 }
             }

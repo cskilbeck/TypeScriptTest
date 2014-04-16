@@ -59,16 +59,22 @@ chs.Label = (function () {
 chs.TextBox = (function () {
     "use strict";
 
-    var TextBox = function (x, y, w, h, text, font, lineBreak, lineSpace, softLineSpace) {
+    var TextBox = function (x, y, w, h, text, font, lineBreak, lineSpace, softLineSpace, linkClicked, context) {
         var str = font.wrapText(text, w, lineBreak, lineSpace, softLineSpace),
             links = [],
-            link;
+            link,
+            linkClickedCallback = function (link) {
+                if (this.linkClicked !== undefined) {
+                    this.linkClicked.call(context, link);
+                }
+            };
         chs.Label.call(this, str, font, lineSpace, softLineSpace);
         this.setPosition(x, y);
         this.dimensions = { width: w, height: h };
+        this.linkClicked = linkClicked;
         font.measureText(str, lineSpace, softLineSpace, links);
         while (links.length > 0) {
-            link = new chs.LinkButton(links.shift(), links.shift() - 2, links.shift(), links.shift() - 2);
+            link = new chs.LinkButton(links.shift(), links.shift() - 2, links.shift(), links.shift() - 2, links.shift(), linkClickedCallback, this);
             link.transparency = 192;
             this.addChild(link);
         }

@@ -127,9 +127,9 @@ chs.Line = (function () {
 chs.PanelButton = (function () {
     "use strict";
 
-    var PanelButton = function (x, y, w, h, fillColour, lineColour, radius, lineWidth, click, hover, context, border) {
+    var PanelButton = function (x, y, w, h, fillColour, lineColour, radius, lineWidth, click, context) {
         chs.Panel.call(this, x, y, w, h, fillColour, lineColour, radius, lineWidth);
-        chs.Button.call(this, click, hover, context, border);
+        chs.Button.call(this, click, context);
     };
 
     chs.extend(PanelButton, chs.Button);
@@ -144,7 +144,7 @@ chs.PanelButton = (function () {
 chs.LinkButton = (function () {
     "use strict";
 
-    var LinkButton = function (x1, y1, x2, y2, click, hover, context, border) {
+    var LinkButton = function (x1, y1, x2, y2, link, click, context) {
         var l = (x1 >>> 0) + 0.5,
             r = (x2 >>> 0) + 0.5,
             t = (y1 >>> 0) + 0.5,
@@ -152,7 +152,10 @@ chs.LinkButton = (function () {
             h = b - t,
             w = r - l;
         chs.Line.call(this, 0, h, w, h, "lightblue", 1);
-        chs.Button.call(this, click, hover, context, border);
+        chs.Button.call(this, LinkButton.prototype.onLinkClicked, this);
+        this.clickContext = context;
+        this.link = link;
+        this.linkClicked = click;
         this.setPosition(l, t);
         this.dimensions = { width: w, height: h };
     };
@@ -162,6 +165,11 @@ chs.LinkButton = (function () {
 
     return chs.override(LinkButton, {
 
+        onLinkClicked: function () {
+            if (this.linkClicked !== undefined) {
+                this.linkClicked.call(this.clickContext, this.link);
+            }
+        },
         onIdle: function () {
             this.colour = "lightblue";
         },

@@ -119,12 +119,14 @@ var Game = (function () {
                         clip.addChild(new chs.Panel(0, 0, 640, 54, 'darkgrey', undefined, 0));
                         clip.addChild(wordLabel);
                         clip.addChild(scoreLabel);
-                        clip.addChild(new chs.TextBox(16, 68, 600, 480 - 68, def, consolas, '\r    ', 10, 2));
+                        clip.addChild(new chs.TextBox(16, 68, 600, 480 - 68, def, consolas, '\r    ', 10, 2, function (link) {
+                            console.log(link);
+                        }, panel));
                         panel.addChild(clip);
                         panel.addChild(new chs.Line(0, 54, 640, 54, 'white', 4));
                         panel.addChild(new chs.Panel(0, 0, 640, 480, undefined, "white", 20, 4));
                         this.addChild(panel);
-                    }, null, this);
+                    }, this);
                     button.setPivot(0.5, 0.5);
                     button.addChild(new chs.Label(w.str, consolas).setPosition(7, button.height / 2).setPivot(0, 0.5));
                     button.addChild(new chs.Label(w.score.toString(), consolas).setPosition(120, button.height / 2).setPivot(1, 0.5));

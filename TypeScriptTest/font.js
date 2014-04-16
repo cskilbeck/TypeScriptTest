@@ -8,7 +8,8 @@ chs.Font = (function () {
     var Font = function (font, page) {
             this.page = page;
             this.font = font;
-            this.lineSpacing = 2;
+            this.lineSpacing = 0;
+            this.softLineSpacing = 0;
         };
 
     //////////////////////////////////////////////////////////////////////
@@ -35,7 +36,7 @@ chs.Font = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        renderString: function (ctx, str, x, y, lineSpace) {
+        renderString: function (ctx, str, x, y, lineSpace, softLineSpace) {
             var l,
                 i,
                 layer,
@@ -47,7 +48,8 @@ chs.Font = (function () {
                 inLink = false,
                 escape = false,
                 skip = false,
-                ls = (lineSpace !== undefined) ? lineSpace : this.lineSpacing;
+                ls = (lineSpace !== undefined) ? lineSpace : this.lineSpacing,
+                sls = (softLineSpace !== undefined) ? softLineSpace : this.softLineSpacing;
             for (l = 0; l < this.font.layerCount; ++l) {
                 layer = this.font.Layers[l];
                 xc = x + layer.offsetX;
@@ -59,6 +61,11 @@ chs.Font = (function () {
                         case '\n':
                             xc = layer.offsetX;
                             yc += this.font.height + ls;
+                            skip = true;
+                            break;
+                        case '\r':
+                            xc = layer.offsetX;
+                            yc += this.font.height + sls;
                             skip = true;
                             break;
                         case '\\':
@@ -90,42 +97,15 @@ chs.Font = (function () {
         },
 
         //////////////////////////////////////////////////////////////////////
-
-        drawText: function (ctx, str, position, rotation, scale, horizontalAlign, verticalAlign, lineSpace, links) {
-            var d,
-                xo = 0,
-                yo = 0;
-            switch (horizontalAlign) {
-            case Font.right:
-                xo = -1;
-                break;
-            case Font.center:
-                xo = -0.5;
-                break;
-            }
-            switch (verticalAlign) {
-            case Font.bottom:
-                yo = -1;
-                break;
-            case Font.middle:
-                yo = -0.5;
-                break;
-            }
-            d = this.measureText(str, lineSpace, links);
-            chs.Util.setTransform(ctx, position, rotation, scale);
-            this.renderString(ctx, str, d.width * xo, d.height * yo, lineSpace);
-        },
-
-        //////////////////////////////////////////////////////////////////////
         // just measure the top layer
 
-        measureText: function (str, lineSpace, links) {
+        measureText: function (str, lineSpace, softLineSpace, links) {
             var l = this.font.layerCount - 1,
                 maxWidth = 0,
                 w = 0,
                 h = this.font.height,
                 layer = this.font.Layers[l],
-                yc = layer.offsetY + this.font.height,
+                yc = layer.offsetY,
                 xc = layer.offsetX,
                 i,
                 c,
@@ -134,6 +114,7 @@ chs.Font = (function () {
                 inLink = false,
                 escape = false,
                 skip = false,
+                sls = (softLineSpace !== undefined) ? softLineSpace : this.softLineSpacing,
                 ls = (lineSpace !== undefined) ? lineSpace : this.lineSpacing;
 
             if (links !== undefined) {
@@ -148,6 +129,11 @@ chs.Font = (function () {
                         yc += this.font.height + ls;
                         skip = true;
                         break;
+                    case '\r':
+                        xc = layer.offsetX;
+                        yc += this.font.height + sls;
+                        skip = true;
+                        break;
                     case '\\':
                         escape = true;
                         skip = true;
@@ -157,9 +143,9 @@ chs.Font = (function () {
                         skip = true;
                         if (links !== undefined) {
                             if (inLink) {
-                                links.push(xc, yc - this.font.height);
-                            } else {
                                 links.push(xc, yc);
+                            } else {
+                                links.push(xc, yc + this.font.height);
                             }
                         }
                         break;
@@ -183,22 +169,22 @@ chs.Font = (function () {
                     }
                 }
             }
-            return { width: maxWidth, height: yc };
+            return { width: maxWidth, height: yc + this.font.height };
         },
 
         //////////////////////////////////////////////////////////////////////
 
-        wrapText: function (str, width, lineBreak, lineSpace) {
+        wrapText: function (str, width, lineBreak, lineSpace, softLineSpace) {
             var lastGood = 1,
                 i,
                 newGood,
                 newText;
-            while (this.measureText(str, lineSpace).width >= width) {
+            while (this.measureText(str, lineSpace, softLineSpace).width >= width) {
                 newGood = -1;
                 for (i = lastGood; i < str.length; ++i) {
                     if (str[i] === " ") {
                         newText = str.slice(0, i);
-                        if (this.measureText(newText, lineSpace).width >= width) {
+                        if (this.measureText(newText, lineSpace, softLineSpace).width >= width) {
                             break;
                         }
                         newGood = i;
@@ -220,7 +206,7 @@ chs.Font = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    Object.defineProperty(Font, "height", {
+    Object.defineProperty(Font.prototype, "height", {
         enumerable: true,
         get: function () {
             return this.font.height;

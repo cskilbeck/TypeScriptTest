@@ -21,11 +21,12 @@ chs.Mouse = (function () {
     //////////////////////////////////////////////////////////////////////
 
     function fixupMouseEvent(event) {
+        var b;
         event = event || window.event;
         return {
             e: event,
             target: event.target || event.srcElement,
-            which: event.which || event.button === 1 ? 1 : event.button === 2 ? 3 : event.button === 4 ? 2 : 1,
+            which: event.which,
             x: event.x || event.clientX,
             y: event.y || event.clientY
         };
@@ -57,7 +58,7 @@ chs.Mouse = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    function setMouseCapture(element, canvas, mouse) {
+    function setMouseCapture(element, canvas, mouse, events) {
         if (element.setCapture) {
             element.setCapture();
         }
@@ -67,33 +68,47 @@ chs.Mouse = (function () {
             return false;
         };
 
-        addListener(element, "mousedown", function (event) {
-            if (element.setCapture) {
-                element.setCapture();
-            }
-            event = fixupMouseEvent(event);
-            if (event.which === 1) {
-                mouse.left.held = true;
-            }
-            if (event.which === 3) {
-                mouse.right.held = true;
-            }
-            return false;
-        });
-
         addListener(element, "losecapture", function () {
             if (element.setCapture) {
                 element.setCapture();
             }
         });
 
-        addListener(element, "mouseup", function (event) {
-            event = fixupMouseEvent(event);
-            if (event.which === 1) {
-                mouse.left.held = false;
+        addListener(element, "mousedown", function (event) {
+            var p;
+            if (element.setCapture) {
+                element.setCapture();
             }
-            if (event.which === 3) {
+            event = fixupMouseEvent(event);
+            p = relMouseCoords(canvas, event);
+            chs.Debug.print("DOWN", event.which);
+            switch (event.which) {
+            case 1:
+                mouse.left.held = true;
+                events.push(new chs.MouseEvent(chs.Event.leftMouseDown, p));
+                break;
+            case 3:
+                mouse.right.held = true;
+                events.push(new chs.MouseEvent(chs.Event.rightMouseDown, p));
+                break;
+            }
+            return false;
+        });
+
+        addListener(element, "mouseup", function (event) {
+            var p;
+            event = fixupMouseEvent(event);
+            chs.Debug.print("UP", event.which);
+            p = relMouseCoords(canvas, event);
+            switch (event.which) {
+            case 1:
+                mouse.left.held = false;
+                events.push(new chs.MouseEvent(chs.Event.leftMouseUp, p));
+                break;
+            case 3:
                 mouse.right.held = false;
+                events.push(new chs.MouseEvent(chs.Event.rightMouseUp, p));
+                break;
             }
         });
 
@@ -118,6 +133,7 @@ chs.Mouse = (function () {
                     element.setCapture();
                 }
             }
+            events.push(new chs.MouseEvent(chs.Event.mouseMove, p));
         });
     }
 
@@ -145,21 +161,30 @@ chs.Mouse = (function () {
         frozen = new IMouse(),
         active = new IMouse(),
         cur = active,
+        events = [],
 
         Mouse = {
 
             init: function (canvasElement, screenElement) {
                 canvas = canvasElement;
                 screen = screenElement;
-                setMouseCapture(screen, canvas, active);
+                setMouseCapture(screen, canvas, active, events);
             },
-            update: function () {
+            update: function (root) {
+                var e;
                 updateButton(active.left);
                 updateButton(active.right);
                 active.delta.x = active.position.x - old.x;
                 active.delta.y = active.position.y - old.y;
                 old.x = active.position.x;
                 old.y = active.position.y;
+
+                while (events.length > 0) {
+                    e = events.shift();
+                    chs.Debug.print(e.position.x, e.position.y, e.type);
+                    root.processMessage(e);
+                }
+
             },
             freeze: function () {
                 cur = frozen;

@@ -25,6 +25,7 @@
     <Content Include="chs.js" />
     <Content Include="debug.js" />
     <Content Include="drawable.js" />
+    <Content Include="event.js" />
     <Content Include="facebook.js" />
     <Content Include="game.js" />
     <Content Include="img\allColour.png" />

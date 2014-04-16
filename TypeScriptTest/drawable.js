@@ -18,8 +18,10 @@ chs.Drawable = (function () {
             reorder: false,
             transparency: 255,
             pivot: { x: 0, y: 0 },
+            mouseIsOver: false,
             matrix: chs.Matrix.identity(),
             pickMatrix: chs.Matrix.identity(),
+            globalMatrix: chs.Matrix.identity(),
             parent: null,
             closed: false,
             modal: false,
@@ -36,6 +38,48 @@ chs.Drawable = (function () {
 
         size: function () {
             return this.dimensions || { width: 0, height: 0 };
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        onMouseEnter: function (e) {
+            return false;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        onMouseLeave: function (e) {
+            return false;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        onLeftMouseDown: function (e) {
+            return false;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        onLeftMouseUp: function (e) {
+            return false;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        onRightMouseDown: function (e) {
+            return false;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        onRightMouseUp: function (e) {
+            return false;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        onMouseMove: function (e) {
+            return false;
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -60,6 +104,47 @@ chs.Drawable = (function () {
 
         onLoaded: function () {
             return;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        processMessage: function (e) {
+            var self = this.drawableData,
+                c;
+            // kids get first dibs
+            for (c = self.children.tailNode() ; c !== self.children.end() ; c = c.prev) {
+                if (c.item.processMessage(e) || c.item.modal) {
+                    return true;
+                }
+            }
+            if (this.visible) {
+                if (this.pick(e.position, 0)) {
+                    if (!self.mouseIsOver) {
+                        self.mouseIsOver = true;
+                        this.onMouseEnter(e);
+                    }
+                    switch (e.type) {
+                    case chs.Event.leftMouseDown:
+                        return this.onLeftMouseDown(e);
+                    case chs.Event.rightMouseDown:
+                        return this.onRightMouseDown(e);
+                    case chs.Event.leftMouseUp:
+                        return this.onLeftMouseUp(e);
+                    case chs.Event.rightMouseUp:
+                        return this.onRightMouseUp(e);
+                    case chs.Event.mouseMove:
+                        return this.onMouseMove(e);
+                    }
+                } else {
+                    if (e.type === chs.Event.mouseMove) {
+                        if (self.mouseIsOver) {
+                            this.onMouseLeave(e);
+                            self.mouseIsOver = false;
+                        }
+                    }
+                }
+            }
+            return false;
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -108,6 +193,7 @@ chs.Drawable = (function () {
         draw: function (context, matrix) {
             var self = this.drawableData,
                 m,
+                t,
                 d,
                 c,
                 p;
@@ -118,14 +204,14 @@ chs.Drawable = (function () {
                     });
                     self.reorder = false;
                 }
-                m = matrix.multiply(this.drawMatrix());
-                self.pickMatrix = m;
+                self.globalMatrix = matrix.multiply(this.drawMatrix());
+                self.pickMatrix = self.globalMatrix.inverse();
                 context.save();
-                context.setTransform(m.m[0], m.m[1], m.m[2], m.m[3], m.m[4], m.m[5]);
+                self.globalMatrix.setContextTransform(context);
                 context.globalAlpha = self.transparency / 255;
                 this.onDraw(context);
                 for (c = self.children.begin() ; c !== self.children.end() ; c = c.next) {
-                    c.item.draw(context, m);
+                    c.item.draw(context, self.globalMatrix);
                 }
                 context.restore();
             }
@@ -136,7 +222,7 @@ chs.Drawable = (function () {
         debug: function () {
             var self = this.drawableData,
                 c;
-            chs.Debug.text(self.matrix.m[4], self.matrix.m[5], self.dirty);
+            chs.Debug.text(self.matrix.m[6], self.matrix.m[7], self.dirty);
             for (c = self.children.begin() ; c !== self.children.end() ; c = c.next) {
                 c.item.debug();
             }
@@ -211,6 +297,18 @@ chs.Drawable = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
+        screenToClient: function (p) {
+            return this.drawableData.pickMatrix.apply(p);
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        clientToScreen: function (p) {
+            return this.drawableData.globalMatrix.apply(p);
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
         drawMatrix: function () {
             var self = this.drawableData;
             if (self.dirty) {
@@ -220,15 +318,14 @@ chs.Drawable = (function () {
         },
 
         //////////////////////////////////////////////////////////////////////
+        // check if it's in any children, or me
 
         pick: function (point, border) {
-            var w = this.width,
-                h = this.height;
-            return chs.Util.pointInConvexPoly(
-                this.drawableData.pickMatrix.transform([{ x: 0, y: 0 }, { x: w, y: 0 }, { x: w, y: h }, { x: 0, y: h }]),
-                point,
-                border
-            );
+            var p = this.screenToClient(point);
+            return p.x >= -border &&
+                p.y >= -border &&
+                p.x < this.width + border &&
+                p.y < this.height + border;
         },
 
         //////////////////////////////////////////////////////////////////////

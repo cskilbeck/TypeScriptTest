@@ -144,10 +144,16 @@ chs.PanelButton = (function () {
 chs.LinkButton = (function () {
     "use strict";
 
-    var LinkButton = function (x, y, w, h, click, hover, context, border) {
-        chs.Line.call(this, 0, h, w, h, "cyan", 1);
+    var LinkButton = function (x1, y1, x2, y2, click, hover, context, border) {
+        var l = (x1 >>> 0) + 0.5,
+            r = (x2 >>> 0) + 0.5,
+            t = (y1 >>> 0) + 0.5,
+            b = (y2 >>> 0) + 0.5,
+            h = b - t,
+            w = r - l;
+        chs.Line.call(this, 0, h, w, h, "lightblue", 1);
         chs.Button.call(this, click, hover, context, border);
-        this.setPosition(x, y);
+        this.setPosition(l, t);
         this.dimensions = { width: w, height: h };
     };
 
@@ -157,13 +163,13 @@ chs.LinkButton = (function () {
     return chs.override(LinkButton, {
 
         onIdle: function () {
-            this.colour = "green";
+            this.colour = "lightblue";
         },
         onHover: function () {
-            this.colour = "red";
+            this.colour = "cyan";
         },
         onPressed: function () {
-            this.colour = "yellow";
+            this.colour = "red";
         }
     });
 

@@ -1,4 +1,7 @@
 ﻿//////////////////////////////////////////////////////////////////////
+// Mouse Events
+// Font Layer Mask
+// TextBox
 // Undo/Redo/SaveBest
 // Title screen
 // Mobile: Android/Chrome, iOS/Safari, Windows Phone: IE // Touch Support
@@ -24,17 +27,17 @@ var Game = (function () {
         board,
         menuButton,
         //dummyDef = "jksldh fjklsdh fklsdh fkljsdh flkjsdh flkj lksdj fklsdj flksdj flksdj flksdj flksdj " +
-        //            "flskdjf lskdjf lsdkfj\njkh fdkjdsh fksjdfh kjsdhf\nsjkdhf kjsdh fkjsdh fkjsdhf ksjdhf\n" +
-        //            "jkh fdkjdsh fksjdfh kjsdhf\nsjkdhf kjsdh fkjsdh fkjsdhf ksjdhf\njkh fdkjdsh fksjdfh kjsdhf\nsjkdhf kjsdh" +
-        //            "fkjsdh fkjsdhf ksjdhf\njkh fdkjdsh fksjdfh kjsdhf\nsjkdhf kjsdh fkjsdh fkjsdhf ksjdhf\njkh fdkjdsh fksjdfh " +
-        //            "kjsdhf\nsjkdhf kjsdh fkjsdh fkjsdhf ksjdhf\njksldh fjklsdh fklsdh fkljsdh flkjsdh flkj lksdj fklsdj flksdj " +
-        //            "flksdj flksdj flksdj flskdjf lskdjf lsdkfj\njkh fdkjdsh fksjdfh kjsdhf\nsjkdhf kjsdh fkjsdh fkjsdhf ksjdhf\njkh" +
-        //            " fdkjdsh fksjdfh kjsdhf\nsjkdhf kjsdh fkjsdh fkjsdhf ksjdhf\njkh fdkjdsh fksjdfh kjsdhf\nsjkdhf kjsdh fkjsdh fkjsdhf" +
-        //            " ksjdhf\njkh fdkjdsh fksjdfh kjsdhf\nsjkdhf kjsdh fkjsdh fkjsdhf ksjdhf\njkh fdkjdsh fksjdfh kjsdhf\nsjkdhf kjsdh " +
-        //            "fkjsdh fkjsdhf ksjdhf\njksldh fjklsdh fklsdh fkljsdh flkjsdh flkj lksdj fklsdj flksdj flksdj flksdj flksdj flskdjf lsk" +
-        //            "djf lsdkfj\njkh fdkjdsh fksjdfh kjsdhf\nsjkdhf kjsdh fkjsdh fkjsdhf ksjdhf\njkh fdkjdsh fksjdfh kjsdhf\nsjkdhf kjsdh fkjsd" +
-        //            "h fkjsdhf ksjdhf\njkh fdkjdsh fksjdfh kjsdhf\nsjkdhf kjsdh fkjsdh fkjsdhf ksjdhf\njkh fdkjdsh fksjdfh kjsdhf\nsjkdhf k" +
-        //            "jsdh fkjsdh fkjsdhf ksjdhf\njkh fdkjdsh fksjdfh kjsdhf\nsjkdhf kjsdh fkjsdh fkjsdhf ksjdhf\n";
+        //    "flskdjf lskdjf lsdkfj\njkh fdkjdsh fksjdfh kjsdhf\nsjkdhf kjsdh fkjsdh fkjsdhf ksjdhf\n" +
+        //    "jkh fdkjdsh fksjdfh kjsdhf\nsjkdhf kjsdh fkjsdh fkjsdhf ksjdhf\njkh fdkjdsh fksjdfh kjsdhf\nsjkdhf kjsdh" +
+        //    "fkjsdh fkjsdhf ksjdhf\njkh fdkjdsh fksjdfh kjsdhf\nsjkdhf kjsdh fkjsdh fkjsdhf ksjdhf\njkh fdkjdsh fksjdfh " +
+        //    "kjsdhf\nsjkdhf kjsdh fkjsdh fkjsdhf ksjdhf\njksldh fjklsdh fklsdh fkljsdh flkjsdh flkj lksdj fklsdj flksdj " +
+        //    "flksdj flksdj flksdj flskdjf lskdjf lsdkfj\njkh fdkjdsh fksjdfh kjsdhf\nsjkdhf kjsdh fkjsdh fkjsdhf ksjdhf\njkh" +
+        //    " fdkjdsh fksjdfh kjsdhf\nsjkdhf kjsdh fkjsdh fkjsdhf ksjdhf\njkh fdkjdsh fksjdfh kjsdhf\nsjkdhf kjsdh fkjsdh fkjsdhf" +
+        //    " ksjdhf\njkh fdkjdsh fksjdfh kjsdhf\nsjkdhf kjsdh fkjsdh fkjsdhf ksjdhf\njkh fdkjdsh fksjdfh kjsdhf\nsjkdhf kjsdh " +
+        //    "fkjsdh fkjsdhf ksjdhf\njksldh fjklsdh fklsdh fkljsdh flkjsdh flkj lksdj fklsdj flksdj flksdj flksdj flksdj flskdjf lsk" +
+        //    "djf lsdkfj\njkh fdkjdsh fksjdfh kjsdhf\nsjkdhf kjsdh fkjsdh fkjsdhf ksjdhf\njkh fdkjdsh fksjdfh kjsdhf\nsjkdhf kjsdh fkjsd" +
+        //    "h fkjsdhf ksjdhf\njkh fdkjdsh fksjdfh kjsdhf\nsjkdhf kjsdh fkjsdh fkjsdhf ksjdhf\njkh fdkjdsh fksjdfh kjsdhf\nsjkdhf k" +
+        //    "jsdh fkjsdh fkjsdhf ksjdhf\njkh fdkjdsh fksjdfh kjsdhf\nsjkdhf kjsdh fkjsdh fkjsdhf ksjdhf\n";
 
     //////////////////////////////////////////////////////////////////////
 
@@ -46,20 +49,20 @@ var Game = (function () {
 
             Dictionary.init(loader.load("dictionary.json"));
 
-            board = new Board(loader);
-            this.addChild(board);
+            words = new chs.Drawable();
+            this.addChild(words);
 
             this.addChild(new chs.SpriteButton(loader.load("undo.png"), "scale", 580, 490, this.undo, null));
             this.addChild(new chs.SpriteButton(loader.load("redo.png"), "scale", 620, 490, this.redo, null));
 
-            menuButton = new chs.FancyTextButton("Menu", consolas, 680, 485, 100, 40);
+            menuButton = new chs.FancyTextButton("Menu", consolas, 730, 505, 100, 40).setPivot(0.5, 0.5);
             this.addChild(menuButton);
 
             score = new chs.Label("Score: 0", consolas).setPosition(690, 11);
             this.addChild(score);
 
-            words = new chs.Drawable();
-            this.addChild(words);
+            board = new Board(loader);
+            this.addChild(board);
         };
 
     //////////////////////////////////////////////////////////////////////
@@ -86,6 +89,11 @@ var Game = (function () {
 
         },
 
+        onMouseMove: function (e) {
+            chs.Debug.text("MOUVE!");
+            return true;
+        },
+
         //////////////////////////////////////////////////////////////////////
 
         onUpdate: function (deltaTime) {
@@ -94,17 +102,11 @@ var Game = (function () {
                 words.removeChildren();
                 board.wordList().forEach(function (w) {
                     button = new chs.SpriteButton(wordButton, "scale", 736, y, function () {
-                        var def = consolas.wrapText(Dictionary.getDefinition(w.str), 600, '\n    '),
-                            links = [],
+                        var def = Dictionary.getDefinition(w.str),
+                        //var def = dummyDef,
                             i,
-                            linkLeft,
-                            linkRight,
-                            linkTop,
-                            linkBottom,
-                            link,
                             clip,
                             wordLabel,
-                            defLabel,
                             scoreLabel,
                             panel = new chs.PanelButton(80, 60, 640, 480, 'black', undefined, 20, 0, function () {
                                 this.close();
@@ -112,22 +114,12 @@ var Game = (function () {
                         panel.modal = true;
                         panel.transparency = 224;
                         clip = new chs.ClipRect(0, 0, 640, 480, 20);
-                        consolas.measureText(def, undefined, links);    // these should be clipped to the panel...
-                        while (links.length > 0) {
-                            linkLeft = ((links.shift() + 17) >>> 0) + 0.5;
-                            linkTop = ((links.shift() + 65) >>> 0) + 0.5;
-                            linkRight = ((links.shift() + 15) >>> 0) + 0.5;
-                            linkBottom = ((links.shift() + 65) >>> 0) + 0.5;
-                            link = new chs.LinkButton(linkLeft, linkTop, linkRight - linkLeft, linkBottom - linkTop);
-                            clip.addChild(link);
-                        }
-                        defLabel = new chs.Label(def, consolas).setPosition(16, 68);
                         wordLabel = new chs.Label(w.str.toUpperCase(), arial).setPosition(16, 14).setScale(0.75);
                         scoreLabel = new chs.Label(w.score.toString() + " points", consolas).setPosition(620, 22).setPivot(1, 0);
                         clip.addChild(new chs.Panel(0, 0, 640, 54, 'darkgrey', undefined, 0));
-                        clip.addChild(defLabel);
                         clip.addChild(wordLabel);
                         clip.addChild(scoreLabel);
+                        clip.addChild(new chs.TextBox(16, 68, 600, 480 - 68, def, consolas, '\r    ', 10, 2));
                         panel.addChild(clip);
                         panel.addChild(new chs.Line(0, 54, 640, 54, 'white', 4));
                         panel.addChild(new chs.Panel(0, 0, 640, 480, undefined, "white", 20, 4));
@@ -143,6 +135,7 @@ var Game = (function () {
                 board.changed = false;
                 score.text = "Score: " + board.score.toString();
             }
+            menuButton.rotation = chs.Timer.time / 1000;
         }
     });
 

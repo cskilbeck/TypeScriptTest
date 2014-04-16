@@ -34,8 +34,8 @@ chs.Debug = (function () {
             d.push(s, x, y);
         },
 
-        print: function (str) {
-            chs.Debug.text(cursorX, cursorY, str);
+        print: function () {
+            chs.Debug.text.apply(this, [cursorX, cursorY].concat(Array.prototype.slice.call(arguments, 0)));
             cursorY += font.height;
         },
 

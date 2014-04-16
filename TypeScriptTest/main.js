@@ -34,7 +34,7 @@ window.onload = function () {
                 run: function () {
                     chs.Timer.update();
                     chs.Keyboard.update();
-                    chs.Mouse.update();
+                    chs.Mouse.update(root);
                     root.update(chs.Timer.delta);
                     root.draw(context, chs.Matrix.identity());
                     chs.Debug.draw();

@@ -36,53 +36,33 @@ chs.Button = (function () {
         onPressed: function () {
         },
 
-        onUpdate: function (deltaTime) {
-            if (this.visible && this.enabled) {
-                switch (this.state) {
-                case idle:
-                    if (!chs.Mouse.left.held && this.pick(chs.Mouse.position, this.border)) {
-                        this.onHover();
-                        this.state = hover;
-                        this.hoverTime = 0;
-                    }
-                    break;
-                case hover:
-                    if (!this.pick(chs.Mouse.position, this.border)) {
-                        if (this.hoverTime >= 0 && this.hover) {
-                            this.hover.call(this.context, false);
-                        }
-                        this.onIdle();
-                        this.state = idle;
-                    } else if (chs.Mouse.left.pressed) {
-                        if (this.hoverTime >= 0 && this.hover) {
-                            this.hover.call(this.context, false);
-                        }
-                        this.onPressed();
-                        this.state = pressed;
-                    } else {
-                        this.hoverTime += deltaTime;
-                        if (this.hoverTime > 1 && this.hover) {
-                            this.hover.call(this.context, true);
-                            this.hoverTime = NaN;
-                        }
-                    }
-                    break;
-                case pressed:
-                    if (!this.pick(chs.Mouse.position, this.border + 2)) {
-                        this.onIdle();
-                        this.state = idle;
-                    } else {
-                        if (chs.Mouse.left.released) {
-                            if (this.clicked) {
-                                this.clicked.call(this.context);
-                            }
-                            this.onHover();
-                            this.state = hover;
-                        }
-                    }
-                    break;
+        onMouseEnter: function () {
+            this.state = hover;
+            this.onHover();
+            return true;
+        },
+
+        onMouseLeave: function () {
+            this.state = idle;
+            this.onIdle();
+            return true;
+        },
+
+        onLeftMouseDown: function () {
+            this.state = pressed;
+            this.onPressed();
+            return true;
+        },
+
+        onLeftMouseUp: function () {
+            if (this.state === pressed) {
+                if (this.clicked !== undefined) {
+                    this.clicked.call(this.context);
                 }
             }
+            this.onHover();
+            this.state = hover;
+            return true;
         }
     };
 

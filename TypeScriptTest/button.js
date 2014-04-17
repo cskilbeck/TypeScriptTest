@@ -19,28 +19,6 @@ chs.Button = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    Object.defineProperty(Button.prototype, "state", {
-        get: function () {
-            return this.currentState;
-        },
-        set: function (s) {
-            this.currentState = s;
-            switch (s) {
-            case Button.idle:
-                this.onIdle();
-                break;
-            case Button.hover:
-                this.onHover();
-                break;
-            case Button.pressed:
-                this.onPressed();
-                break;
-            }
-        }
-    });
-
-    //////////////////////////////////////////////////////////////////////
-
     return chs.override(Button, {
 
         onHover: function () {
@@ -75,6 +53,26 @@ chs.Button = (function () {
                 }
             }
             return true;
+        },
+
+        state: {
+            get: function () {
+                return this.currentState;
+            },
+            set: function (s) {
+                this.currentState = s;
+                switch (s) {
+                case Button.idle:
+                    this.onIdle();
+                    break;
+                case Button.hover:
+                    this.onHover();
+                    break;
+                case Button.pressed:
+                    this.onPressed();
+                    break;
+                }
+            }
         }
     });
 

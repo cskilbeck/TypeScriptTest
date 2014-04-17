@@ -19,7 +19,7 @@ Tile = (function () {
         Tile = function (image, font, letter, x, y) {
             chs.Sprite.call(this, image);
             this.font = font;
-            this.framesWidth = 5;
+            this.framesWide = 5;
             this.framesHigh = 5;
             this.frameWidth = tileWidth;
             this.frameHeight = tileHeight;
@@ -42,7 +42,7 @@ Tile = (function () {
                 index: 0,
                 position: 0
             };
-            this.label = new chs.Label(letter, font).setPivot(0.5, font.baseline / font.height / 2);
+            this.label = new chs.Label(letter, font).setPivot(0.5, font.midPivot);
             this.label.setPosition(this.width / 2 - 1, this.height / 2);
             this.addChild(this.label);
         };
@@ -54,38 +54,37 @@ Tile = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    Object.defineProperty(Tile.prototype, "selected", {
-        get: function () {
-            return this.isSelected;
-        },
-        set: function (s) {
-            if (s !== this.isSelected) {
-                this.isSelected = s;
-                this.setScale(s ? 1.2 : 1);
-            }
-        }
-    });
-
-    //////////////////////////////////////////////////////////////////////
-
-    Object.defineProperty(Tile.prototype, "letter", {
-        get: function () {
-            return this.myLetter;
-        },
-        set: function (s) {
-            this.myLetter = s;
-            this.label.text = s.toUpperCase();
-        }
-    });
-
-    //////////////////////////////////////////////////////////////////////
-
     chs.extend(Tile, chs.Sprite);
 
     return chs.override(Tile, {
 
         //////////////////////////////////////////////////////////////////////
-        // mark this tile as part of word w at index i
+
+        selected: {
+            get: function () {
+                return this.isSelected;
+            },
+            set: function (s) {
+                if (s !== this.isSelected) {
+                    this.isSelected = s;
+                    this.setScale(s ? 1.2 : 1);
+                }
+            }
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        letter: {
+            get: function () {
+                return this.myLetter;
+            },
+            set: function (s) {
+                this.myLetter = s;
+                this.label.text = s.toUpperCase();
+            }
+        },
+
+        //////////////////////////////////////////////////////////////////////
 
         setWord: function (w, i) {
             var pos,
@@ -104,7 +103,6 @@ Tile = (function () {
         },
 
         //////////////////////////////////////////////////////////////////////
-        // make this tile not part of any words
 
         clearWords: function () {
             this.horizontal.word = null;

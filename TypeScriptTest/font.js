@@ -33,33 +33,29 @@ chs.Font = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    Object.defineProperty(Font.prototype, "midPivot", {
-        get: function () {
-            return this.font.baseline / this.font.height / 2;
-        }
-    });
-
-    //////////////////////////////////////////////////////////////////////
-
-    Object.defineProperty(Font.prototype, "height", {
-        enumerable: true,
-        get: function () {
-            return this.font.height;
-        }
-    });
-
-    //////////////////////////////////////////////////////////////////////
-
-    Object.defineProperty(Font.prototype, "baseline", {
-        enumerable: true,
-        get: function () {
-            return this.font.baseline;
-        }
-    });
-
-    //////////////////////////////////////////////////////////////////////
-
     return chs.override(Font, {
+
+        midPivot: {
+            get: function () {
+                return this.font.baseline / this.font.height / 2;
+            }
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        height: {
+            get: function () {
+                return this.font.height;
+            }
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        baseline: {
+            get: function () {
+                return this.font.baseline;
+            }
+        },
 
         //////////////////////////////////////////////////////////////////////
 

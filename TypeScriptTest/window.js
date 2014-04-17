@@ -52,17 +52,17 @@
         };
     };
 
-    Object.defineProperty(Window.prototype, "text", {
-        get: function () {
-            return this.caption.text;
-        },
-        set: function (s) {
-            this.caption.text = s;
-        }
-    });
-
     chs.extend(Window, chs.Panel);
 
-    return Window;
+    return chs.override(Window, {
+        text: {
+            get: function () {
+                return this.caption.text;
+            },
+            set: function (s) {
+                this.caption.text = s;
+            }
+        }
+    });
 
 }());

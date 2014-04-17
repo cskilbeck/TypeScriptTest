@@ -15,7 +15,11 @@ var chs = (function () {
                 continue;
             }
             desc = Object.getOwnPropertyDescriptor(proto, names[i]);
-            Object.defineProperty(child.prototype, names[i], desc);
+            if (typeof desc.value === "object") {
+                Object.defineProperty(child.prototype, names[i], desc.value);
+            } else {
+                Object.defineProperty(child.prototype, names[i], desc);
+            }
         }
     }
 

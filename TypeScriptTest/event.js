@@ -26,34 +26,26 @@ chs.Event = (function () {
 chs.MouseEvent = (function () {
     "use strict";
 
-    //////////////////////////////////////////////////////////////////////
-
     var MouseEvent = function (type, pos) {
         chs.Event.call(this, type);
         this.position = pos;
     };
 
-    //////////////////////////////////////////////////////////////////////
-
-    Object.defineProperty(MouseEvent, "x", {
-        get: function () {
-            return this.position.x;
-        }
-    });
-
-    //////////////////////////////////////////////////////////////////////
-
-    Object.defineProperty(MouseEvent, "y", {
-        get: function () {
-            return this.position.y;
-        }
-    });
-
-    //////////////////////////////////////////////////////////////////////
-
     chs.extend(MouseEvent, chs.Event);
 
-    return MouseEvent;
+    return chs.override(MouseEvent, {
+        x: {
+            get: function () {
+                return this.position.x;
+            }
+        },
+
+        y: {
+            get: function () {
+                return this.position.y;
+            }
+        }
+    });
 
 }());
 

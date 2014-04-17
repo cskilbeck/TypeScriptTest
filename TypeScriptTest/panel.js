@@ -3,8 +3,6 @@
 chs.ClipRect = (function () {
     "use strict";
 
-    //////////////////////////////////////////////////////////////////////
-
     var ClipRect = function (x, y, w, h, radius) {
         chs.Drawable.call(this);
         this.setPosition(x, y);
@@ -33,8 +31,6 @@ chs.ClipRect = (function () {
 chs.Panel = (function () {
     "use strict";
 
-    //////////////////////////////////////////////////////////////////////
-
     var Panel = function (x, y, w, h, fillColour, outlineColour, radius, lineWidth, lineTransparency) {
         chs.Drawable.call(this);
         this.setPosition(x, y);
@@ -48,31 +44,27 @@ chs.Panel = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    Object.defineProperty(Panel.prototype, "width", {
-        set: function (w) {
-            this.dimensions.width = w;
-        },
-        get: function () {
-            return this.dimensions.width;
-        }
-    });
-
-    //////////////////////////////////////////////////////////////////////
-
-    Object.defineProperty(Panel.prototype, "height", {
-        set: function (h) {
-            this.dimensions.height = h;
-        },
-        get: function () {
-            return this.dimensions.height;
-        }
-    });
-
-    //////////////////////////////////////////////////////////////////////
-
     chs.extend(Panel, chs.Drawable);
     
     return chs.override(Panel, {
+
+        width: {
+            set: function (w) {
+                this.dimensions.width = w;
+            },
+            get: function () {
+                return this.dimensions.width;
+            }
+        },
+
+        height: {
+            set: function (h) {
+                this.dimensions.height = h;
+            },
+            get: function () {
+                return this.dimensions.height;
+            }
+        },
 
         onDraw: function (context) {
             chs.Util.roundRect(context, 0, 0, this.width, this.height, this.radius || 0);

@@ -33,7 +33,7 @@ chs.Drawable = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    Drawable.prototype = {
+    return chs.override(Drawable, {
 
         //////////////////////////////////////////////////////////////////////
         // override these...
@@ -377,173 +377,169 @@ chs.Drawable = (function () {
 
         close: function () {
             this.drawableData.closed = true;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        rotation: {
+            get: function () {
+                return this.drawableData.rotation;
+            },
+            set: function (r) {
+                this.drawableData.rotation = r;
+                this.drawableData.dirty = true;
+            }
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        x: {
+            get: function () {
+                return this.drawableData.position.x;
+            },
+            set: function (x) {
+                this.drawableData.position.x = x;
+                this.drawableData.dirty = true;
+            }
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        y: {
+            get: function () {
+                return this.drawableData.position.y;
+            },
+            set: function (y) {
+                this.drawableData.position.y = y;
+                this.drawableData.dirty = true;
+            }
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        width: {
+            configurable: true,
+            get: function () {
+                return this.size().width;
+            }
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        height: {
+            configurable: true,
+            get: function () {
+                return this.size().height;
+            }
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        position: {
+            get: function () {
+                return this.drawableData.position;
+            },
+            set: function (s) {
+                this.drawableData.position.x = s.x;
+                this.drawableData.position.y = s.y;
+                this.drawableData.dirty = true;
+            }
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        scale: {
+            get: function () {
+                return this.drawableData.scale;
+            },
+            set: function (s) {
+                this.drawableData.scale.x = s.x;
+                this.drawableData.scale.y = s.y;
+                this.drawableData.dirty = true;
+            }
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        zIndex: {
+            configurable: false,
+            enumerable: true,
+            set: function (z) {
+                var self = this.drawableData;
+                self.myZindex = z;
+                if (self.parent !== null) {
+                    self.parent.drawableData.reorder = true;
+                }
+            },
+            get: function () {
+                return this.drawableData.myZindex;
+            }
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        parent: {
+            configurable: false,
+            enumerable: true,
+            get: function () {
+                return this.drawableData.parent;
+            }
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        enabled: {
+            configurable: false,
+            enumerable: true,
+            get: function () {
+                return this.drawableData.enabled;
+            },
+            set: function (e) {
+                this.drawableData.enabled = e;
+            }
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        visible: {
+            configurable: false,
+            enumerable: true,
+            set: function (v) {
+                this.drawableData.visible = v;
+            },
+            get: function () {
+                return this.drawableData.visible;
+            }
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        transparency: {
+            configurable: false,
+            enumerable: true,
+            set: function (t) {
+                this.drawableData.transparency = t;
+            },
+            get: function () {
+                return this.drawableData.transparency;
+            }
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        modal: {
+            configurable: false,
+            enumerable: true,
+            set: function (m) {
+                this.drawableData.modal = m;
+            },
+            get: function () {
+                return this.drawableData.modal;
+            }
         }
 
         //////////////////////////////////////////////////////////////////////
 
-    };
-
-    //////////////////////////////////////////////////////////////////////
-
-    Object.defineProperty(Drawable.prototype, "rotation", {
-        get: function () {
-            return this.drawableData.rotation;
-        },
-        set: function (r) {
-            this.drawableData.rotation = r;
-            this.drawableData.dirty = true;
-        }
     });
-
-    //////////////////////////////////////////////////////////////////////
-
-    Object.defineProperty(Drawable.prototype, "x", {
-        get: function () {
-            return this.drawableData.position.x;
-        },
-        set: function (x) {
-            this.drawableData.position.x = x;
-            this.drawableData.dirty = true;
-        }
-    });
-
-    //////////////////////////////////////////////////////////////////////
-
-    Object.defineProperty(Drawable.prototype, "width", {
-        configurable: true,
-        get: function () {
-            return this.size().width;
-        }
-    });
-
-    //////////////////////////////////////////////////////////////////////
-
-    Object.defineProperty(Drawable.prototype, "height", {
-        configurable: true,
-        get: function () {
-            return this.size().height;
-        }
-    });
-
-    //////////////////////////////////////////////////////////////////////
-
-    Object.defineProperty(Drawable.prototype, "y", {
-        get: function () {
-            return this.drawableData.position.y;
-        },
-        set: function (y) {
-            this.drawableData.position.y = y;
-            this.drawableData.dirty = true;
-        }
-    });
-
-    //////////////////////////////////////////////////////////////////////
-
-    Object.defineProperty(Drawable.prototype, "position", {
-        get: function () {
-            return this.drawableData.position;
-        },
-        set: function (s) {
-            this.drawableData.position.x = s.x;
-            this.drawableData.position.y = s.y;
-            this.drawableData.dirty = true;
-        }
-    });
-
-    //////////////////////////////////////////////////////////////////////
-
-    Object.defineProperty(Drawable.prototype, "scale", {
-        get: function () {
-            return this.drawableData.scale;
-        },
-        set: function (s) {
-            this.drawableData.scale.x = s.x;
-            this.drawableData.scale.y = s.y;
-            this.drawableData.dirty = true;
-        }
-    });
-
-    //////////////////////////////////////////////////////////////////////
-
-    Object.defineProperty(Drawable.prototype, "zIndex", {
-        configurable: false,
-        enumerable: true,
-        set: function (z) {
-            var self = this.drawableData;
-            self.myZindex = z;
-            if (self.parent !== null) {
-                self.parent.drawableData.reorder = true;
-            }
-        },
-        get: function () {
-            return this.drawableData.myZindex;
-        }
-    });
-
-    //////////////////////////////////////////////////////////////////////
-
-    Object.defineProperty(Drawable.prototype, "parent", {
-        configurable: false,
-        enumerable: true,
-        get: function () {
-            return this.drawableData.parent;
-        }
-    });
-
-    //////////////////////////////////////////////////////////////////////
-
-    Object.defineProperty(Drawable.prototype, "enabled", {
-        configurable: false,
-        enumerable: true,
-        get: function () {
-            return this.drawableData.enabled;
-        },
-        set: function (e) {
-            this.drawableData.enabled = e;
-        }
-    });
-
-    //////////////////////////////////////////////////////////////////////
-
-    Object.defineProperty(Drawable.prototype, "visible", {
-        configurable: false,
-        enumerable: true,
-        set: function (v) {
-            this.drawableData.visible = v;
-        },
-        get: function () {
-            return this.drawableData.visible;
-        }
-    });
-
-    //////////////////////////////////////////////////////////////////////
-
-    Object.defineProperty(Drawable.prototype, "transparency", {
-        configurable: false,
-        enumerable: true,
-        set: function (t) {
-            this.drawableData.transparency = t;
-        },
-        get: function () {
-            return this.drawableData.transparency;
-        }
-    });
-
-    //////////////////////////////////////////////////////////////////////
-
-    Object.defineProperty(Drawable.prototype, "modal", {
-        configurable: false,
-        enumerable: true,
-        set: function (m) {
-            this.drawableData.modal = m;
-        },
-        get: function () {
-            return this.drawableData.modal;
-        }
-    });
-
-    //////////////////////////////////////////////////////////////////////
-
-    return Drawable;
 
 }());

@@ -56,7 +56,7 @@ var Game = (function () {
             this.addChild(words);
             this.addChild(new chs.SpriteButton(loader.load("undo.png"), "scale", 580, 490, this.undo, null));
             this.addChild(new chs.SpriteButton(loader.load("redo.png"), "scale", 620, 490, this.redo, null));
-            menuButton = new chs.FancyTextButton("Menu", consolas, 730, 505, 100, 40).setPivot(0.5, 0.5);
+            menuButton = new chs.FancyTextButton("Menu", consolas, 80, 535, 100, 40).setPivot(0.5, 0.5);
             this.addChild(menuButton);
             score = new chs.Label("Score: 0", consolas).setPosition(681, 11);
             this.addChild(score);
@@ -139,12 +139,12 @@ var Game = (function () {
             if (board.changed) {
                 words.removeChildren();
                 board.wordList().forEach(function (w) {
-                    var button = new chs.PanelButton(676, y, 120, 24, "cadetblue", undefined, 4, 0, function () {
+                    var button = new chs.PanelButton(676, y, 120, 24, "darkslategrey", undefined, 4, 0, function () {
                         this.showDefinition(w);
                     }, this);
                     button.addChild(new chs.Label(w.str, consolas).setPosition(5, button.height / 2).setPivot(0, consolas.midPivot));
                     button.addChild(new chs.Label(w.score.toString(), consolas).setPosition(114, button.height / 2).setPivot(1, consolas.midPivot));
-                    button.onIdle = function () { this.fillColour = "cadetblue"; };
+                    button.onIdle = function () { this.fillColour = "darkslategrey"; };
                     button.onHover = function () { this.fillColour = "cornflowerblue"; };
                     button.onPressed = function () { this.fillColour = "aquamarine"; };
                     button.word = w;

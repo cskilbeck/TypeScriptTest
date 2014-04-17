@@ -195,7 +195,7 @@ Board = (function () {
 
         pushUndo: function () {
             if (this.undoStack.length > undoMax) {
-                this.undoStack = this.undoStack.slice(1, this.undoStack.length);
+                this.undoStack.shift();
             }
             if (this.undoPointer < this.undoStack.length - 1) {
                 this.undoStack = this.undoStack.slice(0, this.undoPointer);

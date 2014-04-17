@@ -169,14 +169,15 @@ chs.Loader = (function () {
             var i,
                 item,
                 s;
-            chs.Debug.print("\n Loading, " + this.percentComplete().toFixed(2) + "% complete...\n\n");
+            chs.Debug.print("Loading, " + this.percentComplete().toFixed(2) + "% complete...");
+            chs.Debug.print();
             for (i in this.items) {
                 item = this.items[i];
                 s = item.bytesReceived.toString();
                 while (s.length < 20) {
                     s = " " + s;
                 }
-                chs.Debug.print(s + ": " + item.url + "\n");
+                chs.Debug.print(s + ": " + item.url);
             }
         },
 

@@ -95,10 +95,12 @@ var Game = (function () {
         //////////////////////////////////////////////////////////////////////
 
         showDefinition: function (w) {
-            var def = Dictionary.getDefinition(w.str),
+            var def,
                 window,
                 scoreLabel,
                 textBox;
+
+            def = Dictionary.getDefinition(w.str),
             window = new chs.Window(400, 300, 640, 480, w.str.toUpperCase(), arial, 12, "black", 0.5);
             window.transparency = 224;
             window.modal = true;

@@ -13,6 +13,10 @@ var Dictionary = (function () {
             dictionary = dict;
         },
 
+        words: function () {
+            return dictionary.words;
+        },
+
         isWord: function (str) {
             return dictionary.words.hasOwnProperty(str);
         },

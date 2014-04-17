@@ -75,7 +75,7 @@ chs.Loader = (function () {
         },
         onComplete: function () {
             this.inProgress = true;
-            this.doCallback();
+            this.doCallback();          // need a chain of callback for everyone who was interested in this getting loaded...
             this.loaded = true;
             this.loader.itemLoaded(this);
         }

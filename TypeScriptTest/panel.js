@@ -136,41 +136,35 @@ chs.PanelButton = (function () {
 chs.LinkButton = (function () {
     "use strict";
 
-    var LinkButton = function (x1, y1, x2, y2, link, click, context) {
-        var l = Math.floor(x1) + 0.5,
-            r = Math.floor(x2) + 0.5,
-            t = Math.floor(y1) + 0.5,
-            b = Math.floor(y2) + 0.5,
-            h = b - t,
-            w = r - l;
-        chs.Line.call(this, 0, h, w, h, "lightblue", 1);
-        chs.Button.call(this, LinkButton.prototype.onLinkClicked, this);
-        this.clickContext = context;
-        this.link = link;
-        this.linkClicked = click;
-        this.setPosition(l, t);
-        this.dimensions = { width: w, height: h };
-    };
+    var onLinkClicked = function () {
+            if (this.linkClicked !== undefined) {
+                this.linkClicked.call(this.clickContext, this.link);
+            }
+        },
+
+        LinkButton = function (x1, y1, x2, y2, link, click, context) {
+            var l = Math.floor(x1) + 0.5,
+                r = Math.floor(x2) + 0.5,
+                t = Math.floor(y1) + 0.5,
+                b = Math.floor(y2) + 0.5,
+                h = b - t,
+                w = r - l;
+            chs.Line.call(this, 0, h, w, h, "lightblue", 1);
+            chs.Button.call(this, onLinkClicked, this);
+            this.clickContext = context;
+            this.link = link;
+            this.linkClicked = click;
+            this.setPosition(l, t);
+            this.dimensions = { width: w, height: h };
+        };
 
     chs.extend(LinkButton, chs.Button);
     chs.extend(LinkButton, chs.Line);
 
     return chs.override(LinkButton, {
-
-        onLinkClicked: function () {
-            if (this.linkClicked !== undefined) {
-                this.linkClicked.call(this.clickContext, this.link);
-            }
-        },
-        onIdle: function () {
-            this.colour = "lightblue";
-        },
-        onHover: function () {
-            this.colour = "cyan";
-        },
-        onPressed: function () {
-            this.colour = "red";
-        }
+        onIdle: function () { this.colour = "lightblue"; },
+        onHover: function () { this.colour = "cyan"; },
+        onPressed: function () { this.colour = "red"; }
     });
 
 }());

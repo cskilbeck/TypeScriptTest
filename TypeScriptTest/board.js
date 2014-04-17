@@ -65,9 +65,7 @@ Board = (function () {
     // loader must be complete before this is called
 
     function Board(loader) {
-        var arial = chs.Font.load("Arial", loader),
-            tilesPage = loader.load("allColour.png"),
-            i;
+        var i;
 
         chs.Drawable.call(this);
         this.tileWidth = 7;
@@ -89,7 +87,7 @@ Board = (function () {
         this.beforeDrag = "";
         this.tiles.length = this.tileWidth * this.tileHeight;
         for (i = 0; i < this.tiles.length; ++i) {
-            this.tiles[i] = new Tile(tilesPage, arial, "A", i % this.tileWidth, (i / this.tileWidth) >>> 0);
+            this.tiles[i] = new Tile("A", i % this.tileWidth, (i / this.tileWidth) >>> 0);
             this.addChild(this.tiles[i]);
         }
         this.randomize(1);

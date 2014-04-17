@@ -1,11 +1,12 @@
 ﻿//////////////////////////////////////////////////////////////////////
-// Font Layer Mask
-// Undo/Redo/Save/Personal Best
+// Save/Personal Best/cookies
 // Title screen
 // Mobile: Android/Chrome, iOS/Safari, Windows Phone: IE // Touch Support
 // Fix tile grabbing/moving/swapping/lerping
 // Flying scores/fizz/particles
 // OAuth/AWS/Leaderboards
+// Tile graphics
+// Score on tiles
 //////////////////////////////////////////////////////////////////////
 
 var Game = (function () {
@@ -49,9 +50,9 @@ var Game = (function () {
             consolasItalic = chs.Font.load("Consolas_Italic", loader);
             consolasItalic.lineSpacing = 10;
             consolasItalic.softLineSpacing = 4;
+            Tile.load(loader);
             arial = chs.Font.load("Arial", loader);
             Dictionary.init(loader.load("dictionary.json"));
-            loader.load("allColour.png");
             words = new chs.Drawable();
             this.addChild(words);
             this.addChild(new chs.SpriteButton(loader.load("undo.png"), "scale", 580, 490, this.undo, null));

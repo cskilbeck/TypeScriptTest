@@ -12,12 +12,12 @@ Tile = (function () {
         tileWidth = 96,
         tileHeight = 96,
         font,
-        tileSprite,
+        tileImage,
 
     //////////////////////////////////////////////////////////////////////
 
-        Tile = function (image, font, letter, x, y) {
-            chs.Sprite.call(this, image);
+        Tile = function (letter, x, y) {
+            chs.Sprite.call(this, tileImage);
             this.font = font;
             this.framesWide = 5;
             this.framesHigh = 5;
@@ -51,6 +51,13 @@ Tile = (function () {
 
     Tile.width = tileWidth;
     Tile.height = tileHeight;
+
+    //////////////////////////////////////////////////////////////////////
+
+    Tile.load = function (loader) {
+        font = chs.Font.load("Arial", loader);
+        tileImage = loader.load("allColour.png");
+    };
 
     //////////////////////////////////////////////////////////////////////
 

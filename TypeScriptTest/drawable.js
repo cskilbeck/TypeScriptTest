@@ -24,6 +24,7 @@ chs.Drawable = (function () {
             globalMatrix: chs.Matrix.identity(),
             mouseCapture: false,
             parent: null,
+            enabled: true,
             closed: false,
             modal: false,
             children: new chs.List("drawableListNode")
@@ -116,36 +117,38 @@ chs.Drawable = (function () {
                 mp,
                 bp;
             // kids get first dibs
-            capture = capture || self.mouseCapture;
-            for (c = self.children.tailNode() ; c !== self.children.end() ; c = c.prev) {
-                if (c.item.processMessage(e, capture) || c.item.modal) {
-                    return true;
-                }
-            }
-            if (this.visible) {
-                p = this.pick(e.position, 0);
-                mp = capture || p;
-                if (p || self.mouseCapture) {
-                    switch (e.type) {
-                    case chs.Event.leftMouseDown:
-                        return this.onLeftMouseDown(e);
-                    case chs.Event.rightMouseDown:
-                        return this.onRightMouseDown(e);
-                    case chs.Event.leftMouseUp:
-                        return this.onLeftMouseUp(e);
-                    case chs.Event.rightMouseUp:
-                        return this.onRightMouseUp(e);
+            if (this.enabled) {
+                capture = capture || self.mouseCapture;
+                for (c = self.children.tailNode() ; c !== self.children.end() ; c = c.prev) {
+                    if (c.item.processMessage(e, capture) || c.item.modal) {
+                        return true;
                     }
-                    if (!self.mouseIsOver) {
-                        self.mouseIsOver = true;
-                        this.onMouseEnter(e);
-                    }
-                } else if (!p && self.mouseIsOver) {
-                    this.onMouseLeave(e);
-                    self.mouseIsOver = false;
                 }
-                if (mp && e.type === chs.Event.mouseMove) {
-                    return this.onMouseMove(e);
+                if (this.visible) {
+                    p = this.pick(e.position, 0);
+                    mp = capture || p;
+                    if (p || self.mouseCapture) {
+                        switch (e.type) {
+                        case chs.Event.leftMouseDown:
+                            return this.onLeftMouseDown(e);
+                        case chs.Event.rightMouseDown:
+                            return this.onRightMouseDown(e);
+                        case chs.Event.leftMouseUp:
+                            return this.onLeftMouseUp(e);
+                        case chs.Event.rightMouseUp:
+                            return this.onRightMouseUp(e);
+                        }
+                        if (!self.mouseIsOver) {
+                            self.mouseIsOver = true;
+                            this.onMouseEnter(e);
+                        }
+                    } else if (!p && self.mouseIsOver) {
+                        this.onMouseLeave(e);
+                        self.mouseIsOver = false;
+                    }
+                    if (mp && e.type === chs.Event.mouseMove) {
+                        return this.onMouseMove(e);
+                    }
                 }
             }
             return false;
@@ -177,15 +180,17 @@ chs.Drawable = (function () {
                 }
                 return false;
             });
-            for (c = self.children.tailNode() ; c !== self.children.end() ; c = c.prev) {
-                c.item.update(deltaTime);
-                if (c.item.drawableData.modal && !frozen) {
-                    chs.Mouse.freeze();
-                    chs.Keyboard.freeze();
-                    frozen = true;
+            if (self.enabled) {
+                for (c = self.children.tailNode() ; c !== self.children.end() ; c = c.prev) {
+                    c.item.update(deltaTime);
+                    if (c.item.drawableData.modal && !frozen) {
+                        chs.Mouse.freeze();
+                        chs.Keyboard.freeze();
+                        frozen = true;
+                    }
                 }
+                this.onUpdate(deltaTime);   // modal children freeze their parent
             }
-            this.onUpdate(deltaTime);   // modal children freeze their parent
             if (frozen) {
                 chs.Mouse.unfreeze();
                 chs.Keyboard.unfreeze();
@@ -306,15 +311,18 @@ chs.Drawable = (function () {
         },
 
         //////////////////////////////////////////////////////////////////////
+        // not sure this handles rotation with non-zero pivot...
 
         screenToClient: function (p) {
-            return this.drawableData.pickMatrix.apply(p);
+            var self = this.drawableData;
+            return self.pickMatrix.apply(p);
         },
 
         //////////////////////////////////////////////////////////////////////
 
         clientToScreen: function (p) {
-            return this.drawableData.globalMatrix.apply(p);
+            var self = this.drawableData;
+            return self.globalMatrix.apply(p);
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -328,7 +336,6 @@ chs.Drawable = (function () {
         },
 
         //////////////////////////////////////////////////////////////////////
-        // check if it's in any children, or me
 
         pick: function (point) {
             var p = this.screenToClient(point);
@@ -480,6 +487,19 @@ chs.Drawable = (function () {
         enumerable: true,
         get: function () {
             return this.drawableData.parent;
+        }
+    });
+
+    //////////////////////////////////////////////////////////////////////
+
+    Object.defineProperty(Drawable.prototype, "enabled", {
+        configurable: false,
+        enumerable: true,
+        get: function () {
+            return this.drawableData.enabled;
+        },
+        set: function (e) {
+            this.drawableData.enabled = e;
         }
     });
 

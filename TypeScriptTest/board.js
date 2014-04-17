@@ -37,6 +37,7 @@ Board = (function () {
 
         asciiA = "a".charCodeAt(0),
         distribution = [],
+        undoMax = 1000,
         foundWords = new chs.List("listNode");
 
     //////////////////////////////////////////////////////////////////////
@@ -82,6 +83,10 @@ Board = (function () {
         this.offsetX = 0;
         this.offsetY = 0;
         this.tiles = [];
+        this.undoStack = [];
+        this.undoPointer = 0;
+        this.undoLength = 0;
+        this.beforeDrag = "";
         this.tiles.length = this.tileWidth * this.tileHeight;
         for (i = 0; i < this.tiles.length; ++i) {
             this.tiles[i] = new Tile(tilesPage, arial, "A", i % this.tileWidth, (i / this.tileWidth) >>> 0);
@@ -188,14 +193,41 @@ Board = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        undo: function () {
+        pushUndo: function () {
+            if (this.undoStack.length > undoMax) {
+                this.undoStack = this.undoStack.slice(1, this.undoStack.length);
+            }
+            if (this.undoPointer < this.undoStack.length - 1) {
+                this.undoStack = this.undoStack.slice(0, this.undoPointer);
+            } else {
+                this.undoStack.pop();
+            }
+            this.undoStack.push(this.beforeDrag);
+            this.undoStack.push(this.toString());
+            this.undoPointer = this.undoStack.length - 1;
+        },
 
+        //////////////////////////////////////////////////////////////////////
+
+        undo: function () {
+            if (this.undoPointer > 0) {
+                this.undoPointer -= 1;
+                this.setFromString(this.undoStack[this.undoPointer]);
+                this.beforeDrag = this.toString();
+                this.markAllWords();
+            }
         },
 
         //////////////////////////////////////////////////////////////////////
 
         redo: function () {
-
+            this.undoPointer += 1;
+            if (this.undoPointer > this.undoStack.length - 1) {
+                this.undoPointer = this.undoStack.length - 1;
+            }
+            this.setFromString(this.undoStack[this.undoPointer]);
+            this.beforeDrag = this.toString();
+            this.markAllWords();
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -209,6 +241,9 @@ Board = (function () {
                 tileY,
                 newSwapTile,
                 y;
+            //for (y in this.undoStack) {
+            //    chs.Debug.print((y === this.undoPointer.toString() ? ">" : " ") + this.undoStack[y]);
+            //}
             if (chs.Mouse.left.released) {
                 if (this.activeTile !== null) {
                     this.activeTile.reset();
@@ -218,6 +253,10 @@ Board = (function () {
                 }
                 this.swapTile = null;
                 this.activeTile = null;
+
+                if (this.beforeDrag !== this.toString()) {
+                    this.pushUndo();
+                }
             }
             if (chs.Mouse.left.pressed) {
                 clickedTile = this.tileFromScreenPos(chs.Mouse.position.x, chs.Mouse.position.y);
@@ -232,6 +271,7 @@ Board = (function () {
                     this.offsetX = this.clickX - this.activeTile.position.x;
                     this.offsetY = this.clickY - this.activeTile.position.y;
                     this.activeTile.selected = true;
+                    this.beforeDrag = this.toString();
                 }
             } else {
                 if (chs.Mouse.left.held && this.activeTile !== null) {

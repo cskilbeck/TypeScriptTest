@@ -3,13 +3,11 @@
 chs.Label = (function () {
     "use strict";
 
-    var Label = function (text, font, lineSpace, softLineSpace) {
+    var Label = function (text, font) {
         chs.Drawable.call(this);
         this.labelData = {
             text: text,
             font: font,
-            lineSpace: lineSpace,
-            softLineSpace: softLineSpace,
             dimensions: null
         };
     };
@@ -43,14 +41,14 @@ chs.Label = (function () {
         size: function () {
             var self = this.labelData;
             if (self.dimensions === null) {
-                self.dimensions = self.font.measureText(self.text, self.lineSpace, self.softLineSpace);
+                self.dimensions = self.font.measureText(self.text);
             }
             return self.dimensions;
         },
 
         onDraw: function (context) {
             var self = this.labelData;
-            self.font.renderString(context, self.text, 0, 0, self.lineSpace, self.softLineSpace);
+            self.font.renderString(context, self.text, 0, 0);
         }
     });
 
@@ -59,8 +57,8 @@ chs.Label = (function () {
 chs.TextBox = (function () {
     "use strict";
 
-    var TextBox = function (x, y, w, h, text, font, lineBreak, lineSpace, softLineSpace, linkClicked, context) {
-        chs.Label.call(this, text, font, lineSpace, softLineSpace);
+    var TextBox = function (x, y, w, h, text, font, lineBreak, linkClicked, context) {
+        chs.Label.call(this, text, font);
         this.context = context;
         this.setPosition(x, y);
         this.dimensions = { width: w, height: h };
@@ -80,8 +78,8 @@ chs.TextBox = (function () {
             var links = [],
                 link,
                 self = this.labelData;
-            self.text = self.font.wrapText(s, this.width, this.lineBreak, self.lineSpace, self.softLineSpace);
-            self.font.measureText(self.text, self.lineSpace, self.softLineSpace, links);
+            self.text = self.font.wrapText(s, this.width, this.lineBreak);
+            self.font.measureText(self.text, links);
             this.removeChildren();
             while (links.length > 0) {
                 link = new chs.LinkButton(links.shift(),

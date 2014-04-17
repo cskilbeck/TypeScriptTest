@@ -31,10 +31,12 @@
     <Content Include="img\allColour.png" />
     <None Include="img\Arial.json" />
     <Content Include="img\Arial0.png" />
+    <Content Include="img\Consolas_Italic.json" />
     <None Include="img\dictionary.json" />
     <None Include="img\Fixedsys.json" />
     <None Include="img\Consolas.json" />
     <Content Include="img\Consolas0.png" />
+    <Content Include="img\Consolas_Italic0.png" />
     <Content Include="img\Fixedsys0.png" />
     <Content Include="img\redo.png" />
     <Content Include="img\undo.png" />
@@ -51,6 +53,7 @@
     <Content Include="sprite.js" />
     <Content Include="font.js" />
     <Content Include="spritebutton.js" />
+    <Content Include="startup.js" />
     <Content Include="textbutton.js" />
     <Content Include="timer.js" />
     <Content Include="util.js" />

@@ -5,64 +5,77 @@ chs.Button = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    var idle = 0,
-        hover = 1,
-        pressed = 2;
-
-    //////////////////////////////////////////////////////////////////////
-
     function Button(click, context) {
-        this.enabled = true;
-        this.state = idle;
-        this.clicked = click;
+        this.currentState = Button.idle;
+        this.callback = click;
         this.context = context || this;
     }
 
     //////////////////////////////////////////////////////////////////////
 
-    Button.prototype = {
+    Button.idle = 0;
+    Button.hover = 1;
+    Button.pressed = 2;
+
+    //////////////////////////////////////////////////////////////////////
+
+    Object.defineProperty(Button.prototype, "state", {
+        get: function () {
+            return this.currentState;
+        },
+        set: function (s) {
+            this.currentState = s;
+            switch (s) {
+            case Button.idle:
+                this.onIdle();
+                break;
+            case Button.hover:
+                this.onHover();
+                break;
+            case Button.pressed:
+                this.onPressed();
+                break;
+            }
+        }
+    });
+
+    //////////////////////////////////////////////////////////////////////
+
+    return chs.override(Button, {
 
         onHover: function () {
-
         },
 
         onIdle: function () {
-
         },
 
         onPressed: function () {
         },
 
         onMouseEnter: function () {
-            this.state = hover;
-            this.onHover();
+            this.state = Button.hover;
             return true;
         },
 
         onMouseLeave: function () {
-            this.state = idle;
-            this.onIdle();
+            this.state = Button.idle;
             return true;
         },
 
         onLeftMouseDown: function () {
-            this.state = pressed;
-            this.onPressed();
+            this.state = Button.pressed;
             return true;
         },
 
         onLeftMouseUp: function () {
-            if (this.state === pressed) {
-                if (this.clicked !== undefined) {
-                    this.clicked.call(this.context || this);
+            if (this.state === Button.pressed) {
+                this.state = Button.hover;
+                if (this.callback !== undefined) {
+                    this.callback.call(this.context || this);
                 }
             }
-            this.onHover();
-            this.state = hover;
             return true;
         }
-    };
-
-    return Button;
+    });
 
 }());

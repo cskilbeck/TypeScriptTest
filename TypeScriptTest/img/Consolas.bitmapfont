@@ -1,322 +1,420 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE BitmapFont>
-<BitmapFont PageCount="1" Height="18" InternalLeading="0" Baseline="11.4873">
+<BitmapFont PageCount="1" Height="19" InternalLeading="0" Baseline="12.12549">
   <Graph>
     <Nodes Count="5">
-      <FunctionNode id="0" inputs="2" outputs="1" X="518" Y="84" Plugin="Ops" Function="Combine" />
-      <FontNode id="1" inputs="0" outputs="2" X="141" Y="86">
-        <Parameter Name="Render Type" Type="RenderType" value="2" />
-        <Parameter Name="Font" Type="TTFont" family="Consolas" face="Bold" size="18" />
-        <Parameter Name="Options" Type="FontDescriptor" Outline="0" AntiAlias="1" Rounded="0" />
-      </FontNode>
-      <FunctionNode id="2" inputs="1" outputs="1" X="275" Y="27" Plugin="Ops" Function="Multiply">
-        <Parameter Name="Color" Type="Color" ARGB="FF000000" />
-      </FunctionNode>
-      <FunctionNode id="3" inputs="1" outputs="1" X="397" Y="26" Plugin="Ops" Function="Offset">
-        <Parameter Name="Offset" Type="RangedPointF" MinX="-50" MaxX="50" MinY="-50" MaxY="50" X="-2" Y="1" />
-      </FunctionNode>
-      <LayerNode id="4" inputs="1" outputs="0" X="656" Y="86" Index="0">
+      <LayerNode id="0" inputs="1" outputs="0" X="716" Y="183" Index="0">
         <Parameter Name="Color" Type="Color" ARGB="FFFFFFFF" />
-        <Parameter Name="Offset" Type="RangedPointF" MinX="-50" MaxX="50" MinY="-50" MaxY="50" X="-1" Y="-1" />
+        <Parameter Name="Offset" Type="RangedPointF" MinX="-50" MaxX="50" MinY="-50" MaxY="50" X="0" Y="0" />
         <Parameter Name="Measure" Type="Boolean" value="False" />
       </LayerNode>
+      <FunctionNode id="1" inputs="1" outputs="1" X="391" Y="161" Plugin="Ops" Function="Multiply">
+        <Parameter Name="Color" Type="Color" ARGB="FF000000" />
+      </FunctionNode>
+      <FontNode id="2" inputs="0" outputs="1" X="126" Y="257">
+        <Parameter Name="Render Type" Type="RenderType" value="2" />
+        <Parameter Name="Font" Type="TTFont" family="Consolas" face="Bold" size="19" />
+        <Parameter Name="Options" Type="FontDescriptor" Outline="0" AntiAlias="1" Rounded="0" />
+      </FontNode>
+      <LayerNode id="3" inputs="1" outputs="0" X="712" Y="276" Index="1">
+        <Parameter Name="Color" Type="Color" ARGB="FFFFFFFF" />
+        <Parameter Name="Offset" Type="RangedPointF" MinX="-50" MaxX="50" MinY="-50" MaxY="50" X="0" Y="0" />
+        <Parameter Name="Measure" Type="Boolean" value="False" />
+      </LayerNode>
+      <FontNode id="4" inputs="0" outputs="1" X="128" Y="143">
+        <Parameter Name="Render Type" Type="RenderType" value="2" />
+        <Parameter Name="Font" Type="TTFont" family="Consolas" face="Bold" size="19" />
+        <Parameter Name="Options" Type="FontDescriptor" Outline="2" AntiAlias="1" Rounded="1" />
+      </FontNode>
     </Nodes>
-    <Connections Count="5">
-      <Connection FromNode="1" FromSocket="1" ToNode="0" ToSocket="1" FromX="210" FromY="124" ToX="519" ToY="122" />
-      <Connection FromNode="1" FromSocket="0" ToNode="2" ToSocket="0" FromX="210" FromY="101" ToX="276" ToY="54" />
-      <Connection FromNode="0" FromSocket="0" ToNode="4" ToSocket="0" FromX="587" FromY="111" ToX="657" ToY="113" />
-      <Connection FromNode="2" FromSocket="0" ToNode="3" ToSocket="0" FromX="344" FromY="54" ToX="398" ToY="53" />
-      <Connection FromNode="3" FromSocket="0" ToNode="0" ToSocket="0" FromX="466" FromY="53" ToX="519" ToY="99" />
+    <Connections Count="3">
+      <Connection FromNode="2" FromSocket="0" ToNode="3" ToSocket="0" FromX="195" FromY="284" ToX="713" ToY="303" />
+      <Connection FromNode="4" FromSocket="0" ToNode="1" ToSocket="0" FromX="197" FromY="170" ToX="392" ToY="188" />
+      <Connection FromNode="1" FromSocket="0" ToNode="0" ToSocket="0" FromX="460" FromY="188" ToX="717" ToY="210" />
     </Connections>
   </Graph>
-  <Layers Count="1">
-    <Layer offsetX="-1" offsetY="-1" color="FFFFFFFF" />
+  <Layers Count="2">
+    <Layer offsetX="0" offsetY="0" color="FFFFFFFF" />
+    <Layer offsetX="0" offsetY="0" color="FFFFFFFF" />
   </Layers>
-  <Glyphs Count="97">
-    <Glyph char="32" images="0" advance="9.896484" />
-    <Glyph char="33" images="1" advance="10.25684">
-      <Graphic offsetX="1.761719" offsetY="0.9492188" x="84" y="19" w="5" h="14" page="0" />
-    </Glyph>
-    <Glyph char="34" images="1" advance="10.25684">
-      <Graphic offsetX="0.2675781" offsetY="0.9492188" x="73" y="55" w="8" h="6" page="0" />
-    </Glyph>
-    <Glyph char="35" images="1" advance="10.25684">
-      <Graphic offsetX="-1.62207" offsetY="1.880859" x="34" y="20" w="12" h="13" page="0" />
-    </Glyph>
-    <Glyph char="36" images="1" advance="10.25684">
-      <Graphic offsetX="-1.024414" offsetY="0.2285156" x="97" y="1" w="11" h="17" page="0" />
-    </Glyph>
-    <Glyph char="37" images="1" advance="10.25684">
-      <Graphic offsetX="-1.824219" offsetY="0.8261719" x="131" y="1" w="12" h="14" page="0" />
-    </Glyph>
-    <Glyph char="38" images="1" advance="10.25684">
-      <Graphic offsetX="-1.499023" offsetY="1.204102" x="144" y="1" w="12" h="14" page="0" />
-    </Glyph>
-    <Glyph char="39" images="1" advance="10.25684">
-      <Graphic offsetX="1.946289" offsetY="0.9492188" x="61" y="56" w="5" h="6" page="0" />
-    </Glyph>
-    <Glyph char="40" images="1" advance="10.25684">
-      <Graphic offsetX="0.6367188" offsetY="0.28125" x="50" y="1" w="8" h="18" page="0" />
-    </Glyph>
-    <Glyph char="41" images="1" advance="10.25684">
-      <Graphic offsetX="0.2851563" offsetY="0.28125" x="59" y="1" w="8" h="18" page="0" />
-    </Glyph>
-    <Glyph char="42" images="1" advance="10.25684">
-      <Graphic offsetX="-0.5585938" offsetY="0.9492188" x="42" y="48" w="10" h="9" page="0" />
-    </Glyph>
-    <Glyph char="43" images="1" advance="10.25684">
-      <Graphic offsetX="-1.261719" offsetY="4.350586" x="30" y="48" w="11" h="10" page="0" />
-    </Glyph>
-    <Glyph char="44" images="1" advance="10.25684">
-      <Graphic offsetX="0.09179688" offsetY="10.53809" x="53" y="48" w="7" h="8" page="0" />
-    </Glyph>
-    <Glyph char="45" images="1" advance="10.25684">
-      <Graphic offsetX="0.3203125" offsetY="7.857422" x="192" y="57" w="8" h="3" page="0" />
-    </Glyph>
-    <Glyph char="46" images="1" advance="10.25684">
-      <Graphic offsetX="1.418945" offsetY="10.59961" x="53" y="57" w="6" h="5" page="0" />
-    </Glyph>
-    <Glyph char="47" images="1" advance="10.25684">
-      <Graphic offsetX="-0.9892578" offsetY="0.9492188" x="109" y="1" w="10" h="16" page="0" />
-    </Glyph>
-    <Glyph char="48" images="1" advance="10.25684">
-      <Graphic offsetX="-1.226563" offsetY="1.722656" x="183" y="1" w="11" h="14" page="0" />
-    </Glyph>
-    <Glyph char="49" images="1" advance="10.25684">
-      <Graphic offsetX="-0.8134766" offsetY="1.828125" x="114" y="33" w="10" h="13" page="0" />
-    </Glyph>
-    <Glyph char="50" images="1" advance="10.25684">
-      <Graphic offsetX="-0.7080078" offsetY="1.722656" x="13" y="34" w="10" h="13" page="0" />
-    </Glyph>
-    <Glyph char="51" images="1" advance="10.25684">
-      <Graphic offsetX="-0.5585938" offsetY="1.722656" x="155" y="16" w="10" h="14" page="0" />
-    </Glyph>
-    <Glyph char="52" images="1" advance="10.25684">
-      <Graphic offsetX="-1.62207" offsetY="1.880859" x="47" y="20" w="12" h="13" page="0" />
-    </Glyph>
-    <Glyph char="53" images="1" advance="10.25684">
-      <Graphic offsetX="-0.4355469" offsetY="1.880859" x="24" y="34" w="10" h="13" page="0" />
-    </Glyph>
-    <Glyph char="54" images="1" advance="10.25684">
-      <Graphic offsetX="-0.9189453" offsetY="1.880859" x="152" y="31" w="11" h="13" page="0" />
-    </Glyph>
-    <Glyph char="55" images="1" advance="10.25684">
-      <Graphic offsetX="-0.9716797" offsetY="1.880859" x="164" y="31" w="11" h="13" page="0" />
-    </Glyph>
-    <Glyph char="56" images="1" advance="10.25684">
-      <Graphic offsetX="-0.9541016" offsetY="1.722656" x="195" y="1" w="11" h="14" page="0" />
-    </Glyph>
-    <Glyph char="57" images="1" advance="10.25684">
-      <Graphic offsetX="-1.121094" offsetY="1.722656" x="176" y="31" w="11" h="13" page="0" />
-    </Glyph>
-    <Glyph char="58" images="1" advance="10.25684">
-      <Graphic offsetX="1.603516" offsetY="4.385742" x="23" y="48" w="6" h="11" page="0" />
-    </Glyph>
-    <Glyph char="59" images="1" advance="10.25684">
-      <Graphic offsetX="0.1972656" offsetY="4.385742" x="118" y="18" w="7" h="14" page="0" />
-    </Glyph>
-    <Glyph char="60" images="1" advance="10.25684">
-      <Graphic offsetX="-0.7958984" offsetY="3.647461" x="135" y="45" w="10" h="12" page="0" />
-    </Glyph>
-    <Glyph char="61" images="1" advance="10.25684">
-      <Graphic offsetX="-0.8310547" offsetY="6.398438" x="73" y="48" w="10" h="6" page="0" />
-    </Glyph>
-    <Glyph char="62" images="1" advance="10.25684">
-      <Graphic offsetX="-0.1630859" offsetY="3.647461" x="146" y="45" w="10" h="12" page="0" />
-    </Glyph>
-    <Glyph char="63" images="1" advance="10.25684">
-      <Graphic offsetX="0.6630859" offsetY="0.9492188" x="109" y="18" w="8" h="14" page="0" />
-    </Glyph>
-    <Glyph char="64" images="1" advance="10.25684">
-      <Graphic offsetX="-1.920898" offsetY="0.84375" x="6" y="1" w="13" h="18" page="0" />
-    </Glyph>
-    <Glyph char="65" images="1" advance="10.25684">
-      <Graphic offsetX="-1.912109" offsetY="1.880859" x="90" y="19" w="13" h="13" page="0" />
-    </Glyph>
-    <Glyph char="66" images="1" advance="10.25684">
-      <Graphic offsetX="-0.6113281" offsetY="1.880859" x="35" y="34" w="10" h="13" page="0" />
-    </Glyph>
-    <Glyph char="67" images="1" advance="10.25684">
-      <Graphic offsetX="-1.191406" offsetY="1.740234" x="207" y="1" w="11" h="14" page="0" />
-    </Glyph>
-    <Glyph char="68" images="1" advance="10.25684">
-      <Graphic offsetX="-1.041992" offsetY="1.880859" x="188" y="31" w="11" h="13" page="0" />
-    </Glyph>
-    <Glyph char="69" images="1" advance="10.25684">
-      <Graphic offsetX="-0.2333984" offsetY="1.880859" x="73" y="20" w="9" h="13" page="0" />
-    </Glyph>
-    <Glyph char="70" images="1" advance="10.25684">
-      <Graphic offsetX="-0.1982422" offsetY="1.880859" x="68" y="34" w="9" h="13" page="0" />
-    </Glyph>
-    <Glyph char="71" images="1" advance="10.25684">
-      <Graphic offsetX="-1.419922" offsetY="1.722656" x="219" y="1" w="11" h="14" page="0" />
-    </Glyph>
-    <Glyph char="72" images="1" advance="10.25684">
-      <Graphic offsetX="-1.024414" offsetY="1.880859" x="200" y="31" w="11" h="13" page="0" />
-    </Glyph>
-    <Glyph char="73" images="1" advance="10.25684">
-      <Graphic offsetX="-0.4882813" offsetY="1.880859" x="46" y="34" w="10" h="13" page="0" />
-    </Glyph>
-    <Glyph char="74" images="1" advance="10.25684">
-      <Graphic offsetX="-0.4003906" offsetY="1.880859" x="78" y="34" w="9" h="13" page="0" />
-    </Glyph>
-    <Glyph char="75" images="1" advance="10.25684">
-      <Graphic offsetX="-0.6289063" offsetY="1.880859" x="212" y="31" w="11" h="13" page="0" />
-    </Glyph>
-    <Glyph char="76" images="1" advance="10.25684">
-      <Graphic offsetX="0.04785156" offsetY="1.880859" x="125" y="45" w="9" h="13" page="0" />
-    </Glyph>
-    <Glyph char="77" images="1" advance="10.25684">
-      <Graphic offsetX="-1.569336" offsetY="1.880859" x="60" y="20" w="12" h="13" page="0" />
-    </Glyph>
-    <Glyph char="78" images="1" advance="10.25684">
-      <Graphic offsetX="-0.9541016" offsetY="1.880859" x="224" y="31" w="11" h="13" page="0" />
-    </Glyph>
-    <Glyph char="79" images="1" advance="10.25684">
-      <Graphic offsetX="-1.499023" offsetY="1.722656" x="157" y="1" w="12" h="14" page="0" />
-    </Glyph>
-    <Glyph char="80" images="1" advance="10.25684">
-      <Graphic offsetX="-0.6113281" offsetY="1.880859" x="57" y="34" w="10" h="13" page="0" />
-    </Glyph>
-    <Glyph char="81" images="1" advance="10.25684">
-      <Graphic offsetX="-1.499023" offsetY="1.722656" x="84" y="1" w="12" h="17" page="0" />
-    </Glyph>
-    <Glyph char="82" images="1" advance="10.25684">
-      <Graphic offsetX="-0.5058594" offsetY="1.880859" x="236" y="31" w="11" h="13" page="0" />
-    </Glyph>
-    <Glyph char="83" images="1" advance="10.25684">
-      <Graphic offsetX="-1.024414" offsetY="1.722656" x="231" y="1" w="11" h="14" page="0" />
-    </Glyph>
-    <Glyph char="84" images="1" advance="10.25684">
-      <Graphic offsetX="-1.244141" offsetY="1.880859" x="90" y="33" w="11" h="13" page="0" />
-    </Glyph>
-    <Glyph char="85" images="1" advance="10.25684">
-      <Graphic offsetX="-1.041992" offsetY="1.880859" x="102" y="33" w="11" h="13" page="0" />
-    </Glyph>
-    <Glyph char="86" images="1" advance="10.25684">
-      <Graphic offsetX="-1.964844" offsetY="1.880859" x="6" y="20" w="13" h="13" page="0" />
-    </Glyph>
-    <Glyph char="87" images="1" advance="10.25684">
-      <Graphic offsetX="-1.604492" offsetY="1.880859" x="126" y="31" w="12" h="13" page="0" />
-    </Glyph>
-    <Glyph char="88" images="1" advance="10.25684">
-      <Graphic offsetX="-1.841797" offsetY="1.880859" x="139" y="31" w="12" h="13" page="0" />
-    </Glyph>
-    <Glyph char="89" images="1" advance="10.25684">
-      <Graphic offsetX="-2" offsetY="1.880859" x="20" y="20" w="13" h="13" page="0" />
-    </Glyph>
-    <Glyph char="90" images="1" advance="10.25684">
-      <Graphic offsetX="-1.024414" offsetY="1.880859" x="1" y="34" w="11" h="13" page="0" />
-    </Glyph>
-    <Glyph char="91" images="1" advance="10.25684">
-      <Graphic offsetX="1.032227" offsetY="0.6416016" x="68" y="1" w="7" h="18" page="0" />
-    </Glyph>
-    <Glyph char="92" images="1" advance="10.25684">
-      <Graphic offsetX="-0.59375" offsetY="0.9492188" x="120" y="1" w="10" h="16" page="0" />
-    </Glyph>
-    <Glyph char="93" images="1" advance="10.25684">
-      <Graphic offsetX="0.53125" offsetY="0.6416016" x="76" y="1" w="7" h="18" page="0" />
-    </Glyph>
-    <Glyph char="94" images="1" advance="10.25684">
-      <Graphic offsetX="-0.9365234" offsetY="1.880859" x="61" y="48" w="11" h="7" page="0" />
-    </Glyph>
-    <Glyph char="95" images="1" advance="10.25684">
-      <Graphic offsetX="-2" offsetY="15.70605" x="178" y="57" w="13" h="3" page="0" />
-    </Glyph>
-    <Glyph char="96" images="1" advance="10.25684">
-      <Graphic offsetX="-2" offsetY="0.9492188" x="170" y="57" w="7" h="4" page="0" />
-    </Glyph>
-    <Glyph char="97" images="1" advance="10.25684">
-      <Graphic offsetX="-0.8310547" offsetY="4.385742" x="231" y="45" w="10" h="11" page="0" />
-    </Glyph>
-    <Glyph char="98" images="1" advance="10.25684">
-      <Graphic offsetX="-0.59375" offsetY="0.9492188" x="166" y="16" w="10" h="14" page="0" />
-    </Glyph>
-    <Glyph char="99" images="1" advance="10.25684">
-      <Graphic offsetX="-0.6113281" offsetY="4.420898" x="242" y="45" w="10" h="11" page="0" />
-    </Glyph>
-    <Glyph char="100" images="1" advance="10.25684">
-      <Graphic offsetX="-1.041992" offsetY="0.9492188" x="177" y="16" w="10" h="14" page="0" />
-    </Glyph>
-    <Glyph char="101" images="1" advance="10.25684">
-      <Graphic offsetX="-0.9716797" offsetY="4.385742" x="183" y="45" w="11" h="11" page="0" />
-    </Glyph>
-    <Glyph char="102" images="1" advance="10.25684">
-      <Graphic offsetX="-2" offsetY="0.84375" x="243" y="1" w="11" h="14" page="0" />
-    </Glyph>
-    <Glyph char="103" images="1" advance="10.25684">
-      <Graphic offsetX="-1.173828" offsetY="4.385742" x="131" y="16" w="11" h="14" page="0" />
-    </Glyph>
-    <Glyph char="104" images="1" advance="10.25684">
-      <Graphic offsetX="-0.59375" offsetY="0.9492188" x="188" y="16" w="10" h="14" page="0" />
-    </Glyph>
-    <Glyph char="105" images="1" advance="10.25684">
-      <Graphic offsetX="-0.4882813" offsetY="0.84375" x="199" y="16" w="10" h="14" page="0" />
-    </Glyph>
-    <Glyph char="106" images="1" advance="10.25684">
-      <Graphic offsetX="-0.8486328" offsetY="0.84375" x="20" y="1" w="9" h="18" page="0" />
-    </Glyph>
-    <Glyph char="107" images="1" advance="10.25684">
-      <Graphic offsetX="-0.4003906" offsetY="0.9492188" x="210" y="16" w="10" h="14" page="0" />
-    </Glyph>
-    <Glyph char="108" images="1" advance="10.25684">
-      <Graphic offsetX="-0.4882813" offsetY="0.9492188" x="221" y="16" w="10" h="14" page="0" />
-    </Glyph>
-    <Glyph char="109" images="1" advance="10.25684">
-      <Graphic offsetX="-1.208984" offsetY="4.385742" x="195" y="45" w="11" h="11" page="0" />
-    </Glyph>
-    <Glyph char="110" images="1" advance="10.25684">
-      <Graphic offsetX="-0.59375" offsetY="4.385742" x="88" y="47" w="10" h="11" page="0" />
-    </Glyph>
-    <Glyph char="111" images="1" advance="10.25684">
-      <Graphic offsetX="-1.191406" offsetY="4.385742" x="207" y="45" w="11" h="11" page="0" />
-    </Glyph>
-    <Glyph char="112" images="1" advance="10.25684">
-      <Graphic offsetX="-0.59375" offsetY="4.385742" x="232" y="16" w="10" h="14" page="0" />
-    </Glyph>
-    <Glyph char="113" images="1" advance="10.25684">
-      <Graphic offsetX="-1.041992" offsetY="4.385742" x="243" y="16" w="10" h="14" page="0" />
-    </Glyph>
-    <Glyph char="114" images="1" advance="10.25684">
-      <Graphic offsetX="-0.2333984" offsetY="4.385742" x="99" y="47" w="10" h="11" page="0" />
-    </Glyph>
-    <Glyph char="115" images="1" advance="10.25684">
-      <Graphic offsetX="-0.4003906" offsetY="4.385742" x="110" y="47" w="10" h="11" page="0" />
-    </Glyph>
-    <Glyph char="116" images="1" advance="10.25684">
-      <Graphic offsetX="-1.446289" offsetY="1.722656" x="143" y="16" w="11" h="14" page="0" />
-    </Glyph>
-    <Glyph char="117" images="1" advance="10.25684">
-      <Graphic offsetX="-0.59375" offsetY="4.543945" x="1" y="48" w="10" h="11" page="0" />
-    </Glyph>
-    <Glyph char="118" images="1" advance="10.25684">
-      <Graphic offsetX="-1.419922" offsetY="4.543945" x="157" y="45" w="12" h="11" page="0" />
-    </Glyph>
-    <Glyph char="119" images="1" advance="10.25684">
-      <Graphic offsetX="-1.674805" offsetY="4.543945" x="170" y="45" w="12" h="11" page="0" />
-    </Glyph>
-    <Glyph char="120" images="1" advance="10.25684">
-      <Graphic offsetX="-1.384766" offsetY="4.543945" x="219" y="45" w="11" h="11" page="0" />
-    </Glyph>
-    <Glyph char="121" images="1" advance="10.25684">
-      <Graphic offsetX="-1.481445" offsetY="4.543945" x="170" y="1" w="12" h="14" page="0" />
-    </Glyph>
-    <Glyph char="122" images="1" advance="10.25684">
-      <Graphic offsetX="-0.5585938" offsetY="4.543945" x="12" y="48" w="10" h="11" page="0" />
-    </Glyph>
-    <Glyph char="123" images="1" advance="10.25684">
-      <Graphic offsetX="-0.5761719" offsetY="0.6416016" x="30" y="1" w="9" h="18" page="0" />
-    </Glyph>
-    <Glyph char="124" images="1" advance="10.25684">
-      <Graphic offsetX="2.227539" offsetY="-1.02832" x="1" y="1" w="4" h="20" page="0" />
-    </Glyph>
-    <Glyph char="125" images="1" advance="10.25684">
-      <Graphic offsetX="0.01269531" offsetY="0.6416016" x="40" y="1" w="9" h="18" page="0" />
-    </Glyph>
-    <Glyph char="126" images="1" advance="10.25684">
-      <Graphic offsetX="-1.4375" offsetY="6.741211" x="157" y="57" w="12" h="5" page="0" />
+  <Glyphs Count="96">
+    <Glyph char="32" images="0" advance="10.44629" />
+    <Glyph char="33" images="2" advance="10.82666">
+      <Graphic offsetX="2.970703" offsetY="0.001953125" x="417" y="1" w="5" h="16" page="0" />
+      <Graphic offsetX="3.970703" offsetY="1.001953" x="10" y="23" w="3" h="14" page="0" />
+    </Glyph>
+    <Glyph char="34" images="2" advance="10.82666">
+      <Graphic offsetX="1.393555" offsetY="0.001953125" x="66" y="50" w="9" h="7" page="0" />
+      <Graphic offsetX="2.393555" offsetY="1.001953" x="126" y="50" w="7" h="5" page="0" />
+    </Glyph>
+    <Glyph char="35" images="2" advance="10.82666">
+      <Graphic offsetX="-0.6010742" offsetY="0.9853516" x="479" y="1" w="12" h="15" page="0" />
+      <Graphic offsetX="0.3989258" offsetY="1.985352" x="494" y="33" w="10" h="13" page="0" />
+    </Glyph>
+    <Glyph char="36" images="2" advance="10.82666">
+      <Graphic offsetX="0.02978516" offsetY="-0.7587891" x="90" y="1" w="11" h="19" page="0" />
+      <Graphic offsetX="1.029785" offsetY="0.2412109" x="205" y="1" w="9" h="17" page="0" />
+    </Glyph>
+    <Glyph char="37" images="2" advance="10.82666">
+      <Graphic offsetX="-0.8144531" offsetY="-0.1279297" x="215" y="1" w="13" h="16" page="0" />
+      <Graphic offsetX="0.1855469" offsetY="0.8720703" x="90" y="21" w="11" h="14" page="0" />
+    </Glyph>
+    <Glyph char="38" images="2" advance="10.82666">
+      <Graphic offsetX="-0.4711914" offsetY="0.2709961" x="229" y="1" w="13" h="16" page="0" />
+      <Graphic offsetX="0.5288086" offsetY="1.270996" x="102" y="21" w="11" h="14" page="0" />
+    </Glyph>
+    <Glyph char="39" images="2" advance="10.82666">
+      <Graphic offsetX="3.165527" offsetY="0.001953125" x="86" y="50" w="5" h="7" page="0" />
+      <Graphic offsetX="4.165527" offsetY="1.001953" x="507" y="47" w="3" h="5" page="0" />
+    </Glyph>
+    <Glyph char="40" images="2" advance="10.82666">
+      <Graphic offsetX="1.783203" offsetY="-0.703125" x="6" y="1" w="8" h="21" page="0" />
+      <Graphic offsetX="2.783203" offsetY="0.296875" x="102" y="1" w="6" h="19" page="0" />
+    </Glyph>
+    <Glyph char="41" images="2" advance="10.82666">
+      <Graphic offsetX="1.412109" offsetY="-0.703125" x="62" y="1" w="8" h="20" page="0" />
+      <Graphic offsetX="2.412109" offsetY="0.296875" x="109" y="1" w="6" h="19" page="0" />
+    </Glyph>
+    <Glyph char="42" images="2" advance="10.82666">
+      <Graphic offsetX="0.5214844" offsetY="0.001953125" x="267" y="48" w="10" h="11" page="0" />
+      <Graphic offsetX="1.521484" offsetY="1.001953" x="197" y="49" w="8" h="9" page="0" />
+    </Glyph>
+    <Glyph char="43" images="2" advance="10.82666">
+      <Graphic offsetX="-0.2207031" offsetY="3.592285" x="55" y="37" w="12" h="12" page="0" />
+      <Graphic offsetX="0.7792969" offsetY="4.592285" x="308" y="48" w="10" h="10" page="0" />
+    </Glyph>
+    <Glyph char="44" images="2" advance="10.82666">
+      <Graphic offsetX="1.208008" offsetY="10.12354" x="437" y="48" w="7" h="9" page="0" />
+      <Graphic offsetX="2.208008" offsetY="11.12354" x="92" y="50" w="5" h="7" page="0" />
+    </Glyph>
+    <Glyph char="45" images="2" advance="10.82666">
+      <Graphic offsetX="1.449219" offsetY="7.293945" x="156" y="50" w="8" h="4" page="0" />
+      <Graphic offsetX="2.449219" offsetY="8.293945" x="14" y="51" w="6" h="2" page="0" />
+    </Glyph>
+    <Glyph char="46" images="2" advance="10.82666">
+      <Graphic offsetX="2.608887" offsetY="10.18848" x="98" y="50" w="6" h="6" page="0" />
+      <Graphic offsetX="3.608887" offsetY="11.18848" x="206" y="49" w="4" h="4" page="0" />
+    </Glyph>
+    <Glyph char="47" images="2" advance="10.82666">
+      <Graphic offsetX="0.06689453" offsetY="0.001953125" x="130" y="1" w="11" h="18" page="0" />
+      <Graphic offsetX="1.066895" offsetY="1.001953" x="387" y="1" w="9" h="16" page="0" />
+    </Glyph>
+    <Glyph char="48" images="2" advance="10.82666">
+      <Graphic offsetX="-0.1835938" offsetY="0.8183594" x="492" y="1" w="12" h="15" page="0" />
+      <Graphic offsetX="0.8164063" offsetY="1.818359" x="213" y="34" w="10" h="13" page="0" />
+    </Glyph>
+    <Glyph char="49" images="2" advance="10.82666">
+      <Graphic offsetX="0.2524414" offsetY="0.9296875" x="228" y="18" w="11" h="15" page="0" />
+      <Graphic offsetX="1.252441" offsetY="1.929688" x="323" y="34" w="9" h="13" page="0" />
+    </Glyph>
+    <Glyph char="50" images="2" advance="10.82666">
+      <Graphic offsetX="0.3637695" offsetY="0.8183594" x="240" y="18" w="11" h="15" page="0" />
+      <Graphic offsetX="1.36377" offsetY="1.818359" x="333" y="34" w="9" h="13" page="0" />
+    </Glyph>
+    <Glyph char="51" images="2" advance="10.82666">
+      <Graphic offsetX="0.5214844" offsetY="0.8183594" x="128" y="20" w="10" h="15" page="0" />
+      <Graphic offsetX="1.521484" offsetY="1.818359" x="158" y="36" w="8" h="13" page="0" />
+    </Glyph>
+    <Glyph char="52" images="2" advance="10.82666">
+      <Graphic offsetX="-0.6010742" offsetY="0.9853516" x="423" y="17" w="12" h="15" page="0" />
+      <Graphic offsetX="0.3989258" offsetY="1.985352" x="224" y="34" w="10" h="13" page="0" />
+    </Glyph>
+    <Glyph char="53" images="2" advance="10.82666">
+      <Graphic offsetX="0.6513672" offsetY="0.9853516" x="139" y="20" w="10" h="15" page="0" />
+      <Graphic offsetX="1.651367" offsetY="1.985352" x="167" y="36" w="8" h="13" page="0" />
+    </Glyph>
+    <Glyph char="54" images="2" advance="10.82666">
+      <Graphic offsetX="0.1411133" offsetY="0.9853516" x="252" y="18" w="11" h="15" page="0" />
+      <Graphic offsetX="1.141113" offsetY="1.985352" x="343" y="34" w="9" h="13" page="0" />
+    </Glyph>
+    <Glyph char="55" images="2" advance="10.82666">
+      <Graphic offsetX="0.08544922" offsetY="0.9853516" x="264" y="18" w="11" h="15" page="0" />
+      <Graphic offsetX="1.085449" offsetY="1.985352" x="353" y="34" w="9" h="13" page="0" />
+    </Glyph>
+    <Glyph char="56" images="2" advance="10.82666">
+      <Graphic offsetX="0.1040039" offsetY="0.8183594" x="276" y="18" w="11" h="15" page="0" />
+      <Graphic offsetX="1.104004" offsetY="1.818359" x="363" y="34" w="9" h="13" page="0" />
+    </Glyph>
+    <Glyph char="57" images="2" advance="10.82666">
+      <Graphic offsetX="-0.07226563" offsetY="0.8183594" x="288" y="18" w="11" h="15" page="0" />
+      <Graphic offsetX="0.9277344" offsetY="1.818359" x="373" y="34" w="9" h="13" page="0" />
+    </Glyph>
+    <Glyph char="58" images="2" advance="10.82666">
+      <Graphic offsetX="2.803711" offsetY="3.629395" x="185" y="36" w="6" h="12" page="0" />
+      <Graphic offsetX="3.803711" offsetY="4.629395" x="81" y="37" w="4" h="10" page="0" />
+    </Glyph>
+    <Glyph char="59" images="2" advance="10.82666">
+      <Graphic offsetX="1.319336" offsetY="3.629395" x="205" y="19" w="7" h="15" page="0" />
+      <Graphic offsetX="2.319336" offsetY="4.629395" x="505" y="33" w="5" h="13" page="0" />
+    </Glyph>
+    <Glyph char="60" images="2" advance="10.82666">
+      <Graphic offsetX="0.2709961" offsetY="2.850098" x="235" y="34" w="10" h="13" page="0" />
+      <Graphic offsetX="1.270996" offsetY="3.850098" x="278" y="48" w="8" h="11" page="0" />
+    </Glyph>
+    <Glyph char="61" images="2" advance="10.82666">
+      <Graphic offsetX="0.2338867" offsetY="5.753906" x="54" y="50" w="11" h="7" page="0" />
+      <Graphic offsetX="1.233887" offsetY="6.753906" x="116" y="50" w="9" h="5" page="0" />
+    </Glyph>
+    <Glyph char="62" images="2" advance="10.82666">
+      <Graphic offsetX="0.9389648" offsetY="2.850098" x="246" y="34" w="10" h="13" page="0" />
+      <Graphic offsetX="1.938965" offsetY="3.850098" x="287" y="48" w="8" h="11" page="0" />
+    </Glyph>
+    <Glyph char="63" images="2" advance="10.82666">
+      <Graphic offsetX="1.811035" offsetY="0.001953125" x="397" y="1" w="9" h="16" page="0" />
+      <Graphic offsetX="2.811035" offsetY="1.001953" x="438" y="33" w="7" h="14" page="0" />
+    </Glyph>
+    <Glyph char="64" images="2" advance="10.82666">
+      <Graphic offsetX="-0.9165039" offsetY="-0.109375" x="15" y="1" w="13" h="20" page="0" />
+      <Graphic offsetX="0.08349609" offsetY="0.890625" x="142" y="1" w="11" h="18" page="0" />
+    </Glyph>
+    <Glyph char="65" images="2" advance="10.82666">
+      <Graphic offsetX="-0.9072266" offsetY="0.9853516" x="423" y="1" w="13" h="15" page="0" />
+      <Graphic offsetX="0.09277344" offsetY="1.985352" x="446" y="33" w="11" h="13" page="0" />
+    </Glyph>
+    <Glyph char="66" images="2" advance="10.82666">
+      <Graphic offsetX="0.4658203" offsetY="0.9853516" x="300" y="18" w="11" h="15" page="0" />
+      <Graphic offsetX="1.46582" offsetY="1.985352" x="383" y="34" w="9" h="13" page="0" />
+    </Glyph>
+    <Glyph char="67" images="2" advance="10.82666">
+      <Graphic offsetX="-0.1464844" offsetY="0.8369141" x="312" y="18" w="11" h="15" page="0" />
+      <Graphic offsetX="0.8535156" offsetY="1.836914" x="393" y="34" w="9" h="13" page="0" />
+    </Glyph>
+    <Glyph char="68" images="2" advance="10.82666">
+      <Graphic offsetX="0.01123047" offsetY="0.9853516" x="436" y="17" w="12" h="15" page="0" />
+      <Graphic offsetX="1.01123" offsetY="1.985352" x="257" y="34" w="10" h="13" page="0" />
+    </Glyph>
+    <Glyph char="69" images="2" advance="10.82666">
+      <Graphic offsetX="0.8647461" offsetY="0.9853516" x="150" y="20" w="10" h="15" page="0" />
+      <Graphic offsetX="1.864746" offsetY="1.985352" x="176" y="36" w="8" h="13" page="0" />
+    </Glyph>
+    <Glyph char="70" images="2" advance="10.82666">
+      <Graphic offsetX="0.9018555" offsetY="0.9853516" x="161" y="20" w="10" h="15" page="0" />
+      <Graphic offsetX="1.901855" offsetY="1.985352" x="14" y="37" w="8" h="13" page="0" />
+    </Glyph>
+    <Glyph char="71" images="2" advance="10.82666">
+      <Graphic offsetX="-0.3876953" offsetY="0.8183594" x="449" y="17" w="12" h="15" page="0" />
+      <Graphic offsetX="0.6123047" offsetY="1.818359" x="268" y="34" w="10" h="13" page="0" />
+    </Glyph>
+    <Glyph char="72" images="2" advance="10.82666">
+      <Graphic offsetX="0.02978516" offsetY="0.9853516" x="324" y="18" w="11" h="15" page="0" />
+      <Graphic offsetX="1.029785" offsetY="1.985352" x="403" y="34" w="9" h="13" page="0" />
+    </Glyph>
+    <Glyph char="73" images="2" advance="10.82666">
+      <Graphic offsetX="0.5957031" offsetY="0.9853516" x="172" y="20" w="10" h="15" page="0" />
+      <Graphic offsetX="1.595703" offsetY="1.985352" x="23" y="37" w="8" h="13" page="0" />
+    </Glyph>
+    <Glyph char="74" images="2" advance="10.82666">
+      <Graphic offsetX="0.6884766" offsetY="0.9853516" x="501" y="17" w="9" h="15" page="0" />
+      <Graphic offsetX="1.688477" offsetY="1.985352" x="204" y="35" w="7" h="13" page="0" />
+    </Glyph>
+    <Glyph char="75" images="2" advance="10.82666">
+      <Graphic offsetX="0.4472656" offsetY="0.9853516" x="336" y="18" w="11" h="15" page="0" />
+      <Graphic offsetX="1.447266" offsetY="1.985352" x="194" y="35" w="9" h="13" page="0" />
+    </Glyph>
+    <Glyph char="76" images="2" advance="10.82666">
+      <Graphic offsetX="1.161621" offsetY="0.9853516" x="183" y="20" w="10" h="15" page="0" />
+      <Graphic offsetX="2.161621" offsetY="1.985352" x="32" y="37" w="8" h="13" page="0" />
+    </Glyph>
+    <Glyph char="77" images="2" advance="10.82666">
+      <Graphic offsetX="-0.5454102" offsetY="0.9853516" x="462" y="17" w="12" h="15" page="0" />
+      <Graphic offsetX="0.4545898" offsetY="1.985352" x="279" y="34" w="10" h="13" page="0" />
+    </Glyph>
+    <Glyph char="78" images="2" advance="10.82666">
+      <Graphic offsetX="0.1040039" offsetY="0.9853516" x="348" y="18" w="11" h="15" page="0" />
+      <Graphic offsetX="1.104004" offsetY="1.985352" x="88" y="36" w="9" h="13" page="0" />
+    </Glyph>
+    <Glyph char="79" images="2" advance="10.82666">
+      <Graphic offsetX="-0.4711914" offsetY="0.8183594" x="475" y="17" w="12" h="15" page="0" />
+      <Graphic offsetX="0.5288086" offsetY="1.818359" x="290" y="34" w="10" h="13" page="0" />
+    </Glyph>
+    <Glyph char="80" images="2" advance="10.82666">
+      <Graphic offsetX="0.4658203" offsetY="0.9853516" x="360" y="18" w="11" h="15" page="0" />
+      <Graphic offsetX="1.46582" offsetY="1.985352" x="98" y="36" w="9" h="13" page="0" />
+    </Glyph>
+    <Glyph char="81" images="2" advance="10.82666">
+      <Graphic offsetX="-0.4711914" offsetY="0.8183594" x="116" y="1" w="13" h="18" page="0" />
+      <Graphic offsetX="0.5288086" offsetY="1.818359" x="282" y="1" w="11" h="16" page="0" />
+    </Glyph>
+    <Glyph char="82" images="2" advance="10.82666">
+      <Graphic offsetX="0.5771484" offsetY="0.9853516" x="372" y="18" w="11" h="15" page="0" />
+      <Graphic offsetX="1.577148" offsetY="1.985352" x="108" y="36" w="9" h="13" page="0" />
+    </Glyph>
+    <Glyph char="83" images="2" advance="10.82666">
+      <Graphic offsetX="0.02978516" offsetY="0.8183594" x="384" y="18" w="11" h="15" page="0" />
+      <Graphic offsetX="1.029785" offsetY="1.818359" x="118" y="36" w="9" h="13" page="0" />
+    </Glyph>
+    <Glyph char="84" images="2" advance="10.82666">
+      <Graphic offsetX="-0.2021484" offsetY="0.9853516" x="488" y="17" w="12" h="15" page="0" />
+      <Graphic offsetX="0.7978516" offsetY="1.985352" x="301" y="34" w="10" h="13" page="0" />
+    </Glyph>
+    <Glyph char="85" images="2" advance="10.82666">
+      <Graphic offsetX="0.01123047" offsetY="0.9853516" x="396" y="18" w="11" h="15" page="0" />
+      <Graphic offsetX="1.01123" offsetY="1.985352" x="128" y="36" w="9" h="13" page="0" />
+    </Glyph>
+    <Glyph char="86" images="2" advance="10.82666">
+      <Graphic offsetX="-0.9628906" offsetY="0.9853516" x="437" y="1" w="13" h="15" page="0" />
+      <Graphic offsetX="0.03710938" offsetY="1.985352" x="458" y="33" w="11" h="13" page="0" />
+    </Glyph>
+    <Glyph char="87" images="2" advance="10.82666">
+      <Graphic offsetX="-0.5825195" offsetY="0.9853516" x="215" y="18" w="12" h="15" page="0" />
+      <Graphic offsetX="0.4174805" offsetY="1.985352" x="312" y="34" w="10" h="13" page="0" />
+    </Glyph>
+    <Glyph char="88" images="2" advance="10.82666">
+      <Graphic offsetX="-0.8330078" offsetY="0.9853516" x="451" y="1" w="13" h="15" page="0" />
+      <Graphic offsetX="0.1669922" offsetY="1.985352" x="470" y="33" w="11" h="13" page="0" />
+    </Glyph>
+    <Glyph char="89" images="2" advance="10.82666">
+      <Graphic offsetX="-1" offsetY="0.9853516" x="465" y="1" w="13" h="15" page="0" />
+      <Graphic offsetX="0" offsetY="1.985352" x="482" y="33" w="11" h="13" page="0" />
+    </Glyph>
+    <Glyph char="90" images="2" advance="10.82666">
+      <Graphic offsetX="0.02978516" offsetY="0.9853516" x="408" y="18" w="11" h="15" page="0" />
+      <Graphic offsetX="1.029785" offsetY="1.985352" x="138" y="36" w="9" h="13" page="0" />
+    </Glyph>
+    <Glyph char="91" images="2" advance="10.82666">
+      <Graphic offsetX="2.200684" offsetY="-0.3227539" x="71" y="1" w="7" h="20" page="0" />
+      <Graphic offsetX="3.200684" offsetY="0.6772461" x="193" y="1" w="5" h="18" page="0" />
+    </Glyph>
+    <Glyph char="92" images="2" advance="10.82666">
+      <Graphic offsetX="0.484375" offsetY="0.001953125" x="154" y="1" w="11" h="18" page="0" />
+      <Graphic offsetX="1.484375" offsetY="1.001953" x="407" y="1" w="9" h="16" page="0" />
+    </Glyph>
+    <Glyph char="93" images="2" advance="10.82666">
+      <Graphic offsetX="1.671875" offsetY="-0.3227539" x="79" y="1" w="7" h="20" page="0" />
+      <Graphic offsetX="2.671875" offsetY="0.6772461" x="199" y="1" w="5" h="18" page="0" />
+    </Glyph>
+    <Glyph char="94" images="2" advance="10.82666">
+      <Graphic offsetX="0.1225586" offsetY="0.9853516" x="185" y="49" w="11" h="9" page="0" />
+      <Graphic offsetX="1.122559" offsetY="1.985352" x="76" y="50" w="9" h="7" page="0" />
+    </Glyph>
+    <Glyph char="95" images="2" advance="10.82666">
+      <Graphic offsetX="-1" offsetY="15.57861" x="142" y="50" w="13" h="4" page="0" />
+      <Graphic offsetX="0" offsetY="16.57861" x="171" y="50" w="11" h="2" page="0" />
+    </Glyph>
+    <Glyph char="96" images="2" advance="10.82666">
+      <Graphic offsetX="-1" offsetY="0.001953125" x="134" y="50" w="7" h="5" page="0" />
+      <Graphic offsetX="0" offsetY="1.001953" x="165" y="50" w="5" h="3" page="0" />
+    </Glyph>
+    <Glyph char="97" images="2" advance="10.82666">
+      <Graphic offsetX="0.2338867" offsetY="3.629395" x="472" y="47" w="11" h="12" page="0" />
+      <Graphic offsetX="1.233887" offsetY="4.629395" x="363" y="48" w="9" h="10" page="0" />
+    </Glyph>
+    <Glyph char="98" images="2" advance="10.82666">
+      <Graphic offsetX="0.484375" offsetY="0.001953125" x="294" y="1" w="11" h="16" page="0" />
+      <Graphic offsetX="1.484375" offsetY="1.001953" x="194" y="20" w="9" h="14" page="0" />
+    </Glyph>
+    <Glyph char="99" images="2" advance="10.82666">
+      <Graphic offsetX="0.4658203" offsetY="3.666504" x="496" y="47" w="10" h="12" page="0" />
+      <Graphic offsetX="1.46582" offsetY="4.666504" x="383" y="48" w="8" h="10" page="0" />
+    </Glyph>
+    <Glyph char="100" images="2" advance="10.82666">
+      <Graphic offsetX="0.01123047" offsetY="0.001953125" x="306" y="1" w="11" h="16" page="0" />
+      <Graphic offsetX="1.01123" offsetY="1.001953" x="48" y="22" w="9" h="14" page="0" />
+    </Glyph>
+    <Glyph char="101" images="2" advance="10.82666">
+      <Graphic offsetX="0.08544922" offsetY="3.629395" x="484" y="47" w="11" h="12" page="0" />
+      <Graphic offsetX="1.085449" offsetY="4.629395" x="373" y="48" w="9" h="10" page="0" />
+    </Glyph>
+    <Glyph char="102" images="2" advance="10.82666">
+      <Graphic offsetX="-1" offsetY="-0.109375" x="243" y="1" w="12" h="16" page="0" />
+      <Graphic offsetX="0" offsetY="0.890625" x="15" y="22" w="10" h="14" page="0" />
+    </Glyph>
+    <Glyph char="103" images="2" advance="10.82666">
+      <Graphic offsetX="-0.1279297" offsetY="3.629395" x="256" y="1" w="12" h="16" page="0" />
+      <Graphic offsetX="0.8720703" offsetY="4.629395" x="26" y="22" w="10" h="14" page="0" />
+    </Glyph>
+    <Glyph char="104" images="2" advance="10.82666">
+      <Graphic offsetX="0.484375" offsetY="0.001953125" x="354" y="1" w="10" h="16" page="0" />
+      <Graphic offsetX="1.484375" offsetY="1.001953" x="1" y="24" w="8" h="14" page="0" />
+    </Glyph>
+    <Glyph char="105" images="2" advance="10.82666">
+      <Graphic offsetX="0.5957031" offsetY="-0.109375" x="365" y="1" w="10" h="16" page="0" />
+      <Graphic offsetX="1.595703" offsetY="0.890625" x="420" y="33" w="8" h="14" page="0" />
+    </Glyph>
+    <Glyph char="106" images="2" advance="10.82666">
+      <Graphic offsetX="0.215332" offsetY="-0.109375" x="29" y="1" w="10" h="20" page="0" />
+      <Graphic offsetX="1.215332" offsetY="0.890625" x="166" y="1" w="8" h="18" page="0" />
+    </Glyph>
+    <Glyph char="107" images="2" advance="10.82666">
+      <Graphic offsetX="0.6884766" offsetY="0.001953125" x="318" y="1" w="11" h="16" page="0" />
+      <Graphic offsetX="1.688477" offsetY="1.001953" x="58" y="22" w="9" h="14" page="0" />
+    </Glyph>
+    <Glyph char="108" images="2" advance="10.82666">
+      <Graphic offsetX="0.5957031" offsetY="0.001953125" x="376" y="1" w="10" h="16" page="0" />
+      <Graphic offsetX="1.595703" offsetY="1.001953" x="429" y="33" w="8" h="14" page="0" />
+    </Glyph>
+    <Glyph char="109" images="2" advance="10.82666">
+      <Graphic offsetX="-0.1650391" offsetY="3.629395" x="68" y="37" w="12" h="12" page="0" />
+      <Graphic offsetX="0.8349609" offsetY="4.629395" x="319" y="48" w="10" h="10" page="0" />
+    </Glyph>
+    <Glyph char="110" images="2" advance="10.82666">
+      <Graphic offsetX="0.484375" offsetY="3.629395" x="212" y="48" w="10" h="12" page="0" />
+      <Graphic offsetX="1.484375" offsetY="4.629395" x="392" y="48" w="8" h="10" page="0" />
+    </Glyph>
+    <Glyph char="111" images="2" advance="10.82666">
+      <Graphic offsetX="-0.1464844" offsetY="3.629395" x="1" y="39" w="12" h="12" page="0" />
+      <Graphic offsetX="0.8535156" offsetY="4.629395" x="330" y="48" w="10" h="10" page="0" />
+    </Glyph>
+    <Glyph char="112" images="2" advance="10.82666">
+      <Graphic offsetX="0.484375" offsetY="3.629395" x="330" y="1" w="11" h="16" page="0" />
+      <Graphic offsetX="1.484375" offsetY="4.629395" x="68" y="22" w="9" h="14" page="0" />
+    </Glyph>
+    <Glyph char="113" images="2" advance="10.82666">
+      <Graphic offsetX="0.01123047" offsetY="3.629395" x="342" y="1" w="11" h="16" page="0" />
+      <Graphic offsetX="1.01123" offsetY="4.629395" x="78" y="22" w="9" h="14" page="0" />
+    </Glyph>
+    <Glyph char="114" images="2" advance="10.82666">
+      <Graphic offsetX="0.8647461" offsetY="3.629395" x="223" y="48" w="10" h="12" page="0" />
+      <Graphic offsetX="1.864746" offsetY="4.629395" x="401" y="48" w="8" h="10" page="0" />
+    </Glyph>
+    <Glyph char="115" images="2" advance="10.82666">
+      <Graphic offsetX="0.6884766" offsetY="3.629395" x="234" y="48" w="10" h="12" page="0" />
+      <Graphic offsetX="1.688477" offsetY="4.629395" x="410" y="48" w="8" h="10" page="0" />
+    </Glyph>
+    <Glyph char="116" images="2" advance="10.82666">
+      <Graphic offsetX="-0.4155273" offsetY="0.8183594" x="116" y="20" w="11" h="15" page="0" />
+      <Graphic offsetX="0.5844727" offsetY="1.818359" x="148" y="36" w="9" h="13" page="0" />
+    </Glyph>
+    <Glyph char="117" images="2" advance="10.82666">
+      <Graphic offsetX="0.484375" offsetY="3.796387" x="245" y="48" w="10" h="12" page="0" />
+      <Graphic offsetX="1.484375" offsetY="4.796387" x="419" y="48" w="8" h="10" page="0" />
+    </Glyph>
+    <Glyph char="118" images="2" advance="10.82666">
+      <Graphic offsetX="-0.3876953" offsetY="3.796387" x="446" y="47" w="12" h="12" page="0" />
+      <Graphic offsetX="0.6123047" offsetY="4.796387" x="341" y="48" w="10" h="10" page="0" />
+    </Glyph>
+    <Glyph char="119" images="2" advance="10.82666">
+      <Graphic offsetX="-0.6567383" offsetY="3.796387" x="41" y="37" w="13" h="12" page="0" />
+      <Graphic offsetX="0.3432617" offsetY="4.796387" x="296" y="48" w="11" h="10" page="0" />
+    </Glyph>
+    <Glyph char="120" images="2" advance="10.82666">
+      <Graphic offsetX="-0.3505859" offsetY="3.796387" x="459" y="47" w="12" h="12" page="0" />
+      <Graphic offsetX="0.6494141" offsetY="4.796387" x="352" y="48" w="10" h="10" page="0" />
+    </Glyph>
+    <Glyph char="121" images="2" advance="10.82666">
+      <Graphic offsetX="-0.4526367" offsetY="3.796387" x="269" y="1" w="12" h="16" page="0" />
+      <Graphic offsetX="0.5473633" offsetY="4.796387" x="37" y="22" w="10" h="14" page="0" />
+    </Glyph>
+    <Glyph char="122" images="2" advance="10.82666">
+      <Graphic offsetX="0.5214844" offsetY="3.796387" x="256" y="48" w="10" h="12" page="0" />
+      <Graphic offsetX="1.521484" offsetY="4.796387" x="428" y="48" w="8" h="10" page="0" />
+    </Glyph>
+    <Glyph char="123" images="2" advance="10.82666">
+      <Graphic offsetX="0.5029297" offsetY="-0.3227539" x="40" y="1" w="10" h="20" page="0" />
+      <Graphic offsetX="1.50293" offsetY="0.6772461" x="175" y="1" w="8" h="18" page="0" />
+    </Glyph>
+    <Glyph char="124" images="2" advance="10.82666">
+      <Graphic offsetX="3.462402" offsetY="-2.085449" x="1" y="1" w="4" h="22" page="0" />
+      <Graphic offsetX="4.462402" offsetY="-1.085449" x="87" y="1" w="2" h="20" page="0" />
+    </Glyph>
+    <Glyph char="125" images="2" advance="10.82666">
+      <Graphic offsetX="1.124512" offsetY="-0.3227539" x="51" y="1" w="10" h="20" page="0" />
+      <Graphic offsetX="2.124512" offsetY="0.6772461" x="184" y="1" w="8" h="18" page="0" />
+    </Glyph>
+    <Glyph char="126" images="2" advance="10.82666">
+      <Graphic offsetX="-0.40625" offsetY="6.115723" x="41" y="50" w="12" h="7" page="0" />
+      <Graphic offsetX="0.59375" offsetY="7.115723" x="105" y="50" w="10" h="5" page="0" />
     </Glyph>
     <Glyph char="127" images="0" advance="0" />
-    <Glyph char="128" images="0" advance="0" />
   </Glyphs>
 </BitmapFont>

@@ -145,10 +145,10 @@ chs.LinkButton = (function () {
     "use strict";
 
     var LinkButton = function (x1, y1, x2, y2, link, click, context) {
-        var l = (x1 >>> 0) + 0.5,
-            r = (x2 >>> 0) + 0.5,
-            t = (y1 >>> 0) + 0.5,
-            b = (y2 >>> 0) + 0.5,
+        var l = Math.floor(x1) + 0.5,
+            r = Math.floor(x2) + 0.5,
+            t = Math.floor(y1) + 0.5,
+            b = Math.floor(y2) + 0.5,
             h = b - t,
             w = r - l;
         chs.Line.call(this, 0, h, w, h, "lightblue", 1);

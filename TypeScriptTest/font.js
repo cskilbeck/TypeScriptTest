@@ -10,6 +10,7 @@ chs.Font = (function () {
         this.font = font;
         this.lineSpacing = 0;
         this.softLineSpacing = 0;
+        this.letterSpacing = 0;
     };
 
     //////////////////////////////////////////////////////////////////////
@@ -32,11 +33,37 @@ chs.Font = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    Font.prototype = {
+    Object.defineProperty(Font.prototype, "midPivot", {
+        get: function () {
+            return this.font.baseline / this.font.height / 2;
+        }
+    });
+
+    //////////////////////////////////////////////////////////////////////
+
+    Object.defineProperty(Font.prototype, "height", {
+        enumerable: true,
+        get: function () {
+            return this.font.height;
+        }
+    });
+
+    //////////////////////////////////////////////////////////////////////
+
+    Object.defineProperty(Font.prototype, "baseline", {
+        enumerable: true,
+        get: function () {
+            return this.font.baseline;
+        }
+    });
+
+    //////////////////////////////////////////////////////////////////////
+
+    return chs.override(Font, {
 
         //////////////////////////////////////////////////////////////////////
 
-        renderString: function (ctx, str, x, y, lineSpace, softLineSpace) {
+        renderString: function (ctx, str, x, y) {
             var l,
                 i,
                 layer,
@@ -48,8 +75,8 @@ chs.Font = (function () {
                 inLink = false,
                 escape = false,
                 skip = false,
-                ls = (lineSpace !== undefined) ? lineSpace : this.lineSpacing,
-                sls = (softLineSpace !== undefined) ? softLineSpace : this.softLineSpacing;
+                ls = this.lineSpacing,
+                sls = this.softLineSpacing;
             for (l = 0; l < this.font.layerCount; ++l) {
                 layer = this.font.Layers[l];
                 xc = x + layer.offsetX;
@@ -99,7 +126,7 @@ chs.Font = (function () {
         //////////////////////////////////////////////////////////////////////
         // just measure the top layer
 
-        measureText: function (str, lineSpace, softLineSpace, links) {
+        measureText: function (str, links) {
             var l = this.font.layerCount - 1,
                 maxWidth = 0,
                 w = 0,
@@ -115,8 +142,8 @@ chs.Font = (function () {
                 escape = false,
                 skip = false,
                 link = "",
-                sls = (softLineSpace !== undefined) ? softLineSpace : this.softLineSpacing,
-                ls = (lineSpace !== undefined) ? lineSpace : this.lineSpacing;
+                sls = this.softLineSpacing,
+                ls = this.lineSpacing;
 
             if (links !== undefined) {
                 links.length = 0;
@@ -179,17 +206,17 @@ chs.Font = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        wrapText: function (str, width, lineBreak, lineSpace, softLineSpace) {
+        wrapText: function (str, width, lineBreak) {
             var lastGood = 1,
                 i,
                 newGood,
                 newText;
-            while (this.measureText(str, lineSpace, softLineSpace).width >= width) {
+            while (this.measureText(str).width >= width) {
                 newGood = -1;
                 for (i = lastGood; i < str.length; ++i) {
                     if (str[i] === " ") {
                         newText = str.slice(0, i);
-                        if (this.measureText(newText, lineSpace, softLineSpace).width >= width) {
+                        if (this.measureText(newText).width >= width) {
                             break;
                         }
                         newGood = i;
@@ -207,29 +234,8 @@ chs.Font = (function () {
             }
             return str;
         }
-    };
-
-    //////////////////////////////////////////////////////////////////////
-
-    Object.defineProperty(Font.prototype, "height", {
-        enumerable: true,
-        get: function () {
-            return this.font.height;
-        }
     });
 
-    //////////////////////////////////////////////////////////////////////
-
-    Object.defineProperty(Font.prototype, "baseline", {
-        enumerable: true,
-        get: function () {
-            return this.font.baseline;
-        }
-    });
-
-    //////////////////////////////////////////////////////////////////////
-
-    return Font;
 }());
 
 //////////////////////////////////////////////////////////////////////

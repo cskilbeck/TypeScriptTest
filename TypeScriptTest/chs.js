@@ -1,4 +1,5 @@
 ﻿//////////////////////////////////////////////////////////////////////
+// Javascript OOP 101
 
 var chs = (function () {
     "use strict";
@@ -11,14 +12,14 @@ var chs = (function () {
             desc;
         names = Object.getOwnPropertyNames(proto);
         for (i = 0; i < names.length; ++i) {
-            if (names[i] in child.prototype && !force) {
+            if (names[i] in child && !force) {
                 continue;
             }
             desc = Object.getOwnPropertyDescriptor(proto, names[i]);
             if (typeof desc.value === "object") {
-                Object.defineProperty(child.prototype, names[i], desc.value);
+                Object.defineProperty(child, names[i], desc.value);
             } else {
-                Object.defineProperty(child.prototype, names[i], desc);
+                Object.defineProperty(child, names[i], desc);
             }
         }
     }
@@ -29,12 +30,19 @@ var chs = (function () {
         // need a way to call super.method()
 
         extend: function (child, parent) {
-            extendPrototype(child, parent.prototype, false);
+            extendPrototype(child.prototype, parent.prototype, false);
         },
 
         //////////////////////////////////////////////////////////////////////
 
         override: function (child, proto) {
+            extendPrototype(child.prototype, proto, true);
+            return child;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        overrideStatic: function (child, proto) {
             extendPrototype(child, proto, true);
             return child;
         }

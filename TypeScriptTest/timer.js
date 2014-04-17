@@ -7,39 +7,31 @@ chs.Timer = (function () {
 
     var currentTime,
         deltaTime,
+        Timer = {};
 
-    //////////////////////////////////////////////////////////////////////
+    return chs.overrideStatic(Timer, {
+        
+        init: function () {
+            currentTime = window.performance.now();
+        },
 
-        Timer = {
+        update: function () {
+            var now = window.performance.now();
+            deltaTime = now - currentTime;
+            currentTime = now;
+        },
 
-            init: function () {
-                currentTime = window.performance.now();
-            },
-
-            update: function () {
-                var now = window.performance.now();
-                deltaTime = now - currentTime;
-                currentTime = now;
+        time: {
+            get: function () {
+                return currentTime;
             }
+        },
 
-        };
-
-    //////////////////////////////////////////////////////////////////////
-
-    Object.defineProperty(Timer, "time", {
-        get: function () {
-            return currentTime;
+        delta: {
+            get: function () {
+                return deltaTime;
+            }
         }
     });
-
-    //////////////////////////////////////////////////////////////////////
-
-    Object.defineProperty(Timer, "delta", {
-        get: function () {
-            return deltaTime;
-        }
-    });
-
-    return Timer;
 
 }());

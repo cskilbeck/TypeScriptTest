@@ -160,65 +160,63 @@ chs.Mouse = (function () {
         active = new IMouse(),
         cur = active,
         events = [],
+        Mouse = {};
 
-        Mouse = {
+    return chs.overrideStatic(Mouse, {
 
-            init: function (canvasElement, screenElement) {
-                canvas = canvasElement;
-                screen = screenElement;
-                setMouseCapture(screen, canvas, active, events);
-            },
-            update: function (root) {
-                var e;
-                updateButton(active.left);
-                updateButton(active.right);
-                active.delta.x = active.position.x - old.x;
-                active.delta.y = active.position.y - old.y;
-                old.x = active.position.x;
-                old.y = active.position.y;
+        init: function (canvasElement, screenElement) {
+            canvas = canvasElement;
+            screen = screenElement;
+            setMouseCapture(screen, canvas, active, events);
+        },
 
-                while (events.length > 0) {
-                    e = events.shift();
-                    root.processMessage(e);
-                }
+        update: function (root) {
+            var e;
+            updateButton(active.left);
+            updateButton(active.right);
+            active.delta.x = active.position.x - old.x;
+            active.delta.y = active.position.y - old.y;
+            old.x = active.position.x;
+            old.y = active.position.y;
 
-            },
-            freeze: function () {
-                cur = frozen;
-            },
-            unfreeze: function () {
-                cur = active;
+            while (events.length > 0) {
+                e = events.shift();
+                root.processMessage(e);
             }
-        };
 
-    //////////////////////////////////////////////////////////////////////
+        },
 
-    Object.defineProperty(Mouse, "position", {
-        get: function () {
-            return cur.position;
+        freeze: function () {
+            cur = frozen;
+        },
+
+        unfreeze: function () {
+            cur = active;
+        },
+
+        position: {
+            get: function () {
+                return cur.position;
+            }
+        },
+
+        delta: {
+            get: function () {
+                return cur.delta;
+            }
+        },
+
+        left: {
+            get: function () {
+                return cur.left;
+            }
+        },
+
+        right: {
+            get: function () {
+                return cur.right;
+            }
         }
     });
-
-    Object.defineProperty(Mouse, "delta", {
-        get: function () {
-            return cur.delta;
-        }
-    });
-
-    Object.defineProperty(Mouse, "left", {
-        get: function () {
-            return cur.left;
-        }
-    });
-
-    Object.defineProperty(Mouse, "right", {
-        get: function () {
-            return cur.right;
-        }
-    });
-
-    //////////////////////////////////////////////////////////////////////
-
-    return Mouse;
 
 }());

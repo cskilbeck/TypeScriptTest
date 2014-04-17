@@ -91,6 +91,7 @@ Board = (function () {
             this.addChild(this.tiles[i]);
         }
         this.randomize(1);
+        this.beforeDrag = this.toString();
     }
 
     //////////////////////////////////////////////////////////////////////
@@ -219,13 +220,12 @@ Board = (function () {
         //////////////////////////////////////////////////////////////////////
 
         redo: function () {
-            this.undoPointer += 1;
-            if (this.undoPointer > this.undoStack.length - 1) {
-                this.undoPointer = this.undoStack.length - 1;
+            if (this.undoPointer < this.undoStack.length - 1) {
+                this.undoPointer += 1;
+                this.setFromString(this.undoStack[this.undoPointer]);
+                this.beforeDrag = this.toString();
+                this.markAllWords();
             }
-            this.setFromString(this.undoStack[this.undoPointer]);
-            this.beforeDrag = this.toString();
-            this.markAllWords();
         },
 
         //////////////////////////////////////////////////////////////////////

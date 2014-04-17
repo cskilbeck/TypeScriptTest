@@ -42,8 +42,8 @@ Tile = (function () {
                 index: 0,
                 position: 0
             };
-            this.label = new chs.Label(letter, font).setPivot(0.5, 0.5);
-            this.label.setPosition(this.width / 2 - 1, this.height / 2 + 6);
+            this.label = new chs.Label(letter, font).setPivot(0.5, font.baseline / font.height / 2);
+            this.label.setPosition(this.width / 2 - 1, this.height / 2);
             this.addChild(this.label);
         };
 

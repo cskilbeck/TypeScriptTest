@@ -81,7 +81,6 @@ chs.Mouse = (function () {
             }
             event = fixupMouseEvent(event);
             p = relMouseCoords(canvas, event);
-            chs.Debug.print("DOWN", event.which);
             switch (event.which) {
             case 1:
                 mouse.left.held = true;
@@ -98,7 +97,6 @@ chs.Mouse = (function () {
         addListener(element, "mouseup", function (event) {
             var p;
             event = fixupMouseEvent(event);
-            chs.Debug.print("UP", event.which);
             p = relMouseCoords(canvas, event);
             switch (event.which) {
             case 1:
@@ -181,7 +179,6 @@ chs.Mouse = (function () {
 
                 while (events.length > 0) {
                     e = events.shift();
-                    chs.Debug.print(e.position.x, e.position.y, e.type);
                     root.processMessage(e);
                 }
 

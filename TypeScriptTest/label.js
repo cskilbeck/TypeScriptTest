@@ -40,10 +40,10 @@ chs.Label = (function () {
 
     return chs.override(Label, {
 
-        size: function (links) {
+        size: function () {
             var self = this.labelData;
             if (self.dimensions === null) {
-                self.dimensions = self.font.measureText(self.text, self.lineSpace, self.softLineSpace, links);
+                self.dimensions = self.font.measureText(self.text, self.lineSpace, self.softLineSpace);
             }
             return self.dimensions;
         },
@@ -60,30 +60,52 @@ chs.TextBox = (function () {
     "use strict";
 
     var TextBox = function (x, y, w, h, text, font, lineBreak, lineSpace, softLineSpace, linkClicked, context) {
-        var str = font.wrapText(text, w, lineBreak, lineSpace, softLineSpace),
-            links = [],
-            link,
-            linkClickedCallback = function (link) {
-                if (this.linkClicked !== undefined) {
-                    this.linkClicked.call(context, link);
-                }
-            };
-        chs.Label.call(this, str, font, lineSpace, softLineSpace);
+        chs.Label.call(this, text, font, lineSpace, softLineSpace);
+        this.context = context;
         this.setPosition(x, y);
         this.dimensions = { width: w, height: h };
         this.linkClicked = linkClicked;
-        font.measureText(str, lineSpace, softLineSpace, links);
-        while (links.length > 0) {
-            link = new chs.LinkButton(links.shift(), links.shift() - 2, links.shift(), links.shift() - 2, links.shift(), linkClickedCallback, this);
-            link.transparency = 192;
-            this.addChild(link);
+        this.lineBreak = lineBreak;
+        this.text = text;
+    };
+
+    TextBox.linkClickedCallback = function (link) {
+        if (this.linkClicked !== undefined) {
+            this.linkClicked.call(this.context, link);
         }
     };
+
+    Object.defineProperty(TextBox.prototype, "text", {
+        set: function (s) {
+            var links = [],
+                link,
+                self = this.labelData;
+            self.text = self.font.wrapText(s, this.width, this.lineBreak, self.lineSpace, self.softLineSpace);
+            self.font.measureText(self.text, self.lineSpace, self.softLineSpace, links);
+            this.removeChildren();
+            while (links.length > 0) {
+                link = new chs.LinkButton(links.shift(),
+                    links.shift() - 2,
+                    links.shift(),
+                    links.shift() - 2,
+                    links.shift(),
+                    TextBox.linkClickedCallback,
+                    this);
+                link.transparency = 192;
+                this.addChild(link);
+            }
+        },
+        get: function (s) {
+            return this.labelData.text;
+        }
+    });
 
     chs.extend(TextBox, chs.Label);
 
     return chs.override(TextBox, {
-
+        size: function () {
+            return this.dimensions;
+        }
     });
 
 }());

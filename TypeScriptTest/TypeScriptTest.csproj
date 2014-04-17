@@ -54,6 +54,7 @@
     <Content Include="textbutton.js" />
     <Content Include="timer.js" />
     <Content Include="util.js" />
+    <Content Include="window.js" />
     <Content Include="word.js" />
     <Content Include="loader.js" />
     <Content Include="web.config" />

@@ -1,4 +1,6 @@
-﻿var chs = (function () {
+﻿//////////////////////////////////////////////////////////////////////
+
+var chs = (function () {
     "use strict";
 
     //////////////////////////////////////////////////////////////////////
@@ -22,10 +24,7 @@
         //////////////////////////////////////////////////////////////////////
         // need a way to call super.method()
 
-        extend: function (child, parent, proto) {
-            if (proto !== undefined) {
-                extendPrototype(child, proto, false);
-            }
+        extend: function (child, parent) {
             extendPrototype(child, parent.prototype, false);
         },
 

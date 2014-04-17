@@ -6,11 +6,11 @@ chs.Font = (function () {
     //////////////////////////////////////////////////////////////////////
 
     var Font = function (font, page) {
-            this.page = page;
-            this.font = font;
-            this.lineSpacing = 0;
-            this.softLineSpacing = 0;
-        };
+        this.page = page;
+        this.font = font;
+        this.lineSpacing = 0;
+        this.softLineSpacing = 0;
+    };
 
     //////////////////////////////////////////////////////////////////////
 
@@ -215,6 +215,15 @@ chs.Font = (function () {
         enumerable: true,
         get: function () {
             return this.font.height;
+        }
+    });
+
+    //////////////////////////////////////////////////////////////////////
+
+    Object.defineProperty(Font.prototype, "baseline", {
+        enumerable: true,
+        get: function () {
+            return this.font.baseline;
         }
     });
 

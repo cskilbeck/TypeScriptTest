@@ -22,6 +22,7 @@ chs.Drawable = (function () {
             matrix: chs.Matrix.identity(),
             pickMatrix: chs.Matrix.identity(),
             globalMatrix: chs.Matrix.identity(),
+            mouseCapture: false,
             parent: null,
             closed: false,
             modal: false,
@@ -102,27 +103,29 @@ chs.Drawable = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        onLoaded: function () {
+        onLoaded: function (loader) {
             return;
         },
 
         //////////////////////////////////////////////////////////////////////
 
-        processMessage: function (e) {
+        processMessage: function (e, capture) {
             var self = this.drawableData,
-                c;
+                c,
+                p,
+                mp,
+                bp;
             // kids get first dibs
+            capture = capture || self.mouseCapture;
             for (c = self.children.tailNode() ; c !== self.children.end() ; c = c.prev) {
-                if (c.item.processMessage(e) || c.item.modal) {
+                if (c.item.processMessage(e, capture) || c.item.modal) {
                     return true;
                 }
             }
             if (this.visible) {
-                if (this.pick(e.position, 0)) {
-                    if (!self.mouseIsOver) {
-                        self.mouseIsOver = true;
-                        this.onMouseEnter(e);
-                    }
+                p = this.pick(e.position, 0);
+                mp = capture || p;
+                if (p || self.mouseCapture) {
                     switch (e.type) {
                     case chs.Event.leftMouseDown:
                         return this.onLeftMouseDown(e);
@@ -132,16 +135,17 @@ chs.Drawable = (function () {
                         return this.onLeftMouseUp(e);
                     case chs.Event.rightMouseUp:
                         return this.onRightMouseUp(e);
-                    case chs.Event.mouseMove:
-                        return this.onMouseMove(e);
                     }
-                } else {
-                    if (e.type === chs.Event.mouseMove) {
-                        if (self.mouseIsOver) {
-                            this.onMouseLeave(e);
-                            self.mouseIsOver = false;
-                        }
+                    if (!self.mouseIsOver) {
+                        self.mouseIsOver = true;
+                        this.onMouseEnter(e);
                     }
+                } else if (!p && self.mouseIsOver) {
+                    this.onMouseLeave(e);
+                    self.mouseIsOver = false;
+                }
+                if (mp && e.type === chs.Event.mouseMove) {
+                    return this.onMouseMove(e);
                 }
             }
             return false;
@@ -149,12 +153,12 @@ chs.Drawable = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        loaded: function () {
+        loaded: function (loader) {
             var self = this.drawableData,
                 c;
-            this.onLoaded();
+            this.onLoaded(loader);
             for (c = self.children.begin() ; c !== self.children.end() ; c = c.next) {
-                c.item.loaded();
+                c.item.loaded(loader);
             }
         },
 
@@ -293,6 +297,12 @@ chs.Drawable = (function () {
             s = { x: self.scale.x * self.drawScale.x, y: self.scale.y * self.drawScale.y };
             self.matrix = chs.Matrix.identity().translate(self.position).rotate(self.rotation).scale(s).translate(p);
             self.dirty = false;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        setCapture: function (f) {
+            this.drawableData.mouseCapture = f;
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -460,6 +470,16 @@ chs.Drawable = (function () {
         },
         get: function () {
             return this.drawableData.myZindex;
+        }
+    });
+
+    //////////////////////////////////////////////////////////////////////
+
+    Object.defineProperty(Drawable.prototype, "parent", {
+        configurable: false,
+        enumerable: true,
+        get: function () {
+            return this.drawableData.parent;
         }
     });
 

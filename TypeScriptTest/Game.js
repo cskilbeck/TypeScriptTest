@@ -1,16 +1,11 @@
 ﻿//////////////////////////////////////////////////////////////////////
-// Mouse Events
 // Font Layer Mask
-// TextBox
-// Undo/Redo/SaveBest
+// Undo/Redo/Save/Personal Best
 // Title screen
 // Mobile: Android/Chrome, iOS/Safari, Windows Phone: IE // Touch Support
 // Fix tile grabbing/moving/swapping/lerping
 // Flying scores/fizz/particles
 // OAuth/AWS/Leaderboards
-// Font: embedded control characters
-// Drawable: Window, TextBox (scrollable, links, stack etc)
-// Panel: rounded corners, outline
 //////////////////////////////////////////////////////////////////////
 
 var Game = (function () {
@@ -18,14 +13,15 @@ var Game = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    var consolas,
+    var loader,
+        consolas,
         arial,
         words,
         wordButton,
         score,
-        button,
         board,
         menuButton,
+
         //dummyDef = "jksldh fjklsdh fklsdh fkljsdh flkjsdh flkj lksdj fklsdj flksdj flksdj flksdj flksdj " +
         //    "flskdjf lskdjf lsdkfj\njkh fdkjdsh fksjdfh kjsdhf\nsjkdhf kjsdh fkjsdh fkjsdhf ksjdhf\n" +
         //    "jkh fdkjdsh fksjdfh kjsdhf\nsjkdhf kjsdh fkjsdh fkjsdhf ksjdhf\njkh fdkjdsh fksjdfh kjsdhf\nsjkdhf kjsdh" +
@@ -41,28 +37,25 @@ var Game = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-        Game = function (loader) {
+        Game = function () {
             chs.Drawable.call(this);
+            this.dimensions = { width: 800, height: 600 };
+            loader = new chs.Loader('img/');
             wordButton = loader.load("wordbutton.png");
             consolas = chs.Font.load("Consolas", loader);
             arial = chs.Font.load("Arial", loader);
-
             Dictionary.init(loader.load("dictionary.json"));
-
+            loader.load("allColour.png");
             words = new chs.Drawable();
             this.addChild(words);
-
             this.addChild(new chs.SpriteButton(loader.load("undo.png"), "scale", 580, 490, this.undo, null));
             this.addChild(new chs.SpriteButton(loader.load("redo.png"), "scale", 620, 490, this.redo, null));
-
             menuButton = new chs.FancyTextButton("Menu", consolas, 730, 505, 100, 40).setPivot(0.5, 0.5);
             this.addChild(menuButton);
-
             score = new chs.Label("Score: 0", consolas).setPosition(690, 11);
             this.addChild(score);
-
-            board = new Board(loader);
-            this.addChild(board);
+            chs.desktop.addChild(loader);
+            loader.start(this.loadComplete, this);
         };
 
     //////////////////////////////////////////////////////////////////////
@@ -73,8 +66,11 @@ var Game = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        onLoaded: function () {
-            board.randomize(1);
+        loadComplete: function (loader) {
+            board = new Board(loader);
+            this.addChild(board);
+            chs.desktop.removeChild(loader);
+            chs.desktop.addChild(this);
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -96,36 +92,35 @@ var Game = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
+        showDefinition: function (w) {
+            var def = Dictionary.getDefinition(w.str),
+                window,
+                scoreLabel,
+                textBox;
+            window = new chs.Window(80, 60, 640, 480, w.str.toUpperCase(), arial, 16, 0.75);
+            window.modal = true;
+            scoreLabel = new chs.Label(w.score.toString() + " points", consolas);
+            textBox = new chs.TextBox(16, 16, 640 - 32, 480 - 32, def, consolas, '\r    ', 10, 2, function (link) {
+                this.text = link.toUpperCase();
+                textBox.text = Dictionary.getDefinition(link);
+                scoreLabel.text = Board.getWordScore(link).toString() + " points";
+            }, window);
+            scoreLabel.setPosition(window.titleBar.width - 16, window.titleBar.height / 2 - 2);
+            scoreLabel.setPivot(1, consolas.baseline / consolas.height / 2)
+            window.titleBar.addChild(scoreLabel);
+            window.client.addChild(textBox);
+            this.addChild(window);
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
         onUpdate: function (deltaTime) {
             var y = 50;
             if (board.changed) {
                 words.removeChildren();
                 board.wordList().forEach(function (w) {
-                    button = new chs.SpriteButton(wordButton, "scale", 736, y, function () {
-                        var def = Dictionary.getDefinition(w.str),
-                        //var def = dummyDef,
-                            i,
-                            clip,
-                            wordLabel,
-                            scoreLabel,
-                            panel = new chs.PanelButton(80, 60, 640, 480, 'black', undefined, 20, 0, function () {
-                                this.close();
-                            });
-                        panel.modal = true;
-                        panel.transparency = 224;
-                        clip = new chs.ClipRect(0, 0, 640, 480, 20);
-                        wordLabel = new chs.Label(w.str.toUpperCase(), arial).setPosition(16, 14).setScale(0.75);
-                        scoreLabel = new chs.Label(w.score.toString() + " points", consolas).setPosition(620, 22).setPivot(1, 0);
-                        clip.addChild(new chs.Panel(0, 0, 640, 54, 'darkgrey', undefined, 0));
-                        clip.addChild(wordLabel);
-                        clip.addChild(scoreLabel);
-                        clip.addChild(new chs.TextBox(16, 68, 600, 480 - 68, def, consolas, '\r    ', 10, 2, function (link) {
-                            console.log(link);
-                        }, panel));
-                        panel.addChild(clip);
-                        panel.addChild(new chs.Line(0, 54, 640, 54, 'white', 4));
-                        panel.addChild(new chs.Panel(0, 0, 640, 480, undefined, "white", 20, 4));
-                        this.addChild(panel);
+                    var button = new chs.SpriteButton(wordButton, "scale", 736, y, function () {
+                        this.showDefinition(w);
                     }, this);
                     button.setPivot(0.5, 0.5);
                     button.addChild(new chs.Label(w.str, consolas).setPosition(7, button.height / 2).setPivot(0, 0.5));
@@ -139,6 +134,7 @@ var Game = (function () {
             }
             menuButton.rotation = chs.Timer.time / 1000;
         }
+
     });
 
 }());

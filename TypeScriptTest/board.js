@@ -40,18 +40,6 @@ Board = (function () {
         foundWords = new chs.List("listNode");
 
     //////////////////////////////////////////////////////////////////////
-    // Get the score for a word
-
-    function getScore(str) {
-        var s = 0,
-            i;
-        for (i = 0; i < str.length; ++i) {
-            s += letters[str.charCodeAt(i) - asciiA].score;
-        }
-        return s * str.length;
-    }
-
-    //////////////////////////////////////////////////////////////////////
     // Get a random letter from the distribution table
 
     function randomLetter(random) {
@@ -62,7 +50,7 @@ Board = (function () {
     // static initialization
 
     // init the distribution table
-    function initLetterDistributionTable() {
+    (function () {
         var i,
             j;
         for (i = 0; i < letters.length; ++i) {
@@ -70,11 +58,10 @@ Board = (function () {
                 distribution.push(String.fromCharCode(i + asciiA));
             }
         }
-    }
-
-    initLetterDistributionTable();
+    }());
 
     //////////////////////////////////////////////////////////////////////
+    // loader must be complete before this is called
 
     function Board(loader) {
         var arial = chs.Font.load("Arial", loader),
@@ -100,7 +87,19 @@ Board = (function () {
             this.tiles[i] = new Tile(tilesPage, arial, "A", i % this.tileWidth, (i / this.tileWidth) >>> 0);
             this.addChild(this.tiles[i]);
         }
+        this.randomize(1);
     }
+
+    //////////////////////////////////////////////////////////////////////
+
+    Board.getWordScore = function (str) {
+        var s = 0,
+            i;
+        for (i = 0; i < str.length; ++i) {
+            s += letters[str.charCodeAt(i) - asciiA].score;
+        }
+        return s * str.length;
+    };
 
     //////////////////////////////////////////////////////////////////////
 
@@ -307,7 +306,7 @@ Board = (function () {
                             m += offset;
                         }
                         if (Dictionary.isWord(str)) {
-                            foundWords.pushBack(new Word(str, x, y, orientation, getScore(str)));
+                            foundWords.pushBack(new Word(str, x, y, orientation, Board.getWordScore(str)));
                         }
                     }
                 }

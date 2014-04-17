@@ -6,15 +6,16 @@ chs.Loader = (function () {
     //////////////////////////////////////////////////////////////////////
 
     var Loader = function (baseDir) {
-            this.baseDir = baseDir;
-            this.items = {};
-            this.context = null;
-            this.completion = null;
-        },
+        chs.Drawable.call(this);
+        this.baseDir = baseDir;
+        this.items = {};
+        this.context = null;
+        this.callback = null;
+    },
 
     //////////////////////////////////////////////////////////////////////
 
-        Item = function (url, callback, context, data) {
+        Item = function (url, callback, context, data, loader) {
             this.url = url;
             this.size = null;
             this.bytesReceived = 0;
@@ -22,6 +23,7 @@ chs.Loader = (function () {
             this.context = context;
             this.data = data;
             this.loaded = false;
+            this.loader = loader;
             this.inProgress = false;
             this.binary = undefined;
             this.started = false;
@@ -58,27 +60,25 @@ chs.Loader = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    Item.prototype.load = function () {
-        if (!this.started) {
-            this.started = true;
-            chs.ajax.get(this.url, Item.onLoaded, Item.onProgress, this, this.binary);
+    Item.prototype = {
+
+        load: function () {
+            if (!this.started) {
+                this.started = true;
+                chs.ajax.get(this.url, Item.onLoaded, Item.onProgress, this, this.binary);
+            }
+        },
+        doCallback: function () {
+            if (this.callback != null) {
+                this.callback.call(this.context, this.object);
+            }
+        },
+        onComplete: function () {
+            this.inProgress = true;
+            this.doCallback();
+            this.loaded = true;
+            this.loader.itemLoaded(this);
         }
-    };
-
-    //////////////////////////////////////////////////////////////////////
-
-    Item.prototype.doCallback = function () {
-        if (this.callback != null) {
-            this.callback.call(this.context, this.object);
-        }
-    };
-
-    //////////////////////////////////////////////////////////////////////
-
-    Item.prototype.onComplete = function () {
-        this.inProgress = true;
-        this.doCallback();
-        this.loaded = true;
     };
 
     //////////////////////////////////////////////////////////////////////
@@ -130,7 +130,9 @@ chs.Loader = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    Loader.prototype = {
+    chs.extend(Loader, chs.Drawable);
+
+    return chs.override(Loader, {
 
         //////////////////////////////////////////////////////////////////////
 
@@ -161,66 +163,45 @@ chs.Loader = (function () {
         },
 
         //////////////////////////////////////////////////////////////////////
+        // use debug output for now...
 
-        doLoad: function () {
+        onUpdate: function () {
             var i,
-                x = 50,
-                y = 50,
-                yy,
                 item,
-                recvd,
-                total,
-                percent,
-                context = this.context;
-            if (!this.complete()) {
-                context.setTransform(1, 0, 0, 1, 0, 0);
-                context.globalCompositeOperation = 'copy';
-                context.fillStyle = 'darkgrey';
-                context.fillRect(0, 0, context.canvas.width, context.canvas.height);
-                context.globalCompositeOperation = 'source-over';
-                context.globalAlpha = 1;
-                context.strokeStyle = 'white';
-                context.fillStyle = 'white';
-                context.lineWidth = 1;
-                context.font = "20px Arial";
-                context.fontBaseLine = 'top';
-                context.fillText("Loading... " + this.percentComplete().toFixed(2) + "%", x, y);
-                context.fillStyle = 'orange';
-                context.strokeRect(x, y + 25, 400, 20);
-                context.fillRect(x, y + 26, this.percentComplete() * 3.98, 18);
-                context.font = '15px Arial';
-                context.fontBaseLine = 'middle';
-                yy = y + 50;
-                for (i in this.items) {
-                    item = this.items[i];
-                    if (!item.loaded) {
-                        recvd = item.bytesReceived;
-                        total = item.size || recvd;
-                        percent = recvd * 100 / total;
-                        context.strokeRect(x, yy, 102, 22);
-                        context.fillStyle = 'white';
-                        context.fillRect(x + 1, yy + 1, percent, 20);
-                        context.fillStyle = item.inProgress ? 'white' : 'black';
-                        context.fillText(item.url + " : " + recvd.toString() + " of " + total.toString(), x + 110, yy + 12);
-                        yy += 25;
-                    }
+                s;
+            chs.Debug.print("\n Loading, " + this.percentComplete().toFixed(2) + "% complete...\n\n");
+            for (i in this.items) {
+                item = this.items[i];
+                s = item.bytesReceived.toString();
+                while (s.length < 20) {
+                    s = " " + s;
                 }
-                requestAnimFrame(this.doLoad.bind(this));
-            } else {
-                this.completion.call();
+                chs.Debug.print(s + ": " + item.url + "\n");
             }
         },
 
         //////////////////////////////////////////////////////////////////////
 
-        start: function (context, complete) {
+        start: function (callback, context) {
             var i;
             for (i in this.items) {
                 this.items[i].load();
             }
+            this.callback = callback;
             this.context = context;
-            this.completion = complete;
-            this.doLoad();
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        itemLoaded: function (item) {
+            if (this.complete()) {
+                if (this.parent !== null) {
+                    this.parent.loaded(this);
+                }
+                if (this.callback !== null) {
+                    this.callback.call(this.context, this);
+                }
+            }
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -231,12 +212,11 @@ chs.Loader = (function () {
             if (item !== null) {
                 item.doCallback();
             } else {
-                item = new Item(url, callback, context, data);
+                item = new Item(url, callback, context, data, this);
                 this.items[url] = item;
             }
             return item.object;
         }
-    };
+    });
 
-    return Loader;
 }());

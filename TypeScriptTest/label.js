@@ -12,7 +12,7 @@ chs.Label = (function () {
         };
     };
 
-    return chs.extend(Label, chs.Drawable, {
+    return chs.extend(chs.Drawable, Label, {
 
         text: {
             configurable: true,
@@ -72,7 +72,7 @@ chs.TextBox = (function () {
             }
         };
 
-    return chs.extend(TextBox, chs.Label, {
+    return chs.extend(chs.Label, TextBox, {
 
         size: function () {
             return this.dimensions;

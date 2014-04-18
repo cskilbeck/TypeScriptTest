@@ -31,9 +31,7 @@ chs.MouseEvent = (function () {
         this.position = pos;
     };
 
-    chs.extend(MouseEvent, chs.Event);
-
-    return chs.override(MouseEvent, {
+    return chs.extend(chs.Event, MouseEvent, {
         x: {
             get: function () {
                 return this.position.x;

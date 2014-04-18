@@ -64,6 +64,7 @@ chs.Button = (function () {
                 switch (s) {
                 case Button.idle:
                     this.onIdle();
+                    this.drawableData.mouseIsOver = false;
                     break;
                 case Button.hover:
                     this.onHover();

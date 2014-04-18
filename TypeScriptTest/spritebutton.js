@@ -12,9 +12,9 @@ chs.SpriteButton = (function () {
         this.origin = { x: x, y: y };
     };
 
-    chs.extend(SpriteButton, chs.Button);
+    chs.extend(chs.Button, SpriteButton);
 
-    return chs.extend(SpriteButton, chs.Sprite, {
+    return chs.extend(chs.Sprite, SpriteButton, {
 
         onIdle: function () {
             switch (this.type) {

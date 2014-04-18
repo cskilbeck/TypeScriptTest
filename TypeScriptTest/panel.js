@@ -11,7 +11,7 @@ chs.Rectangle = (function () {
         this.radius = radius;
     };
 
-    return chs.extend(Rectangle, chs.Drawable, {
+    return chs.extend(chs.Drawable, Rectangle, {
 
         width: {
             set: function (w) {
@@ -47,7 +47,7 @@ chs.ClipRect = (function () {
         chs.Rectangle.call(this, x, y, w, h, radius);
     };
     
-    return chs.extend(ClipRect, chs.Rectangle, {
+    return chs.extend(chs.Rectangle, ClipRect, {
 
         onDraw: function (context) {
             chs.Rectangle.prototype.onDraw.call(this, context);
@@ -72,7 +72,7 @@ chs.Panel = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    return chs.extend(Panel, chs.Rectangle, {
+    return chs.extend(chs.Rectangle, Panel, {
 
         onDraw: function (context) {
             chs.Rectangle.prototype.onDraw.call(this, context);
@@ -106,7 +106,7 @@ chs.Line = (function () {
         this.lineWidth = width;
     };
 
-    return chs.extend(Line, chs.Drawable, {
+    return chs.extend(chs.Drawable, Line, {
 
         onDraw: function (context) {
             context.beginPath();
@@ -130,8 +130,8 @@ chs.PanelButton = (function () {
         chs.Button.call(this, click, context);
     };
 
-    chs.extend(PanelButton, chs.Button);
-    chs.extend(PanelButton, chs.Panel);
+    chs.extend(chs.Button, PanelButton);
+    chs.extend(chs.Panel, PanelButton);
 
     return PanelButton;
 
@@ -164,9 +164,9 @@ chs.LinkButton = (function () {
             this.dimensions = { width: w, height: h };
         };
 
-    chs.extend(LinkButton, chs.Button);
+    chs.extend(chs.Button, LinkButton);
 
-    return chs.extend(LinkButton, chs.Line, {
+    return chs.extend(chs.Line, LinkButton, {
         onIdle: function () { this.colour = "lightblue"; },
         onHover: function () { this.colour = "cyan"; },
         onPressed: function () { this.colour = "red"; }

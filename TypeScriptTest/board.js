@@ -38,7 +38,15 @@ Board = (function () {
         asciiA = "a".charCodeAt(0),
         distribution = [],
         undoMax = 1000,
-        foundWords = new chs.List("listNode");
+        foundWords = new chs.List("listNode"),
+        clickedTile,
+        snapX,
+        snapY,
+        tileX,
+        tileY,
+        newSwapTile,
+        y;
+
 
     //////////////////////////////////////////////////////////////////////
     // Get a random letter from the distribution table
@@ -64,7 +72,7 @@ Board = (function () {
     //////////////////////////////////////////////////////////////////////
     // loader must be complete before this is called
 
-    function Board() {
+    function Board(game) {
         var i;
 
         chs.Drawable.call(this);
@@ -88,7 +96,7 @@ Board = (function () {
         this.tiles.length = this.tileWidth * this.tileHeight;
         for (i = 0; i < this.tiles.length; ++i) {
             this.tiles[i] = new Tile("A", i % this.tileWidth, (i / this.tileWidth) >>> 0);
-            this.addChild(this.tiles[i]);
+            game.addChild(this.tiles[i]);
         }
     }
 
@@ -105,9 +113,7 @@ Board = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.extend(Board, chs.Drawable);
-
-    return chs.override(Board, {
+    return chs.extend(chs.Drawable, Board, {
 
         //////////////////////////////////////////////////////////////////////
 
@@ -141,6 +147,9 @@ Board = (function () {
             while (this.markAllWords() !== 0) {
                 this.getWordTile(this.words.head(), 0).letter = randomLetter(this.random);
             }
+            this.undoStack = [];
+            this.undoPointer = 0;
+            this.undoLength = 0;
             this.beforeDrag = this.toString();
         },
 
@@ -229,80 +238,78 @@ Board = (function () {
         },
 
         //////////////////////////////////////////////////////////////////////
-        // update
 
-        onUpdate: function (deltaTime) {
-            var clickedTile,
-                snapX,
-                snapY,
-                tileX,
-                tileY,
-                newSwapTile,
-                y;
-            //for (y in this.undoStack) {
-            //    chs.Debug.print((y === this.undoPointer.toString() ? ">" : " ") + this.undoStack[y]);
-            //}
-            if (chs.Mouse.left.released) {
+        onLeftMouseDown: function (e) {
+            clickedTile = this.tileFromScreenPos(e.position.x, e.position.y);
+            if (clickedTile !== null) {
                 if (this.activeTile !== null) {
-                    this.activeTile.reset();
+                    this.activeTile.selected = false;
+                    this.activeTile = null;
                 }
-                if (this.swapTile !== null) {
-                    this.swapTile.reset();
-                }
-                this.swapTile = null;
-                this.activeTile = null;
-
-                if (this.beforeDrag !== this.toString()) {
-                    this.pushUndo();
-                }
+                this.activeTile = clickedTile;
+                this.activeTile.zIndex = 1;
+                this.activeTile.selected = true;
+                this.clickX = e.position.x;
+                this.clickY = e.position.y;
+                this.offsetX = this.clickX - this.activeTile.position.x;
+                this.offsetY = this.clickY - this.activeTile.position.y;
+                this.beforeDrag = this.toString();
+                this.setCapture(true);
             }
-            if (chs.Mouse.left.pressed) {
-                clickedTile = this.tileFromScreenPos(chs.Mouse.position.x, chs.Mouse.position.y);
-                if (clickedTile !== null) {
-                    if (this.activeTile !== null && this.activeTile !== clickedTile) {
-                        this.activeTile.selected = false;
-                        this.activeTile.zIndex = 0;
-                    }
-                    this.activeTile = clickedTile;
-                    this.clickX = chs.Mouse.position.x;
-                    this.clickY = chs.Mouse.position.y;
-                    this.offsetX = this.clickX - this.activeTile.position.x;
-                    this.offsetY = this.clickY - this.activeTile.position.y;
-                    this.activeTile.selected = true;
-                    this.beforeDrag = this.toString();
-                }
-            } else {
-                if (chs.Mouse.left.held && this.activeTile !== null) {
-                    this.activeTile.selected = true;
-                    this.activeTile.zIndex = 1;
-                    tileX = chs.Util.constrain(chs.Mouse.position.x - this.offsetX, Tile.width / 2, this.pixelWidth() + Tile.width / 2);
-                    tileY = chs.Util.constrain(chs.Mouse.position.y - this.offsetY, Tile.height / 2, this.pixelHeight() + Tile.height / 2);
-                    snapX = Math.floor(tileX / Tile.width) * Tile.width + Tile.width / 2;
-                    snapY = Math.floor(tileY / Tile.height) * Tile.height + Tile.height / 2;
-                    if (Math.abs(tileX - snapX) < Tile.width / 3 && Math.abs(tileY - snapY) < Tile.height / 3) {
-                        newSwapTile = this.tileFromScreenPos(snapX, snapY);
-                        if (newSwapTile !== null && newSwapTile !== this.activeTile) {
-                            if (this.swapTile === null && this.swapTile !== this.activeTile) {
-                                this.swapTile = this.activeTile;
-                                this.swapTile.swapped = true;
-                            }
-                            newSwapTile.swap(this.activeTile);
-                            this.activeTile.reset();
-                            if (this.swapTile !== newSwapTile) {
-                                this.activeTile.swap(this.swapTile);
-                                this.swapTile.swapped = true;
-                            }
-                            this.activeTile = newSwapTile;
-                            this.activeTile.setPosition(snapX, snapY);
-                            this.markAllWords();
-                            this.activeTile.selected = true;
-                            this.activeTile.zIndex = 1;
-                        } else {
-                            this.activeTile.setPosition(snapX, snapY);
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        onLeftMouseUp: function () {
+            if (this.activeTile !== null) {
+                this.activeTile.reset();
+            }
+            if (this.swapTile !== null) {
+                this.swapTile.reset();
+            }
+            this.swapTile = null;
+            this.activeTile = null;
+
+            if (this.beforeDrag !== this.toString()) {
+                this.pushUndo();
+            }
+            this.setCapture(false);
+        },
+
+        //////////////////////////////////////////////////////////////////////
+        // this is fucked
+
+        onMouseMove: function (e) {
+            if (this.activeTile !== null) {
+                this.activeTile.selected = true;
+                this.activeTile.zIndex = 1;
+                tileX = chs.Util.constrain(e.position.x - this.offsetX, Tile.width / 2, this.pixelWidth() + Tile.width / 2);
+                tileY = chs.Util.constrain(e.position.y - this.offsetY, Tile.height / 2, this.pixelHeight() + Tile.height / 2);
+                snapX = Math.floor(tileX / Tile.width) * Tile.width + Tile.width / 2;
+                snapY = Math.floor(tileY / Tile.height) * Tile.height + Tile.height / 2;
+                if (Math.abs(tileX - snapX) < Tile.width / 3 && Math.abs(tileY - snapY) < Tile.height / 3) {
+                    newSwapTile = this.tileFromScreenPos(snapX, snapY);
+                    if (newSwapTile !== null && newSwapTile !== this.activeTile) {
+                        if (this.swapTile === null && this.swapTile !== this.activeTile) {
+                            this.swapTile = this.activeTile;
+                            this.swapTile.swapped = true;
                         }
+                        newSwapTile.swap(this.activeTile);
+                        this.activeTile.reset();
+                        if (this.swapTile !== newSwapTile) {
+                            this.activeTile.swap(this.swapTile);
+                            this.swapTile.swapped = true;
+                        }
+                        this.activeTile = newSwapTile;
+                        this.activeTile.setPosition(snapX, snapY);
+                        this.markAllWords();
+                        this.activeTile.selected = true;
+                        this.activeTile.zIndex = 1;
                     } else {
-                        this.activeTile.setPosition(tileX, tileY);
+                        this.activeTile.setPosition(snapX, snapY);
                     }
+                } else {
+                    this.activeTile.setPosition(tileX, tileY);
                 }
             }
         },
@@ -375,36 +382,11 @@ Board = (function () {
 
             // sort by score, length, alphabet
             foundWords.sort(function (a, b) {
-                var c,
-                    al,
-                    bl,
-                    x,
-                    y;
-                if (a.score > b.score) {
-                    return 1;
-                }
-                if (a.score < b.score) {
-                    return -1;
-                }
-                al = a.str.length;
-                bl = b.str.length;
-                if (al > bl) {
-                    return 1;
-                }
-                if (al < bl) {
-                    return -1;
-                }
-                for (c = 0; c < al; ++c) {
-                    x = a.str.charCodeAt(c);
-                    y = b.str.charCodeAt(c);
-                    if (x < y) {
-                        return 1;
-                    }
-                    if (x > y) {
-                        return -1;
-                    }
-                }
-                return 0;
+                return a.score > b.score ? 1 :
+                        a.score < b.score ? -1 :
+                        a.str.length > b.str.length ? 1 :
+                        a.str.length < b.str.length ? -1 :
+                        b.str.localeCompare(a.str);
             });
 
             // find the best, non-overlapping ones, discard the others

@@ -92,7 +92,7 @@ chs.Drawable = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        onUpdate: function (deltaTime) {
+        onUpdate: function (time, deltaTime) {
             return;
         },
 
@@ -167,7 +167,7 @@ chs.Drawable = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        update: function (deltaTime) {
+        update: function (time, deltaTime) {
             var self = this.drawableData,
                 c,
                 n,
@@ -183,14 +183,14 @@ chs.Drawable = (function () {
             });
             if (self.enabled) {
                 for (c = self.children.tailNode() ; c !== self.children.end() ; c = c.prev) {
-                    c.item.update(deltaTime);
+                    c.item.update(time, deltaTime);
                     if (c.item.drawableData.modal && !frozen) {
                         chs.Mouse.freeze();
                         chs.Keyboard.freeze();
                         frozen = true;
                     }
                 }
-                this.onUpdate(deltaTime);   // modal children freeze their parent
+                this.onUpdate(time, deltaTime);   // modal children freeze their parent
             }
             if (frozen) {
                 chs.Mouse.unfreeze();
@@ -537,6 +537,12 @@ chs.Drawable = (function () {
             get: function () {
                 return this.drawableData.modal;
             }
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        setDirty: function () {
+            this.drawableData.dirty = true;
         }
 
         //////////////////////////////////////////////////////////////////////

@@ -1,12 +1,12 @@
 ﻿//////////////////////////////////////////////////////////////////////
 // Save/Personal Best/cookies
 // Title screen
+// in-game menu
 // Mobile: Android/Chrome, iOS/Safari, Windows Phone: IE // Touch Support
 // Fix tile grabbing/moving/swapping/lerping
 // Flying scores/fizz/particles
 // OAuth/AWS/Leaderboards
-// Tile graphics
-// Score on tiles
+// Tile graphics/Score on tiles
 //////////////////////////////////////////////////////////////////////
 
 var Game = (function () {
@@ -40,26 +40,21 @@ var Game = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-        Game = function (mainMenu) {
+        Game = function (mainMenu, loader) {
             chs.Drawable.call(this);
             this.dimensions = { width: 800, height: 600 };
             this.mainMenu = mainMenu;
-        };
-
-    //////////////////////////////////////////////////////////////////////
-
-    return chs.extend(Game, chs.Drawable, {
-
-        //////////////////////////////////////////////////////////////////////
-
-        load: function (loader) {
             consolas = chs.Font.load("Consolas", loader);
             arial = chs.Font.load("Arial", loader);
             consolasItalic = chs.Font.load("Consolas_Italic", loader);
             wordButton = loader.load("wordbutton.png");
             undoImage = loader.load("undo.png");
             redoImage = loader.load("redo.png");
-        },
+        };
+
+    //////////////////////////////////////////////////////////////////////
+
+    return chs.extend(chs.Drawable, Game, {
 
         //////////////////////////////////////////////////////////////////////
 
@@ -78,7 +73,7 @@ var Game = (function () {
             score = new chs.Label("Score: 0", consolas).setPosition(681, 11);
             this.addChild(score);
 
-            board = new Board();
+            board = new Board(this);
             this.addChild(board);
         },
 
@@ -122,7 +117,7 @@ var Game = (function () {
             window.setPivot(0.5, 0.5);
             window.setScale(0.75);
             window.age = 0.5;
-            window.onUpdate = function (deltaTime) {
+            window.onUpdate = function (time, deltaTime) {
                 var a;
                 if (this.age < 1) {
                     this.age += deltaTime / 750;
@@ -149,12 +144,13 @@ var Game = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        onUpdate: function (deltaTime) {
+        onUpdate: function (time, deltaTime) {
             var y = 50;
             if (board.changed) {
                 words.removeChildren();
                 board.wordList().forEach(function (w) {
                     var button = new chs.PanelButton(676, y, 120, 24, "darkslategrey", undefined, 4, 0, function () {
+                        button.state = chs.Button.idle;
                         this.showDefinition(w);
                     }, this);
                     button.addChild(new chs.Label(w.str, consolas).setPosition(5, button.height / 2).setPivot(0, consolas.midPivot));

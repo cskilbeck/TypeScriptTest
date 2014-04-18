@@ -24,7 +24,7 @@ Tile = (function () {
             this.frameWidth = tileWidth;
             this.frameHeight = tileHeight;
             this.myLetter = letter;
-            this.isSelected = false;
+            this.selected = false;
             this.swapped = false;
             this.setPivot(0.5, 0.5);
             this.setPosition(x * tileWidth + tileWidth / 2, y * tileHeight + tileHeight / 2);
@@ -61,21 +61,7 @@ Tile = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    return chs.extend(Tile, chs.Sprite, {
-
-        //////////////////////////////////////////////////////////////////////
-
-        selected: {
-            get: function () {
-                return this.isSelected;
-            },
-            set: function (s) {
-                if (s !== this.isSelected) {
-                    this.isSelected = s;
-                    this.setScale(s ? 1.2 : 1);
-                }
-            }
-        },
+    return chs.extend(chs.Sprite, Tile, {
 
         //////////////////////////////////////////////////////////////////////
 
@@ -151,19 +137,23 @@ Tile = (function () {
         //////////////////////////////////////////////////////////////////////
         // draw tile background
 
-        onUpdate: function (deltaTime) {
+        onUpdate: function (context) {
             var sx = this.horizontal.position,
                 sy = this.vertical.position;
             if (this.horizontal.word === null && this.vertical.word === null) {
+                sx = 0;
                 sy = 4;
-            }
-            if (this.selected) {
-                sx = 4;
-                sy = 0;
             }
             if (this.swapped) {
                 sx = 4;
                 sy = 2;
+            }
+            if (this.selected) {
+                this.setScale(1.2);
+                sx = 4;
+                sy = 0;
+            } else {
+                this.setScale(1);
             }
             this.setFrameXY(sx, sy);
         }

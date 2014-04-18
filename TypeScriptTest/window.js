@@ -1,7 +1,8 @@
-﻿chs.Window = (function () {
+﻿(function () {
     "use strict";
 
-    var Window = function (x, y, w, h, caption, font, cornerRadius, backgroundColour, captionScale) {
+    chs.Window = chs.extend(chs.Panel, function (x, y, w, h, caption, font, cornerRadius, backgroundColour, captionScale) {
+
         var cr = cornerRadius || 0,
             bgcol = backgroundColour || "black",
             cs = captionScale || 1,
@@ -50,9 +51,8 @@
             }
             return true;
         };
-    };
 
-    return chs.extend(Window, chs.Panel, {
+    }, {
 
         text: {
             get: function () {
@@ -65,3 +65,4 @@
     });
 
 }());
+

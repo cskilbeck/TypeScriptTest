@@ -29,7 +29,7 @@ var chs = (function () {
         //////////////////////////////////////////////////////////////////////
         // super supports only single inheritance...
 
-        extend: function (child, parent, proto) {
+        extend: function (parent, child, proto) {
             child.prototype.Super = parent.prototype;
             extendPrototype(child.prototype, parent.prototype, false);
             if (proto !== undefined) {

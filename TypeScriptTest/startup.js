@@ -34,7 +34,7 @@ window.onload = function () {
                     chs.Timer.update();
                     chs.Keyboard.update();
                     chs.Mouse.update(chs.desktop);
-                    chs.desktop.update(chs.Timer.delta);
+                    chs.desktop.update(chs.Timer.time, chs.Timer.delta);
                     chs.desktop.draw(context, chs.Matrix.identity());
                     chs.Debug.draw();
                     requestAnimFrame(Startup.run);

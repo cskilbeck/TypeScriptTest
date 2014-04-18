@@ -18,7 +18,7 @@ chs.Sprite = (function () {
         return new chs.Sprite(loader.load(name + ".png"));
     };
 
-    return chs.extend(Sprite, chs.Drawable, {
+    return chs.extend(chs.Drawable, Sprite, {
 
         setFrameXY: function (x, y) {
             this.UV.x = x * this.frameWidth;

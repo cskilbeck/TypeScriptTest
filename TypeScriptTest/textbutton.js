@@ -11,8 +11,8 @@ chs.TextButton = (function () {
         this.font = font;
     };
 
-    chs.extend(TextButton, chs.Button);
-    chs.extend(TextButton, chs.Label);
+    chs.extend(chs.Button, TextButton);
+    chs.extend(chs.Label, TextButton);
 
     return TextButton;
 
@@ -31,7 +31,7 @@ chs.FancyTextButton = (function () {
         this.addChild(this.label);
     };
 
-    return chs.extend(FancyTextButton, chs.PanelButton, {
+    return chs.extend(chs.PanelButton, FancyTextButton, {
 
         onHover: function () {
             this.lineColour = "white";

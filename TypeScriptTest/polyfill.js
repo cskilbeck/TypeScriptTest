@@ -3,6 +3,10 @@
 window.requestAnimFrame = (function () {
     "use strict";
 
+    //return function (callback) {
+    //    window.setTimeout(callback, 1000 / 5);
+    //};
+
     return window.requestAnimationFrame ||
         window.webkitRequestAnimationFrame ||
         window.mozRequestAnimationFrame ||

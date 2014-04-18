@@ -11,9 +11,8 @@ chs.Rectangle = (function () {
         this.radius = radius;
     };
 
-    chs.extend(Rectangle, chs.Drawable);
+    return chs.extend(Rectangle, chs.Drawable, {
 
-    return chs.override(Rectangle, {
         width: {
             set: function (w) {
                 this.dimensions.width = w;
@@ -48,9 +47,7 @@ chs.ClipRect = (function () {
         chs.Rectangle.call(this, x, y, w, h, radius);
     };
     
-    chs.extend(ClipRect, chs.Rectangle);
-
-    return chs.override(ClipRect, {
+    return chs.extend(ClipRect, chs.Rectangle, {
 
         onDraw: function (context) {
             chs.Rectangle.prototype.onDraw.call(this, context);
@@ -75,9 +72,7 @@ chs.Panel = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.extend(Panel, chs.Rectangle);
-    
-    return chs.override(Panel, {
+    return chs.extend(Panel, chs.Rectangle, {
 
         onDraw: function (context) {
             chs.Rectangle.prototype.onDraw.call(this, context);
@@ -111,9 +106,7 @@ chs.Line = (function () {
         this.lineWidth = width;
     };
 
-    chs.extend(Line, chs.Drawable);
-
-    return chs.override(Line, {
+    return chs.extend(Line, chs.Drawable, {
 
         onDraw: function (context) {
             context.beginPath();
@@ -172,9 +165,8 @@ chs.LinkButton = (function () {
         };
 
     chs.extend(LinkButton, chs.Button);
-    chs.extend(LinkButton, chs.Line);
 
-    return chs.override(LinkButton, {
+    return chs.extend(LinkButton, chs.Line, {
         onIdle: function () { this.colour = "lightblue"; },
         onHover: function () { this.colour = "cyan"; },
         onPressed: function () { this.colour = "red"; }

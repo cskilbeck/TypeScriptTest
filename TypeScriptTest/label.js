@@ -12,9 +12,7 @@ chs.Label = (function () {
         };
     };
 
-    chs.extend(Label, chs.Drawable);
-
-    return chs.override(Label, {
+    return chs.extend(Label, chs.Drawable, {
 
         text: {
             configurable: true,
@@ -74,9 +72,7 @@ chs.TextBox = (function () {
             }
         };
 
-    chs.extend(TextBox, chs.Label);
-
-    return chs.override(TextBox, {
+    return chs.extend(TextBox, chs.Label, {
 
         size: function () {
             return this.dimensions;
@@ -93,9 +89,9 @@ chs.TextBox = (function () {
                 this.removeChildren();
                 while (links.length > 0) {
                     link = new chs.LinkButton(links.shift(),
-                        links.shift() - 2,
                         links.shift(),
-                        links.shift() - 2,
+                        links.shift(),
+                        links.shift(),
                         links.shift(),
                         linkClickedCallback,
                         this);

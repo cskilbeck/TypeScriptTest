@@ -13,9 +13,8 @@ chs.SpriteButton = (function () {
     };
 
     chs.extend(SpriteButton, chs.Button);
-    chs.extend(SpriteButton, chs.Sprite);
 
-    return chs.override(SpriteButton, {
+    return chs.extend(SpriteButton, chs.Sprite, {
 
         onIdle: function () {
             switch (this.type) {

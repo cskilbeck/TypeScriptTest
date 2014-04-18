@@ -31,9 +31,7 @@ chs.FancyTextButton = (function () {
         this.addChild(this.label);
     };
 
-    chs.extend(FancyTextButton, chs.PanelButton);
-
-    return chs.override(FancyTextButton, {
+    return chs.extend(FancyTextButton, chs.PanelButton, {
 
         onHover: function () {
             this.lineColour = "white";

@@ -167,9 +167,9 @@ chs.Font = (function () {
                         skip = true;
                         if (links !== undefined) {
                             if (inLink) {
-                                links.push(xc, yc);
+                                links.push(xc + 1, yc);
                             } else {
-                                links.push(xc, yc + this.font.height, link);
+                                links.push(xc - 1, yc + this.font.baseline + 2, link);
                                 link = "";
                             }
                         }

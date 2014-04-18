@@ -52,9 +52,8 @@
         };
     };
 
-    chs.extend(Window, chs.Panel);
+    return chs.extend(Window, chs.Panel, {
 
-    return chs.override(Window, {
         text: {
             get: function () {
                 return this.caption.text;

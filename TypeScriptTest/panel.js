@@ -1,53 +1,19 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-chs.ClipRect = (function () {
+chs.Rectangle = (function () {
+
     "use strict";
 
-    var ClipRect = function (x, y, w, h, radius) {
+    var Rectangle = function (x, y, w, h, radius) {
         chs.Drawable.call(this);
         this.setPosition(x, y);
         this.dimensions = { width: w, height: h };
         this.radius = radius;
     };
-    
-    chs.extend(ClipRect, chs.Drawable);
 
-    return chs.override(ClipRect, {
+    chs.extend(Rectangle, chs.Drawable);
 
-        onDraw: function (context) {
-            if (this.radius > 0) {
-                chs.Util.roundRect(context, 0, 0, this.width, this.height, this.radius);
-            } else {
-                chs.Util.rect(context, 0, 0, this.width, this.height);
-            }
-            context.clip();
-        }
-    });
-
-}());
-
-//////////////////////////////////////////////////////////////////////
-
-chs.Panel = (function () {
-    "use strict";
-
-    var Panel = function (x, y, w, h, fillColour, outlineColour, radius, lineWidth, lineTransparency) {
-        chs.Drawable.call(this);
-        this.setPosition(x, y);
-        this.dimensions = { width: w, height: h };
-        this.fillColour = fillColour;
-        this.lineColour = outlineColour;
-        this.lineWidth = lineWidth;
-        this.lineTransparency = lineTransparency;
-        this.radius = radius;
-    };
-
-    //////////////////////////////////////////////////////////////////////
-
-    chs.extend(Panel, chs.Drawable);
-    
-    return chs.override(Panel, {
-
+    return chs.override(Rectangle, {
         width: {
             set: function (w) {
                 this.dimensions.width = w;
@@ -67,7 +33,54 @@ chs.Panel = (function () {
         },
 
         onDraw: function (context) {
-            chs.Util.roundRect(context, 0, 0, this.width, this.height, this.radius || 0);
+            chs.Util.roundRect(context, 0, 0, this.width, this.height, this.radius);
+        }
+    });
+
+}());
+
+//////////////////////////////////////////////////////////////////////
+
+chs.ClipRect = (function () {
+    "use strict";
+
+    var ClipRect = function (x, y, w, h, radius) {
+        chs.Rectangle.call(this, x, y, w, h, radius);
+    };
+    
+    chs.extend(ClipRect, chs.Rectangle);
+
+    return chs.override(ClipRect, {
+
+        onDraw: function (context) {
+            chs.Rectangle.prototype.onDraw.call(this, context);
+            context.clip();
+        }
+    });
+
+}());
+
+//////////////////////////////////////////////////////////////////////
+
+chs.Panel = (function () {
+    "use strict";
+
+    var Panel = function (x, y, w, h, fillColour, outlineColour, radius, lineWidth, lineTransparency) {
+        chs.Rectangle.call(this, x, y, w, h, radius);
+        this.fillColour = fillColour;
+        this.lineColour = outlineColour;
+        this.lineWidth = lineWidth;
+        this.lineTransparency = lineTransparency;
+    };
+
+    //////////////////////////////////////////////////////////////////////
+
+    chs.extend(Panel, chs.Rectangle);
+    
+    return chs.override(Panel, {
+
+        onDraw: function (context) {
+            chs.Rectangle.prototype.onDraw.call(this, context);
             if (this.fillColour !== undefined) {
                 context.fillStyle = this.fillColour;
                 context.fill();

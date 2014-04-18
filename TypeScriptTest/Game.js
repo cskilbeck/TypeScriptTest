@@ -14,14 +14,15 @@ var Game = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    var loader,
-        consolas,
+    var consolas,
         consolasItalic,
         arial,
         words,
         wordButton,
         score,
         board,
+        undoImage,
+        redoImage,
         menuButton,
 
         //dummyDef = "jksldh fjklsdh fklsdh fkljsdh flkjsdh flkj lksdj fklsdj flksdj flksdj flksdj flksdj " +
@@ -39,30 +40,10 @@ var Game = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-        Game = function () {
+        Game = function (mainMenu) {
             chs.Drawable.call(this);
-            this.enabled = false;
-            this.visible = false;
             this.dimensions = { width: 800, height: 600 };
-            loader = new chs.Loader('img/');
-            wordButton = loader.load("wordbutton.png");
-            consolas = chs.Font.load("Consolas", loader);
-            consolasItalic = chs.Font.load("Consolas_Italic", loader);
-            consolasItalic.lineSpacing = 10;
-            consolasItalic.softLineSpacing = 4;
-            Tile.load(loader);
-            arial = chs.Font.load("Arial", loader);
-            Dictionary.init(loader.load("dictionary.json"));
-            words = new chs.Drawable();
-            this.addChild(words);
-            this.addChild(new chs.SpriteButton(loader.load("undo.png"), "scale", 580, 490, this.undo, null));
-            this.addChild(new chs.SpriteButton(loader.load("redo.png"), "scale", 620, 490, this.redo, null));
-            menuButton = new chs.FancyTextButton("Menu", consolas, 80, 535, 100, 40).setPivot(0.5, 0.5);
-            this.addChild(menuButton);
-            score = new chs.Label("Score: 0", consolas).setPosition(681, 11);
-            this.addChild(score);
-            chs.desktop.addChild(loader);
-            loader.start(this.loadComplete, this);
+            this.mainMenu = mainMenu;
         };
 
     //////////////////////////////////////////////////////////////////////
@@ -73,12 +54,47 @@ var Game = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        loadComplete: function (loader) {
-            board = new Board(loader);
+        load: function (loader) {
+            consolas = chs.Font.load("Consolas", loader);
+            arial = chs.Font.load("Arial", loader);
+            consolasItalic = chs.Font.load("Consolas_Italic", loader);
+            wordButton = loader.load("wordbutton.png");
+            undoImage = loader.load("undo.png");
+            redoImage = loader.load("redo.png");
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        loadComplete: function () {
+            consolasItalic.lineSpacing = 10;
+            consolasItalic.softLineSpacing = 4;
+
+            words = new chs.Drawable();
+            this.addChild(words);
+            this.addChild(new chs.SpriteButton(undoImage, "scale", 580, 490, this.undo, null));
+            this.addChild(new chs.SpriteButton(redoImage, "scale", 620, 490, this.redo, null));
+
+            menuButton = new chs.FancyTextButton("Menu", consolas, 80, 535, 100, 40, this.menu, this).setPivot(0.5, 0.5);
+            this.addChild(menuButton);
+
+            score = new chs.Label("Score: 0", consolas).setPosition(681, 11);
+            this.addChild(score);
+
+            board = new Board();
             this.addChild(board);
-            chs.desktop.removeChild(loader);
-            this.enabled = true;
-            this.visible = true;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+        // new game starting
+
+        init: function () {
+            board.randomize(1);
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        menu: function () {
+            this.mainMenu.gameClosed();
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -155,7 +171,6 @@ var Game = (function () {
                 board.changed = false;
                 score.text = "Score: " + board.score.toString();
             }
-            menuButton.rotation = chs.Timer.time / 1000;
         }
 
     });

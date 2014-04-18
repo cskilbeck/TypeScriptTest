@@ -45,6 +45,7 @@
     <Content Include="label.js" />
     <Content Include="list.js" />
     <Content Include="main.js" />
+    <Content Include="mainmenu.js" />
     <Content Include="matrix.js" />
     <Content Include="mouse.js" />
     <Content Include="panel.js" />

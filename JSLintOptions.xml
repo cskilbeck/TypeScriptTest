@@ -708,6 +708,7 @@
       <string>FB</string>
       <string>Uint8Array</string>
       <string>VBArray</string>
+      <string>MainMenu</string>
     </PreDefined>
   </JSLintOptions>
   <BuildFileTypes>JS</BuildFileTypes>

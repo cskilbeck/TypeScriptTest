@@ -3,5 +3,5 @@
 function main(desktop) {
     "use strict";
 
-    desktop.addChild(new Game());
+    desktop.addChild(new MainMenu());
 }

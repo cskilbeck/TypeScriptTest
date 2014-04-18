@@ -116,16 +116,25 @@ chs.Util = (function () {
             var r = Math.min(radius, Math.min(width / 2, height / 2)),
                 xr = x + width,
                 yr = y + height;
+            r = r || 0;
             ctx.beginPath();
             ctx.moveTo(x + r, y);
             ctx.lineTo(xr - r, y);
-            ctx.quadraticCurveTo(xr, y, xr, y + r);
+            if (r) {
+                ctx.quadraticCurveTo(xr, y, xr, y + r);
+            }
             ctx.lineTo(xr, yr - r);
-            ctx.quadraticCurveTo(xr, yr, xr - r, yr);
+            if (r) {
+                ctx.quadraticCurveTo(xr, yr, xr - r, yr);
+            }
             ctx.lineTo(x + r, yr);
-            ctx.quadraticCurveTo(x, yr, x, yr - r);
+            if (r) {
+                ctx.quadraticCurveTo(x, yr, x, yr - r);
+            }
             ctx.lineTo(x, y + r);
-            ctx.quadraticCurveTo(x, y, x + r, y);
+            if (r) {
+                ctx.quadraticCurveTo(x, y, x + r, y);
+            }
             ctx.closePath();
         },
 

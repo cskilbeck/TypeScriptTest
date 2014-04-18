@@ -176,6 +176,7 @@ chs.Drawable = (function () {
             self.children.removeIf(function (c) {
                 if (c.drawableData.closed) {
                     c.onClosed();
+                    c.drawableData.closed = false;
                     return true;
                 }
                 return false;

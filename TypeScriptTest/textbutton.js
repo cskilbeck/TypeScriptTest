@@ -27,7 +27,7 @@ chs.FancyTextButton = (function () {
         chs.PanelButton.call(this, x, y, w, h, "darkGrey", "lightGrey", h / 3, 3, click, context, 4);
         this.label = new chs.Label(text, font);
         this.label.setPosition(w / 2, h / 2);
-        this.label.setPivot(0.5, 0.5);
+        this.label.setPivot(0.5, font.midPivot);
         this.addChild(this.label);
     };
 

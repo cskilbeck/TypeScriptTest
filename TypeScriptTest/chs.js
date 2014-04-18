@@ -27,9 +27,10 @@ var chs = (function () {
     return {
 
         //////////////////////////////////////////////////////////////////////
-        // need a way to call super.method()
+        // super supports only single inheritance...
 
         extend: function (child, parent) {
+            child.prototype.Super = parent.prototype;
             extendPrototype(child.prototype, parent.prototype, false);
         },
 

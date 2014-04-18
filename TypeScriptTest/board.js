@@ -64,7 +64,7 @@ Board = (function () {
     //////////////////////////////////////////////////////////////////////
     // loader must be complete before this is called
 
-    function Board(loader) {
+    function Board() {
         var i;
 
         chs.Drawable.call(this);
@@ -90,8 +90,6 @@ Board = (function () {
             this.tiles[i] = new Tile("A", i % this.tileWidth, (i / this.tileWidth) >>> 0);
             this.addChild(this.tiles[i]);
         }
-        this.randomize(1);
-        this.beforeDrag = this.toString();
     }
 
     //////////////////////////////////////////////////////////////////////
@@ -143,6 +141,7 @@ Board = (function () {
             while (this.markAllWords() !== 0) {
                 this.getWordTile(this.words.head(), 0).letter = randomLetter(this.random);
             }
+            this.beforeDrag = this.toString();
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -196,6 +195,7 @@ Board = (function () {
             if (this.undoStack.length > undoMax) {
                 this.undoStack.shift();
             }
+            this.undoPointer = Math.min(this.undoPointer, this.undoStack.length - 1);
             if (this.undoPointer < this.undoStack.length - 1) {
                 this.undoStack = this.undoStack.slice(0, this.undoPointer);
             } else {

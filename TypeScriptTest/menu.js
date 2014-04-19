@@ -58,7 +58,7 @@ chs.PopupMenu = (function () {
                 this.close();
                 button.buttonCallback.call(button.buttonContext);
             };
-        }.bind(this));
+        });
         this.modal = true;
         this.setCapture(true);
     };

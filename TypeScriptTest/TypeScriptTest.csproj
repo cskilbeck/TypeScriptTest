@@ -23,6 +23,7 @@
     <Content Include="board.js" />
     <Content Include="button.js" />
     <Content Include="chs.js" />
+    <Content Include="cookies.js" />
     <Content Include="debug.js" />
     <Content Include="drawable.js" />
     <Content Include="event.js" />

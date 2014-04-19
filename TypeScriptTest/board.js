@@ -92,6 +92,7 @@ Board = (function () {
         this.undoStack = [];
         this.undoPointer = 0;
         this.undoLength = 0;
+        this.seed = 0;
         this.beforeDrag = "";
         this.tiles.length = this.tileWidth * this.tileHeight;
         for (i = 0; i < this.tiles.length; ++i) {
@@ -137,6 +138,7 @@ Board = (function () {
         randomize: function (seed) {
             var i;
 
+            this.seed = seed;
             // fill with random letters
             this.random.seed(seed);
             for (i = 0; i < this.tiles.length; ++i) {
@@ -213,6 +215,8 @@ Board = (function () {
             this.undoStack.push(this.beforeDrag);
             this.undoStack.push(this.toString());
             this.undoPointer = this.undoStack.length - 1;
+            chs.Cookies.set("game", this.seed, 10);
+            chs.Cookies.set("board", this.toString(), 10);
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -223,6 +227,8 @@ Board = (function () {
                 this.setFromString(this.undoStack[this.undoPointer]);
                 this.beforeDrag = this.toString();
                 this.markAllWords();
+                chs.Cookies.set("game", this.seed, 10);
+                chs.Cookies.set("board", this.toString(), 10);
             }
         },
 
@@ -234,6 +240,8 @@ Board = (function () {
                 this.setFromString(this.undoStack[this.undoPointer]);
                 this.beforeDrag = this.toString();
                 this.markAllWords();
+                chs.Cookies.set("game", this.seed, 10);
+                chs.Cookies.set("board", this.toString(), 10);
             }
         },
 

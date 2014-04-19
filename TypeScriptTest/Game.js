@@ -61,6 +61,7 @@ var Game = (function () {
         loadComplete: function () {
             consolasItalic.lineSpacing = 10;
             consolasItalic.softLineSpacing = 4;
+            consolasItalic.mask = 2;
 
             words = new chs.Drawable();
             this.addChild(words);
@@ -80,13 +81,22 @@ var Game = (function () {
         //////////////////////////////////////////////////////////////////////
         // new game starting
 
-        init: function () {
-            board.randomize(1);
+        init: function (seed) {
+            var b;
+            board.randomize(seed);
+            if (chs.Cookies.get("game") === seed.toString()) {
+                b = chs.Cookies.get("board");
+                if (b !== null) {
+                    board.setFromString(b);
+                }
+            }
         },
 
         //////////////////////////////////////////////////////////////////////
 
         menu: function () {
+            chs.Cookies.set("game", board.seed, 10);
+            chs.Cookies.set("board", board.toString(), 10);
             this.mainMenu.gameClosed();
         },
 

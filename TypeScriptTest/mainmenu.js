@@ -36,14 +36,14 @@
 
         onUpdate: function (time, deltaTime) {
             this.Super.onUpdate(time, deltaTime);
-            this.panel.rotation = Math.sin(time / 250) * 0.05;
+            this.button.rotation = Math.pow(Math.sin(time / 1000), 16) * Math.sin(time / 25) * 0.05;
         },
 
         playClicked: function () {
             this.enabled = false;
             this.visible = false;
             this.addSibling(this.game);
-            this.game.init();
+            this.game.init(1);
         },
 
         gameClosed: function () {

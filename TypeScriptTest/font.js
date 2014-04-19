@@ -11,6 +11,7 @@ chs.Font = (function () {
         this.lineSpacing = 0;
         this.softLineSpacing = 0;
         this.letterSpacing = 0;
+        this.mask = 0xff;
     };
 
     //////////////////////////////////////////////////////////////////////
@@ -74,45 +75,47 @@ chs.Font = (function () {
                 ls = this.lineSpacing,
                 sls = this.softLineSpacing;
             for (l = 0; l < this.font.layerCount; ++l) {
-                layer = this.font.Layers[l];
-                xc = x + layer.offsetX;
-                yc = y + layer.offsetY;
-                for (i = 0; i < str.length; ++i) {
-                    c = str[i];
-                    if (!escape) {
-                        switch (c) {
-                        case '\n':
-                            xc = layer.offsetX;
-                            yc += this.font.height + ls;
-                            skip = true;
-                            break;
-                        case '\r':
-                            xc = layer.offsetX;
-                            yc += this.font.height + sls;
-                            skip = true;
-                            break;
-                        case '\\':
-                            escape = true;
-                            skip = true;
-                            break;
-                        case '@':
-                            inLink = !inLink;
-                            skip = true;
-                            break;
-                        default:
-                            skip = false;
-                            break;
-                        }
-                    }
-                    if (!skip) {
-                        c = this.font.charMap[c.charCodeAt(0)];
-                        if (c !== undefined) {
-                            glyph = this.font.glyphs[c];
-                            if (l < glyph.imageCount) {
-                                s = glyph.images[l];
-                                ctx.drawImage(this.page, s.x, s.y, s.w, s.h, xc + s.offsetX, yc + s.offsetY, s.w, s.h);
+                if ((1 << l) & this.mask) {
+                    layer = this.font.Layers[l];
+                    xc = x + layer.offsetX;
+                    yc = y + layer.offsetY;
+                    for (i = 0; i < str.length; ++i) {
+                        c = str[i];
+                        if (!escape) {
+                            switch (c) {
+                            case '\n':
+                                xc = layer.offsetX;
+                                yc += this.font.height + ls;
+                                skip = true;
+                                break;
+                            case '\r':
+                                xc = layer.offsetX;
+                                yc += this.font.height + sls;
+                                skip = true;
+                                break;
+                            case '\\':
+                                escape = true;
+                                skip = true;
+                                break;
+                            case '@':
+                                inLink = !inLink;
+                                skip = true;
+                                break;
+                            default:
+                                skip = false;
+                                break;
                             }
-                            xc += glyph.advance;
+                        }
+                        if (!skip) {
+                            c = this.font.charMap[c.charCodeAt(0)];
+                            if (c !== undefined) {
+                                glyph = this.font.glyphs[c];
+                                if (l < glyph.imageCount) {
+                                    s = glyph.images[l];
+                                    ctx.drawImage(this.page, s.x, s.y, s.w, s.h, xc + s.offsetX, yc + s.offsetY, s.w, s.h);
+                                }
+                                xc += glyph.advance;
+                            }
                         }
                     }
                 }

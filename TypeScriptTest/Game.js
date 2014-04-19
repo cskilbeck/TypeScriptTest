@@ -65,10 +65,10 @@ var Game = (function () {
 
             words = new chs.Drawable();
             this.addChild(words);
-            this.addChild(new chs.SpriteButton(undoImage, "scale", 580, 490, this.undo, null));
-            this.addChild(new chs.SpriteButton(redoImage, "scale", 620, 490, this.redo, null));
+            this.addChild(new chs.SpriteButton(undoImage, "scale", 600, 510, this.undo, null));
+            this.addChild(new chs.SpriteButton(redoImage, "scale", 650, 510, this.redo, null));
 
-            menuButton = new chs.FancyTextButton("Menu", consolas, 80, 535, 100, 40, this.menu, this).setPivot(0.5, 0.5);
+            menuButton = new chs.FancyTextButton("Menu", consolas, 80, 515, 100, 40, this.menu, this).setPivot(0.5, 0);
             this.addChild(menuButton);
 
             score = new chs.Label("Score: 0", consolas).setPosition(681, 11);
@@ -94,10 +94,36 @@ var Game = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        menu: function () {
+        onClosed: function () {
             chs.Cookies.set("game", board.seed, 10);
             chs.Cookies.set("board", board.toString(), 10);
             this.mainMenu.gameClosed();
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        shuffle: function () {
+            var i,
+                r,
+                n;
+            r = new chs.Random();
+            board.beforeDrag = board.toString();
+            for (i = 0; i < board.tiles.length - 1; ++i) {
+                n = i + (r.next() % (board.tiles.length - 1 - i));
+                board.tiles[i].swap(board.tiles[n]);
+            }
+            board.markAllWords();
+            board.pushUndo();
+            this.setDirty();
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        menu: function () {
+            this.addChild(new chs.PopupMenu(menuButton.x, menuButton.y - 12, consolas, [
+                { text: "Quit", clicked: this.close, context: this },
+                { text: "Shuffle!", clicked: this.shuffle, context: this }
+            ]).setPivot(0.5, 1));
         },
 
         //////////////////////////////////////////////////////////////////////

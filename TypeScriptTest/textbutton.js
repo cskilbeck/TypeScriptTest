@@ -23,8 +23,8 @@ chs.TextButton = (function () {
 chs.FancyTextButton = (function () {
     "use strict";
 
-    var FancyTextButton = function (text, font, x, y, w, h, click, context) {
-        chs.PanelButton.call(this, x, y, w, h, "darkGrey", "lightGrey", h / 3, 3, click, context, 4);
+    var FancyTextButton = function (text, font, x, y, w, h, click, context, radius) {
+        chs.PanelButton.call(this, x, y, w, h, "darkGrey", "lightGrey", radius === undefined ? h / 3 : radius, 3, click, context, 4);
         this.label = new chs.Label(text, font);
         this.label.setPosition(w / 2, h / 2);
         this.label.setPivot(0.5, font.midPivot);

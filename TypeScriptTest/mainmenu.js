@@ -24,11 +24,18 @@
             this.game.loadComplete();
             chs.desktop.removeChild(loader);
 
-            this.panel = new chs.Panel(400, 300, 640, 480, "darkslategrey", "white", 64, 4, 255).setPivot(0.5, 0.5);
+            this.panel = new chs.Panel(400, 300, 640, 480, "darkslategrey", "white", 25, 4, 255).setPivot(0.5, 0.5);
             this.panel.transparency = 128;
             this.button = new chs.FancyTextButton("PLAY!", consolasItalic, 320, 240, 200, 50, this.playClicked, this).setPivot(0.5, 0.5);
             this.panel.addChild(this.button);
             this.addChild(this.panel);
+
+            this.panel.addChild(new chs.Menu(20, 480 - 20, consolasItalic, [
+                { text: "Options", clicked: null, context: null },
+                { text: "How to play", clicked: null, context: null },
+                { text: "Login", clicked: null, context: null },
+                { text: "Credits", clicked: null, context: null }
+            ]).setPivot(0, 1));
 
             this.enabled = true;
             this.visible = true;

@@ -125,7 +125,7 @@
                 w = r - l;
             chs.Line.call(this, 0, h, w, h, "lightblue", 1);
             chs.Button.call(this, function () {
-                if (this.linkClicked !== undefined) {
+                if (this.linkClicked) {
                     this.linkClicked.call(this.clickContext, this.link);
                 }
             }, this);
@@ -136,8 +136,8 @@
             this.dimensions = { width: w, height: h };
         },
         onIdle: function () { this.colour = "lightblue"; },
-        onHover: function () { this.colour = "cyan"; },
-        onPressed: function () { this.colour = "red"; }
+        onHover: function () { this.colour = "red"; },
+        onPressed: function () { this.colour = "white"; }
     });
 
 }());

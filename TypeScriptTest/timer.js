@@ -1,35 +1,37 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-chs.Timer = (function () {
+(function () {
     "use strict";
 
     //////////////////////////////////////////////////////////////////////
 
     var currentTime,
-        deltaTime,
-        Timer = {};
+        deltaTime;
 
-    return chs.overrideStatic(Timer, {
-        
-        init: function () {
-            currentTime = window.performance.now();
-        },
+    chs.Timer = chs.Class({
 
-        update: function () {
-            var now = window.performance.now();
-            deltaTime = now - currentTime;
-            currentTime = now;
-        },
+        statics: {
 
-        time: {
-            get: function () {
-                return currentTime;
-            }
-        },
+            init: function () {
+                currentTime = window.performance.now();
+            },
 
-        delta: {
-            get: function () {
-                return deltaTime;
+            update: function () {
+                var now = window.performance.now();
+                deltaTime = now - currentTime;
+                currentTime = now;
+            },
+
+            time: {
+                get: function () {
+                    return currentTime;
+                }
+            },
+
+            delta: {
+                get: function () {
+                    return deltaTime;
+                }
             }
         }
     });

@@ -1,7 +1,7 @@
 ﻿(function () {
     "use strict";
 
-    chs.Event = chs.extensionOf(chs.Object, {
+    chs.Event = chs.Class({
 
         statics: {
             leftMouseDown: 1,
@@ -11,14 +11,16 @@
             mouseMove: 5
         },
 
-        constructor: function (type) {
+        ctor: function (type) {
             this.type = type;
         }
     });
 
-    chs.MouseEvent = chs.extensionOf(chs.Event, {
+    chs.MouseEvent = chs.Class({
 
-        constructor: function (type, pos) {
+        inherits: chs.Event,
+
+        ctor: function (type, pos) {
             chs.Event.call(this, type);
             this.position = pos;
         },

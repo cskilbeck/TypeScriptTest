@@ -40,9 +40,11 @@ var Game = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    return chs.extensionOf(chs.Drawable, {
+    return chs.Class({
 
-        constructor: function (mainMenu, loader) {
+        inherits: chs.Drawable,
+
+        ctor: function (mainMenu, loader) {
             chs.Drawable.call(this);
             this.dimensions = { width: 800, height: 600 };
             this.mainMenu = mainMenu;

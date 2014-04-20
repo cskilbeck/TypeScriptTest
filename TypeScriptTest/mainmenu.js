@@ -4,9 +4,11 @@
     var loader,
         consolasItalic;
 
-    return chs.extender(chs.Drawable, {}, {
+    return chs.Class({
 
-        $: function () {
+        inherits: chs.Drawable,
+
+        ctor: function () {
             chs.Drawable.call(this);
             this.enabled = false;
             this.visible = false;
@@ -20,44 +22,46 @@
             loader.start(this.loadComplete, this);
         },
 
-        loadComplete: function () {
-            this.game.loadComplete();
-            chs.desktop.removeChild(loader);
+        methods: {
 
-            this.panel = new chs.Panel(400, 300, 640, 480, "darkslategrey", "white", 25, 4, 255).setPivot(0.5, 0.5);
-            this.panel.transparency = 128;
-            this.button = new chs.FancyTextButton("PLAY!", consolasItalic, 320, 240, 200, 50, this.playClicked, this).setPivot(0.5, 0.5);
-            this.panel.addChild(this.button);
-            this.addChild(this.panel);
+            loadComplete: function () {
+                this.game.loadComplete();
+                chs.desktop.removeChild(loader);
 
-            this.panel.addChild(new chs.Menu(20, 480 - 20, consolasItalic, [
-                { text: "Options", clicked: null, context: null },
-                { text: "How to play", clicked: null, context: null },
-                { text: "Login", clicked: null, context: null },
-                { text: "Credits", clicked: null, context: null }
-            ]).setPivot(0, 1));
+                this.panel = new chs.Panel(400, 300, 640, 480, "darkslategrey", "white", 25, 4, 255).setPivot(0.5, 0.5);
+                this.panel.transparency = 128;
+                this.button = new chs.FancyTextButton("PLAY!", consolasItalic, 320, 240, 200, 50, this.playClicked, this).setPivot(0.5, 0.5);
+                this.panel.addChild(this.button);
+                this.addChild(this.panel);
 
-            this.enabled = true;
-            this.visible = true;
-        },
+                this.panel.addChild(new chs.Menu(20, 480 - 20, consolasItalic, [
+                    { text: "Options", clicked: null, context: null },
+                    { text: "How to play", clicked: null, context: null },
+                    { text: "Login", clicked: null, context: null },
+                    { text: "Credits", clicked: null, context: null }
+                ]).setPivot(0, 1));
 
-        onUpdate: function (time, deltaTime) {
-            this.button.rotation = Math.pow(Math.sin(time / 1000), 16) * Math.sin(time / 25) * 0.05;
-        },
+                this.enabled = true;
+                this.visible = true;
+            },
 
-        playClicked: function () {
-            this.enabled = false;
-            this.visible = false;
-            this.addSibling(this.game);
-            this.game.init(1);
-        },
+            onUpdate: function (time, deltaTime) {
+                this.button.rotation = Math.pow(Math.sin(time / 1000), 16) * Math.sin(time / 25) * 0.05;
+            },
 
-        gameClosed: function () {
-            this.game.close();
-            this.enabled = true;
-            this.visible = true;
+            playClicked: function () {
+                this.enabled = false;
+                this.visible = false;
+                this.addSibling(this.game);
+                this.game.init(1);
+            },
+
+            gameClosed: function () {
+                this.game.close();
+                this.enabled = true;
+                this.visible = true;
+            }
         }
-
     });
 
 }());

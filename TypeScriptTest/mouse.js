@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-chs.Mouse = (function () {
+(function () {
     "use strict";
 
     //////////////////////////////////////////////////////////////////////
@@ -159,62 +159,64 @@ chs.Mouse = (function () {
         frozen = new IMouse(),
         active = new IMouse(),
         cur = active,
-        events = [],
-        Mouse = {};
+        events = [];
 
-    return chs.overrideStatic(Mouse, {
+    chs.Mouse = chs.Class({
 
-        init: function (canvasElement, screenElement) {
-            canvas = canvasElement;
-            screen = screenElement;
-            setMouseCapture(screen, canvas, active, events);
-        },
+        statics: {
 
-        update: function (root) {
-            var e;
-            updateButton(active.left);
-            updateButton(active.right);
-            active.delta.x = active.position.x - old.x;
-            active.delta.y = active.position.y - old.y;
-            old.x = active.position.x;
-            old.y = active.position.y;
+            init: function (canvasElement, screenElement) {
+                canvas = canvasElement;
+                screen = screenElement;
+                setMouseCapture(screen, canvas, active, events);
+            },
 
-            while (events.length > 0) {
-                e = events.shift();
-                root.processMessage(e);
-            }
+            update: function (root) {
+                var e;
+                updateButton(active.left);
+                updateButton(active.right);
+                active.delta.x = active.position.x - old.x;
+                active.delta.y = active.position.y - old.y;
+                old.x = active.position.x;
+                old.y = active.position.y;
 
-        },
+                while (events.length > 0) {
+                    e = events.shift();
+                    root.processMessage(e);
+                }
 
-        freeze: function () {
-            cur = frozen;
-        },
+            },
 
-        unfreeze: function () {
-            cur = active;
-        },
+            freeze: function () {
+                cur = frozen;
+            },
 
-        position: {
-            get: function () {
-                return cur.position;
-            }
-        },
+            unfreeze: function () {
+                cur = active;
+            },
 
-        delta: {
-            get: function () {
-                return cur.delta;
-            }
-        },
+            position: {
+                get: function () {
+                    return cur.position;
+                }
+            },
 
-        left: {
-            get: function () {
-                return cur.left;
-            }
-        },
+            delta: {
+                get: function () {
+                    return cur.delta;
+                }
+            },
 
-        right: {
-            get: function () {
-                return cur.right;
+            left: {
+                get: function () {
+                    return cur.left;
+                }
+            },
+
+            right: {
+                get: function () {
+                    return cur.right;
+                }
             }
         }
     });

@@ -34,7 +34,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.ajax = chs.extensionOf(chs.Object, {
+    chs.ajax = chs.Class({
 
         statics: {
 

@@ -5,9 +5,11 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.Rectangle = chs.extensionOf(chs.Drawable, {
+    chs.Rectangle = chs.Class({
 
-        constructor: function (x, y, w, h, radius) {
+        inherits: chs.Drawable,
+
+        ctor: function (x, y, w, h, radius) {
             chs.Drawable.call(this);
             this.setPosition(x, y);
             this.dimensions = { width: w, height: h };
@@ -42,9 +44,11 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.ClipRect = chs.extensionOf(chs.Rectangle, {
+    chs.ClipRect = chs.Class({
+
+        inherits: chs.Rectangle,
         
-        constructor: function (x, y, w, h, radius) {
+        ctor: function (x, y, w, h, radius) {
             chs.Rectangle.call(this, x, y, w, h, radius);
         },
 
@@ -59,9 +63,11 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.Panel = chs.extensionOf(chs.Rectangle, {
+    chs.Panel = chs.Class({
 
-        constructor: function (x, y, w, h, fillColour, outlineColour, radius, lineWidth, lineTransparency) {
+        inherits: chs.Rectangle,
+
+        ctor: function (x, y, w, h, fillColour, outlineColour, radius, lineWidth, lineTransparency) {
             chs.Rectangle.call(this, x, y, w, h, radius);
             this.fillColour = fillColour;
             this.lineColour = outlineColour;
@@ -89,9 +95,11 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.Line = chs.extensionOf(chs.Drawable, {
+    chs.Line = chs.Class({
+
+        inherits: chs.Drawable,
         
-        constructor: function (x1, y1, x2, y2, colour, width) {
+        ctor: function (x1, y1, x2, y2, colour, width) {
             chs.Drawable.call(this);
             this.x1 = x1;
             this.x2 = x2;
@@ -116,42 +124,46 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.PanelButton = chs.extend(chs.Panel,
-        chs.extensionOf(chs.Button, {
-            constructor: function (x, y, w, h, fillColour, lineColour, radius, lineWidth, click, context) {
-                chs.Panel.call(this, x, y, w, h, fillColour, lineColour, radius, lineWidth);
-                chs.Button.call(this, click, context);
-            }
-        }));
+    chs.PanelButton = chs.Class({
+
+        inherits: [chs.Button, chs.Panel],
+
+        ctor: function (x, y, w, h, fillColour, lineColour, radius, lineWidth, click, context) {
+            chs.Panel.call(this, x, y, w, h, fillColour, lineColour, radius, lineWidth);
+            chs.Button.call(this, click, context);
+        }
+    });
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.LinkButton = chs.extend(chs.Line,
-        chs.extensionOf(chs.Button, {
-            constructor: function (x1, y1, x2, y2, link, click, context) {
-                var l = Math.floor(x1) + 0.5,
-                    r = Math.floor(x2) + 0.5,
-                    t = Math.floor(y1) + 0.5,
-                    b = Math.floor(y2) + 0.5,
-                    h = b - t,
-                    w = r - l;
-                chs.Line.call(this, 0, h, w, h, "lightblue", 1);
-                chs.Button.call(this, function () {
-                    if (this.linkClicked !== undefined) {
-                        this.linkClicked.call(this.clickContext, this.link);
-                    }
-                }, this);
-                this.clickContext = context;
-                this.link = link;
-                this.linkClicked = click;
-                this.setPosition(l, t);
-                this.dimensions = { width: w, height: h };
-            },
-            methods: {
-                onIdle: function () { this.colour = "lightblue"; },
-                onHover: function () { this.colour = "cyan"; },
-                onPressed: function () { this.colour = "red"; }
-            }
-        }));
+    chs.LinkButton = chs.Class({
+
+        inherits: [chs.Button, chs.Line],
+
+        ctor: function (x1, y1, x2, y2, link, click, context) {
+            var l = Math.floor(x1) + 0.5,
+                r = Math.floor(x2) + 0.5,
+                t = Math.floor(y1) + 0.5,
+                b = Math.floor(y2) + 0.5,
+                h = b - t,
+                w = r - l;
+            chs.Line.call(this, 0, h, w, h, "lightblue", 1);
+            chs.Button.call(this, function () {
+                if (this.linkClicked !== undefined) {
+                    this.linkClicked.call(this.clickContext, this.link);
+                }
+            }, this);
+            this.clickContext = context;
+            this.link = link;
+            this.linkClicked = click;
+            this.setPosition(l, t);
+            this.dimensions = { width: w, height: h };
+        },
+        methods: {
+            onIdle: function () { this.colour = "lightblue"; },
+            onHover: function () { this.colour = "cyan"; },
+            onPressed: function () { this.colour = "red"; }
+        }
+    });
 
 }());

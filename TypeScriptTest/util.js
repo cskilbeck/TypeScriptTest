@@ -1,11 +1,11 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-chs.Util = (function () {
+(function () {
     "use strict";
 
     var b64c = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-    return {
+    chs.Util = {
 
         //////////////////////////////////////////////////////////////////////
 

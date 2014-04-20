@@ -5,9 +5,11 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.Menu = chs.extensionOf(chs.Drawable, {
+    chs.Menu = chs.Class({
 
-        constructor: function (x, y, font, items) {
+        inherits: chs.Drawable,
+
+        ctor: function (x, y, font, items) {
             var i,
                 ht = font.height,
                 w = 0,
@@ -50,9 +52,11 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.PopupMenu = chs.extensionOf(chs.Menu, {
+    chs.PopupMenu = chs.Class({
 
-        constructor: function (x, y, font, items) {
+        inherits: chs.Menu,
+
+        ctor: function (x, y, font, items) {
             chs.Menu.call(this, x, y, font, items);
             this.buttons.forEach(function (button) {
                 button.buttonCallback = button.callback;

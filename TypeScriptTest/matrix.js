@@ -11,11 +11,11 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.Matrix = chs.extensionOf(chs.Object, {
+    chs.Matrix = chs.Class({
 
         //////////////////////////////////////////////////////////////////////
 
-        constructor: function (a, b, c, d, e, f, g, h, i) {
+        ctor: function (a, b, c, d, e, f, g, h, i) {
             this.m = [a, b, c, d, e, f, g, h, i];
         },
 

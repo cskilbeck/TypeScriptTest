@@ -163,7 +163,7 @@
 
     chs.Mouse = chs.Class({
 
-        statics: {
+        static$: {
 
             init: function (canvasElement, screenElement) {
                 canvas = canvasElement;

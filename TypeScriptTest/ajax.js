@@ -36,7 +36,7 @@
 
     chs.ajax = chs.Class({
 
-        statics: {
+        static$: {
 
             url: function (url, data, force) {
                 var query = [],

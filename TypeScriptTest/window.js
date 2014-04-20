@@ -3,8 +3,7 @@
 
     chs.Window = chs.Class({ inherits: chs.Panel,
 
-        ctor: function (x, y, w, h, caption, font, cornerRadius, backgroundColour, captionScale) {
-
+        $: function (x, y, w, h, caption, font, cornerRadius, backgroundColour, captionScale) {
             var cr = cornerRadius || 0,
                 bgcol = backgroundColour || "black",
                 cs = captionScale || 1,
@@ -55,15 +54,12 @@
             };
         },
 
-        methods: {
-
-            text: {
-                get: function () {
-                    return this.caption.text;
-                },
-                set: function (s) {
-                    this.caption.text = s;
-                }
+        text: {
+            get: function () {
+                return this.caption.text;
+            },
+            set: function (s) {
+                this.caption.text = s;
             }
         }
     });

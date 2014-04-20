@@ -7,7 +7,7 @@
 
     chs.Menu = chs.Class({ inherits: chs.Drawable,
 
-        ctor: function (x, y, font, items) {
+        $: function (x, y, font, items) {
             var i,
                 ht = font.height,
                 w = 0,
@@ -52,7 +52,7 @@
 
     chs.PopupMenu = chs.Class({ inherits: chs.Menu,
 
-        ctor: function (x, y, font, items) {
+        $: function (x, y, font, items) {
             chs.Menu.call(this, x, y, font, items);
             this.buttons.forEach(function (button) {
                 button.buttonCallback = button.callback;
@@ -67,10 +67,8 @@
             this.setCapture(true);
         },
 
-        methods: {
-            onLeftMouseUp: function (e) {
-                this.close();
-            }
+        onLeftMouseUp: function (e) {
+            this.close();
         }
     });
 

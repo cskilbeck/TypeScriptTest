@@ -7,36 +7,33 @@
 
     chs.Rectangle = chs.Class({ inherits: chs.Drawable,
 
-        ctor: function (x, y, w, h, radius) {
+        $: function (x, y, w, h, radius) {
             chs.Drawable.call(this);
             this.setPosition(x, y);
             this.dimensions = { width: w, height: h };
             this.radius = radius;
         },
 
-        methods: {
-
-            width: {
-                set: function (w) {
-                    this.dimensions.width = w;
-                },
-                get: function () {
-                    return this.dimensions.width;
-                }
+        width: {
+            set: function (w) {
+                this.dimensions.width = w;
             },
-
-            height: {
-                set: function (h) {
-                    this.dimensions.height = h;
-                },
-                get: function () {
-                    return this.dimensions.height;
-                }
-            },
-
-            onDraw: function (context) {
-                chs.Util.roundRect(context, 0, 0, this.width, this.height, this.radius);
+            get: function () {
+                return this.dimensions.width;
             }
+        },
+
+        height: {
+            set: function (h) {
+                this.dimensions.height = h;
+            },
+            get: function () {
+                return this.dimensions.height;
+            }
+        },
+
+        onDraw: function (context) {
+            chs.Util.roundRect(context, 0, 0, this.width, this.height, this.radius);
         }
     });
 
@@ -44,16 +41,13 @@
 
     chs.ClipRect = chs.Class({ inherits: chs.Rectangle,
         
-        ctor: function (x, y, w, h, radius) {
+        $: function (x, y, w, h, radius) {
             chs.Rectangle.call(this, x, y, w, h, radius);
         },
 
-        methods: {
-
-            onDraw: function (context) {
-                chs.Rectangle.prototype.onDraw.call(this, context);
-                context.clip();
-            }
+        onDraw: function (context) {
+            chs.Rectangle.prototype.onDraw.call(this, context);
+            context.clip();
         }
     });
 
@@ -61,7 +55,7 @@
 
     chs.Panel = chs.Class({ inherits: chs.Rectangle,
 
-        ctor: function (x, y, w, h, fillColour, outlineColour, radius, lineWidth, lineTransparency) {
+        $: function (x, y, w, h, fillColour, outlineColour, radius, lineWidth, lineTransparency) {
             chs.Rectangle.call(this, x, y, w, h, radius);
             this.fillColour = fillColour;
             this.lineColour = outlineColour;
@@ -69,20 +63,17 @@
             this.lineTransparency = lineTransparency;
         },
 
-        methods: {
-
-            onDraw: function (context) {
-                chs.Rectangle.prototype.onDraw.call(this, context);
-                if (this.fillColour !== undefined) {
-                    context.fillStyle = this.fillColour;
-                    context.fill();
-                }
-                if (this.lineColour !== undefined) {
-                    context.strokeStyle = this.lineColour;
-                    context.lineWidth = this.lineWidth || 1;
-                    context.globalAlpha = (this.lineTransparency || 255) / 255.0;
-                    context.stroke();
-                }
+        onDraw: function (context) {
+            chs.Rectangle.prototype.onDraw.call(this, context);
+            if (this.fillColour !== undefined) {
+                context.fillStyle = this.fillColour;
+                context.fill();
+            }
+            if (this.lineColour !== undefined) {
+                context.strokeStyle = this.lineColour;
+                context.lineWidth = this.lineWidth || 1;
+                context.globalAlpha = (this.lineTransparency || 255) / 255.0;
+                context.stroke();
             }
         }
     });
@@ -91,7 +82,7 @@
 
     chs.Line = chs.Class({ inherits: chs.Drawable,
         
-        ctor: function (x1, y1, x2, y2, colour, width) {
+        $: function (x1, y1, x2, y2, colour, width) {
             chs.Drawable.call(this);
             this.x1 = x1;
             this.x2 = x2;
@@ -101,16 +92,13 @@
             this.lineWidth = width;
         },
 
-        methods: {
-
-            onDraw: function (context) {
-                context.beginPath();
-                context.moveTo(this.x1, this.y1);
-                context.lineTo(this.x2, this.y2);
-                context.strokeStyle = this.colour;
-                context.lineWidth = this.lineWidth;
-                context.stroke();
-            }
+        onDraw: function (context) {
+            context.beginPath();
+            context.moveTo(this.x1, this.y1);
+            context.lineTo(this.x2, this.y2);
+            context.strokeStyle = this.colour;
+            context.lineWidth = this.lineWidth;
+            context.stroke();
         }
     });
 
@@ -118,7 +106,7 @@
 
     chs.PanelButton = chs.Class({ inherits: [chs.Button, chs.Panel],
 
-        ctor: function (x, y, w, h, fillColour, lineColour, radius, lineWidth, click, context) {
+        $: function (x, y, w, h, fillColour, lineColour, radius, lineWidth, click, context) {
             chs.Panel.call(this, x, y, w, h, fillColour, lineColour, radius, lineWidth);
             chs.Button.call(this, click, context);
         }
@@ -128,7 +116,7 @@
 
     chs.LinkButton = chs.Class({ inherits: [chs.Button, chs.Line],
 
-        ctor: function (x1, y1, x2, y2, link, click, context) {
+        $: function (x1, y1, x2, y2, link, click, context) {
             var l = Math.floor(x1) + 0.5,
                 r = Math.floor(x2) + 0.5,
                 t = Math.floor(y1) + 0.5,
@@ -147,11 +135,9 @@
             this.setPosition(l, t);
             this.dimensions = { width: w, height: h };
         },
-        methods: {
-            onIdle: function () { this.colour = "lightblue"; },
-            onHover: function () { this.colour = "cyan"; },
-            onPressed: function () { this.colour = "red"; }
-        }
+        onIdle: function () { this.colour = "lightblue"; },
+        onHover: function () { this.colour = "cyan"; },
+        onPressed: function () { this.colour = "red"; }
     });
 
 }());

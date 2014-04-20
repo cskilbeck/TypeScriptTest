@@ -7,7 +7,7 @@
 
     chs.Sprite = chs.Class({ inherits: chs.Drawable,
 
-        ctor: function (image) {
+        $: function (image) {
 
             chs.Drawable.call(this);
             this.image = image;
@@ -19,36 +19,33 @@
             this.frame = 0;
         },
 
-        statics: {
+        static$: {
 
             load: function (name, loader) {
                 return new chs.Sprite(loader.load(name + ".png"));
             }
         },
 
-        methods: {
+        setFrameXY: function (x, y) {
+            this.UV.x = x * this.frameWidth;
+            this.UV.y = y * this.frameHeight;
+        },
 
-            setFrameXY: function (x, y) {
-                this.UV.x = x * this.frameWidth;
-                this.UV.y = y * this.frameHeight;
-            },
+        setFrame: function (frame) {
+            this.setFrameXY((frame % this.framesWide) >>> 0, (frame / this.framesWide) >>> 0);
+        },
 
-            setFrame: function (frame) {
-                this.setFrameXY((frame % this.framesWide) >>> 0, (frame / this.framesWide) >>> 0);
-            },
+        size: function () {
+            return {
+                width: this.frameWidth || this.image.width,
+                height: this.frameHeight || this.image.height
+            };
+        },
 
-            size: function () {
-                return {
-                    width: this.frameWidth || this.image.width,
-                    height: this.frameHeight || this.image.height
-                };
-            },
-
-            onDraw: function (context, matrix) {
-                var w = this.width,
-                    h = this.height;
-                context.drawImage(this.image, this.UV.x, this.UV.y, w, h, 0, 0, w, h);
-            }
+        onDraw: function (context, matrix) {
+            var w = this.width,
+                h = this.height;
+            context.drawImage(this.image, this.UV.x, this.UV.y, w, h, 0, 0, w, h);
         }
     });
 

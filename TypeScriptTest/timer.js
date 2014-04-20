@@ -10,7 +10,7 @@
 
     chs.Timer = chs.Class({
 
-        statics: {
+        static$: {
 
             init: function () {
                 currentTime = window.performance.now();

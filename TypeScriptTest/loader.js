@@ -124,7 +124,7 @@
 
         //////////////////////////////////////////////////////////////////////
 
-        ctor: function (baseDir) {
+        $: function (baseDir) {
             chs.Drawable.call(this);
             this.baseDir = baseDir;
             this.items = {};
@@ -134,90 +134,87 @@
 
         //////////////////////////////////////////////////////////////////////
 
-        methods: {
-
-            percentComplete: function () {
-                var i,
-                    total = 0,
-                    received = 0;
-                for (i in this.items) {
-                    if (this.items[i].size !== undefined) {
-                        total += this.items[i].size;
-                    }
-                    received += this.items[i].bytesReceived;
+        percentComplete: function () {
+            var i,
+                total = 0,
+                received = 0;
+            for (i in this.items) {
+                if (this.items[i].size !== undefined) {
+                    total += this.items[i].size;
                 }
-                total = total || received;
-                return (received > 0) ? received * 100 / total : 0;
-            },
-
-            //////////////////////////////////////////////////////////////////////
-
-            complete: function () {
-                var i;
-                for (i in this.items) {
-                    if (!this.items[i].loaded) {
-                        return false;
-                    }
-                }
-                return true;
-            },
-
-            //////////////////////////////////////////////////////////////////////
-            // use debug output for now...
-
-            onUpdate: function () {
-                var i,
-                    item,
-                    s;
-                chs.Debug.print("Loading, " + this.percentComplete().toFixed(2) + "% complete...");
-                chs.Debug.print();
-                for (i in this.items) {
-                    item = this.items[i];
-                    s = item.bytesReceived.toString();
-                    while (s.length < 20) {
-                        s = " " + s;
-                    }
-                    chs.Debug.print(s + ": " + item.url);
-                }
-            },
-
-            //////////////////////////////////////////////////////////////////////
-
-            start: function (callback, context) {
-                var i;
-                for (i in this.items) {
-                    this.items[i].load();
-                }
-                this.callback = callback;
-                this.context = context;
-            },
-
-            //////////////////////////////////////////////////////////////////////
-
-            itemLoaded: function (item) {
-                if (this.complete()) {
-                    if (this.parent !== null) {
-                        this.parent.loaded(this);
-                    }
-                    if (this.callback !== null) {
-                        this.callback.call(this.context, this);
-                    }
-                }
-            },
-
-            //////////////////////////////////////////////////////////////////////
-
-            load: function (name, callback, context, data) {
-                var url = chs.ajax.url(this.baseDir + name, data),
-                    item = this.items[url] || null;
-                if (item !== null) {
-                    item.doCallback();
-                } else {
-                    item = new Item(url, callback, context, data, this);
-                    this.items[url] = item;
-                }
-                return item.object;
+                received += this.items[i].bytesReceived;
             }
+            total = total || received;
+            return (received > 0) ? received * 100 / total : 0;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        complete: function () {
+            var i;
+            for (i in this.items) {
+                if (!this.items[i].loaded) {
+                    return false;
+                }
+            }
+            return true;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+        // use debug output for now...
+
+        onUpdate: function () {
+            var i,
+                item,
+                s;
+            chs.Debug.print("Loading, " + this.percentComplete().toFixed(2) + "% complete...");
+            chs.Debug.print();
+            for (i in this.items) {
+                item = this.items[i];
+                s = item.bytesReceived.toString();
+                while (s.length < 20) {
+                    s = " " + s;
+                }
+                chs.Debug.print(s + ": " + item.url);
+            }
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        start: function (callback, context) {
+            var i;
+            for (i in this.items) {
+                this.items[i].load();
+            }
+            this.callback = callback;
+            this.context = context;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        itemLoaded: function (item) {
+            if (this.complete()) {
+                if (this.parent !== null) {
+                    this.parent.loaded(this);
+                }
+                if (this.callback !== null) {
+                    this.callback.call(this.context, this);
+                }
+            }
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        load: function (name, callback, context, data) {
+            var url = chs.ajax.url(this.baseDir + name, data),
+                item = this.items[url] || null;
+            if (item !== null) {
+                item.doCallback();
+            } else {
+                item = new Item(url, callback, context, data, this);
+                this.items[url] = item;
+            }
+            return item.object;
         }
     });
 

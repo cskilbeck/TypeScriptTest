@@ -3,7 +3,7 @@
 
     chs.Event = chs.Class({
 
-        statics: {
+        static$: {
             leftMouseDown: 1,
             leftMouseUp: 2,
             rightMouseDown: 3,
@@ -11,30 +11,27 @@
             mouseMove: 5
         },
 
-        ctor: function (type) {
+        $: function (type) {
             this.type = type;
         }
     });
 
     chs.MouseEvent = chs.Class({ inherits: chs.Event,
 
-        ctor: function (type, pos) {
+        $: function (type, pos) {
             chs.Event.call(this, type);
             this.position = pos;
         },
 
-        methods: {
+        x: {
+            get: function () {
+                return this.position.x;
+            }
+        },
 
-            x: {
-                get: function () {
-                    return this.position.x;
-                }
-            },
-
-            y: {
-                get: function () {
-                    return this.position.y;
-                }
+        y: {
+            get: function () {
+                return this.position.y;
             }
         }
     });

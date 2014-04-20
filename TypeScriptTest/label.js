@@ -1,18 +1,17 @@
 ﻿//////////////////////////////////////////////////////////////////////
-
-chs.Label = (function () {
+(function () {
     "use strict";
 
-    var Label = function (text, font) {
-        chs.Drawable.call(this);
-        this.labelData = {
-            text: text,
-            font: font,
-            dimensions: null
-        };
-    };
+    chs.Label = chs.extender(chs.Drawable, {}, {
 
-    return chs.extend(chs.Drawable, Label, {
+        $: function (text, font) {
+            chs.Drawable.call(this);
+            this.labelData = {
+                text: text,
+                font: font,
+                dimensions: null
+            };
+        },
 
         text: {
             configurable: true,
@@ -49,30 +48,26 @@ chs.Label = (function () {
             var self = this.labelData;
             self.font.renderString(context, self.text, 0, 0);
         }
+
     });
 
-}());
+    var linkClickedCallback = function (link) {
+        if (this.linkClicked !== undefined) {
+            this.linkClicked.call(this.context, link);
+        }
+    };
 
-chs.TextBox = (function () {
-    "use strict";
+    chs.TextBox = chs.extender(chs.Label, {}, {
 
-    var TextBox = function (x, y, w, h, text, font, lineBreak, linkClicked, context) {
-        chs.Label.call(this, text, font);
-        this.context = context;
-        this.setPosition(x, y);
-        this.dimensions = { width: w, height: h };
-        this.linkClicked = linkClicked;
-        this.lineBreak = lineBreak;
-        this.text = text;
-    },
-
-        linkClickedCallback = function (link) {
-            if (this.linkClicked !== undefined) {
-                this.linkClicked.call(this.context, link);
-            }
-        };
-
-    return chs.extend(chs.Label, TextBox, {
+        $: function (x, y, w, h, text, font, lineBreak, linkClicked, context) {
+            chs.Label.call(this, text, font);
+            this.context = context;
+            this.setPosition(x, y);
+            this.dimensions = { width: w, height: h };
+            this.linkClicked = linkClicked;
+            this.lineBreak = lineBreak;
+            this.text = text;
+        },
 
         size: function () {
             return this.dimensions;
@@ -106,3 +101,4 @@ chs.TextBox = (function () {
     });
 
 }());
+

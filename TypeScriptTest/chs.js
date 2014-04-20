@@ -18,7 +18,7 @@ var chs = (function () {
             desc = Object.getOwnPropertyDescriptor(proto, names[i]);
             if (typeof desc.value === "object") {
                 Object.defineProperty(child, names[i], desc.value);
-            } else {
+            } else if (names[i] !== '$') {
                 Object.defineProperty(child, names[i], desc);
             }
         }
@@ -30,11 +30,58 @@ var chs = (function () {
         // super supports only single inheritance...
 
         extend: function (parent, child, proto) {
-            child.prototype.Super = parent.prototype;
+            if (proto !== undefined && '$' in proto && typeof proto.$ === 'function' && child.prototype === undefined) {
+                child = proto.$;
+            }
             extendPrototype(child.prototype, parent.prototype, false);
             if (proto !== undefined) {
                 extendPrototype(child.prototype, proto, true);
             }
+            return child;
+        },
+
+        extender: function (parent, statics, proto) {
+            var child = {};
+            if (proto !== undefined && '$' in proto && typeof proto.$ === 'function') {
+                child = proto.$;
+            }
+            extendPrototype(child, statics, true);
+            if (child.prototype !== undefined) {
+                extendPrototype(child.prototype, parent.prototype, false);
+                if (proto !== undefined) {
+                    extendPrototype(child.prototype, proto, true);
+                }
+            }
+            return child;
+        },
+
+        extensionOf: function (parent, descriptor) {
+            var child = {},
+                i;
+            if (descriptor !== undefined) {
+                for (i in descriptor) {
+                    if (descriptor.hasOwnProperty(i)) {
+                        if (!(i in {
+                            constructor: true,
+                            statics: true,
+                            methods: true
+                        })) {
+                            throw new TypeError("Unknown descriptor field!");
+                        }
+                    }
+                }
+                if (descriptor.constructor !== undefined) {
+                    child = descriptor.constructor;
+                }
+                if (descriptor.statics !== undefined) {
+                    extendPrototype(child, descriptor.statics, true);
+                }
+                if (descriptor.methods !== undefined) {
+                    extendPrototype(child.prototype, descriptor.methods, true);
+                }
+            }
+            extendPrototype(child.prototype, parent.prototype, false);
+
             return child;
         },
 
@@ -54,3 +101,5 @@ var chs = (function () {
     };
 
 }());
+
+chs.Object = function () { };

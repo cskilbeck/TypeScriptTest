@@ -4,8 +4,9 @@
     var loader,
         consolasItalic;
 
-    return chs.extend(chs.Drawable, function () {
+    return chs.extender(chs.Drawable, {}, {
 
+        $: function () {
             chs.Drawable.call(this);
             this.enabled = false;
             this.visible = false;
@@ -17,8 +18,7 @@
             Dictionary.init(loader.load("dictionary.json"));
             this.game = new Game(this, loader);
             loader.start(this.loadComplete, this);
-
-        }, {
+        },
 
         loadComplete: function () {
             this.game.loadComplete();
@@ -42,7 +42,6 @@
         },
 
         onUpdate: function (time, deltaTime) {
-            this.Super.onUpdate(time, deltaTime);
             this.button.rotation = Math.pow(Math.sin(time / 1000), 16) * Math.sin(time / 25) * 0.05;
         },
 

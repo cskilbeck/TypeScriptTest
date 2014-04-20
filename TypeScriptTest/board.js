@@ -70,51 +70,48 @@ Board = (function () {
     }());
 
     //////////////////////////////////////////////////////////////////////
-    // loader must be complete before this is called
 
-    function Board(game) {
-        var i;
+    return chs.extender(chs.Drawable, {
 
-        chs.Drawable.call(this);
-        this.tileWidth = 7;
-        this.tileHeight = 5;
-        this.score = 0;
-        this.changed = false;
-        this.words = new chs.List("listNode");
-        this.random = new chs.Random();
-        this.activeTile = null;
-        this.swapTile = null;
-        this.clickX = 0;
-        this.clickY = 0;
-        this.offsetX = 0;
-        this.offsetY = 0;
-        this.tiles = [];
-        this.undoStack = [];
-        this.undoPointer = 0;
-        this.undoLength = 0;
-        this.seed = 0;
-        this.beforeDrag = "";
-        this.tiles.length = this.tileWidth * this.tileHeight;
-        for (i = 0; i < this.tiles.length; ++i) {
-            this.tiles[i] = new Tile("A", i % this.tileWidth, (i / this.tileWidth) >>> 0);
-            game.addChild(this.tiles[i]);
+        getWordScore: function (str) {
+            var s = 0,
+                i;
+            for (i = 0; i < str.length; ++i) {
+                s += letters[str.charCodeAt(i) - asciiA].score;
+            }
+            return s * str.length;
         }
-    }
 
-    //////////////////////////////////////////////////////////////////////
+    }, {
 
-    Board.getWordScore = function (str) {
-        var s = 0,
-            i;
-        for (i = 0; i < str.length; ++i) {
-            s += letters[str.charCodeAt(i) - asciiA].score;
-        }
-        return s * str.length;
-    };
+        $: function (game) {
+            var i;
 
-    //////////////////////////////////////////////////////////////////////
-
-    return chs.extend(chs.Drawable, Board, {
+            chs.Drawable.call(this);
+            this.tileWidth = 7;
+            this.tileHeight = 5;
+            this.score = 0;
+            this.changed = false;
+            this.words = new chs.List("listNode");
+            this.random = new chs.Random();
+            this.activeTile = null;
+            this.swapTile = null;
+            this.clickX = 0;
+            this.clickY = 0;
+            this.offsetX = 0;
+            this.offsetY = 0;
+            this.tiles = [];
+            this.undoStack = [];
+            this.undoPointer = 0;
+            this.undoLength = 0;
+            this.seed = 0;
+            this.beforeDrag = "";
+            this.tiles.length = this.tileWidth * this.tileHeight;
+            for (i = 0; i < this.tiles.length; ++i) {
+                this.tiles[i] = new Tile("A", i % this.tileWidth, (i / this.tileWidth) >>> 0);
+                game.addChild(this.tiles[i]);
+            }
+        },
 
         //////////////////////////////////////////////////////////////////////
 

@@ -3,38 +3,42 @@
 chs.Font = (function () {
     "use strict";
 
-    //////////////////////////////////////////////////////////////////////
+    return chs.extender(chs.Object, {
 
-    var Font = function (font, page) {
-        this.page = page;
-        this.font = font;
-        this.lineSpacing = 0;
-        this.softLineSpacing = 0;
-        this.letterSpacing = 0;
-        this.mask = 0xff;
-    };
+        //////////////////////////////////////////////////////////////////////
+        // static const
 
-    //////////////////////////////////////////////////////////////////////
+        left: 0,
+        right: 1,
+        center: 2,
 
-    Font.load = function (name, loader) {
-        return new Font(loader.load(name + ".json"), loader.load(name + "0.png"));
-    };
+        top: 3,
+        bottom: 4,
+        middle: 5,
+        baseline: 6,
 
-    //////////////////////////////////////////////////////////////////////
-    // alignment options
+        //////////////////////////////////////////////////////////////////////
+        // static functions
 
-    Font.left = 0;
-    Font.right = 1;
-    Font.center = 2;
+        load: function (name, loader) {
+            return new chs.Font(loader.load(name + ".json"), loader.load(name + "0.png"));
+        }
 
-    Font.top = 3;
-    Font.bottom = 4;
-    Font.middle = 5;
-    Font.baseline = 6;
+    }, {
 
-    //////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////
+        // ctor
+        $: function (font, page) {
+            this.page = page;
+            this.font = font;
+            this.lineSpacing = 0;
+            this.softLineSpacing = 0;
+            this.letterSpacing = 0;
+            this.mask = 0xff;
+        },
 
-    return chs.override(Font, {
+        //////////////////////////////////////////////////////////////////////
+        // methods
 
         midPivot: {
             get: function () {

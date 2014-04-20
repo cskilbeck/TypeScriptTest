@@ -1,25 +1,23 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-chs.Button = (function () {
+(function () {
     "use strict";
 
     //////////////////////////////////////////////////////////////////////
 
-    function Button(click, context) {
-        this.currentState = Button.idle;
-        this.callback = click;
-        this.context = context || this;
-    }
+    chs.Button = chs.extender(chs.Object, {
 
-    //////////////////////////////////////////////////////////////////////
+        idle: 0,
+        hover: 1,
+        pressed: 2
 
-    Button.idle = 0;
-    Button.hover = 1;
-    Button.pressed = 2;
+    }, {
 
-    //////////////////////////////////////////////////////////////////////
-
-    return chs.override(Button, {
+        $: function (click, context) {
+            this.currentState = chs.Button.idle;
+            this.callback = click;
+            this.context = context || this;
+        },
 
         onHover: function () {
         },
@@ -31,23 +29,23 @@ chs.Button = (function () {
         },
 
         onMouseEnter: function () {
-            this.state = Button.hover;
+            this.state = chs.Button.hover;
             return true;
         },
 
         onMouseLeave: function () {
-            this.state = Button.idle;
+            this.state = chs.Button.idle;
             return true;
         },
 
         onLeftMouseDown: function () {
-            this.state = Button.pressed;
+            this.state = chs.Button.pressed;
             return true;
         },
 
         onLeftMouseUp: function () {
-            if (this.state === Button.pressed) {
-                this.state = Button.hover;
+            if (this.state === chs.Button.pressed) {
+                this.state = chs.Button.hover;
                 if (this.callback !== undefined) {
                     this.callback.call(this.context || this);
                 }
@@ -62,14 +60,14 @@ chs.Button = (function () {
             set: function (s) {
                 this.currentState = s;
                 switch (s) {
-                case Button.idle:
+                case chs.Button.idle:
                     this.onIdle();
                     this.drawableData.mouseIsOver = false;
                     break;
-                case Button.hover:
+                case chs.Button.hover:
                     this.onHover();
                     break;
-                case Button.pressed:
+                case chs.Button.pressed:
                     this.onPressed();
                     break;
                 }

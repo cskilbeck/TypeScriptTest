@@ -5,35 +5,33 @@ chs.Drawable = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    var Drawable = function () {
-        this.drawableListNode = chs.List.Node(this);
-        this.drawableData = {
-            position: { x: 0, y: 0 },
-            rotation: 0,
-            scale: { x: 1, y: 1 },
-            drawScale: { x: 1, y: 1 },
-            dirty: true,
-            visible: true,
-            myZindex: 0,
-            reorder: false,
-            transparency: 255,
-            pivot: { x: 0, y: 0 },
-            mouseIsOver: false,
-            matrix: chs.Matrix.identity(),
-            pickMatrix: chs.Matrix.identity(),
-            globalMatrix: chs.Matrix.identity(),
-            mouseCapture: false,
-            parent: null,
-            enabled: true,
-            closed: false,
-            modal: false,
-            children: new chs.List("drawableListNode")
-        };
-    };
+    return chs.extender(chs.Object, {}, {
 
-    //////////////////////////////////////////////////////////////////////
-
-    return chs.override(Drawable, {
+        $: function () {
+            this.drawableListNode = chs.List.Node(this);
+            this.drawableData = {
+                position: { x: 0, y: 0 },
+                rotation: 0,
+                scale: { x: 1, y: 1 },
+                drawScale: { x: 1, y: 1 },
+                dirty: true,
+                visible: true,
+                myZindex: 0,
+                reorder: false,
+                transparency: 255,
+                pivot: { x: 0, y: 0 },
+                mouseIsOver: false,
+                matrix: chs.Matrix.identity(),
+                pickMatrix: chs.Matrix.identity(),
+                globalMatrix: chs.Matrix.identity(),
+                mouseCapture: false,
+                parent: null,
+                enabled: true,
+                closed: false,
+                modal: false,
+                children: new chs.List("drawableListNode")
+            };
+        },
 
         //////////////////////////////////////////////////////////////////////
         // override these...

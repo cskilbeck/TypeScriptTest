@@ -1,62 +1,52 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-chs.Loader = (function () {
+(function () {
     "use strict";
 
     //////////////////////////////////////////////////////////////////////
 
-    var Loader = function (baseDir) {
-        chs.Drawable.call(this);
-        this.baseDir = baseDir;
-        this.items = {};
-        this.context = null;
-        this.callback = null;
-    },
-
-    //////////////////////////////////////////////////////////////////////
-
-        Item = function (url, callback, context, data, loader) {
-            this.url = url;
-            this.size = null;
-            this.bytesReceived = 0;
-            this.callback = callback;
-            this.context = context;
-            this.data = data;
-            this.loaded = false;
-            this.loader = loader;
-            this.inProgress = false;
-            this.binary = undefined;
-            this.started = false;
-            switch (chs.Util.getExtension(url)) {
-            case 'jpg':
-            case 'jpeg':
-                this.object = new Image();
-                this.binary = true;
-                this.finalize = Item.processJPEG;
-                break;
-            case 'png':
-                this.object = new Image();
-                this.binary = true;
-                this.finalize = Item.processImage;
-                break;
-            case 'json':
-                this.object = {};
-                this.binary = false;
-                this.finalize = Item.processJSON;
-                break;
-            case 'txt':
-            case 'text':
-                this.object = "";       // this doesn't work because strings are immutable
-                this.binary = false;
-                this.finalize = Item.processString;
-                break;
-            default:
-                this.object = new Uint8Array();
-                this.binary = true;
-                this.finalize = Item.processBinary;
-                break;
-            }
-        };
+    var Item = function (url, callback, context, data, loader) {
+        this.url = url;
+        this.size = null;
+        this.bytesReceived = 0;
+        this.callback = callback;
+        this.context = context;
+        this.data = data;
+        this.loaded = false;
+        this.loader = loader;
+        this.inProgress = false;
+        this.binary = undefined;
+        this.started = false;
+        switch (chs.Util.getExtension(url)) {
+        case 'jpg':
+        case 'jpeg':
+            this.object = new Image();
+            this.binary = true;
+            this.finalize = Item.processJPEG;
+            break;
+        case 'png':
+            this.object = new Image();
+            this.binary = true;
+            this.finalize = Item.processImage;
+            break;
+        case 'json':
+            this.object = {};
+            this.binary = false;
+            this.finalize = Item.processJSON;
+            break;
+        case 'txt':
+        case 'text':
+            this.object = "";       // this doesn't work because strings are immutable
+            this.binary = false;
+            this.finalize = Item.processString;
+            break;
+        default:
+            this.object = new Uint8Array();
+            this.binary = true;
+            this.finalize = Item.processBinary;
+            break;
+        }
+    };
 
     //////////////////////////////////////////////////////////////////////
 
@@ -130,7 +120,17 @@ chs.Loader = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    return chs.extend(chs.Drawable, Loader, {
+    chs.Loader = chs.extender(chs.Drawable, {}, {
+
+        //////////////////////////////////////////////////////////////////////
+
+        $: function (baseDir) {
+            chs.Drawable.call(this);
+            this.baseDir = baseDir;
+            this.items = {};
+            this.context = null;
+            this.callback = null;
+        },
 
         //////////////////////////////////////////////////////////////////////
 

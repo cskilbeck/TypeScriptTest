@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-chs.ajax = (function () {
+(function () {
     "use strict";
 
     //////////////////////////////////////////////////////////////////////
@@ -34,44 +34,45 @@ chs.ajax = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    return {
+    chs.ajax = chs.extensionOf(chs.Object, {
 
-        //////////////////////////////////////////////////////////////////////
+        statics: {
 
-        url: function (url, data, force) {
-            var query = [],
-                key,
-                u,
-                q = "",
-                a = "?";
-            for (key in data) {
-                query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
-                q = "?";
-                a = "&";
+            url: function (url, data, force) {
+                var query = [],
+                    key,
+                    u,
+                    q = "",
+                    a = "?";
+                for (key in data) {
+                    query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
+                    q = "?";
+                    a = "&";
+                }
+                u = url + q + query.join('&') + (force ? (a + (new Date()).getTime() + '=1') : "");
+                return u;
+            },
+
+            //////////////////////////////////////////////////////////////////////
+
+            get: function (url, callback, progressCallback, context, binary) {
+
+                send(url, callback, progressCallback, context, 'GET', null, binary);
+            },
+
+            //////////////////////////////////////////////////////////////////////
+
+            post: function (url, data, callback, progressCallback, context, binary) {
+
+                var query = [],
+                    key;
+                for (key in data) {
+                    query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
+                }
+                send(url, callback, progressCallback, context, 'POST', query.join('&'), binary);
             }
-            u = url + q + query.join('&') + (force ? (a + (new Date()).getTime() + '=1') : "");
-            return u;
-        },
-
-        //////////////////////////////////////////////////////////////////////
-
-        get: function (url, callback, progressCallback, context, binary) {
-
-            send(url, callback, progressCallback, context, 'GET', null, binary);
-        },
-
-        //////////////////////////////////////////////////////////////////////
-
-        post: function (url, data, callback, progressCallback, context, binary) {
-
-            var query = [],
-                key;
-            for (key in data) {
-                query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
-            }
-            send(url, callback, progressCallback, context, 'POST', query.join('&'), binary);
         }
-    };
+    });
 
 }());
 

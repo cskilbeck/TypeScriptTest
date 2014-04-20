@@ -16,9 +16,7 @@
         }
     });
 
-    chs.MouseEvent = chs.Class({
-
-        inherits: chs.Event,
+    chs.MouseEvent = chs.Class({ inherits: chs.Event,
 
         ctor: function (type, pos) {
             chs.Event.call(this, type);

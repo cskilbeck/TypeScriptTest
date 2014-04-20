@@ -5,9 +5,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.Menu = chs.Class({
-
-        inherits: chs.Drawable,
+    chs.Menu = chs.Class({ inherits: chs.Drawable,
 
         ctor: function (x, y, font, items) {
             var i,
@@ -52,9 +50,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.PopupMenu = chs.Class({
-
-        inherits: chs.Menu,
+    chs.PopupMenu = chs.Class({ inherits: chs.Menu,
 
         ctor: function (x, y, font, items) {
             chs.Menu.call(this, x, y, font, items);

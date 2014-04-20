@@ -5,9 +5,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.Rectangle = chs.Class({
-
-        inherits: chs.Drawable,
+    chs.Rectangle = chs.Class({ inherits: chs.Drawable,
 
         ctor: function (x, y, w, h, radius) {
             chs.Drawable.call(this);
@@ -44,9 +42,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.ClipRect = chs.Class({
-
-        inherits: chs.Rectangle,
+    chs.ClipRect = chs.Class({ inherits: chs.Rectangle,
         
         ctor: function (x, y, w, h, radius) {
             chs.Rectangle.call(this, x, y, w, h, radius);
@@ -63,9 +59,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.Panel = chs.Class({
-
-        inherits: chs.Rectangle,
+    chs.Panel = chs.Class({ inherits: chs.Rectangle,
 
         ctor: function (x, y, w, h, fillColour, outlineColour, radius, lineWidth, lineTransparency) {
             chs.Rectangle.call(this, x, y, w, h, radius);
@@ -95,9 +89,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.Line = chs.Class({
-
-        inherits: chs.Drawable,
+    chs.Line = chs.Class({ inherits: chs.Drawable,
         
         ctor: function (x1, y1, x2, y2, colour, width) {
             chs.Drawable.call(this);
@@ -124,9 +116,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.PanelButton = chs.Class({
-
-        inherits: [chs.Button, chs.Panel],
+    chs.PanelButton = chs.Class({ inherits: [chs.Button, chs.Panel],
 
         ctor: function (x, y, w, h, fillColour, lineColour, radius, lineWidth, click, context) {
             chs.Panel.call(this, x, y, w, h, fillColour, lineColour, radius, lineWidth);
@@ -136,9 +126,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.LinkButton = chs.Class({
-
-        inherits: [chs.Button, chs.Line],
+    chs.LinkButton = chs.Class({ inherits: [chs.Button, chs.Line],
 
         ctor: function (x1, y1, x2, y2, link, click, context) {
             var l = Math.floor(x1) + 0.5,

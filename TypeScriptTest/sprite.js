@@ -5,9 +5,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.Sprite = chs.Class({
-
-        inherits: chs.Drawable,
+    chs.Sprite = chs.Class({ inherits: chs.Drawable,
 
         ctor: function (image) {
 

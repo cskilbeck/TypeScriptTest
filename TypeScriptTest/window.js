@@ -1,9 +1,7 @@
 ﻿(function () {
     "use strict";
 
-    chs.Window = chs.Class({
-
-        inherits: chs.Panel,
+    chs.Window = chs.Class({ inherits: chs.Panel,
 
         ctor: function (x, y, w, h, caption, font, cornerRadius, backgroundColour, captionScale) {
 

@@ -4,9 +4,7 @@
     var loader,
         consolasItalic;
 
-    return chs.Class({
-
-        inherits: chs.Drawable,
+    return chs.Class({ inherits: chs.Drawable,
 
         ctor: function () {
             chs.Drawable.call(this);

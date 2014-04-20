@@ -40,9 +40,7 @@ var Game = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    return chs.Class({
-
-        inherits: chs.Drawable,
+    return chs.Class({ inherits: chs.Drawable,
 
         ctor: function (mainMenu, loader) {
             chs.Drawable.call(this);

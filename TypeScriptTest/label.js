@@ -2,9 +2,7 @@
 (function () {
     "use strict";
 
-    chs.Label = chs.Class({
-
-        inherits: chs.Drawable,
+    chs.Label = chs.Class({ inherits: chs.Drawable,
 
         ctor: function (text, font) {
             chs.Drawable.call(this);
@@ -62,9 +60,7 @@
         }
     };
 
-    chs.TextBox = chs.Class({
-
-        inherits: chs.Label,
+    chs.TextBox = chs.Class({ inherits: chs.Label,
 
         ctor: function (x, y, w, h, text, font, lineBreak, linkClicked, context) {
             chs.Label.call(this, text, font);

@@ -2,9 +2,7 @@
 (function () {
     "use strict";
 
-    chs.TextButton = chs.Class({
-
-        inherits: [chs.Button, chs.Label],
+    chs.TextButton = chs.Class({ inherits: [chs.Button, chs.Label],
 
         ctor: function (text, font, x, y, click, context) {
             chs.Button.call(this, click, context);
@@ -16,9 +14,7 @@
     });
 
 
-    chs.FancyTextButton = chs.Class({
-
-        inherits: chs.PanelButton,
+    chs.FancyTextButton = chs.Class({ inherits: chs.PanelButton,
 
         ctor: function (text, font, x, y, w, h, click, context, radius) {
             chs.PanelButton.call(this, x, y, w, h, "darkGrey", "lightGrey", radius === undefined ? h / 3 : radius, 3, click, context, 4);

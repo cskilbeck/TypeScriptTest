@@ -65,7 +65,7 @@
             this.setPosition(x, y);
             this.dimensions = { width: w, height: h };
             this.linkClicked = linkClicked;
-            this.lineBreak = lineBreak;
+            this.lineBreak = lineBreak || '\r';
             this.text = text;
         },
 
@@ -79,19 +79,21 @@
                     link,
                     self = this.labelData;
                 self.text = self.font.wrapText(s, this.width, this.lineBreak);
-                self.font.measureText(self.text, links);
-                self.dirty = true;
-                this.removeChildren();
-                while (links.length > 0) {
-                    link = new chs.LinkButton(links.shift(),
-                        links.shift(),
-                        links.shift(),
-                        links.shift(),
-                        links.shift(),
-                        linkClickedCallback,
-                        this);
-                    link.transparency = 192;
-                    this.addChild(link);
+                if (this.linkedClicked) {
+                    self.font.measureText(self.text, links);
+                    self.dirty = true;
+                    this.removeChildren();
+                    while (links.length > 0) {
+                        link = new chs.LinkButton(links.shift(),
+                            links.shift(),
+                            links.shift(),
+                            links.shift(),
+                            links.shift(),
+                            linkClickedCallback,
+                            this);
+                        link.transparency = 192;
+                        this.addChild(link);
+                    }
                 }
             },
             get: function (s) {

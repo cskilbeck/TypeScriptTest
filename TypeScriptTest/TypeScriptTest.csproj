@@ -49,6 +49,7 @@
     <Content Include="mainmenu.js" />
     <Content Include="matrix.js" />
     <Content Include="menu.js" />
+    <Content Include="messagebox.js" />
     <Content Include="mouse.js" />
     <Content Include="panel.js" />
     <Content Include="polyfill.js" />

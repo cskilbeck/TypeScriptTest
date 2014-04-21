@@ -150,7 +150,8 @@ var Game = (function () {
                 textBox;
 
             def = Dictionary.getDefinition(w.str),
-            window = new chs.Window(400, 300, 640, 480, w.str.toUpperCase(), arial, 12, "black", 0.5);
+            window = new chs.Window(400, 300, 640, 480, w.str.toUpperCase(), arial, 12, "black", 0.5, true, true, 'white', 4);
+//            window = new chs.Window(400, 300, 640, 480, null, arial, 12, "black", 0.5, true, false);
             window.transparency = 224;
             window.modal = true;
             window.setPivot(0.5, 0.5);
@@ -174,9 +175,9 @@ var Game = (function () {
                 textBox.text = Dictionary.getDefinition(link);
                 scoreLabel.text = Board.getWordScore(link).toString() + " points";
             });
-            scoreLabel.setPosition(window.titleBar.width - 16, window.titleBar.height / 2);
-            scoreLabel.setPivot(1, consolasItalic.midPivot);
-            window.titleBar.addChild(scoreLabel);
+            //scoreLabel.setPosition(window.titleBar.width - 16, window.titleBar.height / 2);
+            //scoreLabel.setPivot(1, consolasItalic.midPivot);
+            //window.titleBar.addChild(scoreLabel);
             window.client.addChild(textBox);
             this.addChild(window);
         },

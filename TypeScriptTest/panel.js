@@ -123,7 +123,7 @@
                 b = Math.floor(y2) + 0.5,
                 h = b - t,
                 w = r - l;
-            chs.Line.call(this, 0, h, w, h, "lightblue", 1);
+            chs.Line.call(this, 0, h, w, h, "skyblue", 2);
             chs.Button.call(this, function () {
                 if (this.linkClicked) {
                     this.linkClicked.call(this.clickContext, this.link);
@@ -135,7 +135,7 @@
             this.setPosition(l, t);
             this.dimensions = { width: w, height: h };
         },
-        onIdle: function () { this.colour = "lightblue"; },
+        onIdle: function () { this.colour = "skyblue"; },
         onHover: function () { this.colour = "red"; },
         onPressed: function () { this.colour = "white"; }
     });

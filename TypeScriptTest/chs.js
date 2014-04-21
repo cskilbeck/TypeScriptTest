@@ -16,7 +16,7 @@ var chs = (function () {
                 continue;
             }
             desc = Object.getOwnPropertyDescriptor(proto, names[i]);
-            if (typeof desc.value === "object") {
+            if (Object.prototype.toString.call(desc.value) === '[object Object]') {
                 Object.defineProperty(child, names[i], desc.value);
             } else {
                 Object.defineProperty(child, names[i], desc);

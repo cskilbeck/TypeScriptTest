@@ -169,9 +169,9 @@
                         skip = true;
                         if (links !== undefined) {
                             if (inLink) {
-                                links.push(xc + 1, yc);
+                                links.push(xc, yc);
                             } else {
-                                links.push(xc - 1, yc + this.font.baseline + 2, link);
+                                links.push(xc, yc + this.font.baseline + 3, link);
                                 link = "";
                             }
                         }

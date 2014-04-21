@@ -1,7 +1,5 @@
 ﻿//////////////////////////////////////////////////////////////////////
-// Save/Personal Best/cookies
-// Title screen
-// in-game menu
+// Save/Personal Best
 // Mobile: Android/Chrome, iOS/Safari, Windows Phone: IE // Touch Support
 // Fix tile grabbing/moving/swapping/lerping
 // Flying scores/fizz/particles
@@ -19,7 +17,10 @@ var Game = (function () {
         arial,
         words,
         wordButton,
-        score,
+        scoreButton,
+        bestButton,
+        scoreLabel,
+        bestLabel,
         board,
         undoImage,
         redoImage,
@@ -59,16 +60,28 @@ var Game = (function () {
             consolasItalic.softLineSpacing = 4;
             consolasItalic.mask = 2;
 
-            words = new chs.Drawable();
-            this.addChild(words);
-            this.addChild(new chs.SpriteButton(undoImage, "scale", 600, 510, this.undo, null));
-            this.addChild(new chs.SpriteButton(redoImage, "scale", 650, 510, this.redo, null));
-
             menuButton = new chs.FancyTextButton("Menu", consolas, 80, 515, 100, 40, this.menu, this).setPivot(0.5, 0);
             this.addChild(menuButton);
 
-            score = new chs.Label("Score: 0", consolas).setPosition(681, 11);
-            this.addChild(score);
+            words = new chs.Drawable().setPosition(674, 70);
+            this.addChild(words);
+
+            this.addChild(new chs.SpriteButton(undoImage, "scale", 600, 510, this.undo, null));
+            this.addChild(new chs.SpriteButton(redoImage, "scale", 650, 510, this.redo, null));
+
+            scoreButton = new chs.PanelButton(674, 10, 120, 26, 'black', undefined, 3, 0, null, null);
+            scoreLabel = new chs.Label("0", consolas).setPosition(116, 4).setPivot(1, 0);
+            scoreButton.addChild(scoreLabel);
+            scoreButton.addChild(new chs.Label("Score:", consolas).setPosition(4, 4));
+            scoreButton.transparency = 128;
+            this.addChild(scoreButton);
+
+            bestButton = new chs.PanelButton(674, 39, 120, 26, 'black', undefined, 3, 0, null, null);
+            bestLabel = new chs.Label("0", consolas).setPosition(116, 4).setPivot(1, 0);
+            bestButton.addChild(bestLabel);
+            bestButton.addChild(new chs.Label("Best:", consolas).setPosition(4, 4));
+            bestButton.transparency = 128;
+            this.addChild(bestButton);
 
             board = new Board(this);
             this.addChild(board);
@@ -78,14 +91,8 @@ var Game = (function () {
         // new game starting
 
         init: function (seed) {
-            var b;
             board.randomize(seed);
-            if (chs.Cookies.get("game") === seed.toString()) {
-                b = chs.Cookies.get("board");
-                if (b !== null) {
-                    board.setFromString(b);
-                }
-            }
+            board.load();
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -177,11 +184,11 @@ var Game = (function () {
         //////////////////////////////////////////////////////////////////////
 
         onUpdate: function (time, deltaTime) {
-            var y = 50;
+            var y = 0;
             if (board.changed) {
                 words.removeChildren();
                 board.wordList().forEach(function (w) {
-                    var button = new chs.PanelButton(676, y, 120, 24, "darkslategrey", undefined, 4, 0, function () {
+                    var button = new chs.PanelButton(0, y, 120, 24, "darkslategrey", undefined, 4, 0, function () {
                         button.state = chs.Button.idle;
                         this.showDefinition(w);
                     }, this);
@@ -195,7 +202,8 @@ var Game = (function () {
                     words.addChild(button);
                 }, this);
                 board.changed = false;
-                score.text = "Score: " + board.score.toString();
+                scoreLabel.text = board.score.toString();
+                bestLabel.text = board.bestScore.toString();
             }
         }
 

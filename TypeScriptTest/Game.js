@@ -125,15 +125,17 @@ var Game = (function () {
                     }
                 };
             }
-            msgBox = new chs.MessageBox(msg, consolasItalicBold, btns, goBack, this);
-            brd = new Board(this);
-            brd.setFromString(board.bestBoard);
-            brd.setScale(0.5);
-            brd.setPivot(0.5, 0);
-            msgBox.height += brd.height * 0.5 + 10;
-            brd.setPosition(msgBox.width / 2, msgBox.textBox.height + msgBox.textBox.y + 10);
-            msgBox.client.addChild(brd);
-            this.addChild(msgBox);
+            if (msg) {
+                msgBox = new chs.MessageBox(msg, consolasItalicBold, btns, goBack, this);
+                brd = new Board(this);
+                brd.setFromString(board.bestBoard);
+                brd.setScale(0.5);
+                brd.setPivot(0.5, 0);
+                msgBox.height += brd.height * 0.5 + 10;
+                brd.setPosition(msgBox.width / 2, msgBox.textBox.height + msgBox.textBox.y + 10);
+                msgBox.client.addChild(brd);
+                this.addChild(msgBox);
+            }
         },
 
         //////////////////////////////////////////////////////////////////////

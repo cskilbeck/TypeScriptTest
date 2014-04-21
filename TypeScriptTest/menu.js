@@ -32,7 +32,7 @@
             this.setPosition(x, y);
             this.buttons = [];
             items.forEach(function (item) {
-                ftb = new chs.FancyTextButton(item.text, font, 0, yp, w, font.height + 16, item.clicked, item.context, 0).setPivot(0, 0);
+                ftb = new chs.TextButton(item.text, font, 0, yp, w, font.height + 16, item.clicked, item.context, 0).setPivot(0, 0);
                 ftb.lineColour = "white";
                 ftb.lineTransparency = 255;
                 ftb.onIdle = function () { this.fillColour = 'black'; this.transparency = 192; };

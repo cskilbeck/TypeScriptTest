@@ -15,7 +15,6 @@
                 borderColour = desc.borderColor !== undefined ? desc.borderColor : "white",
                 hasTitleBar = desc.caption !== undefined,
                 titleBarHeight = hasTitleBar ? desc.font.height * captionScale + borderWidth * 4 : 0,
-                clientOffset,
                 titleBarWidth = desc.width;
 
             if (titleBarHeight < radius) {
@@ -26,14 +25,15 @@
                 titleBarWidth -= titleBarHeight;
             }
 
-            clientOffset = titleBarHeight;
+            this.clientOffset = titleBarHeight;
 
             chs.Panel.call(this, desc.x, desc.y, desc.width, desc.height, bgcol, undefined, radius, 0);
 
             this.clip = new chs.ClipRect(0, 0, desc.width, desc.height, radius);
-            this.client = new chs.ClipRect(0, clientOffset, desc.width, desc.height - clientOffset);
+            this.client = new chs.ClipRect(0, this.clientOffset, desc.width, desc.height - this.clientOffset);
             this.clip.addChild(this.client);
             this.addChild(this.clip);
+            this.border = null;
 
             if (hasTitleBar) {
                 this.titleBar = new chs.Panel(0, 0, titleBarWidth, titleBarHeight, captionColour, undefined, 0);
@@ -58,7 +58,8 @@
             }
 
             if (borderColour !== undefined) {
-                this.addChild(new chs.Panel(0, 0, desc.width, desc.height, undefined, borderColour, radius, borderWidth));
+                this.border = new chs.Panel(0, 0, desc.width, desc.height, undefined, borderColour, radius, borderWidth);
+                this.addChild(this.border);
             }
             this.client.window = this;
             this.drag = false;
@@ -92,6 +93,38 @@
 
             if (desc.modal !== undefined) {
                 this.modal = desc.modal;
+            }
+        },
+
+        onResize: function () {
+            return;
+        },
+
+        height: {
+            get: function () {
+                return this.clip.height;
+            },
+            set: function (h) {
+                this.clip.height = h;
+                this.client.height = h - this.clientOffset;
+                if (this.border) {
+                    this.border.height = h;
+                }
+                this.onResize();
+            }
+        },
+
+        width: {
+            get: function () {
+                return this.clip.width;
+            },
+            set: function (w) {
+                this.clip.width = w;
+                this.client.width = w;
+                if (this.border) {
+                    this.border.width = w;
+                }
+                this.onResize();
             }
         },
 

@@ -11,9 +11,10 @@ var Game = (function () {
     "use strict";
 
     //////////////////////////////////////////////////////////////////////
-
+    
     var consolas,
         consolasItalic,
+        consolasItalicBold,
         arial,
         words,
         wordButton,
@@ -50,6 +51,7 @@ var Game = (function () {
             consolas = chs.Font.load("Consolas", loader);
             arial = chs.Font.load("Arial", loader);
             consolasItalic = chs.Font.load("Consolas_Italic", loader);
+            consolasItalicBold = chs.Font.load("Consolas_Italic", loader);
             wordButton = loader.load("wordbutton.png");
             undoImage = loader.load("undo.png");
             redoImage = loader.load("redo.png");
@@ -60,7 +62,9 @@ var Game = (function () {
             consolasItalic.softLineSpacing = 4;
             consolasItalic.mask = 2;
 
-            menuButton = new chs.FancyTextButton("Menu", consolas, 80, 515, 100, 40, this.menu, this).setPivot(0.5, 0);
+            consolasItalicBold.softLineSpacing = 4;
+
+            menuButton = new chs.TextButton("Menu", consolas, 80, 515, 100, 40, this.menu, this).setPivot(0.5, 0);
             this.addChild(menuButton);
 
             words = new chs.Drawable().setPosition(674, 70);
@@ -84,6 +88,7 @@ var Game = (function () {
             this.addChild(bestButton);
 
             board = new Board(this);
+            board.mainBoard = true;
             this.addChild(board);
         },
 
@@ -91,6 +96,8 @@ var Game = (function () {
         // new game starting
 
         init: function (seed) {
+            menuButton.onIdle();
+            menuButton.setCapture(false);
             board.randomize(seed);
             board.load();
         },
@@ -98,12 +105,36 @@ var Game = (function () {
         //////////////////////////////////////////////////////////////////////
 
         bestClicked: function () {
-            var msg = "Go back to your best score? This can be undone, so feel free...";
-            this.addChild(new chs.MessageBox(msg, consolasItalic, [ "Yes", "No" ], function (idx) {
-                if (idx === 0) {
-                    return;
-                }
-            }, this));
+            var brd,
+                msgBox,
+                btns,
+                goBack,
+                msg;
+            if (board.bestScore === board.score) {
+                msg = "This is your best score so far! You can get back to it later by clicking on the best score button";
+                btns = ['Ok'];
+                goBack = function () {
+
+                };
+            } else {
+                msg = "Go back to your best score? This can be undone, so feel free...";
+                btns = ['Yes', 'No'];
+                goBack = function (idx) {
+                    if (idx === 0) {
+                        board.setFromString(board.bestBoard);
+                        board.pushUndo();
+                    }
+                };
+            }
+            msgBox = new chs.MessageBox(msg, consolasItalicBold, btns, goBack, this);
+            brd = new Board(this);
+            brd.setFromString(board.bestBoard);
+            brd.setScale(0.5);
+            brd.setPivot(0.5, 0);
+            msgBox.height += brd.height * 0.5 + 10;
+            brd.setPosition(msgBox.width / 2, msgBox.textBox.height + msgBox.textBox.y + 10);
+            msgBox.client.addChild(brd);
+            this.addChild(msgBox);
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -117,23 +148,28 @@ var Game = (function () {
         //////////////////////////////////////////////////////////////////////
 
         shuffle: function () {
-            var i,
-                r,
-                n;
-            r = new chs.Random();
-            board.beforeDrag = board.toString();
-            for (i = 0; i < board.tiles.length - 1; ++i) {
-                n = i + (r.next() % (board.tiles.length - 1 - i));
-                board.tiles[i].swap(board.tiles[n]);
-            }
-            board.markAllWords();
-            board.pushUndo();
-            this.setDirty();
+            this.addChild(new chs.MessageBox("Really shuffle? You can undo it...", consolas, ['Yes', 'No'], function (idx) {
+                var i,
+                    r,
+                    n;
+                if (idx === 0) {
+                    r = new chs.Random();
+                    board.beforeDrag = board.toString();
+                    for (i = 0; i < board.tiles.length - 1; ++i) {
+                        n = i + (r.next() % (board.tiles.length - 1 - i));
+                        board.tiles[i].swap(board.tiles[n]);
+                    }
+                    board.markAllWords();
+                    board.pushUndo();
+                    this.setDirty();
+                }
+            }, this));
         },
 
         //////////////////////////////////////////////////////////////////////
 
         menu: function () {
+            menuButton.state = chs.Button.idle;
             this.addChild(new chs.PopupMenu(menuButton.x, menuButton.y - 12, consolas, [
                 { text: "Quit", clicked: this.close, context: this },
                 { text: "Shuffle!", clicked: this.shuffle, context: this }

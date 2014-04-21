@@ -79,7 +79,7 @@
                     link,
                     self = this.labelData;
                 self.text = self.font.wrapText(s, this.width, this.lineBreak);
-                if (this.linkedClicked) {
+                if (this.linkClicked) {
                     self.font.measureText(self.text, links);
                     self.dirty = true;
                     this.removeChildren();

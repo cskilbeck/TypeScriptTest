@@ -111,10 +111,11 @@ Board = (function () {
             this.undoPointer = 0;
             this.undoLength = 0;
             this.beforeDrag = "";
+            this.mainBoard = false;
             this.tiles.length = this.tileWidth * this.tileHeight;
             for (i = 0; i < this.tiles.length; ++i) {
                 this.tiles[i] = new Tile("A", i % this.tileWidth, (i / this.tileWidth) >>> 0);
-                game.addChild(this.tiles[i]);
+                this.addChild(this.tiles[i]);
             }
         },
 
@@ -227,11 +228,13 @@ Board = (function () {
         //////////////////////////////////////////////////////////////////////
 
         save: function () {
-            chs.Cookies.set("game", this.seed, 10);
-            chs.Cookies.set("board", this.toString(), 10);
-            chs.Cookies.set("best", this.bestBoard, 10);
-            chs.Cookies.set("bestScore", this.bestScore, 10);
-            chs.Cookies.set("bestSeed", this.bestSeed, 10);
+            if (this.mainBoard) {
+                chs.Cookies.set("game", this.seed, 10);
+                chs.Cookies.set("board", this.toString(), 10);
+                chs.Cookies.set("best", this.bestBoard, 10);
+                chs.Cookies.set("bestScore", this.bestScore, 10);
+                chs.Cookies.set("bestSeed", this.bestSeed, 10);
+            }
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -279,40 +282,44 @@ Board = (function () {
         //////////////////////////////////////////////////////////////////////
 
         onLeftMouseDown: function (e) {
-            clickedTile = this.tileFromScreenPos(e.position.x, e.position.y);
-            if (clickedTile !== null) {
-                if (this.activeTile !== null) {
-                    this.activeTile.selected = false;
-                    this.activeTile = null;
+            if (this.mainBoard) {
+                clickedTile = this.tileFromScreenPos(e.position.x, e.position.y);
+                if (clickedTile !== null) {
+                    if (this.activeTile !== null) {
+                        this.activeTile.selected = false;
+                        this.activeTile = null;
+                    }
+                    this.activeTile = clickedTile;
+                    this.activeTile.zIndex = 1;
+                    this.activeTile.selected = true;
+                    this.clickX = e.position.x;
+                    this.clickY = e.position.y;
+                    this.offsetX = this.clickX - this.activeTile.position.x;
+                    this.offsetY = this.clickY - this.activeTile.position.y;
+                    this.beforeDrag = this.toString();
+                    this.setCapture(true);
                 }
-                this.activeTile = clickedTile;
-                this.activeTile.zIndex = 1;
-                this.activeTile.selected = true;
-                this.clickX = e.position.x;
-                this.clickY = e.position.y;
-                this.offsetX = this.clickX - this.activeTile.position.x;
-                this.offsetY = this.clickY - this.activeTile.position.y;
-                this.beforeDrag = this.toString();
-                this.setCapture(true);
             }
         },
 
         //////////////////////////////////////////////////////////////////////
 
         onLeftMouseUp: function () {
-            if (this.activeTile !== null) {
-                this.activeTile.reset();
-            }
-            if (this.swapTile !== null) {
-                this.swapTile.reset();
-            }
-            this.swapTile = null;
-            this.activeTile = null;
+            if (this.mainBoard) {
+                if (this.activeTile !== null) {
+                    this.activeTile.reset();
+                }
+                if (this.swapTile !== null) {
+                    this.swapTile.reset();
+                }
+                this.swapTile = null;
+                this.activeTile = null;
 
-            if (this.beforeDrag !== this.toString()) {
-                this.pushUndo();
+                if (this.beforeDrag !== this.toString()) {
+                    this.pushUndo();
+                }
+                this.setCapture(false);
             }
-            this.setCapture(false);
         },
 
         //////////////////////////////////////////////////////////////////////

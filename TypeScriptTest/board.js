@@ -213,7 +213,7 @@ Board = (function () {
                     this.setFromString(b);
                 }
                 if (parseInt(chs.Cookies.get("bestSeed"), 10) === this.seed) {
-                    b = chs.Cookies.get("bestBoard");
+                    b = chs.Cookies.get("best");
                     if (b !== null) {
                         this.bestBoard = b;
                     }
@@ -349,6 +349,11 @@ Board = (function () {
                         this.activeTile = newSwapTile;
                         this.activeTile.setPosition(snapX, snapY);
                         this.markAllWords();
+                        if (this.score > this.bestScore) {
+                            this.bestScore = this.score;
+                            this.bestBoard = this.toString();
+                            this.bestSeed = this.seed;
+                        }
                         this.activeTile.selected = true;
                         this.activeTile.zIndex = 1;
                     } else {
@@ -454,11 +459,6 @@ Board = (function () {
                         this.getWordTile(w, j).setWord(w, j);
                     }
                 }
-            }
-            if (this.score > this.bestScore) {
-                this.bestScore = this.score;
-                this.bestBoard = this.toString();
-                this.bestSeed = this.seed;
             }
             return this.score;
         }

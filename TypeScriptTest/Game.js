@@ -1,5 +1,4 @@
 ﻿//////////////////////////////////////////////////////////////////////
-// Save/Personal Best
 // Mobile: Android/Chrome, iOS/Safari, Windows Phone: IE // Touch Support
 // Fix tile grabbing/moving/swapping/lerping
 // Flying scores/fizz/particles
@@ -116,7 +115,7 @@ var Game = (function () {
                 goBack = function () {
 
                 };
-            } else {
+            } else if (board.bestBoard !== "") {
                 msg = "Go back to your best score? This can be undone, so feel free...";
                 btns = ['Yes', 'No'];
                 goBack = function (idx) {
@@ -140,9 +139,11 @@ var Game = (function () {
         //////////////////////////////////////////////////////////////////////
 
         onClosed: function () {
-            chs.Cookies.set("game", board.seed, 10);
-            chs.Cookies.set("board", board.toString(), 10);
-            this.mainMenu.gameClosed();
+            if (this.mainBoard) {
+                chs.Cookies.set("game", board.seed, 10);
+                chs.Cookies.set("board", board.toString(), 10);
+                this.mainMenu.gameClosed();
+            }
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -168,10 +169,21 @@ var Game = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
+        closeIt: function () {
+            this.addChild(new chs.MessageBox("Really quit?", consolas, ['Yes, quit', 'No'], function (idx) {
+                if (idx === 0) {
+                    this.close();
+                    this.mainMenu.gameClosed();
+                }
+            }, this));
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
         menu: function () {
             menuButton.state = chs.Button.idle;
             this.addChild(new chs.PopupMenu(menuButton.x, menuButton.y - 12, consolas, [
-                { text: "Quit", clicked: this.close, context: this },
+                { text: "Quit", clicked: this.closeIt, context: this },
                 { text: "Shuffle!", clicked: this.shuffle, context: this }
             ]).setPivot(0.5, 1));
         },

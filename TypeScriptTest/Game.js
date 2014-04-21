@@ -76,7 +76,7 @@ var Game = (function () {
             scoreButton.transparency = 128;
             this.addChild(scoreButton);
 
-            bestButton = new chs.PanelButton(674, 39, 120, 26, 'black', undefined, 3, 0, null, null);
+            bestButton = new chs.PanelButton(674, 39, 120, 26, 'black', undefined, 3, 0, this.bestClicked, this);
             bestLabel = new chs.Label("0", consolas).setPosition(116, 4).setPivot(1, 0);
             bestButton.addChild(bestLabel);
             bestButton.addChild(new chs.Label("Best:", consolas).setPosition(4, 4));
@@ -93,6 +93,17 @@ var Game = (function () {
         init: function (seed) {
             board.randomize(seed);
             board.load();
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        bestClicked: function () {
+            var msg = "Go back to your best score? This can be undone, so feel free...";
+            this.addChild(new chs.MessageBox(msg, consolasItalic, [ "Yes", "No" ], function (idx) {
+                if (idx === 0) {
+                    return;
+                }
+            }, this));
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -150,10 +161,26 @@ var Game = (function () {
                 textBox;
 
             def = Dictionary.getDefinition(w.str),
-            window = new chs.Window(400, 300, 640, 480, w.str.toUpperCase(), arial, 12, "black", 0.5, true, true, 'white', 4);
-//            window = new chs.Window(400, 300, 640, 480, null, arial, 12, "black", 0.5, true, false);
-            window.transparency = 224;
-            window.modal = true;
+
+            window = new chs.Window({
+                x: 400,
+                y: 300,
+                width: 640,
+                height: 480,
+                caption: w.str.toUpperCase(),
+                captionScale: 0.5,
+                font: arial,
+                cornerRadius: 16,
+                backgroundColour: "black",
+                closeButton: true,
+                draggable: true,
+                border: true,
+                borderColour: "white",
+                borderWidth: 4,
+                transparency: 224,
+                modal: true
+            });
+
             window.setPivot(0.5, 0.5);
             window.setScale(0.75);
             window.age = 0.5;

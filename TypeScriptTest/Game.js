@@ -163,6 +163,7 @@ var Game = (function () {
                         board.tiles[i].swap(board.tiles[n]);
                     }
                     board.markAllWords();
+                    board.saveBest();
                     board.pushUndo();
                     this.setDirty();
                 }

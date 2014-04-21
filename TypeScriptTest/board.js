@@ -239,6 +239,16 @@ Board = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
+        saveBest: function () {
+            if (this.score > this.bestScore) {
+                this.bestScore = this.score;
+                this.bestBoard = this.toString();
+                this.bestSeed = this.seed;
+            }
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
         pushUndo: function () {
             if (this.undoStack.length > undoMax) {
                 this.undoStack.shift();
@@ -349,11 +359,7 @@ Board = (function () {
                         this.activeTile = newSwapTile;
                         this.activeTile.setPosition(snapX, snapY);
                         this.markAllWords();
-                        if (this.score > this.bestScore) {
-                            this.bestScore = this.score;
-                            this.bestBoard = this.toString();
-                            this.bestSeed = this.seed;
-                        }
+                        this.saveBest();
                         this.activeTile.selected = true;
                         this.activeTile.zIndex = 1;
                     } else {

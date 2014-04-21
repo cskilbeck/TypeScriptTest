@@ -109,7 +109,7 @@ var Game = (function () {
                 btns,
                 goBack,
                 msg;
-            if (board.bestScore === board.score) {
+            if (board.bestScore === board.score && board.score > 0) {
                 msg = "This is your best score so far! You can get back to it later by clicking on the best score button";
                 btns = ['Ok'];
                 goBack = function () {

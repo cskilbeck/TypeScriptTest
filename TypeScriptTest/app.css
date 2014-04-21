@@ -1,4 +1,5 @@
 ﻿#screen {
+    position: absolute;
     margin: 0;
     padding: 0;
     top: 0;
@@ -8,4 +9,8 @@
     cursor: default;
     text-align: center;
     background-color: aliceblue;
+}
+
+canvas {
+    position: absolute;
 }

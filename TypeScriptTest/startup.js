@@ -11,8 +11,18 @@ window.onload = function () {
             Startup = {
 
                 init: function () {
+                    var pw,
+                        ph;
+                    window.onresize = function () {
+                        pw = canvas.parentNode.clientWidth;
+                        ph = canvas.parentNode.clientHeight;
+                        canvas.style.top = (ph - canvas.height) / 2 + "px";
+                        canvas.style.left = (pw - canvas.width) / 2 + "px";
+                    };
+
                     screenDiv = document.getElementById("screen");
                     canvas = document.getElementById("myCanvas");
+                    window.onresize();
                     context = canvas.getContext('2d');
                     loader = new chs.Loader('img/');
                     chs.Debug.init(context, chs.Font.load("Fixedsys", loader));

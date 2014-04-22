@@ -7,8 +7,7 @@
 
     function send(url, callback, progressCallback, context, method, data, binary) {
 
-        var xr;
-        xr = new XMLHttpRequest();
+        var xr =  new XMLHttpRequest();
         xr.open(method, url);
         if (binary) {
             xr.responseType = 'arraybuffer';

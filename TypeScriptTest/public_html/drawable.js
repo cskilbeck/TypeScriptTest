@@ -125,7 +125,8 @@
                     }
                 }
                 if (this.visible) {
-                    mp = self.capture || this.pick(e.position, 0);
+                    p = this.pick(e.position, 0);
+                    mp = self.mouseCapture || p;
                     if (mp) {
                         switch (e.type) {
                         case chs.Message.leftMouseDown:

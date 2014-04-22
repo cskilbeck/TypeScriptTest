@@ -709,6 +709,8 @@
       <string>Uint8Array</string>
       <string>VBArray</string>
       <string>MainMenu</string>
+      <string>LoginScreen</string>
+      <string>mtw</string>
     </PreDefined>
   </JSLintOptions>
   <BuildFileTypes>JS</BuildFileTypes>

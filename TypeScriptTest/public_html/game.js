@@ -1,8 +1,10 @@
 ﻿//////////////////////////////////////////////////////////////////////
+// OAuth/AWS/Leaderboards
+// Remember login choice (Google/Facebook etc) in a cookie, then try to reauth on page refresh
+// Remember the [what, Alamo?]
 // Mobile: Android/Chrome, iOS/Safari, Windows Phone: IE // Touch Support
 // Fix tile grabbing/moving/swapping/lerping
 // Flying scores/fizz/particles
-// OAuth/AWS/Leaderboards
 // Tile graphics/Score on tiles
 // Event model
 //////////////////////////////////////////////////////////////////////
@@ -133,8 +135,8 @@ var Game = (function () {
                 brd.setFromString(board.bestBoard);
                 brd.setScale(0.5);
                 brd.setPivot(0.5, 0);
-                msgBox.window.height += brd.height * 0.5 + 10;
-                brd.setPosition(msgBox.window.width / 2, Math.floor(msgBox.window.textBox.height + msgBox.window.textBox.y + 10) + 0.5);
+                msgBox.window.height += brd.height * 0.5;
+                brd.setPosition(msgBox.window.width / 2, Math.floor(msgBox.window.textBox.height + msgBox.window.textBox.y + 16) + 0.5);    // 16 is magic button offset number
                 msgBox.window.addChild(brd);
                 this.addChild(msgBox);
             }
@@ -146,7 +148,6 @@ var Game = (function () {
             if (this.mainBoard) {
                 chs.Cookies.set("game", board.seed, 10);
                 chs.Cookies.set("board", board.toString(), 10);
-                this.mainMenu.gameClosed();
             }
         },
 
@@ -178,7 +179,6 @@ var Game = (function () {
             this.addChild(new chs.MessageBox("Really quit?", consolas, ['Yes, quit', 'No'], function (idx) {
                 if (idx === 0) {
                     this.close();
-                    this.mainMenu.gameClosed();
                 }
             }, this));
         },
@@ -187,10 +187,15 @@ var Game = (function () {
 
         menu: function () {
             menuButton.state = chs.Button.idle;
-            this.addChild(new chs.PopupMenu(menuButton.x, menuButton.y - 12, consolas, [
-                { text: "Quit", clicked: this.closeIt, context: this },
-                { text: "Shuffle!", clicked: this.shuffle, context: this }
-            ]).setPivot(0.5, 1));
+            this.addChild(new chs.PopupMenu(menuButton.x, menuButton.y - 12, consolas,
+                [
+                    "Quit",
+                    "Shuffle!"
+                ], [
+                    this.closeIt,
+                    this.shuffle
+                ],
+                this).setPivot(0.5, 1));
         },
 
         //////////////////////////////////////////////////////////////////////

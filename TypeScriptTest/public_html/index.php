@@ -1,10 +1,21 @@
-﻿<!DOCTYPE html>
-<!-- saved from url=(0016)http://localhost -->
+﻿<?
+session_start();
+echo '
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <title>Make The Words</title>
     <link rel="stylesheet" href="app.css" type="text/css" />
+    <script>
+    mtw = {
+        User: {\n';
+	if(isset($_SESSION['id']) && isset($_SESSION['name'])) {
+        echo "        id: " . $_SESSION['id'] . ",\n";
+        echo "        name: " . $_SESSION['name'] . "\n";
+echo '
+    }
+    </script>
     <script src="polyfill.js"></script>
     <script src="chs.js"></script>
     <script src="util.js"></script>
@@ -35,6 +46,7 @@
     <script src="tile.js"></script>
     <script src="board.js"></script>
     <script src="game.js"></script>
+    <script src="loginscreen.js"></script>
     <script src="mainmenu.js"></script>
     <script src="startup.js"></script>
     <script src="main.js"></script>
@@ -42,4 +54,5 @@
 <body id="screen">
     <canvas id="myCanvas" width="800" height="600"></canvas>
 </body>
-</html>
+</html>';
+?>

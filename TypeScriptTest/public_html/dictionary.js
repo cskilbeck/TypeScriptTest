@@ -24,6 +24,6 @@ var Dictionary = (function () {
         getDefinition: function (str) {
             return Dictionary.isWord(str) ? dictionary.words[str] : "??";
         }
-    }
+    };
 
 }());

@@ -15,20 +15,16 @@
                 borderWidth = desc.borderWidth || 2,
                 borderColour = desc.borderColor !== undefined ? desc.borderColor : "white",
                 hasTitleBar = desc.caption !== undefined,
-                titleBarHeight = hasTitleBar ? desc.font.height * captionScale + borderWidth * 4 : 0,
+                titleBarHeight = Math.max(hasTitleBar ? desc.font.height * captionScale + borderWidth * 4 : 0, radius),
                 titleBarWidth = desc.width;
 
-            if (titleBarHeight < radius) {
-                titleBarHeight = radius;
-            }
+            chs.Panel.call(this, desc.x, desc.y, desc.width, desc.height, bgcol, undefined, radius, 0);
 
             if (hasCloseButton) {
                 titleBarWidth -= titleBarHeight;
             }
 
             this.clientOffset = titleBarHeight;
-
-            chs.Panel.call(this, desc.x, desc.y, desc.width, desc.height, bgcol, undefined, radius, 0);
 
             this.clip = new chs.ClipRect(0, 0, desc.width, desc.height, radius);
             this.client = new chs.ClipRect(0, this.clientOffset, desc.width, desc.height - this.clientOffset);
@@ -97,10 +93,6 @@
             }
         },
 
-        onResize: function () {
-            return;
-        },
-
         height: {
             get: function () {
                 return this.clip.height;
@@ -111,7 +103,7 @@
                 if (this.border) {
                     this.border.height = h;
                 }
-                this.onResize();
+                this.fireEvent('resize');
             }
         },
 
@@ -125,7 +117,7 @@
                 if (this.border) {
                     this.border.width = w;
                 }
-                this.onResize();
+                this.fireEvent('resize');
             }
         },
 

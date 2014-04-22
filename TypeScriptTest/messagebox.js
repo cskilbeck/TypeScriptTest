@@ -54,10 +54,9 @@
             this.clip.addChild(this.buttonHolder);
             this.callback = callback;
             this.context = context;
-        },
-
-        onResize: function () {
-            this.buttonHolder.setPosition(this.buttonHolder.x, this.height - 16);
+            this.addEventHandler('resize', function () {
+                this.buttonHolder.setPosition(this.buttonHolder.x, this.height - 16);
+            }, this);
         }
     });
 

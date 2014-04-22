@@ -129,12 +129,16 @@
                     if (mp) {
                         switch (e.type) {
                         case chs.Message.leftMouseDown:
+                            this.fireEvent('leftMouseDown');
                             return this.onLeftMouseDown(e);
                         case chs.Message.rightMouseDown:
+                            this.fireEvent('rightMouseDown');
                             return this.onRightMouseDown(e);
                         case chs.Message.leftMouseUp:
+                            this.fireEvent('leftMouseUp');
                             return this.onLeftMouseUp(e);
                         case chs.Message.rightMouseUp:
+                            this.fireEvent('rightMouseUp');
                             return this.onRightMouseUp(e);
                         }
                         if (!self.mouseIsOver) {
@@ -161,6 +165,7 @@
         loaded: function (loader) {
             var self = this.drawableData,
                 c;
+            this.fireEvent('loaded');
             this.onLoaded(loader);
             for (c = self.children.begin() ; c !== self.children.end() ; c = c.next) {
                 c.item.loaded(loader);

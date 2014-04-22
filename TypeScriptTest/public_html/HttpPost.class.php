@@ -16,7 +16,7 @@ class HttpPost {
 
 	public function __destruct() {
 		curl_close($this->ch);
-	}    
+	}
 
 	public function setPostData( $params ) {
 		$this->postString = rawurldecode(http_build_query( $params ));

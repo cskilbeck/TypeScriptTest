@@ -1,6 +1,5 @@
-<?
-session_start();
-echo '<!DOCTYPE html>
+<? session_start(); ?>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -9,14 +8,14 @@ echo '<!DOCTYPE html>
     <script>
     mtw = {
         User: {
-';
-	if(isset($_SESSION['id']) && isset($_SESSION['name'])) {
+<?
+    if(isset($_SESSION['id']) && isset($_SESSION['name'])) {
         echo "        id: " . $_SESSION['id'] . ",
 ";
         echo "        name: " . $_SESSION['name'] . "
 ";
     }
-echo '
+?>
         }
     }
     </script>
@@ -58,5 +57,4 @@ echo '
 <body id="screen">
     <canvas id="myCanvas" width="800" height="600"></canvas>
 </body>
-</html>';
-?>
+</html>

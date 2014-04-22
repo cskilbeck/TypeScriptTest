@@ -23,7 +23,7 @@ if(isset($_GET['code'])) {
         "redirect_uri" => $oauth2_redirect,
         "grant_type" => "authorization_code"
     );
- 
+
     // build a new HTTP POST request
     $request = new HttpPost($url);
     $request->setPostData($params);
@@ -38,23 +38,7 @@ if(isset($_GET['code'])) {
     $request->send();
     $response = $request->getHttpResponse();
     $r = json_decode($response);
-    if(!isset($r->error)) {
-        $_SESSION['id'] = $r->id;
-        $_SESSION['name'] = $r->name;
-    } else {
-        $_SESSION['error'] = "Login failed";
-    }
+    $_SESSION['id'] = $r->id;
+    $_SESSION['name'] = $r->name;
+    header('Location: http://www.make-the-words.com');
 }
-echo "
-<!DOCTYPE html>
-    <html lang='en' xmlns='http://www.w3.org/1999/xhtml'>
-        <head>
-            <meta charset='utf-8' />
-            <title></title>
-        </head>
-        <body>
-        </body>
-        <script>window.location='http://www.make-the-words.com'</script>
-    </html>
-";
-?>

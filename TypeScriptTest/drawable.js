@@ -6,8 +6,10 @@
     //////////////////////////////////////////////////////////////////////
 
     chs.Drawable = chs.Class({
+        inherit$: [chs.EventSink],
 
         $: function () {
+            chs.EventSink.call(this);
             this.drawableListNode = chs.List.Node(this);
             this.drawableData = {
                 position: { x: 0, y: 0 },
@@ -123,28 +125,30 @@
                     }
                 }
                 if (this.visible) {
-                    p = this.pick(e.position, 0);
-                    mp = capture || p;
-                    if (p || self.mouseCapture) {
+                    mp = self.capture || this.pick(e.position, 0);
+                    if (mp) {
                         switch (e.type) {
-                        case chs.Event.leftMouseDown:
+                        case chs.Message.leftMouseDown:
                             return this.onLeftMouseDown(e);
-                        case chs.Event.rightMouseDown:
+                        case chs.Message.rightMouseDown:
                             return this.onRightMouseDown(e);
-                        case chs.Event.leftMouseUp:
+                        case chs.Message.leftMouseUp:
                             return this.onLeftMouseUp(e);
-                        case chs.Event.rightMouseUp:
+                        case chs.Message.rightMouseUp:
                             return this.onRightMouseUp(e);
                         }
                         if (!self.mouseIsOver) {
                             self.mouseIsOver = true;
                             this.onMouseEnter(e);
+                            this.fireEvent('mouseEnter', e);
                         }
                     } else if (!p && self.mouseIsOver) {
                         this.onMouseLeave(e);
                         self.mouseIsOver = false;
+                        this.fireEvent('mouseLeave', e);
                     }
-                    if (mp && e.type === chs.Event.mouseMove) {
+                    if (mp && e.type === chs.Message.mouseMove) {
+                        this.fireEvent('mouseMove', e);
                         return this.onMouseMove(e);
                     }
                 }
@@ -173,6 +177,7 @@
                 frozen = false;
             self.children.removeIf(function (c) {
                 if (c.drawableData.closed) {
+                    c.fireEvent('closed');
                     c.onClosed();
                     c.drawableData.closed = false;
                     return true;

@@ -2,7 +2,8 @@
 (function () {
     "use strict";
 
-    chs.Label = chs.Class({ inherits: chs.Drawable,
+    chs.Label = chs.Class({
+        inherit$: [chs.Drawable],
 
         $: function (text, font) {
             chs.Drawable.call(this);
@@ -57,32 +58,32 @@
         }
     };
 
-    chs.TextBox = chs.Class({ inherits: chs.Label,
+    chs.TextBox = chs.Class({
+        inherit$: [chs.ClipRect],
 
         $: function (x, y, w, h, text, font, lineBreak, linkClicked, context) {
-            chs.Label.call(this, text, font);
+            chs.ClipRect.call(this, x, y, w, h, 0);
+            if (linkClicked) {
+                this.links = new chs.Drawable();
+                this.addChild(this.links);
+            }
+            this.label = new chs.Label(text, font);
+            this.addChild(this.label);
             this.context = context;
             this.setPosition(x, y);
-            this.dimensions = { width: w, height: h };
             this.linkClicked = linkClicked;
             this.lineBreak = lineBreak || '\r';
             this.text = text;
         },
 
-        size: function () {
-            return this.dimensions;
-        },
-
         text: {
             set: function (s) {
                 var links = [],
-                    link,
-                    self = this.labelData;
-                self.text = self.font.wrapText(s, this.width, this.lineBreak);
+                    link;
+                this.label.text = this.label.font.wrapText(s, this.width, this.lineBreak);
                 if (this.linkClicked) {
-                    self.font.measureText(self.text, links);
-                    self.dirty = true;
-                    this.removeChildren();
+                    this.label.font.measureText(this.label.text, links);
+                    this.links.removeChildren();
                     while (links.length > 0) {
                         link = new chs.LinkButton(links.shift(),
                             links.shift(),
@@ -92,12 +93,12 @@
                             linkClickedCallback,
                             this);
                         link.transparency = 192;
-                        this.addChild(link);
+                        this.links.addChild(link);
                     }
                 }
             },
             get: function (s) {
-                return this.labelData.text;
+                return this.label.text;
             }
         }
     });

@@ -4,7 +4,8 @@
     var loader,
         consolasItalic;
 
-    return chs.Class({ inherits: chs.Drawable,
+    return chs.Class({
+        inherit$: [chs.Drawable],
 
         $: function () {
             chs.Drawable.call(this);
@@ -53,7 +54,6 @@
         },
 
         gameClosed: function () {
-            this.game.close();
             this.enabled = true;
             this.visible = true;
         }

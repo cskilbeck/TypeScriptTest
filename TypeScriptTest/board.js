@@ -71,7 +71,8 @@ Board = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    return chs.Class({ inherits: chs.Drawable,
+    return chs.Class({
+        inherit$: [chs.Drawable],
 
         static$: {
 

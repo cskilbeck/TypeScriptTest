@@ -1,7 +1,7 @@
 ﻿(function () {
     "use strict";
 
-    chs.Event = chs.Class({
+    chs.Message = chs.Class({
 
         static$: {
             leftMouseDown: 1,
@@ -16,10 +16,11 @@
         }
     });
 
-    chs.MouseEvent = chs.Class({ inherits: chs.Event,
+    chs.MouseMessage = chs.Class({
+        inherit$: [chs.Message],
 
         $: function (type, pos) {
-            chs.Event.call(this, type);
+            chs.Message.call(this, type);
             this.position = pos;
         },
 
@@ -36,5 +37,58 @@
         }
     });
 
-}());
+    chs.EventHandler = chs.Class({
 
+        $: function (target, context) {
+            this.target = target;
+            this.context = context;
+        }
+    });
+
+    chs.EventSink = chs.Class({
+
+        $: function () {
+            this.eventSinkData = {
+                handlers: {}
+            };
+        },
+
+        addEventHandler: function (name, target, context) {
+            var self = this.eventSinkData;
+            if (!self.handlers.hasOwnProperty(name)) {
+                self.handlers[name] = [];
+            }
+            self.handlers[name].push(new chs.EventHandler(target, context));
+        },
+
+        removeEventHandler: function (name, target) {
+            var self = this.eventSinkData,
+                f,
+                hl = self.handlers[name];
+            if (hl) {
+                while (true) {
+                    f = hl.indexOf(target);
+                    if (f === -1) {
+                        break;
+                    }
+                    hl.splice(f, 1);
+                }
+            }
+        },
+
+        fireEvent: function (name) {
+            var self = this.eventSinkData,
+                hl = self.handlers[name],
+                i,
+                l;
+            if (hl) {
+                for (i = 0, l = hl.length; i < l; ++i) {
+                    if (hl[i].target.call(hl[i].context, Array.prototype.slice.call(arguments, 1)) === true) {
+                        break;
+                    }
+                }
+            }
+        }
+    });
+
+}());

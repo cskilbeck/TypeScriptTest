@@ -84,11 +84,11 @@
             switch (event.which) {
             case 1:
                 mouse.left.held = true;
-                events.push(new chs.MouseEvent(chs.Event.leftMouseDown, p));
+                events.push(new chs.MouseMessage(chs.Message.leftMouseDown, p));
                 break;
             case 3:
                 mouse.right.held = true;
-                events.push(new chs.MouseEvent(chs.Event.rightMouseDown, p));
+                events.push(new chs.MouseMessage(chs.Message.rightMouseDown, p));
                 break;
             }
             return false;
@@ -101,11 +101,11 @@
             switch (event.which) {
             case 1:
                 mouse.left.held = false;
-                events.push(new chs.MouseEvent(chs.Event.leftMouseUp, p));
+                events.push(new chs.MouseMessage(chs.Message.leftMouseUp, p));
                 break;
             case 3:
                 mouse.right.held = false;
-                events.push(new chs.MouseEvent(chs.Event.rightMouseUp, p));
+                events.push(new chs.MouseMessage(chs.Message.rightMouseUp, p));
                 break;
             }
         });
@@ -131,7 +131,7 @@
                     element.setCapture();
                 }
             }
-            events.push(new chs.MouseEvent(chs.Event.mouseMove, p));
+            events.push(new chs.MouseMessage(chs.Message.mouseMove, p));
         });
     }
 

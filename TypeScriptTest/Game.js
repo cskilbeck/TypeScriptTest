@@ -4,6 +4,7 @@
 // Flying scores/fizz/particles
 // OAuth/AWS/Leaderboards
 // Tile graphics/Score on tiles
+// Event model
 //////////////////////////////////////////////////////////////////////
 
 var Game = (function () {
@@ -41,7 +42,8 @@ var Game = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    return chs.Class({ inherits: chs.Drawable,
+    return chs.Class({
+        inherit$: [chs.Drawable],
 
         $: function (mainMenu, loader) {
             chs.Drawable.call(this);
@@ -131,9 +133,9 @@ var Game = (function () {
                 brd.setFromString(board.bestBoard);
                 brd.setScale(0.5);
                 brd.setPivot(0.5, 0);
-                msgBox.height += brd.height * 0.5 + 10;
-                brd.setPosition(msgBox.width / 2, msgBox.textBox.height + msgBox.textBox.y + 10);
-                msgBox.client.addChild(brd);
+                msgBox.window.height += brd.height * 0.5 + 10;
+                brd.setPosition(msgBox.window.width / 2, Math.floor(msgBox.window.textBox.height + msgBox.window.textBox.y + 10) + 0.5);
+                msgBox.window.addChild(brd);
                 this.addChild(msgBox);
             }
         },

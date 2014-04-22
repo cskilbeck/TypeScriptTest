@@ -8,8 +8,8 @@
         this.window.close();
     };
 
-    chs.MessageBox = chs.Class({
-        inherits: chs.Window,
+    chs.MessageWindow = chs.Class({
+        inherit$: [chs.Window],
 
         $: function (text, textFont, buttons, callback, context, buttonFont) {
             var dw = chs.desktop.width / 1.666,
@@ -31,7 +31,7 @@
                 height: h,
                 borderWidth: 4,
                 cornerRadius: 8,
-                transparency: 224,
+                transparency: 192,
                 modal: true
             });
             this.setPivot(0.5, 0.5);
@@ -58,6 +58,34 @@
 
         onResize: function () {
             this.buttonHolder.setPosition(this.buttonHolder.x, this.height - 16);
+        }
+    });
+
+    chs.MessageBox = chs.Class({
+        inherit$: [chs.Panel],
+
+        $: function (text, textFont, buttons, callback, context, buttonFont) {
+            chs.Panel.call(this, 0, 0, chs.desktop.width, chs.desktop.height, "black");
+            this.transparency = 96;
+            this.msgBox = new chs.MessageWindow(text, textFont, buttons, callback, context, buttonFont);
+            this.addChild(this.msgBox);
+            this.msgBox.addEventHandler('closed', function () {
+                this.close();
+            }, this);
+        },
+
+        text: {
+            get: function () {
+                return this.msgBox.text;
+            },
+            set: function (t) {
+                this.msgBox.text = t;
+            }
+        },
+        window: {
+            get: function () {
+                return this.msgBox;
+            }
         }
     });
 

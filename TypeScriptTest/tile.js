@@ -17,7 +17,8 @@ Tile = (function () {
     //////////////////////////////////////////////////////////////////////
 
 
-    return chs.Class({ inherits: chs.Sprite,
+    return chs.Class({
+        inherit$: [chs.Sprite],
 
         static$: {
 

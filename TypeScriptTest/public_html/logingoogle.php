@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once('config.php');
 $oauth2_server_url = 'https://accounts.google.com/o/oauth2/auth';
 $query_params = array(

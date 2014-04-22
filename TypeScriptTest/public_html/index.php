@@ -1,7 +1,6 @@
-﻿<?
+<?
 session_start();
-echo '
-<!DOCTYPE html>
+echo '<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -9,11 +8,16 @@ echo '
     <link rel="stylesheet" href="app.css" type="text/css" />
     <script>
     mtw = {
-        User: {\n';
+        User: {
+';
 	if(isset($_SESSION['id']) && isset($_SESSION['name'])) {
-        echo "        id: " . $_SESSION['id'] . ",\n";
-        echo "        name: " . $_SESSION['name'] . "\n";
+        echo "        id: " . $_SESSION['id'] . ",
+";
+        echo "        name: " . $_SESSION['name'] . "
+";
+    }
 echo '
+        }
     }
     </script>
     <script src="polyfill.js"></script>

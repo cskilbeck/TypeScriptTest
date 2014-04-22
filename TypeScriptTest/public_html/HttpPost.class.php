@@ -1,4 +1,4 @@
-﻿<?
+<?
 class HttpPost {
 
 	public $url;

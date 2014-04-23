@@ -2,8 +2,35 @@
     "use strict";
 
     var loader,
+        globalLoader,
         consolas,
-        consolasItalic;
+        consolasItalic,
+
+        UserImage = chs.Class({
+            inherit$: [chs.Button, chs.Drawable],
+
+            $: function (x, y, width, height, url) {
+                chs.Button.call(this);
+                chs.Drawable.call(this);
+                this.loader = new chs.Loader("");
+                this.dimensions = { width: width, height: width };
+                this.org = { x: x, y: y };
+                this.setPosition(x + 0.5, y + 0.5);
+                this.clipRect = new chs.ClipRect(0, 0, this.width, this.height, 14);
+                this.addChild(this.clipRect);
+                this.image = chs.Sprite.load(url, this.loader);
+                this.loader.addEventHandler("complete", function () {
+                    this.image.scaleTo(this.width, this.height);
+                    this.clipRect.addChild(this.image);
+                }, this);
+                this.border = new chs.Panel(0, 0, this.width, this.height, undefined, "black", this.clipRect.radius, 2, 255);
+                this.addChild(this.border);
+                this.loader.start();
+                this.onIdle = function () { this.setPosition(this.org.x, this.org.y); this.border.lineColour = "black"; };
+                this.onHover = function () { this.setPosition(this.org.x, this.org.y); this.border.lineColour = "white"; };
+                this.onPressed = function () { this.setPosition(this.org.x + 1, this.org.y + 1); this.border.lineColour = "white"; };
+            }
+        });
 
     return chs.Class({
         inherit$: [chs.Drawable],
@@ -21,11 +48,13 @@
             Dictionary.init(loader.load("dictionary.json"));
             this.game = new Game(this, loader);
             this.game.addEventHandler("closed", this.activate, this);
-            loader.start(this.loadComplete, this);
+            loader.addEventHandler("complete", this.loadComplete, this);
+            loader.start();
         },
 
         loadComplete: function () {
-            var buttons = [
+            var name,
+                buttons = [
                 "Options",
                 "How to play",
                 "Credits"
@@ -50,7 +79,11 @@
                 buttons.push('Login');
                 callbacks.push(this.showLogin);
             } else {
-                this.panel.addChild(new chs.Label("Logged in as " + mtw.User.name, consolas).setPivot(1, 1).setPosition(this.panel.width - 20, this.panel.height - 20));
+                if (mtw.User.picture) {
+                    this.panel.addChild(new UserImage(12, 12, 64, 64, mtw.User.picture));
+                } else {
+                    this.panel.addChild(new chs.TextButton(mtw.User.firstName, consolasItalic, 12, 12, 128, 35));
+                }
             }
             this.panel.addChild(new chs.Menu(20, this.panel.height - 20, consolasItalic, buttons, callbacks, this).setPivot(0, 1));
             this.enabled = true;

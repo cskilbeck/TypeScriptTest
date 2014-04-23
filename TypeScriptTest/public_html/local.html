@@ -1,27 +1,20 @@
-<? session_start(); ?>
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <title>Make The Words</title>
     <link rel="stylesheet" href="app.css" type="text/css" />
     <script>
-    mtw = {
-        User: {
-<?
-    if(isset($_SESSION['id']) && isset($_SESSION['name'])) {
-        echo "            id: '"            . $_SESSION['id'] . "',\n";
-        echo "            name: '"          . $_SESSION['name'] . "',\n";
-        echo "            firstName: '"     . $_SESSION['firstName'] . "',\n";
-        echo "            lastName: '"      . $_SESSION['lastName'] . "',\n";
-        echo "            picture: '"       . $_SESSION['picture'] . "',\n";
-        echo "            link: '"          . $_SESSION['link'] . "'\n";
-    } elseif(isset($_SESSION['error'])) {
-        echo "            loginError: '"    . $_SESSION['error'] . "'\n";
-    }
-?>
-        }
-    }
+        mtw = {
+            User: {
+                id: '112662469770859091509',
+                name: 'Charlie Skilbeck',
+                firstName: 'Charlie',
+                lastName: 'Skilbeck',
+                picture: 'https://lh5.googleusercontent.com/-FU8pj52pOlE/AAAAAAAAAAI/AAAAAAAAANo/qvKNBUm-fjc/photo.jpg',
+                link: 'https://plus.google.com/112662469770859091509'
+            }
+        };
     </script>
     <script src="polyfill.js"></script>
     <script src="chs.js"></script>

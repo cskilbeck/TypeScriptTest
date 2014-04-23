@@ -6,10 +6,10 @@
     //////////////////////////////////////////////////////////////////////
 
     chs.Drawable = chs.Class({
-        inherit$: [chs.EventSink],
+        inherit$: [chs.EventSource],
 
         $: function () {
-            chs.EventSink.call(this);
+            chs.EventSource.call(this);
             this.drawableListNode = chs.List.Node(this);
             this.drawableData = {
                 position: { x: 0, y: 0 },
@@ -130,30 +130,30 @@
                     if (mp) {
                         switch (e.type) {
                         case chs.Message.leftMouseDown:
-                            this.fireEvent('leftMouseDown');
+                            this.dispatchEvent('leftMouseDown');
                             return this.onLeftMouseDown(e);
                         case chs.Message.rightMouseDown:
-                            this.fireEvent('rightMouseDown');
+                            this.dispatchEvent('rightMouseDown');
                             return this.onRightMouseDown(e);
                         case chs.Message.leftMouseUp:
-                            this.fireEvent('leftMouseUp');
+                            this.dispatchEvent('leftMouseUp');
                             return this.onLeftMouseUp(e);
                         case chs.Message.rightMouseUp:
-                            this.fireEvent('rightMouseUp');
+                            this.dispatchEvent('rightMouseUp');
                             return this.onRightMouseUp(e);
                         }
                         if (!self.mouseIsOver) {
                             self.mouseIsOver = true;
                             this.onMouseEnter(e);
-                            this.fireEvent('mouseEnter', e);
+                            this.dispatchEvent('mouseEnter', e);
                         }
                     } else if (!p && self.mouseIsOver) {
                         this.onMouseLeave(e);
                         self.mouseIsOver = false;
-                        this.fireEvent('mouseLeave', e);
+                        this.dispatchEvent('mouseLeave', e);
                     }
                     if (mp && e.type === chs.Message.mouseMove) {
-                        this.fireEvent('mouseMove', e);
+                        this.dispatchEvent('mouseMove', e);
                         return this.onMouseMove(e);
                     }
                 }
@@ -166,7 +166,7 @@
         loaded: function (loader) {
             var self = this.drawableData,
                 c;
-            this.fireEvent('loaded');
+            this.dispatchEvent('loaded');
             this.onLoaded(loader);
             for (c = self.children.begin() ; c !== self.children.end() ; c = c.next) {
                 c.item.loaded(loader);
@@ -183,7 +183,7 @@
                 frozen = false;
             self.children.removeIf(function (c) {
                 if (c.drawableData.closed) {
-                    c.fireEvent('closed');
+                    c.dispatchEvent('closed');
                     c.onClosed();
                     c.drawableData.closed = false;
                     return true;
@@ -386,6 +386,7 @@
         //////////////////////////////////////////////////////////////////////
 
         close: function () {
+            this.dispatchEvent("closing");
             this.drawableData.closed = true;
         },
 

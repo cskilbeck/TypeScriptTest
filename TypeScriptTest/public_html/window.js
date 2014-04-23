@@ -103,7 +103,7 @@
                 if (this.border) {
                     this.border.height = h;
                 }
-                this.fireEvent('resize');
+                this.dispatchEvent('resize');
             }
         },
 
@@ -117,7 +117,7 @@
                 if (this.border) {
                     this.border.width = w;
                 }
-                this.fireEvent('resize');
+                this.dispatchEvent('resize');
             }
         },
 

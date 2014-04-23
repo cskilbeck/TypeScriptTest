@@ -68,7 +68,7 @@
             this.transparency = 96;
             this.msgBox = new chs.MessageWindow(text, textFont, buttons, callback, context, buttonFont);
             this.addChild(this.msgBox);
-            this.msgBox.addEventHandler('closed', function () {
+            this.msgBox.addEventHandler('closing', function () {
                 this.close();
             }, this);
         },

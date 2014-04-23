@@ -1,6 +1,10 @@
 ﻿var LoginScreen = (function () {
     "use strict";
 
+    function goto(x) {
+        window.location = window.location.origin + "/" + x;
+    }
+
     return chs.Class({
         inherit$: [chs.Drawable],
 
@@ -8,17 +12,21 @@
             var consolasItalic = chs.Font.load("Consolas_Italic", loader);
             chs.Drawable.call(this);
             this.mainMenu = mainMenu;
-            this.dimensions = { width: 800, height: 600 };
-            this.addChild(new chs.Menu(400, 300, consolasItalic, [
+            this.dimensions = chs.desktop.dimensions;
+            this.addChild(new chs.Menu(this.width / 2, this.height / 2, consolasItalic, [
                 '<Login with Google',
                 '<Login with Facebook',
                 '<Login with Microsoft',
                 '<Login with Twitter'
-            ], [this.loginGoogle], this).setPivot(0.5, 0.5));
-        },
+            ], [
+                function () { goto('logingoogle.php'); },
+                function () { goto('loginfacebook.php'); },
+                function () { goto('loginmicrosoft.php'); },
+                function () { goto('logintwitter.php'); }
+            ], this).setPivot(0.5, 0.5));
 
-        loginGoogle: function () {
-            window.location = 'http://www.make-the-words.com/logingoogle.php';
+            this.addChild(new chs.TextButton("Cancel", consolasItalic, 16, this.height - 16, 120, 36, this.close, this, 4).setPivot(0, 1));
         }
     });
+
 }());

@@ -17,7 +17,8 @@
                 yp = 0,
                 item,
                 clip,
-                ftb;
+                ftb,
+                cb;
             for (i = 0; i < items.length; ++i) {
                 item = items[i];
                 w = Math.max(w, font.measureText(item).width + 8);
@@ -46,10 +47,13 @@
                 }
                 ftb = new chs.TextButton(txt, font, 0, yp, w, font.height + 16, function () {
                     this.state = chs.Button.idle;
-                    this.parent.parent.fireEvent('chosen');
+                    this.parent.parent.dispatchEvent('chosen');
                     if (Array.isArray(callback)) {
-                        callback[this.index % callback.length].call(context, this.index);
-                    } else {
+                        cb = callback[this.index % callback.length];
+                        if (cb) {
+                            cb.call(context, this.index);
+                        }
+                    } else if (callback) {
                         callback.call(context, this.index);
                     }
                 }, null, 0);

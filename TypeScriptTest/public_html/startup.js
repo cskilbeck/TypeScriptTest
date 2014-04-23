@@ -26,7 +26,8 @@ window.onload = function () {
                     context = canvas.getContext('2d');
                     loader = new chs.Loader('img/');
                     chs.Debug.init(context, chs.Font.load("Fixedsys", loader));
-                    loader.start(Startup.start);
+                    loader.addEventHandler("complete", Startup.start);
+                    loader.start();
                 },
 
                 start: function () {

@@ -32,6 +32,7 @@
     <Content Include="public_html\img\allColour.png" />
     <Content Include="public_html\config.php" />
     <Content Include="public_html\HttpPost.class.php" />
+    <Content Include="public_html\local.html" />
     <Content Include="public_html\index.php" />
     <None Include="public_html\img\Arial.json" />
     <Content Include="public_html\img\Arial0.png" />

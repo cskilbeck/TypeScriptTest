@@ -45,16 +45,16 @@
         }
     });
 
-    chs.EventSink = chs.Class({
+    chs.EventSource = chs.Class({
 
         $: function () {
-            this.eventSinkData = {
+            this.eventSourceData = {
                 handlers: {}
             };
         },
 
         addEventHandler: function (name, target, context) {
-            var self = this.eventSinkData;
+            var self = this.eventSourceData;
             if (!self.handlers.hasOwnProperty(name)) {
                 self.handlers[name] = [];
             }
@@ -62,7 +62,7 @@
         },
 
         removeEventHandler: function (name, target) {
-            var self = this.eventSinkData,
+            var self = this.eventSourceData,
                 f,
                 hl = self.handlers[name];
             if (hl) {
@@ -76,8 +76,8 @@
             }
         },
 
-        fireEvent: function (name) {
-            var self = this.eventSinkData,
+        dispatchEvent: function (name) {
+            var self = this.eventSourceData,
                 hl = self.handlers[name],
                 i,
                 l;

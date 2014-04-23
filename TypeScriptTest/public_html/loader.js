@@ -5,52 +5,46 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    var Item = function (url, callback, context, data, loader) {
-        this.url = url;
-        this.size = null;
-        this.bytesReceived = 0;
-        this.callback = callback;
-        this.context = context;
-        this.data = data;
-        this.loaded = false;
-        this.loader = loader;
-        this.inProgress = false;
-        this.binary = undefined;
-        this.started = false;
-        switch (chs.Util.getExtension(url)) {
-        case 'jpg':
-        case 'jpeg':
-            this.object = new Image();
-            this.binary = true;
-            this.finalize = Item.processJPEG;
-            break;
-        case 'png':
-            this.object = new Image();
-            this.binary = true;
-            this.finalize = Item.processImage;
-            break;
-        case 'json':
-            this.object = {};
-            this.binary = false;
-            this.finalize = Item.processJSON;
-            break;
-        case 'txt':
-        case 'text':
-            this.object = "";       // this doesn't work because strings are immutable
-            this.binary = false;
-            this.finalize = Item.processString;
-            break;
-        default:
-            this.object = new Uint8Array();
-            this.binary = true;
-            this.finalize = Item.processBinary;
-            break;
-        }
-    };
-
-    //////////////////////////////////////////////////////////////////////
-
-    Item.prototype = {
+    var Item = chs.Class({
+        inherit$: [chs.EventSource],
+        
+        $: function (url, data, loader) {
+            chs.EventSource.call(this);
+            this.url = url;
+            this.size = null;
+            this.bytesReceived = 0;
+            this.data = data;
+            this.loaded = false;
+            this.loader = loader;
+            this.inProgress = false;
+            this.binary = undefined;
+            this.started = false;
+            switch (chs.Util.getExtension(url)) {
+            case 'jpg':
+            case 'jpeg':
+                this.object = new Image();
+                this.binary = true;
+                this.finalize = Item.processJPEG;
+                break;
+            case 'png':
+                this.object = new Image();
+                this.binary = true;
+                this.finalize = Item.processImage;
+                break;
+            case 'json':
+                this.object = {};
+                this.binary = false;
+                this.finalize = Item.processJSON;
+                break;
+            //case xml:
+            //case bin:
+            default:
+                this.object = new Uint8Array();
+                this.binary = true;
+                this.finalize = Item.processBinary;
+                break;
+            }
+        },
 
         load: function () {
             if (!this.started) {
@@ -58,79 +52,58 @@
                 chs.ajax.get(this.url, Item.onLoaded, Item.onProgress, this, this.binary);
             }
         },
+
         doCallback: function () {
-            if (this.callback != null) {
-                this.callback.call(this.context, this.object);
-            }
+            this.dispatchEvent("loaded", this.object);
         },
-        onComplete: function () {
-            this.inProgress = true;
-            this.doCallback();          // need a chain of callback for everyone who was interested in this getting loaded...
-            this.loaded = true;
-            this.loader.itemLoaded(this);
+
+        static$: {
+
+            onProgress: function (url, e) {
+                this.inProgress = true;
+                if (e.lengthComputable && this.size === null) {
+                    this.size = e.total;
+                }
+                this.bytesReceived = e.loaded;
+            },
+
+            onLoaded: function (url, data) {
+                this.finalize.call(this, data);
+                this.inProgress = true;
+                this.loaded = true;
+                this.doCallback();
+            },
+
+            processImage: function (data) {
+                this.object.src = 'data:image/png;base64,' + chs.Util.btoa(data);
+            },
+
+            processJPEG: function (data) {
+                this.object.src = 'data:image/jpeg;base64,' + chs.Util.btoa(data);
+            },
+
+            processJSON: function (data) {
+                chs.Util.shallowCopy(JSON.parse(data), this.object);    // fuckit
+            },
+
+            processBinary: function (data) {
+                this.object.setArray(data);
+            }
         }
-    };
-
-    //////////////////////////////////////////////////////////////////////
-
-    Item.onProgress = function (url, e) {
-        this.inProgress = true;
-        if (e.lengthComputable && this.size === null) {
-            this.size = e.total;
-        }
-        this.bytesReceived = e.loaded;
-    };
-
-    //////////////////////////////////////////////////////////////////////
-
-    Item.onLoaded = function (url, data) {
-        this.finalize.call(this, data);
-        this.onComplete();
-    };
-
-    //////////////////////////////////////////////////////////////////////
-
-    Item.processImage = function (data) {
-        this.object.src = 'data:image/png;base64,' + chs.Util.btoa(data);
-    };
-
-    //////////////////////////////////////////////////////////////////////
-
-    Item.processJPEG = function (data) {
-        this.object.src = 'data:image/jpeg;base64,' + chs.Util.btoa(data);
-    };
-
-    //////////////////////////////////////////////////////////////////////
-
-    Item.processJSON = function (data) {
-        chs.Util.shallowCopy(JSON.parse(data), this.object);    // fuckit
-    };
-
-    //////////////////////////////////////////////////////////////////////
-
-    Item.processString = function (data) {
-        this.object += data;
-    };
-
-    //////////////////////////////////////////////////////////////////////
-
-    Item.processBinary = function (data) {
-        this.object.setArray(data);
-    };
+    });
 
     //////////////////////////////////////////////////////////////////////
 
     chs.Loader = chs.Class({
-        inherit$: [chs.Drawable],
+        inherit$: [chs.Drawable, chs.EventSource],
 
         //////////////////////////////////////////////////////////////////////
 
         $: function (baseDir) {
             chs.Drawable.call(this);
+            chs.EventSource.call(this);
             this.baseDir = baseDir;
             this.items = {};
-            this.context = null;
-            this.callback = null;
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -168,7 +141,7 @@
             var i,
                 item,
                 s;
-            chs.Debug.print("Loading, " + this.percentComplete().toFixed(2) + "% complete...");
+            chs.Debug.print("Loading, " + this.percentComplete().toFixed(0) + "% complete...");
             chs.Debug.print();
             for (i in this.items) {
                 item = this.items[i];
@@ -182,13 +155,18 @@
 
         //////////////////////////////////////////////////////////////////////
 
-        start: function (callback, context) {
+        reset: function (baseDir) {
+            this.baseDir = baseDir || this.baseDir;
+            this.items = {};
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        start: function () {
             var i;
             for (i in this.items) {
                 this.items[i].load();
             }
-            this.callback = callback;
-            this.context = context;
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -198,9 +176,7 @@
                 if (this.parent !== null) {
                     this.parent.loaded(this);
                 }
-                if (this.callback !== null) {
-                    this.callback.call(this.context, this);
-                }
+                this.dispatchEvent("complete");
             }
         },
 
@@ -209,11 +185,19 @@
         load: function (name, callback, context, data) {
             var url = chs.ajax.url(this.baseDir + name, data),
                 item = this.items[url] || null;
-            if (item !== null) {
-                item.doCallback();
-            } else {
-                item = new Item(url, callback, context, data, this);
+            if (item === null) {
+                item = new Item(url, data, this);
                 this.items[url] = item;
+            }
+            if (item.loaded) {
+                if (callback) {
+                    callback.call(context, item.object);
+                }
+            } else {
+                if (callback) {
+                    item.addEventHandler("loaded", callback, context);
+                }
+                item.addEventHandler("loaded", this.itemLoaded, this);
             }
             return item.object;
         }

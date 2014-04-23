@@ -43,6 +43,10 @@
             };
         },
 
+        scaleTo: function (x, y) {
+            this.setScale(x / this.width, y / this.height);
+        },
+
         onDraw: function (context, matrix) {
             var w = this.width,
                 h = this.height;

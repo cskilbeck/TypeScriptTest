@@ -41,9 +41,13 @@ if(isset($_GET['code'])) {
     if(!isset($r->error)) {
         $_SESSION['id'] = $r->id;
         $_SESSION['name'] = $r->name;
+        $_SESSION['firstName'] = $r->given_name;
+        $_SESSION['lastName'] = $r->family_name;
+        $_SESSION['picture'] = $r->picture;
+        $_SESSION['link'] = $r->link;
     } else {
         $_SESSION['error'] = "Login failed";
     }
-	header('Location: http://www.make-the-words.com');
+    header('Location: http://www.make-the-words.com');
 }
 ?>

@@ -1,4 +1,4 @@
-﻿<?
+<?
 // oauth2callback/index.php
 
 session_start();
@@ -44,17 +44,6 @@ if(isset($_GET['code'])) {
     } else {
         $_SESSION['error'] = "Login failed";
     }
+	header('Location: http://www.make-the-words.com');
 }
-echo "
-<!DOCTYPE html>
-    <html lang='en' xmlns='http://www.w3.org/1999/xhtml'>
-        <head>
-            <meta charset='utf-8' />
-            <title></title>
-        </head>
-        <body>
-        </body>
-        <script>window.location='http://www.make-the-words.com'</script>
-    </html>
-";
 ?>

@@ -18,7 +18,7 @@
         },
 
         loginGoogle: function () {
-            this.close();
+            window.location = 'http://www.make-the-words.com/logingoogle.php';
         }
     });
 }());

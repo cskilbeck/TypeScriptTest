@@ -1,5 +1,4 @@
-<?
-// oauth2callback/index.php
+<?php // oauth2callback/index.php
 
 session_start();
 

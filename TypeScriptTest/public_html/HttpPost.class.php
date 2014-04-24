@@ -1,4 +1,4 @@
-<?
+<?php
 class HttpPost {
 
 	public $url;

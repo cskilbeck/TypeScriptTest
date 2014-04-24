@@ -57,6 +57,15 @@
             this.dispatchEvent("loaded", this.object);
         },
 
+        then: function (c, f) {
+            var ctx = c || Item.then.caller;
+            if (this.loaded) {
+                f.call(ctx, this.object);
+            } else {
+                this.addEventHandler("loaded", f, ctx, true);
+            }
+        },
+
         static$: {
 
             onProgress: function (url, e) {
@@ -178,6 +187,18 @@
                 }
                 this.dispatchEvent("complete");
             }
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        loadItem: function (name, callback, context, data) {
+            var url = chs.ajax.url(this.baseDir + name, data),
+                item = this.items[url] || null;
+            if (item === null) {
+                item = new Item(url, data, this);
+                this.items[url] = item;
+            }
+            return item;
         },
 
         //////////////////////////////////////////////////////////////////////

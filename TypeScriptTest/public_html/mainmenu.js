@@ -13,16 +13,16 @@
                 chs.Button.call(this);
                 chs.Drawable.call(this);
                 this.loader = new chs.Loader("");
-                this.dimensions = { width: width, height: width };
+                this.dimensions = { width: width, height: height };
                 this.org = { x: x, y: y };
                 this.setPosition(x + 0.5, y + 0.5);
                 this.clipRect = new chs.ClipRect(0, 0, this.width, this.height, 14);
                 this.addChild(this.clipRect);
-                this.image = chs.Sprite.load(url, this.loader);
-                this.loader.addEventHandler("complete", function () {
+                this.loader.loadItem(url).then(this, function (img) {
+                    this.image = new chs.Sprite(img);
                     this.image.scaleTo(this.width, this.height);
                     this.clipRect.addChild(this.image);
-                }, this);
+                });
                 this.border = new chs.Panel(0, 0, this.width, this.height, undefined, "black", this.clipRect.radius, 2, 255);
                 this.addChild(this.border);
                 this.loader.start();

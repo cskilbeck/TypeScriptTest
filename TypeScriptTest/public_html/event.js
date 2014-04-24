@@ -39,9 +39,10 @@
 
     chs.EventHandler = chs.Class({
 
-        $: function (target, context) {
+        $: function (target, context, oneOff) {
             this.target = target;
             this.context = context;
+            this.oneOff = oneOff;
         }
     });
 
@@ -53,12 +54,13 @@
             };
         },
 
-        addEventHandler: function (name, target, context) {
-            var self = this.eventSourceData;
+        addEventHandler: function (name, target, context, oneShot) {
+            var self = this.eventSourceData,
+                ctx = context || this;
             if (!self.handlers.hasOwnProperty(name)) {
                 self.handlers[name] = [];
             }
-            self.handlers[name].push(new chs.EventHandler(target, context));
+            self.handlers[name].push(new chs.EventHandler(target, ctx, oneShot));
         },
 
         removeEventHandler: function (name, target) {
@@ -80,10 +82,14 @@
             var self = this.eventSourceData,
                 hl = self.handlers[name],
                 i,
-                l;
+                rc;
             if (hl) {
-                for (i = 0, l = hl.length; i < l; ++i) {
-                    if (hl[i].target.call(hl[i].context, Array.prototype.slice.call(arguments, 1)) === true) {
+                for (i = 0; i < hl.length; ++i) {
+                    rc = hl[i].target.apply(hl[i].context, Array.prototype.slice.call(arguments, 1));
+                    if (hl[i].oneOff) {
+                        hl.splice(i, 1);
+                    }
+                    if (rc === true) {
                         break;
                     }
                 }

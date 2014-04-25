@@ -1,7 +1,8 @@
 ﻿//////////////////////////////////////////////////////////////////////
-// OAuth/AWS/Leaderboards
+// fix font util (comine channels plugin)
+// highlight word on board when word in list hovered (use font layer mask)
+// user database/sessions
 // Remember login choice (Google/Facebook etc) in a cookie, then try to reauth on page refresh
-// Remember the [what, Alamo?]
 // Mobile: Android/Chrome, iOS/Safari, Windows Phone: IE // Touch Support
 // Fix tile grabbing/moving/swapping/lerping
 // Flying scores/fizz/particles

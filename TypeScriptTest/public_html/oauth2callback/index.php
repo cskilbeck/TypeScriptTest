@@ -5,14 +5,11 @@ session_start();
 require('../config.php');
 require('../HttpPost.class.php');
 
-/**
- * the OAuth server should have brought us to this page with a $_GET['code']
- */
 if(isset($_GET['code'])) {
 
     // try to get an access token
     $code = $_GET['code'];
-    $url = 'https://accounts.google.com/o/oauth2/token';
+    $url = 'https://accounts.google.com/o/oauth2/tokenKKK';
 
     // this will be our POST data to send back to the OAuth server in exchange for an access token
     $params = array(
@@ -45,8 +42,12 @@ if(isset($_GET['code'])) {
         $_SESSION['picture'] = $r->picture;
         $_SESSION['link'] = $r->link;
     } else {
+		echo $response;
         $_SESSION['error'] = "Login failed";
     }
+
+	// now register the user with my web service
+
     header('Location: http://www.make-the-words.com');
 }
 ?>

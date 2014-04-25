@@ -75,9 +75,6 @@
             this.button = new chs.TextButton("PLAY!", consolasItalic, pw / 2, ph / 2, 200, 50, this.playClicked, this).setPivot(0.5, 0.5);
             this.panel.addChild(this.button);
             this.addChild(this.panel);
-            if (mtw.User.error) {
-                this.panel.addChild(new chs.Label(mtw.User.error + ":" + mtw.User.message.toString(), consolas).setPosition(12, 12));
-            }
             if (mtw.User.id === undefined || mtw.User.name === undefined) {
                 buttons.push('Login');
                 callbacks.push(this.showLogin);
@@ -91,6 +88,9 @@
             this.panel.addChild(new chs.Menu(20, this.panel.height - 20, consolasItalic, buttons, callbacks, this).setPivot(0, 1));
             this.enabled = true;
             this.visible = true;
+            if (mtw.User.error) {
+                this.showLogin();
+            }
         },
 
         showLogin: function () {

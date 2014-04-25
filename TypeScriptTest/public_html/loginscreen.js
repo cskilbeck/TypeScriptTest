@@ -25,6 +25,9 @@
                 function () { goto('logintwitter.php'); }
             ], this).setPivot(0.5, 0.5));
 
+            if (mtw.User.error) {
+                this.addChild(new chs.Label(mtw.User.error + ":" + mtw.User.message.toString(), consolasItalic).setPosition(12, 12));
+            }
             this.addChild(new chs.TextButton("Cancel", consolasItalic, 16, this.height - 16, 120, 36, this.close, this, 4).setPivot(0, 1));
         }
     });

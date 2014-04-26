@@ -112,8 +112,8 @@
         inherit$: [chs.Button, chs.Panel],
 
         $: function (x, y, w, h, fillColour, lineColour, radius, lineWidth, click, context) {
-            chs.Panel.call(this, x, y, w, h, fillColour, lineColour, radius, lineWidth);
             chs.Button.call(this, click, context);
+            chs.Panel.call(this, x, y, w, h, fillColour, lineColour, radius, lineWidth);
         }
     });
 

@@ -5,6 +5,39 @@
 
     //////////////////////////////////////////////////////////////////////
 
+    chs.Image = chs.Class({
+        inherit$: [chs.Drawable],
+
+        $: function () {
+            var that = this;
+            chs.Drawable.call(this);
+            this.image = new Image();
+            this.dimensions = { width: 0, height: 0 };
+            this.image.onload = function () {
+                that.dimensions = { width: that.image.width, height: that.image.height };
+                that.dispatchEvent("loaded");
+                that.onDraw = that.realOnDraw;
+            };
+        },
+
+        src: {
+            set: function (s) {
+                this.image.src = s;
+            }
+        },
+
+        onDraw: function (context) {
+        },
+
+        realOnDraw: function (context) {
+            var w = this.width,
+                h = this.height;
+            context.drawImage(this.image, 0, 0, w, h, 0, 0, w, h);
+        }
+    });
+
+    //////////////////////////////////////////////////////////////////////
+
     chs.Sprite = chs.Class({
         inherit$: [chs.Drawable],
 
@@ -45,6 +78,7 @@
 
         scaleTo: function (x, y) {
             this.setScale(x / this.width, y / this.height);
+            return this;
         },
 
         onDraw: function (context, matrix) {

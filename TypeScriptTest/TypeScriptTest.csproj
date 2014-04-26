@@ -27,7 +27,6 @@
     <Content Include="public_html\debug.js" />
     <Content Include="public_html\drawable.js" />
     <Content Include="public_html\event.js" />
-    <Content Include="public_html\facebook.js" />
     <Content Include="public_html\game.js" />
     <Content Include="public_html\img\allColour.png" />
     <Content Include="public_html\config.php" />

@@ -111,7 +111,7 @@
         $: function (baseDir) {
             chs.Drawable.call(this);
             chs.EventSource.call(this);
-            this.baseDir = baseDir;
+            this.baseDir = baseDir || "";
             this.items = {};
         },
 
@@ -198,6 +198,7 @@
                 item = new Item(url, data, this);
                 this.items[url] = item;
             }
+            item.load();
             return item;
         },
 

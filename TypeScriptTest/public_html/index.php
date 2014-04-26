@@ -30,6 +30,7 @@
     <script src="random.js"></script>
     <script src="cookies.js"></script>
     <script src="ajax.js"></script>
+    <script src="webservice.js"></script>
     <script src="list.js"></script>
     <script src="timer.js"></script>
     <script src="matrix.js"></script>

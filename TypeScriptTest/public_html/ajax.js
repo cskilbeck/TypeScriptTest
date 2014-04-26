@@ -22,7 +22,9 @@
             }
         };
         xr.onprogress = function (e) {
-            progressCallback.call(context, url, e);
+            if (progressCallback) {
+                progressCallback.call(context, url, e);
+            }
         };
         if (method === 'POST') {
             xr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');

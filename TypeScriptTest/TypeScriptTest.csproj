@@ -34,6 +34,7 @@
     <Content Include="public_html\HttpPost.class.php" />
     <Content Include="public_html\local.html" />
     <Content Include="public_html\index.php" />
+    <Content Include="public_html\webservice.js" />
     <None Include="public_html\img\Arial.json" />
     <Content Include="public_html\img\Arial0.png" />
     <Content Include="public_html\img\Consolas_Italic.json" />

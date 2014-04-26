@@ -13,6 +13,16 @@
             chs.Drawable.call(this);
             this.mainMenu = mainMenu;
             this.dimensions = chs.desktop.dimensions;
+            chs.WebService.get('oauthlist', {}, function (result) {
+                var p,
+                    o;
+                console.log("Provider list:");
+                for (p in result.providers) {
+                    o = result.providers[p];
+                    console.log(o.oauth_name + ": " + o.oauth_id);
+                }
+                console.log("End of provider list");
+            }, this);
             this.addChild(new chs.Menu(this.width / 2, this.height / 2, consolasItalic, [
                 '<Login with Google',
                 '<Login with Facebook',

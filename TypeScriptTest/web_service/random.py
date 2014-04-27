@@ -21,4 +21,3 @@ class Random(object):
         w = v
         v = v ^ (v << 6) ^ (t ^ (t << 13))
         return rshift((y + y + 1) * v, 16)
-

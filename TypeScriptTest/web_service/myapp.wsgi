@@ -106,7 +106,7 @@ def getGlobal(db, name):
 				return None
 	except mdb.DatabaseError, e:
 		return None
-	
+    
 #----------------------------------------------------------------------
 
 def getJSONURL(path):

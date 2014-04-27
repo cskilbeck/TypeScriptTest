@@ -82,16 +82,16 @@
 
         getResponseAsArray: function (xr) {
 
-            if (xr.response !== null) {
+            if (xr.response !== undefined) {
                 return new Uint8Array(xr.response);
             }
-            if (xr.mozResponseArrayBuffer !== null) {
+            if (xr.mozResponseArrayBuffer !== undefined) {
                 return new Uint8Array(xr.mozResponseArrayBuffer);
             }
-            if (xr.mozResponse !== null) {
+            if (xr.mozResponse !== undefined) {
                 return new Uint8Array(xr.mozResponse);
             }
-            if (xr.responseArrayBuffer !== null) {
+            if (xr.responseArrayBuffer !== undefined) {
                 return new Uint8Array(xr.responseArrayBuffer);
             }
             return new Uint8Array(new VBArray(xr.responseBody).toArray());

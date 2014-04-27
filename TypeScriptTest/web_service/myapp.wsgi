@@ -100,7 +100,7 @@ def getGlobal(db, name):
 		with closing(cursor(db)) as cur:
 			cur.execute("select `%s` from globals limit 1" % (name))
 			row = cur.fetchone()
-			if row:
+        	if row:
 				return row[name]
 			else:
 				return None

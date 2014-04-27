@@ -50,11 +50,11 @@ def encoded_dict(in_dict):
 
 def opendb():
     return  mdb.connect(host        = 'mtwdb.cnk16j9pzvyy.us-east-1.rds.amazonaws.com',
-                            user        = 'mtwuser',
-                            passwd      = 'mtwpassword',
-                            db          = 'mtwdb',
-                            use_unicode = True,
-                            charset     = 'utf8')
+                        user        = 'mtwuser',
+                        passwd      = 'mtwpassword',
+                        db          = 'mtwdb',
+                        use_unicode = True,
+                        charset     = 'utf8')
 
 #----------------------------------------------------------------------
 
@@ -606,7 +606,8 @@ def application(environ, start_response):
     outputStr = json.dumps(output, indent=4, separators=(',',': '))
     headers = [('Content-type', 'text/plain'), ('Content-Length', str(len(outputStr)))]
     org = environ['HTTP_ORIGIN']
-    if org.lower() == 'http://www.make-the-words.com' or 'http://make-the-words.com':
+    if org.lower() in ['http://www.make-the-words.com',
+                      'http://make-the-words.com']:
         headers.append(('Access-Control-Allow-Origin', org))
     else:
         pprint("Origin: %s is not allowed" % (org))

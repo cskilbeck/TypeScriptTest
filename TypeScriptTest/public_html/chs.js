@@ -47,17 +47,17 @@ var chs = (function () {
 
             // inheritance
             if (desc.hasOwnProperty('inherit$')) {
-                if (!desc.inherit$) {
-                    throw new TypeError('Inheriting from undefined class!?');
-                } else {
-                    if (Object.prototype.toString.call(desc.inherit$) !== '[object Array]') {
-                        throw new TypeError('Inheritance chain must be an array');
-                    } else {
-                        for (i = 0; i < desc.inherit$.length; ++i) {
-                            extend(child, desc.inherit$[i], false);
-                            extend(child.prototype, desc.inherit$[i].prototype, false);
-                        }
-                    }
+				if (Object.prototype.toString.call(desc.inherit$) !== '[object Array]') {
+					throw new TypeError('Inheritance chain must be an array');
+				} else {
+					for (i = 0; i < desc.inherit$.length; ++i) {
+						if (!desc.inherit$[i]) {
+							throw new TypeError('Inheriting from undefined class!?');
+						} else {
+							extend(child, desc.inherit$[i], false);
+							extend(child.prototype, desc.inherit$[i].prototype, false);
+						}
+					}
                 }
             }
             return child;

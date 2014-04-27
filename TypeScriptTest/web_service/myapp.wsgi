@@ -588,7 +588,6 @@ class postHandler(Handler):
 def application(environ, start_response):
 
     output = dict()
-
     try:
         with closing(opendb()) as db:
             db.autocommit(True)

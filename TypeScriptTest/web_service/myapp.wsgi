@@ -49,12 +49,12 @@ def encoded_dict(in_dict):
 #----------------------------------------------------------------------
 
 def opendb():
-    return  mdb.connect(host = 'mtwdbinstance.cnk16j9pzvyy.us-east-1.rds.amazonaws.com',
-                            user = 'mtwuser',
-                            passwd = 'Henry123',
-                            db = 'mtwdb',
+    return  mdb.connect(host        = 'mtwdb.cnk16j9pzvyy.us-east-1.rds.amazonaws.com',
+                            user        = 'mtwuser',
+                            passwd      = 'mtwpassword',
+                            db          = 'mtwdb',
                             use_unicode = True,
-                            charset = 'utf8')
+                            charset     = 'utf8')
 
 #----------------------------------------------------------------------
 
@@ -65,12 +65,12 @@ def cursor(db):
 
 def getCurrentTime():
     return datetime.datetime.strftime(datetime.datetime.now(), "%Y-%m-%d %H:%M:%S.%f")
-    
+
 #----------------------------------------------------------------------
 
 def seconds(td):
     return td.days * 86400 + td.seconds
-        
+
 #----------------------------------------------------------------------
 
 def getDaemonResponse(input):
@@ -108,7 +108,7 @@ def getGlobal(db, name):
                 return None
     except mdb.DatabaseError, e:
         return None
-    
+
 #----------------------------------------------------------------------
 
 def getJSONURL(path):
@@ -120,7 +120,7 @@ def getJSONURL(path):
         return dct
     except HTTPError, e:
         return None
-    
+
 #----------------------------------------------------------------------
 # Handler - base for all request handlers
 #----------------------------------------------------------------------
@@ -131,66 +131,33 @@ class Handler(object):
         self.environ = environ
         self.db = db
         self.output = output
-        
+
     def cursor(self):
         return cursor(self.db)
 
     #----------------------------------------------------------------------
-    # in theory this exposes a race condition but the same person would have to log in for the first time from multiple locations at the same time. And then there would just be an error for one of them. Probably won't explode.
-    
-    def createOrUpdatePerson(self, fbid):
 
-        if fbid > 0:
-            try:
-                with closing(self.cursor()) as cur:
-                    cur.execute("select count(*) as existence from people where facebook_id=%s", (fbid))
-                    if cur.fetchone()['existence'] == 0:
-                        name = getJSONURL("http://graph.facebook.com/?fields=name&id=%s" % (str(fbid)))
-                        if name:
-                            realName = name['name']
-                            sql = "insert into people (facebook_id, name) values (%s,%s)"
-                            cur.execute(sql, (fbid, realName, realName))
-            except mdb.DatabaseError, e:
-                pass
+    def createOrUpdatePerson(self, oauth_id, oauth_sub):
+        try:
+            with closing(self.cursor()) as cur:
+                cur.execute("select count(*) as existence from people where oauth_id=%s and oauth_sub=%s", (oauth_id, oauth_sub))
+                if cur.fetchone()['existence'] == 0:
+                    # new user, insert into database
+                    name = getJSONURL("http://graph.facebook.com/?fields=name&id=%s" % (str(fbid)))
+                    if name:
+                        realName = name['name']
+                        sql = "insert into people (facebook_id, name) values (%s,%s)"
+                        cur.execute(sql, (fbid, realName, realName))
+                else:
+                    # existing user, update name
+                    pass
+        except mdb.DatabaseError, e:
+            pass
 
     #----------------------------------------------------------------------
 
     def add(self, x):
         self.output.update(x)
-
-    #----------------------------------------------------------------------
-
-    def getBoardID(self, fbid, gameID):
-        with closing(self.cursor()) as cur:
-            cur.execute("select board_id from boards where game_id=%s and facebook_id=%s", (gameID, fbid))
-            if cur.rowcount > 0:
-                return cur.fetchone()["board_id"]
-            else:
-                return 0
-        print "Error getting board for " + str(fbid) + "," + str(gameID)
-        return None
-
-    #----------------------------------------------------------------------
-    
-    def getGame(self, criterion=""):
-        with closing(self.cursor()) as cur:
-            cur.execute("select * from games %s order by game_id desc limit 1;" % (criterion))
-            row = cur.fetchone()
-            if row:
-                row["current_time"] = datetime.datetime.now()
-                row["board"] = getBoard(row["random_seed"])
-                row["duration"] = int(seconds(row["end_time"] - row["start_time"]))
-            return row
-
-    #----------------------------------------------------------------------
-
-    def getCurrentGame(self):
-        return self.getGame()
-
-    #----------------------------------------------------------------------
-
-    def getSpecificGame(self, gameID):
-        return self.getGame("where game_id=%d" % (gameID))
 
     #----------------------------------------------------------------------
 
@@ -224,6 +191,30 @@ class pingHandler(Handler):
         self.add({"pong": getCurrentTime()})
 
 #----------------------------------------------------------------------
+# action:oauthlist
+#
+# parameters:   none
+#
+# response:     id              int
+#               name            int
+#               logo            url
+#----------------------------------------------------------------------
+
+class oauthlistHandler(Handler):
+
+    def handle(self):
+        try:
+            with closing(self.cursor()) as cur:
+                cur.execute("select * from oauth_providers where oauth_id > 0")
+                providers = []
+                rows = cur.fetchall()
+                for row in rows:
+                    providers.append(row)
+                self.add({"providers": providers})
+        except mdb.DatabaseError, e:
+            pprint(e)
+
+#----------------------------------------------------------------------
 # action:bot
 #
 # parameters:   none
@@ -253,7 +244,7 @@ class botHandler(Handler):
                 # get it
                 cur.execute("select * from people where facebook_id = %s", (-1 - next_bot))
                 row = cur.fetchone()
-                
+
                 self.add(row)
         except mdb.DatabaseError, e:
             pprint(e)
@@ -534,14 +525,13 @@ class postHandler(Handler):
                 return cur.fetchone()
         except mdb.DatabaseError, e:
             return None
-    
+
     #----------------------------------------------------------------------
 
     def handle(self):
-
         try:
             postData = self.getPostData()
-            
+
             # convert to the right datatypes
             try:
                 boardID = int(postData["board_id"])
@@ -553,7 +543,7 @@ class postHandler(Handler):
                 return None
 
             game = self.getCurrentGame()
-            
+
             # check for some errors
             if not game:
                 error(self.output, Error.E_NOGAME)
@@ -586,7 +576,6 @@ class postHandler(Handler):
 #----------------------------------------------------------------------
 
 def application(environ, start_response):
-
     output = dict()
     try:
         with closing(opendb()) as db:
@@ -604,18 +593,22 @@ def application(environ, start_response):
             mpt = getGlobal(db, 'min_ping_time')
             if mpt:
                 output.update({ "min_ping_time":  mpt })
-        
+
     except ValueError:
         error(output, Error.E_BADINPUT)
+        pprint("Bad input: %s" % (environ['QUERY_STRING']))
 
     except mdb.Error, e:
-        print "Database error %d: %s" % (e.args[0], e.args[1])
+        pprint("Database error %d: %s" % (e.args[0], e.args[1]))
         error(output, Error.E_DBASEERROR)
-        
+
     output = encoded_dict(output)
-    o = {}
-    for k,v in output.iteritems():
-        o[k + "-" + type(v).__name__] = v
-    outputStr = urllib.urlencode(o)
-    start_response('200 OK', [('Content-type', 'text/plain'), ('Content-Length', str(len(outputStr)))])
+    outputStr = json.dumps(output, indent=4, separators=(',',': '))
+    headers = [('Content-type', 'text/plain'), ('Content-Length', str(len(outputStr)))]
+    org = environ['HTTP_ORIGIN']
+    if org.lower() == 'http://www.make-the-words.com' or 'http://make-the-words.com':
+        headers.append(('Access-Control-Allow-Origin', org))
+    else:
+        pprint("Origin: %s is not allowed" % (org))
+    start_response('200 OK', headers)
     return outputStr

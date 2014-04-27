@@ -70,6 +70,8 @@
     <Content Include="public_html\loader.js" />
     <Content Include="public_html\oauth2callback\index.php" />
     <Content Include="public_html\logingoogle.php" />
+    <Content Include="SQL\mtw_procs.sql" />
+    <Content Include="SQL\mtw_setup.sql" />
     <Content Include="web_service\myapp.wsgi" />
   </ItemGroup>
   <ItemGroup>

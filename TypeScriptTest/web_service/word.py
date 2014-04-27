@@ -2,10 +2,15 @@
 
 class Word:
 
-    def __init__(word, direction):
-        self.direction = direction
+    horizontal = 0
+    vertical = 1
+
+    def __init__(word, x, y, direction, score):
         self.word = word
-        self.score = Letters.get_score(word)
+        self.x = x
+        self.y = y
+        self.direction = direction
+        self.score = score
 
     @staticmethod
     def compare(x, y):

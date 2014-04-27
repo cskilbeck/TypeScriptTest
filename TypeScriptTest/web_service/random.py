@@ -1,7 +1,7 @@
 ﻿def rshift(x, y):
     return (x % 0x100000000) >> y
 
-class Random(object):
+class Random:
 
     def __init__(self, seed = 1):
         self.seed(seed)

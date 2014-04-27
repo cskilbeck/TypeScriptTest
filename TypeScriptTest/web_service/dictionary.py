@@ -1,17 +1,23 @@
 import json
+from letters import Letters
 
-class Dictionary(object):
-    
-    def __init__(self):
+class Dictionary:
+
+    dictionary = None
+
+    @staticmethod    
+    def init():
         with open('dictionary.json') as json_data:
-            self.dictionary = json.loads(json_data)
+            dictionary = json.loads(json_data)
             json_data.close()
 
+    @staticmethod    
     def is_word(w):
-        return w in self.dictionary
+        return w in dictionary
 
+    @staticmethod    
     def score(w):
         if is_word(w):
-            pass
+            return Letters.get_score(w)
         else:
             return 0

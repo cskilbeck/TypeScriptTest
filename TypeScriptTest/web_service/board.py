@@ -1,7 +1,7 @@
 ﻿from random import Random
 from letters import Letters
 
-class Board(object):
+class Board:
 
     def __init__(self, w, h):
         self.width = w

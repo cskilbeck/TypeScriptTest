@@ -38,7 +38,7 @@ class Letters:
         letter = 97 # a
         for l in letters:
             for i in range(l.frequency):
-                distribution.append(letter)
+                distribution.append(chr(letter))
             letter += 1
 
     @staticmethod
@@ -49,5 +49,5 @@ class Letters:
     def get_score(word):
         score = 0
         for l in word:
-            score += letters[word[l]-97].score
+            score += letters[ord(word[l])-97].score
         return score

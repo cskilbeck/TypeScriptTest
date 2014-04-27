@@ -605,9 +605,8 @@ def application(environ, start_response):
     output = encoded_dict(output)
     outputStr = json.dumps(output, indent=4, separators=(',',': '))
     headers = [('Content-type', 'text/plain'), ('Content-Length', str(len(outputStr)))]
-    org = environ['HTTP_ORIGIN']
-    if org.lower() in ['http://www.make-the-words.com',
-                      'http://make-the-words.com']:
+    org = environ['HTTP_REFERER'].rstrip('/')
+    if org.lower() == 'http://www.make-the-words.com' or 'http://make-the-words.com':
         headers.append(('Access-Control-Allow-Origin', org))
     else:
         pprint("Origin: %s is not allowed" % (org))

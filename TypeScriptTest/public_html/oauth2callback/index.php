@@ -28,7 +28,7 @@ if(isset($_GET['code'])) {
     // decode the incoming string as JSON
     $responseObj = json_decode($request->getHttpResponse());
 
-    // get the userinfo
+    // get the userinfo from OP
     $url = 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=' . $responseObj->access_token;
     $request = new HttpPost($url);
     $request->send();
@@ -42,7 +42,6 @@ if(isset($_GET['code'])) {
         $_SESSION['picture'] = $r->picture;
         $_SESSION['link'] = $r->link;
     } else {
-		echo $response;
         $_SESSION['error'] = "Login failed";
     }
 

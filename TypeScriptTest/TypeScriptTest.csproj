@@ -70,6 +70,7 @@
     <Content Include="public_html\loader.js" />
     <Content Include="public_html\oauth2callback\index.php" />
     <Content Include="public_html\logingoogle.php" />
+    <Content Include="web_service\myapp.wsgi" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="public_html\dictionary.js" />

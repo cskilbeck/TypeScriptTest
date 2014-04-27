@@ -22,7 +22,7 @@
             var fh = pfont.height,
                 logo = new chs.Image();
             chs.PanelButton.call(this, x, y, 320, fh + 24, "rgb(255, 255, 255)", "white", 4, 2);
-            this.transparency = 128;
+            this.transparency = 160;
             this.addChild(new chs.Label(provider.oauth_name, pfont).setPosition(8, this.height / 2).setPivot(0, pfont.midPivot));
             logo.addEventHandler("loaded", function () {
                 this.setScale(32 / this.height);
@@ -31,7 +31,7 @@
             logo.setPivot(1, 0.5);
             logo.src = provider.oauth_icon;
             this.addChild(logo);
-            this.onIdle = function () { this.transparency = 128; };
+            this.onIdle = function () { this.transparency = 160; };
             this.onHover = function () { this.transparency = 192; };
             this.onPressed = function () { this.transparency = 224; };
         }

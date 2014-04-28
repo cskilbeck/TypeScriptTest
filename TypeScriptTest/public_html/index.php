@@ -17,14 +17,17 @@
         echo "            picture: '"       . $_SESSION['picture'] . "',\n";
         echo "            link: '"          . $_SESSION['link'] . "'\n";
     } elseif(isset($_SESSION['error'])) {
-        echo "            loginError: '"    . $_SESSION['error'] . "'\n";
+        echo "            error: '"         . $_SESSION['error'] . "',\n";
+        echo "            message: '"       . $_SESSION['message'] . "'\n";
     }
 ?>
         }
     }
     </script>
-    <script src="polyfill.js"></script>
     <script src="chs.js"></script>
+    <script src="browser.js"></script>
+    <script src="class.js"></script>
+    <script src="polyfill.js"></script>
     <script src="util.js"></script>
     <script src="event.js"></script>
     <script src="random.js"></script>

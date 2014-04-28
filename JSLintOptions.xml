@@ -61,7 +61,7 @@
           <string>browser</string>
         </key>
         <value>
-          <boolean>false</boolean>
+          <boolean>true</boolean>
         </value>
       </item>
       <item>
@@ -711,6 +711,7 @@
       <string>MainMenu</string>
       <string>LoginScreen</string>
       <string>mtw</string>
+      <string>XDomainRequest</string>
     </PreDefined>
   </JSLintOptions>
   <BuildFileTypes>JS</BuildFileTypes>

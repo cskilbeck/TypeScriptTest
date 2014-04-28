@@ -18,6 +18,8 @@
     <JSLintSkip>\dictionary.js</JSLintSkip>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="public_html\class.js" />
+    <Content Include="public_html\browser.js" />
     <Content Include="public_html\ajax.js" />
     <Content Include="public_html\app.css" />
     <Content Include="public_html\board.js" />
@@ -29,7 +31,7 @@
     <Content Include="public_html\event.js" />
     <Content Include="public_html\game.js" />
     <Content Include="public_html\img\allColour.png" />
-    <Content Include="public_html\config.php" />
+    <Content Include="public_html\google.php" />
     <Content Include="public_html\HttpPost.class.php" />
     <Content Include="public_html\local.html" />
     <Content Include="public_html\index.php" />
@@ -73,7 +75,9 @@
     <Content Include="public_html\word.js" />
     <Content Include="public_html\loader.js" />
     <Content Include="public_html\oauth2callback\index.php" />
-    <Content Include="public_html\logingoogle.php" />
+    <Content Include="public_html\logingoogle.php">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="SQL\mtw_procs.sql" />
     <Content Include="SQL\mtw_setup.sql" />
     <Content Include="web_service\dictionary.py" />

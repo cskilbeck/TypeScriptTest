@@ -6,43 +6,44 @@
     }
 
     var pfont,
-        ploader;
+        ploader,
 
-    var ProviderButton = chs.Class({
-        inherit$: [chs.PanelButton],
+        ProviderButton = chs.Class({
 
-        static$: {
-            init: function (font, loader) {
-                pfont = font;
-                ploader = new chs.Loader();
+            inherit$: [chs.PanelButton],
+
+            static$: {
+                init: function (font, loader) {
+                    pfont = font;
+                    ploader = new chs.Loader();
+                }
+            },
+
+            $: function (x, y, provider) {    // oauth_id, oauth_name, oauth_icon
+                var fh = pfont.height,
+                    logo = new chs.Image();
+                chs.PanelButton.call(this, x, y, 320, fh + 24, "rgb(255, 255, 255)", "white", 4, 2);
+                this.transparency = 160;
+                this.addChild(new chs.Label(provider.oauth_name, pfont).setPosition(8, this.height / 2).setPivot(0, pfont.midPivot));
+                logo.addEventHandler("loaded", function () {
+                    this.setScale(32 / this.height);
+                });
+                logo.setPosition(this.width - 8, this.height / 2);
+                logo.setPivot(1, 0.5);
+                logo.src = provider.oauth_icon;
+                this.addChild(logo);
+                this.onIdle = function () { this.transparency = 160; };
+                this.onHover = function () { this.transparency = 192; };
+                this.onPressed = function () { this.transparency = 224; };
             }
-        },
-
-        $: function (x, y, provider) {    // oauth_id, oauth_name, oauth_icon
-            var fh = pfont.height,
-                logo = new chs.Image();
-            chs.PanelButton.call(this, x, y, 320, fh + 24, "rgb(255, 255, 255)", "white", 4, 2);
-            this.transparency = 160;
-            this.addChild(new chs.Label(provider.oauth_name, pfont).setPosition(8, this.height / 2).setPivot(0, pfont.midPivot));
-            logo.addEventHandler("loaded", function () {
-                this.setScale(32 / this.height);
-            });
-            logo.setPosition(this.width - 8, this.height / 2);
-            logo.setPivot(1, 0.5);
-            logo.src = provider.oauth_icon;
-            this.addChild(logo);
-            this.onIdle = function () { this.transparency = 160; };
-            this.onHover = function () { this.transparency = 192; };
-            this.onPressed = function () { this.transparency = 224; };
-        }
-    });
-
+        });
 
     return chs.Class({
         inherit$: [chs.Drawable],
 
         $: function (loader, mainMenu) {
-            var consolasItalic = chs.Font.load("Consolas_Italic", loader);
+            var consolasItalic = chs.Font.load("Consolas_Italic", loader),
+                err;
             chs.Drawable.call(this);
             this.mainMenu = mainMenu;
             this.dimensions = chs.desktop.dimensions;
@@ -70,7 +71,8 @@
             ], this).setPivot(0, 0));
 
             if (mtw.User.error) {
-                this.addChild(new chs.Label(mtw.User.error + ":" + mtw.User.message.toString(), consolasItalic).setPosition(12, 12));
+                err = mtw.User.message || "Unknown reason";
+                this.addChild(new chs.Label(mtw.User.error + ":" + err.toString(), consolasItalic).setPosition(12, 12));
             }
             this.addChild(new chs.TextButton("Cancel", consolasItalic, 16, this.height - 16, 120, 36, this.close, this, 4).setPivot(0, 1));
         }

@@ -63,8 +63,18 @@ def cursor(db):
 
 #----------------------------------------------------------------------
 
+def formattedTime(t):
+    return datetime.datetime.strftime(t, "%Y-%m-%d %H:%M:%S.%f")
+
+#----------------------------------------------------------------------
+
 def getCurrentTime():
-    return datetime.datetime.strftime(datetime.datetime.now(), "%Y-%m-%d %H:%M:%S.%f")
+    return formattedTime(datetime.datetime.now())
+
+#----------------------------------------------------------------------
+
+def getOffsetTime(cur, off):
+    return formattedTime(cur + off)
 
 #----------------------------------------------------------------------
 
@@ -213,6 +223,74 @@ class oauthlistHandler(Handler):
                 self.add({"providers": providers})
         except mdb.DatabaseError, e:
             pprint(e)
+
+#----------------------------------------------------------------------
+# action:login
+#
+# parameters: POST
+#          oauth_provider" => "1",
+#          oauth_sub" => $r->id,
+#          oauth_name" => $r->name,
+#          oauth_first_name" => $r->given_name,
+#          oauth_last_name" => $r->family_name,
+#          oauth_picture" => $r->picture,
+#          oauth_link" => $r->link
+#
+# response:     session     int
+#----------------------------------------------------------------------
+
+# check if it's a valid oauth_provider
+# create or update entry in the users table
+# check if an unexpired session already exists for this user
+# if not, create a session
+# return the session, either way
+
+class loginHandler(Handler):
+
+    def handle(self):
+        try:
+            with closing(self.cursor()) as cur:
+                timestamp = datetime.datetime.now()
+                now = formattedTime(timestamp)
+                p = self.getPostData();
+                user_id = str(p.oath_provider) + p.oauth_sub
+
+                # lookup or create the user
+                cur.execute("""INSERT INTO users(user_id, oauth_id, name, first_name, last_name, picture, link, first_seen, last_seen)
+                                VALUES ( %(user_id)s, %(oauth_id)s, %(name)s, %(first_name)s, %(last_name)s, %(picture)s, %(link)s, %(now)s, %(now)s)
+                                ON DUPLICATE KEY UPDATE last_seen = VALUES(last_seen)""" % {
+                                'user_id': user_id,
+                                'oauth_id': p.oauth_provider,
+                                'name': p.oauth_name,
+                                'first_name': p.oauth_first_name,
+                                'last_name': p.oauth_last_name,
+                                'picutre': p.oauth_picture,
+                                'link': 'link',
+                                'now': now
+                            })
+
+                # create or extend session
+                cur.execute("""INSERT INTO sessions(user_id, created, expires)
+                                VALUES (%(user_id)s, %(now)s, %(then)s)
+                                ON DUPLICATE KEY UPDATE expires = VALUES(expires)""" % {
+                                'user_id': user_id,
+                                'now': now,
+                                'then': formattedTime(timestamp, timedelta(days=30))
+                            })
+
+                row = cur.fetchone()
+                if row is None:
+                    # no, create a new session
+                    cur.execute("INSERT INTO sessions (user_id, created, expires) VALUES (%s,%s,%s)" %
+                                user_id,
+                                now,
+                                )
+                    seassion_id = self.db.insert_id()
+                else:
+                    # yes, got a session already
+                    session_id = row['session_id']
+                # we should have a valid session_id here
+                self.add({"session_id": session_id})
 
 #----------------------------------------------------------------------
 # action:bot
@@ -576,23 +654,35 @@ class postHandler(Handler):
 #----------------------------------------------------------------------
 
 def application(environ, start_response):
+
+    headers = [('Content-type', 'application/json')]
     output = dict()
     try:
         with closing(opendb()) as db:
             db.autocommit(True)
-            getData = environ['QUERY_STRING']
-            if getData:
-                data = urlparse.parse_qs(getData)
-                try:
-                    globals()[data['action'][0] + "Handler"](environ, db, output).handle()
-                except KeyError:
-                    error(output, Error.E_BADACTION, ":" + data['action'][0])
-            else:
-                error(output, Error.E_NOACTION)
+            org = environ['HTTP_ORIGIN']
+            valid = 0
+            with closing(cursor(db)) as cur:
+                sql = "SELECT COUNT(*) AS valid FROM sites WHERE site_url = %s"
+                cur.execute(sql, (org))
+                valid = cur.fetchone()['valid']
+            if valid == 1:
+                headers.append(('Access-Control-Allow-Origin', org))
+                getData = environ['QUERY_STRING']
+                if getData:
+                    data = urlparse.parse_qs(getData)
+                    try:
+                        globals()[data['action'][0] + "Handler"](environ, db, output).handle()
+                    except KeyError:
+                        error(output, Error.E_BADACTION, ":" + data['action'][0])
+                else:
+                    error(output, Error.E_NOACTION)
 
-            mpt = getGlobal(db, 'min_ping_time')
-            if mpt:
-                output.update({ "min_ping_time":  mpt })
+                mpt = getGlobal(db, 'min_ping_time')
+                if mpt:
+                    output.update({ "min_ping_time":  mpt })
+            else:
+                error(output, Error.E_BADREFERER, ":" + org)
 
     except ValueError:
         error(output, Error.E_BADINPUT)
@@ -603,12 +693,7 @@ def application(environ, start_response):
         error(output, Error.E_DBASEERROR)
 
     output = encoded_dict(output)
-    outputStr = json.dumps(output, indent=4, separators=(',',': '))
-    headers = [('Content-type', 'text/plain'), ('Content-Length', str(len(outputStr)))]
-    org = environ['HTTP_REFERER'].rstrip('/')
-    if org.lower() == 'http://www.make-the-words.com' or 'http://make-the-words.com':
-        headers.append(('Access-Control-Allow-Origin', org))
-    else:
-        pprint("Origin: %s is not allowed" % (org))
+    outputStr = json.dumps(output, indent = 4, separators=(',',': '))
+    headers.append(('Content-Length', str(len(outputStr))))
     start_response('200 OK', headers)
     return outputStr

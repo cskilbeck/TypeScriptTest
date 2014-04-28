@@ -13,21 +13,30 @@ window.onload = function () {
                 init: function () {
                     var pw,
                         ph;
-                    window.onresize = function () {
-                        pw = screen.clientWidth;
-                        ph = screen.clientHeight;
-                        canvas.style.top = (ph - canvas.height) / 2 + "px";
-                        canvas.style.left = (pw - canvas.width) / 2 + "px";
-                    };
 
-                    screen = document.getElementById("screen");
-                    canvas = document.getElementById("myCanvas");
-                    window.onresize();
-                    context = canvas.getContext('2d');
-                    loader = new chs.Loader('img/');
-                    chs.Debug.init(context, chs.Font.load("Fixedsys", loader));
-                    loader.addEventHandler("complete", Startup.start);
-                    loader.start();
+                    chs.Browser.identify();
+                    if (chs.Browser.type === 'MSIE' && chs.Browser.version < 9) {
+                        document.body.innerHTML = "<p>&nbsp;</p>";
+                        document.body.innerHTML += "<p>Sorry, this browser isn't supported.</p>";
+                        document.body.innerHTML += "<p>Internet Explorer 9 and later, recent Chrome & Firefox all work.</p>"
+                        document.body.innerHTML += "<p>Others might work, not tested...</p>\n";
+                    } else {
+                        window.onresize = function () {
+                            pw = screen.clientWidth;
+                            ph = screen.clientHeight;
+                            canvas.style.top = (ph - canvas.height) / 2 + "px";
+                            canvas.style.left = (pw - canvas.width) / 2 + "px";
+                        };
+
+                        screen = document.getElementById("screen");
+                        canvas = document.getElementById("myCanvas");
+                        window.onresize();
+                        context = canvas.getContext('2d');
+                        loader = new chs.Loader('img/');
+                        chs.Debug.init(context, chs.Font.load("Fixedsys", loader));
+                        loader.addEventHandler("complete", Startup.start);
+                        loader.start();
+                    }
                 },
 
                 start: function () {

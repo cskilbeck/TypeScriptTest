@@ -1,4 +1,4 @@
-﻿(function() {
+﻿(function () {
     "use strict";
 
     var serviceURL = "http://ec2-75-101-200-254.compute-1.amazonaws.com/mtw";
@@ -8,20 +8,20 @@
         static$: {
 
             get: function (command, params, callback, context) {
-                params['action'] = command;
+                params.action = command;
                 chs.ajax.get(chs.ajax.url(serviceURL, params, false), function (url, json) {
-                    var d
+                    var d;
                     try {
                         d = JSON.parse(json);
                     }
                     catch (e) {
                         console.log("Bad result from web service: " + json);
-                        d = null
+                        d = null;
                     }
                     if (d !== null) {
                         callback.call(context, d);
                     }
-                }, null, this, false);
+                }, null, this, false, true);
             }
         }
     });

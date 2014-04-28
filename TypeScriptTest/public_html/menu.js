@@ -28,7 +28,7 @@
             chs.Drawable.call(this);
             this.setPosition(x, y);
             this.dimensions = { width: w, height: h };
-            this.clip = new chs.ClipRect(0, 0, w, h, font.height / 3);
+            this.clip = new chs.ClipRect(0, 0, w, h, 8);
             this.addChild(this.clip);
             this.transparency = 224;
             this.font = font;
@@ -79,7 +79,7 @@
                 yp += font.height + 16;
                 this.buttons.push(ftb);
             }, this);
-            this.addChild(new chs.Panel(0, 0, w, h, undefined, "white", font.height / 3, 3, 255));
+            this.addChild(new chs.Panel(0, 0, w, h, undefined, "white", 8, 3, 255));
         }
     });
 

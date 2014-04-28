@@ -5,27 +5,47 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    function send(url, callback, progressCallback, context, method, data, binary) {
+    function send(url, callback, progressCallback, context, method, data, binary, crossDomain) {
 
-        var xr =  new XMLHttpRequest();
-        xr.open(method, url);
-        if (binary) {
-            xr.responseType = 'arraybuffer';
+        var cd = crossDomain === undefined ? false : crossDomain,
+            ie9,
+            xr;
+
+        if (chs.Browser.type === 'MSIE' && chs.Browser.version < 10 && crossDomain) {
+            xr = new XDomainRequest();
+            ie9 = true;
+        } else {
+            xr = new XMLHttpRequest();
+            ie9 = false;
         }
-        xr.onreadystatechange = function () {
-            if (xr.readyState === XMLHttpRequest.DONE) {
-                if (binary) {
-                    callback.call(context, url, chs.Util.getResponseAsArray(xr));
-                } else {
-                    callback.call(context, url, xr.responseText);
+
+        xr.open(method, url);
+
+        if (!ie9) {
+            if (binary) {
+                xr.responseType = 'arraybuffer';
+            } else {
+                xr.responseType = 'application/json';
+            }
+            xr.onreadystatechange = function () {
+                if (xr.readyState === XMLHttpRequest.DONE) {
+                    if (binary) {
+                        callback.call(context, url, chs.Util.getResponseAsArray(xr));
+                    } else {
+                        callback.call(context, url, xr.responseText);
+                    }
                 }
-            }
-        };
-        xr.onprogress = function (e) {
-            if (progressCallback) {
-                progressCallback.call(context, url, e);
-            }
-        };
+            };
+            xr.onprogress = function (e) {
+                if (progressCallback) {
+                    progressCallback.call(context, url, e);
+                }
+            };
+        } else {
+            xr.onload = function () {
+                callback.call(context, url, xr.responseText);
+            };
+        }
         if (method === 'POST') {
             xr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         }
@@ -56,21 +76,21 @@
 
             //////////////////////////////////////////////////////////////////////
 
-            get: function (url, callback, progressCallback, context, binary) {
+            get: function (url, callback, progressCallback, context, binary, crossDomain) {
 
-                send(url, callback, progressCallback, context, 'GET', null, binary);
+                send(url, callback, progressCallback, context, 'GET', null, binary, crossDomain);
             },
 
             //////////////////////////////////////////////////////////////////////
 
-            post: function (url, data, callback, progressCallback, context, binary) {
+            post: function (url, data, callback, progressCallback, context, binary, crossDomain) {
 
                 var query = [],
                     key;
                 for (key in data) {
                     query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
                 }
-                send(url, callback, progressCallback, context, 'POST', query.join('&'), binary);
+                send(url, callback, progressCallback, context, 'POST', query.join('&'), binary, crossDomain);
             }
         }
     });

@@ -52,6 +52,10 @@
             loader.start();
         },
 
+        logout: function () {
+
+        },
+
         loadComplete: function () {
             var name,
                 buttons = [
@@ -84,6 +88,8 @@
                 } else {
                     this.panel.addChild(new chs.TextButton(mtw.User.firstName, consolasItalic, 12, 12, 128, 35));
                 }
+                buttonspush('Logout');
+                callbacks.push(this.logout);
             }
             this.panel.addChild(new chs.Menu(20, this.panel.height - 20, consolasItalic, buttons, callbacks, this).setPivot(0, 1));
             this.enabled = true;

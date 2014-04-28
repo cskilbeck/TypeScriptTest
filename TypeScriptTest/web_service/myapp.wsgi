@@ -252,43 +252,60 @@ class loginHandler(Handler):
             with closing(self.cursor()) as cur:
                 timestamp = datetime.datetime.now()
                 now = formattedTime(timestamp)
+                then = formattedTime(timestamp, timedelta(days=30))
                 p = self.getPostData();
                 user_id = str(p.oath_provider) + p.oauth_sub
 
-                # lookup or create the user
-                cur.execute("""INSERT INTO users(user_id, oauth_id, name, first_name, last_name, picture, link, first_seen, last_seen)
-                                VALUES ( %(user_id)s, %(oauth_id)s, %(name)s, %(first_name)s, %(last_name)s, %(picture)s, %(link)s, %(now)s, %(now)s)
-                                ON DUPLICATE KEY UPDATE last_seen = VALUES(last_seen)""" % {
+                # create the user (or don't, if they exist already)
+                # and update their details
+                cur.execute("""INSERT INTO users(
+                                    user_id,
+                                    oauth_id,
+                                    name,
+                                    first_name,
+                                    last_name,
+                                    picture,
+                                    link)
+                                VALUES (
+                                    %(user_id)s,
+                                    %(oauth_id)s,
+                                    %(name)s,
+                                    %(first_name)s,
+                                    %(last_name)s,
+                                    %(picture)s,
+                                    %(link)s)""" % {
                                 'user_id': user_id,
                                 'oauth_id': p.oauth_provider,
                                 'name': p.oauth_name,
                                 'first_name': p.oauth_first_name,
                                 'last_name': p.oauth_last_name,
                                 'picutre': p.oauth_picture,
-                                'link': 'link',
-                                'now': now
-                            })
+                                'link': 'link'})
 
                 # create or extend session
-                cur.execute("""INSERT INTO sessions(user_id, created, expires)
-                                VALUES (%(user_id)s, %(now)s, %(then)s)
-                                ON DUPLICATE KEY UPDATE expires = VALUES(expires)""" % {
-                                'user_id': user_id,
-                                'now': now,
-                                'then': formattedTime(timestamp, timedelta(days=30))
-                            })
-
+                cur.execute("""SELECT * FROM sessions
+                                WHERE user_id = %(user_id)s
+                                    AND expires > %(now)s
+                                ORDER BY created DESC LIMIT 1""" % {
+                                'user_id': user_id, 'now': now });
                 row = cur.fetchone()
                 if row is None:
-                    # no, create a new session
-                    cur.execute("INSERT INTO sessions (user_id, created, expires) VALUES (%s,%s,%s)" %
-                                user_id,
-                                now,
-                                )
-                    seassion_id = self.db.insert_id()
+                    # session expired, create a new one
+                    cur.execute("""INSERT INTO sessions(user_id, created, expires)
+                                    VALUES (%(user_id)s, %(now)s, %(then)s)""" % {
+                                    'user_id': user_id,
+                                    'now': now,
+                                    'then': then })
+                    session_id = self.db.insert_id()
                 else:
-                    # yes, got a session already
+                    # existing session, extend it
                     session_id = row['session_id']
+                    cur.execute("""UPDATE sessions
+                                    SET expires = %(then)s
+                                    WHERE session_id = %(session_id)s""" % {
+                                    'then': then,
+                                    'session_id': session_id })
+
                 # we should have a valid session_id here
                 self.add({"session_id": session_id})
 

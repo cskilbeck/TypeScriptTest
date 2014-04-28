@@ -51,15 +51,12 @@ CREATE TABLE users
 	last_name		VARCHAR(255),
 	email			VARCHAR(255),
 	picture			VARCHAR(1024),
-	link			VARCHAR(1024),
-	first_seen		DATETIME,
-	last_seen		DATETIME
+	link			VARCHAR(1024)
 );
 
 -- activity sessions
 -- create a new one each time the web page is refreshed?
 -- session is valid if:
---   ip_address is same
 --   created < now
 --   now < expires
 --   user_id exists in users table
@@ -69,7 +66,7 @@ CREATE TABLE sessions
 (
 	session_id		INT NOT NULL auto_increment,
 					PRIMARY KEY(session_id),
-	user_id			INT NOT NULL,
+	user_id			VARCHAR(255) NOT NULL,
 	created			DATETIME NOT NULL,
 	expires			DATETIME NOT NULL
 );

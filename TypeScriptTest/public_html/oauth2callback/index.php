@@ -62,7 +62,7 @@ if(isset($_GET['code'])) {
     // set the session cookie and go back to the app
 
     setcookie('session', $r->session,  mktime(). time()+60*60*24*30);
-
+    header('X-MTW-Test: boing');
     header('Location: http://www.make-the-words.com');
 }
 ?>

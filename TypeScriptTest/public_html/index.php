@@ -7,6 +7,20 @@
     <link rel="stylesheet" href="app.css" type="text/css" />
     <script>
     mtw = {
+		Header: {
+<?
+	// propagate mtw headers into a headers object
+	$index = count($_SERVER);
+	foreach ($_SERVER as $name => $value) {
+		$sep = ",";
+		if($index == 1) {
+			$sep = "";
+		}
+		echo " $name: '$value'" . $sep . "\n";
+		$index -= 1;
+	}
+?>
+		},
         User: {
 <?
     if(isset($_SESSION['id']) && isset($_SESSION['name'])) {

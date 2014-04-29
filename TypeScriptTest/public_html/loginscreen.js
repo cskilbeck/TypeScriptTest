@@ -67,7 +67,7 @@
                 this.menu.setDirty();
             }, this);
             this.menu.setPivot(0.5, 0.5);
-            this.menu.setPosition(400, 300);
+            this.menu.setPosition(chs.desktop.width / 2, chs.desktop.height / 2);
             if (err !== null) {
                 this.addChild(new chs.Label("Login error:" + err, consolasItalic).setPosition(12, 12));
             }

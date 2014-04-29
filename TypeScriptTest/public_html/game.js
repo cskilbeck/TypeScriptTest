@@ -68,30 +68,30 @@ var Game = (function () {
 
             consolasItalicBold.softLineSpacing = 4;
 
-            menuButton = new chs.TextButton("Menu", consolas, 80, 515, 100, 40, this.menu, this).setPivot(0.5, 0);
+            menuButton = new chs.TextButton("Menu", consolas, 270, 515, 100, 40, this.menu, this).setPivot(0.5, 0);
             this.addChild(menuButton);
 
-            words = new chs.Drawable().setPosition(674, 70);
+            words = new chs.Drawable().setPosition(chs.desktop.width - 120, 70);
             this.addChild(words);
 
-            this.addChild(new chs.SpriteButton(undoImage, "scale", 600, 510, this.undo, null));
-            this.addChild(new chs.SpriteButton(redoImage, "scale", 650, 510, this.redo, null));
+            this.addChild(new chs.SpriteButton(undoImage, "scale", 800, 510, this.undo, null));
+            this.addChild(new chs.SpriteButton(redoImage, "scale", 850, 510, this.redo, null));
 
-            scoreButton = new chs.PanelButton(674, 10, 120, 26, 'black', undefined, 3, 0, null, null);
+            scoreButton = new chs.PanelButton(chs.desktop.width - 120, 10, 120, 26, 'black', undefined, 3, 0, null, null);
             scoreLabel = new chs.Label("0", consolas).setPosition(116, 4).setPivot(1, 0);
             scoreButton.addChild(scoreLabel);
             scoreButton.addChild(new chs.Label("Score:", consolas).setPosition(4, 4));
             scoreButton.transparency = 128;
             this.addChild(scoreButton);
 
-            bestButton = new chs.PanelButton(674, 39, 120, 26, 'black', undefined, 3, 0, this.bestClicked, this);
+            bestButton = new chs.PanelButton(chs.desktop.width - 120, 39, 120, 26, 'black', undefined, 3, 0, this.bestClicked, this);
             bestLabel = new chs.Label("0", consolas).setPosition(116, 4).setPivot(1, 0);
             bestButton.addChild(bestLabel);
             bestButton.addChild(new chs.Label("Best:", consolas).setPosition(4, 4));
             bestButton.transparency = 128;
             this.addChild(bestButton);
 
-            board = new Board(this);
+            board = new Board(200, 0, this);
             board.mainBoard = true;
             this.addChild(board);
         },
@@ -132,7 +132,7 @@ var Game = (function () {
             }
             if (msg) {
                 msgBox = new chs.MessageBox(msg, consolasItalicBold, btns, goBack, this);
-                brd = new Board(this);
+                brd = new Board(0, 0, this);
                 brd.setFromString(board.bestBoard);
                 brd.setScale(0.5);
                 brd.setPivot(0.5, 0);

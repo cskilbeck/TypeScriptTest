@@ -61,6 +61,8 @@
                     chs.Cookies.remove('session_id');
                     chs.Cookies.remove('login_error');
                     window.location.reload();
+                    this.panel.removeChildren();
+                    this.panel.addChild(new chs.Label("Logging out...", consolasItalic).setPosition(this.panel.width / 2, this.panel.height / 2).setPivot(0.5, 0.5));
                 }
             }, this, consolas));
             // remove all session and user cookies here
@@ -98,11 +100,12 @@
             if (session_id === null) {
                 buttons.push('Login');
                 callbacks.push(this.showLogin);
+
+                if (login_error !== null) {
+                    this.panel.addChild(new chs.Label("Login error: " + login_error, consolas).setPosition(this.panel.width - 24, 16).setPivot(1, 0));
+                    chs.Cookies.remove("login_error");
+                }
             } else {
-                // check database via session_id first...
-
-
-
                 if (user_picture !== null) {
                     this.panel.addChild(new UserImage(12, 12, 64, 64, user_picture));
                     console.log(user_picture);
@@ -115,9 +118,6 @@
             this.panel.addChild(new chs.Menu(20, this.panel.height - 20, consolasItalic, buttons, callbacks, this).setPivot(0, 1));
             this.enabled = true;
             this.visible = true;
-            if (login_error !== null) {
-                this.showLogin();
-            }
         },
 
         showLogin: function () {

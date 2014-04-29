@@ -87,10 +87,11 @@ Board = (function () {
 
         },
 
-        $: function (game) {
+        $: function (x, y, game) {
             var i;
 
             chs.Drawable.call(this);
+            this.setPosition(x, y);
             this.tileWidth = 7;
             this.tileHeight = 5;
             this.score = 0;
@@ -191,9 +192,9 @@ Board = (function () {
         //////////////////////////////////////////////////////////////////////
         // get the tile at a position on the screen
 
-        tileFromScreenPos: function (x, y) {
-            if (x >= 0 && y >= 0 && x < this.width && y < this.height) {
-                return this.tile((x / Tile.width) >>> 0, (y / Tile.height) >>> 0);
+        tileFrom: function (pos) {
+            if (pos.x >= 0 && pos.y >= 0 && pos.x < this.width && pos.y < this.height) {
+                return this.tile((pos.x / Tile.width) >>> 0, (pos.y / Tile.height) >>> 0);
             }
             return null;
         },
@@ -295,7 +296,8 @@ Board = (function () {
 
         onLeftMouseDown: function (e) {
             if (this.mainBoard) {
-                clickedTile = this.tileFromScreenPos(e.position.x, e.position.y);
+                var pos = this.screenToClient(e.position);
+                clickedTile = this.tileFrom(pos);
                 if (clickedTile !== null) {
                     if (this.activeTile !== null) {
                         this.activeTile.selected = false;
@@ -304,8 +306,8 @@ Board = (function () {
                     this.activeTile = clickedTile;
                     this.activeTile.zIndex = 1;
                     this.activeTile.selected = true;
-                    this.clickX = e.position.x;
-                    this.clickY = e.position.y;
+                    this.clickX = pos.x;
+                    this.clickY = pos.y;
                     this.offsetX = this.clickX - this.activeTile.position.x;
                     this.offsetY = this.clickY - this.activeTile.position.y;
                     this.beforeDrag = this.toString();
@@ -338,15 +340,17 @@ Board = (function () {
         // this is fucked
 
         onMouseMove: function (e) {
+            var pos;
             if (this.activeTile !== null) {
+                pos = this.screenToClient(e.position);
                 this.activeTile.selected = true;
                 this.activeTile.zIndex = 1;
-                tileX = chs.Util.constrain(e.position.x - this.offsetX, Tile.width / 2, this.pixelWidth() + Tile.width / 2);
-                tileY = chs.Util.constrain(e.position.y - this.offsetY, Tile.height / 2, this.pixelHeight() + Tile.height / 2);
+                tileX = chs.Util.constrain(pos.x - this.offsetX, Tile.width / 2, this.pixelWidth() + Tile.width / 2);
+                tileY = chs.Util.constrain(pos.y - this.offsetY, Tile.height / 2, this.pixelHeight() + Tile.height / 2);
                 snapX = Math.floor(tileX / Tile.width) * Tile.width + Tile.width / 2;
                 snapY = Math.floor(tileY / Tile.height) * Tile.height + Tile.height / 2;
                 if (Math.abs(tileX - snapX) < Tile.width / 3 && Math.abs(tileY - snapY) < Tile.height / 3) {
-                    newSwapTile = this.tileFromScreenPos(snapX, snapY);
+                    newSwapTile = this.tileFrom({ x: snapX, y: snapY });
                     if (newSwapTile !== null && newSwapTile !== this.activeTile) {
                         if (this.swapTile === null && this.swapTile !== this.activeTile) {
                             this.swapTile = this.activeTile;

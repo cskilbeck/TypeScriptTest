@@ -35,11 +35,13 @@ if(isset($_GET['code'])) {
             setcookie('user_name', urldecode($u->user_name), 0, '/');
             setcookie('user_picture', urldecode($u->user_picture), 0, '/');
         } else {
-            setcookie('loginerror', urldecode($u->error), 0, '/');
+            setcookie('login_error', urldecode($u->error), 0, '/');
         }
     } else {
-        setcookie('loginerror', urldecode($r->message), 0, '/');
+        setcookie('login_error', urldecode($r->message), 0, '/');
     }
-    header('Location: http://www.make-the-words.com');
+} else if(isset($_GET['error'])) {
+    setcookie('login_error', urldecode($_GET['error']), 0, '/');
 }
+header('Location: http://make-the-words.com');
 ?>

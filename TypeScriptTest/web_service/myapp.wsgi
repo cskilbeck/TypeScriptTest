@@ -26,6 +26,7 @@ class Error:
     E_MISSINGPARAM = [9, "Missing parameter"]
     E_NOGAME = [10,"No game!?"]
     E_NETWORKPROBLEM = [11,"Network problem"]
+    E_BADREFERER = [11,"Invalid request origin"]
 
 #----------------------------------------------------------------------
 
@@ -253,8 +254,6 @@ class loginHandler(Handler):
                 now = formattedTime(timestamp)
                 then = formattedTime(timestamp + datetime.timedelta(days = 30))
                 p = self.getPostData();
-                pprint("POST:")
-                pprint(p)
 
                 cur.execute("""SELECT * FROM users
                                 WHERE oauth_sub = %(oauth_sub)s
@@ -262,8 +261,6 @@ class loginHandler(Handler):
 
                 row = cur.fetchone();
                 if row is None:
-                    pprint(p['name'])
-                    pprint(p['picture'])
                     cur.execute("""INSERT INTO users (
                                     oauth_sub,
                                     oauth_provider,
@@ -332,8 +329,6 @@ def application(environ, start_response):
             if 'HTTP_ORIGIN' in environ:
                 org = environ['HTTP_ORIGIN']
             else:
-                pprint("No ORG!")
-                pprint(environ)
                 org = ""
             valid = 0
             with closing(cursor(db)) as cur:
@@ -344,8 +339,6 @@ def application(environ, start_response):
                 getData = environ['QUERY_STRING']
                 if getData:
                     data = urlparse.parse_qs(getData)
-                    pprint("GET:")
-                    pprint(data)
                     func = data['action'][0] + 'Handler'
                     if func in globals():
                         globals()[func](environ, db, output).handle()
@@ -365,8 +358,6 @@ def application(environ, start_response):
         error(output, Error.E_DBASEERROR)
 
     output = encoded_dict(output)
-    pprint("REPLY:")
-    pprint(output)
     outputStr = json.dumps(output, indent = 4, separators=(',',': '))
     headers.append(('Content-Length', str(len(outputStr))))
     start_response('200 OK', headers)

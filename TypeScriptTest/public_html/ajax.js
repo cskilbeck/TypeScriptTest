@@ -11,7 +11,7 @@
             ie9,
             xr;
 
-        if (chs.Browser.type === 'MSIE' && chs.Browser.version < 10 && crossDomain) {
+        if (chs.Browser.type === 'MSIE' && chs.Browser.version <= 10 && crossDomain) {
             xr = new XDomainRequest();
             ie9 = true;
         } else {

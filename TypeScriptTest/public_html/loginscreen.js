@@ -49,7 +49,7 @@
             this.mainMenu = mainMenu;
             this.menu = new chs.Drawable();
             this.addChild(this.menu);
-            this.banner = new chs.Label("Log in with one of these accounts:", consolasItalic).setPosition(400, 100).setPivot(0.5, 0);
+            this.banner = new chs.Label("Log in with one of these accounts:", consolasItalic).setPosition(chs.desktop.width / 2, 100).setPivot(0.5, 0);
             this.addChild(this.banner);
             this.menu.dimensions = { width: 320, y: 0 };
             ProviderButton.init(consolasItalic, loader);

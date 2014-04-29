@@ -276,10 +276,8 @@
         //////////////////////////////////////////////////////////////////////
 
         move: function (x, y) {
-            this.drawableData.position = {
-                x: this.drawableData.position.x + x,
-                y: this.drawableData.position.y + y
-            };
+            this.drawableData.position.x += x;
+            this.drawableData.position.y += y;
             this.drawableData.dirty = true;
             return this;
         },
@@ -288,7 +286,7 @@
 
         setScale: function (x, y) {
             this.drawableData.scale.x = x;
-            this.drawableData.scale.y = y || x;
+            this.drawableData.scale.y = (y !== undefined) ? y : x;
             this.drawableData.dirty = true;
             return this;
         },

@@ -46,6 +46,7 @@
         onLeftMouseUp: function () {
             if (this.state === chs.Button.pressed) {
                 this.state = chs.Button.hover;
+                this.dispatchEvent("clicked");
                 if (this.callback) {
                     this.callback.call(this.context || this);
                 }

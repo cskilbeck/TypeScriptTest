@@ -31,15 +31,15 @@
     <Content Include="public_html\event.js" />
     <Content Include="public_html\game.js" />
     <Content Include="public_html\img\allColour.png" />
-    <Content Include="public_html\google.php" />
-    <Content Include="public_html\HttpPost.class.php" />
-    <Content Include="public_html\local.html" />
+    <Content Include="public_html\php\HttpPost.class.php" />
     <Content Include="public_html\index.php" />
     <Content Include="public_html\webservice.js" />
+    <Content Include="s.py" />
     <Content Include="web_service\board.py" />
     <Content Include="web_service\letters.py" />
     <Content Include="web_service\random.py" />
     <Content Include="web_service\word.py" />
+    <Content Include="mirror.bat" />
     <None Include="public_html\img\Arial.json" />
     <Content Include="public_html\img\Arial0.png" />
     <Content Include="public_html\img\Consolas_Italic.json" />
@@ -75,13 +75,13 @@
     <Content Include="public_html\word.js" />
     <Content Include="public_html\loader.js" />
     <Content Include="public_html\oauth2callback\index.php" />
-    <Content Include="public_html\logingoogle.php">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="SQL\mtw_procs.sql" />
     <Content Include="SQL\mtw_setup.sql" />
     <Content Include="web_service\dictionary.py" />
     <Content Include="web_service\myapp.wsgi" />
+    <Content Include="public_html\php\login.php" />
+    <Content Include="public_html\php\google.php" />
+    <Content Include="server.bat" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="public_html\dictionary.js" />

@@ -1,43 +1,13 @@
-<? session_start(); ?>
 <!DOCTYPE html>
+
 <html>
+
 <head>
     <meta charset="utf-8" />
     <title>Make The Words</title>
     <link rel="stylesheet" href="app.css" type="text/css" />
-    <script>
-    mtw = {
-		Header: {
-<?
-	// propagate mtw headers into a headers object
-	$index = count($_SERVER);
-	foreach ($_SERVER as $name => $value) {
-		$sep = ",";
-		if($index == 1) {
-			$sep = "";
-		}
-		echo " $name: '$value'" . $sep . "\n";
-		$index -= 1;
-	}
-?>
-		},
-        User: {
-<?
-    if(isset($_SESSION['id']) && isset($_SESSION['name'])) {
-        echo "            id: '"            . $_SESSION['id'] . "',\n";
-        echo "            name: '"          . $_SESSION['name'] . "',\n";
-        echo "            firstName: '"     . $_SESSION['firstName'] . "',\n";
-        echo "            lastName: '"      . $_SESSION['lastName'] . "',\n";
-        echo "            picture: '"       . $_SESSION['picture'] . "',\n";
-        echo "            link: '"          . $_SESSION['link'] . "'\n";
-    } elseif(isset($_SESSION['error'])) {
-        echo "            error: '"         . $_SESSION['error'] . "',\n";
-        echo "            message: '"       . $_SESSION['message'] . "'\n";
-    }
-?>
-        }
-    }
-    </script>
+
+    <![if gte IE 9]>
     <script src="chs.js"></script>
     <script src="browser.js"></script>
     <script src="class.js"></script>
@@ -73,10 +43,41 @@
     <script src="game.js"></script>
     <script src="loginscreen.js"></script>
     <script src="mainmenu.js"></script>
-    <script src="startup.js"></script>
     <script src="main.js"></script>
+    <script src="startup.js"></script>
+    <![endif]>
 </head>
+
 <body id="screen">
+
+    <!--[if lt IE 9]>
+    <div id="message">
+        <h3>
+            <p>Sorry, this version of Internet Explorer isn't supported.</p>
+        </h3>
+        <p>These new ones all seem to work:</p>
+        <div class='logocontainer'>
+            <a href="http://windows.microsoft.com/en-us/internet-explorer/download-ie">
+                <img class='smalllogo' src="http://res1.windows.microsoft.com/resbox/en/internet explorer/main/51eae848-5a97-4216-a941-d6af8e941b07_5.png"/>
+            </a>
+        </div>
+        <div class='logocontainer'>
+            <a href="http://www.google.com/intl/en_us/chrome/browser/">
+                <img class='logo' src="http://www.google.com/intl/en/chrome/assets/common/images/chrome_logo_2x.png"/>
+            </a>
+        </div>
+        <div class='logocontainer'>
+            <a href="http://www.mozilla.org/en-US/firefox/new/">
+                <img class='logo' src="http://mozorg.cdn.mozilla.net/media/img/firefox/new/header-firefox.png?2013-06"/>
+            </a>
+        </div>
+    </div>
+    <![endif]-->
+
+    <![if gte IE 9]>
     <canvas id="myCanvas" width="800" height="600"></canvas>
+    <![endif]>
+
 </body>
+
 </html>

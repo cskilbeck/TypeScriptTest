@@ -37,10 +37,6 @@
             };
     }());
 
-    Object.getOwnPropertyNames = Object.getOwnPropertyNames || function () {
-        return [];
-    };
-
     //////////////////////////////////////////////////////////////////////
 
     if (!window.location.origin) {

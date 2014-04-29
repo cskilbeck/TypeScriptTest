@@ -31,10 +31,10 @@ CREATE TABLE sites
 SELECT '*** Create oauth_providers' as '';
 CREATE TABLE oauth_providers
 (
-	oauth_id		INT NOT NULL,
-					PRIMARY KEY(oauth_id),
-	oauth_name		VARCHAR(32),
-	oauth_icon		VARCHAR(5000)	-- url
+	oauth_provider	INT NOT NULL,				-- const reference (Google = 1, Facebook = 2 etc)
+					PRIMARY KEY(oauth_provider),
+	oauth_name		VARCHAR(32),				-- 'Google', 'Facebook' etc
+	oauth_icon		VARCHAR(5000)				-- url of an icon to show on login screen
 );
 
 -- people who have been seen logging in at some point
@@ -43,15 +43,12 @@ CREATE TABLE oauth_providers
 SELECT '*** Create users' as '';
 CREATE TABLE users
 (
-	user_id			VARCHAR(255) UNIQUE NOT NULL,
+	user_id			INT NOT NULL auto_increment,
 					PRIMARY KEY(user_id),
-	oauth_id		INT NOT NULL,
+	oauth_sub		VARCHAR(255) NOT NULL,		-- unique per provider
+	oauth_provider	INT NOT NULL,				-- const reference (Google = 1, Facebook = 2 etc)
 	name			VARCHAR(255),
-	first_name		VARCHAR(255),
-	last_name		VARCHAR(255),
-	email			VARCHAR(255),
-	picture			VARCHAR(1024),
-	link			VARCHAR(1024)
+	picture			VARCHAR(1024)
 );
 
 -- activity sessions
@@ -82,10 +79,10 @@ CREATE INDEX sessions_user_id_index ON sessions(user_id);
 
 SELECT '*** Create views' as '';
 CREATE VIEW users_view AS
-	SELECT user_id, name, first_name, last_name, oauth_name
+	SELECT user_id, name, picture, users.oauth_provider, oauth_sub
 	FROM users
-		INNER JOIN oauth_providers ON users.oauth_id = oauth_providers.oauth_id
-	ORDER BY last_name, first_name ASC;
+		INNER JOIN oauth_providers ON users.oauth_provider = oauth_providers.oauth_provider
+	ORDER BY name ASC;
 
 -- ----------------------------------------------------------------------
 -- data
@@ -94,7 +91,7 @@ CREATE VIEW users_view AS
 -- we could use this table to specify the oauth endpoints and parameters one day (but not client secrets)
 
 SELECT '*** Insert oauth_providers' as '';
-INSERT INTO oauth_providers (oauth_id, oauth_name, oauth_icon) VALUES
+INSERT INTO oauth_providers (oauth_provider, oauth_name, oauth_icon) VALUES
 	(0,	'Bot',		'http://www.make-the-words.com/bot.png'),
 	(1,	'Google',	'http://www.google.com/images/logos/google_logo_41.png'),
 	(2,	'Facebook',	'https://www.facebookbrand.com/img/assets/asset.f.logo.lg.png'),

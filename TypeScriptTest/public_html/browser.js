@@ -22,16 +22,12 @@
         return M.join(' ');
     }
 
+    var browser = id().split(' ');
+
     chs.Browser = {
 
-        identify: function () {
-            var browser = id().split(' ');
-            chs.Browser.type = browser[0];
-            chs.Browser.version = parseInt(browser[1], 10);
-        },
-
-        type: 0,
-        version: 0
+        type: browser[0],
+        version: parseInt(browser[1], 10)
     };
 
 }());

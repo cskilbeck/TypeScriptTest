@@ -53,11 +53,26 @@
         },
 
         logout: function () {
-
+            this.addChild(new chs.MessageBox("Are you sure you want to log out?\n", consolasItalic, ['Yes, log me out', 'No'], function (id) {
+                if (id === 0) {
+                    chs.Cookies.remove('user_name');
+                    chs.Cookies.remove('user_id');
+                    chs.Cookies.remove('user_picture');
+                    chs.Cookies.remove('session_id');
+                    chs.Cookies.remove('login_error');
+                    window.location.reload();
+                }
+            }, this, consolas));
+            // remove all session and user cookies here
+            // then reload page
         },
 
         loadComplete: function () {
-            var name,
+            var user_name = chs.Cookies.get('user_name'),
+                user_id = chs.Cookies.get('user_id'),
+                user_picture = chs.Cookies.get('user_picture'),
+                session_id = chs.Cookies.get('session_id'),
+                login_error = chs.Cookies.get('login_error'),
                 buttons = [
                 "Options",
                 "How to play",
@@ -79,22 +94,28 @@
             this.button = new chs.TextButton("PLAY!", consolasItalic, pw / 2, ph / 2, 200, 50, this.playClicked, this).setPivot(0.5, 0.5);
             this.panel.addChild(this.button);
             this.addChild(this.panel);
-            if (mtw.User.id === undefined || mtw.User.name === undefined) {
+
+            if (session_id === null) {
                 buttons.push('Login');
                 callbacks.push(this.showLogin);
             } else {
-                if (mtw.User.picture) {
-                    this.panel.addChild(new UserImage(12, 12, 64, 64, mtw.User.picture));
-                } else {
-                    this.panel.addChild(new chs.TextButton(mtw.User.firstName, consolasItalic, 12, 12, 128, 35));
+                // check database via session_id first...
+
+
+
+                if (user_picture !== null) {
+                    this.panel.addChild(new UserImage(12, 12, 64, 64, user_picture));
+                    console.log(user_picture);
+                } else if (user_name !== null) {
+                    this.panel.addChild(new chs.TextButton(user_name, consolasItalic, 12, 12, 128, 35));
                 }
-                buttonspush('Logout');
+                buttons.push('Logout');
                 callbacks.push(this.logout);
             }
             this.panel.addChild(new chs.Menu(20, this.panel.height - 20, consolasItalic, buttons, callbacks, this).setPivot(0, 1));
             this.enabled = true;
             this.visible = true;
-            if (mtw.User.error) {
+            if (login_error !== null) {
                 this.showLogin();
             }
         },

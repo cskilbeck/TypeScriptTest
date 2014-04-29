@@ -150,7 +150,7 @@ class Handler(object):
     def createOrUpdatePerson(self, oauth_id, oauth_sub):
         try:
             with closing(self.cursor()) as cur:
-                cur.execute("select count(*) as existence from people where oauth_id=%s and oauth_sub=%s", (oauth_id, oauth_sub))
+                cur.execute("select count(*) as existence from people where oauth_provider=%s and oauth_sub=%s", (oauth_id, oauth_sub))
                 if cur.fetchone()['existence'] == 0:
                     # new user, insert into database
                     name = getJSONURL("http://graph.facebook.com/?fields=name&id=%s" % (str(fbid)))
@@ -215,7 +215,7 @@ class oauthlistHandler(Handler):
     def handle(self):
         try:
             with closing(self.cursor()) as cur:
-                cur.execute("select * from oauth_providers where oauth_id > 0")
+                cur.execute("select * from oauth_providers where oauth_provider > 0")
                 providers = []
                 rows = cur.fetchall()
                 for row in rows:
@@ -228,18 +228,17 @@ class oauthlistHandler(Handler):
 # action:login
 #
 # parameters: POST
-#          oauth_provider" => "1",
-#          oauth_sub" => $r->id,
-#          oauth_name" => $r->name,
-#          oauth_first_name" => $r->given_name,
-#          oauth_last_name" => $r->family_name,
-#          oauth_picture" => $r->picture,
-#          oauth_link" => $r->link
+#               oauth_provider" => "1",
+#               oauth_sub" => $r->id,
+#               oauth_name" => $r->name,
+#               oauth_picture" => $r->picture,
 #
-# response:     session     int
+# response:     session     uint32
+#               user_id     uint32
+#               user_name   string
+#               user_picture url
 #----------------------------------------------------------------------
 
-# check if it's a valid oauth_provider
 # create or update entry in the users table
 # check if an unexpired session already exists for this user
 # if not, create a session
@@ -252,47 +251,51 @@ class loginHandler(Handler):
             with closing(self.cursor()) as cur:
                 timestamp = datetime.datetime.now()
                 now = formattedTime(timestamp)
-                then = formattedTime(timestamp, timedelta(days=30))
+                then = formattedTime(timestamp + datetime.timedelta(days = 30))
                 p = self.getPostData();
-                user_id = str(p.oath_provider) + p.oauth_sub
+                pprint("POST:")
+                pprint(p)
 
-                # create the user (or don't, if they exist already)
-                # and update their details
-                cur.execute("""INSERT INTO users(
-                                    user_id,
-                                    oauth_id,
+                cur.execute("""SELECT * FROM users
+                                WHERE oauth_sub = %(oauth_sub)s
+                                AND oauth_provider = %(oauth_provider)s""" % p)
+
+                row = cur.fetchone();
+                if row is None:
+                    pprint(p['name'])
+                    pprint(p['picture'])
+                    cur.execute("""INSERT INTO users (
+                                    oauth_sub,
+                                    oauth_provider,
                                     name,
-                                    first_name,
-                                    last_name,
-                                    picture,
-                                    link)
+                                    picture)
                                 VALUES (
-                                    %(user_id)s,
-                                    %(oauth_id)s,
-                                    %(name)s,
-                                    %(first_name)s,
-                                    %(last_name)s,
-                                    %(picture)s,
-                                    %(link)s)""" % {
-                                'user_id': user_id,
-                                'oauth_id': p.oauth_provider,
-                                'name': p.oauth_name,
-                                'first_name': p.oauth_first_name,
-                                'last_name': p.oauth_last_name,
-                                'picutre': p.oauth_picture,
-                                'link': 'link'})
+                                    '%(oauth_sub)s',
+                                    %(oauth_provider)s,
+                                    '%(name)s',
+                                    '%(picture)s' )""" % p)
+                    user_id = self.db.insert_id();
+                    user_name = p['name'];
+                    user_picture = p['picture'];
+                else:
+                    user_id = row['user_id'];
+                    user_name = row['name'];
+                    user_picture = row['picture'];
 
                 # create or extend session
                 cur.execute("""SELECT * FROM sessions
                                 WHERE user_id = %(user_id)s
-                                    AND expires > %(now)s
-                                ORDER BY created DESC LIMIT 1""" % {
-                                'user_id': user_id, 'now': now });
+                                    AND expires > '%(now)s'
+                                ORDER BY created DESC LIMIT 1""" %
+                            {
+                                'user_id': user_id,
+                                'now': now
+                            });
                 row = cur.fetchone()
                 if row is None:
                     # session expired, create a new one
                     cur.execute("""INSERT INTO sessions(user_id, created, expires)
-                                    VALUES (%(user_id)s, %(now)s, %(then)s)""" % {
+                                    VALUES (%(user_id)s, '%(now)s', '%(then)s')""" % {
                                     'user_id': user_id,
                                     'now': now,
                                     'then': then })
@@ -301,370 +304,19 @@ class loginHandler(Handler):
                     # existing session, extend it
                     session_id = row['session_id']
                     cur.execute("""UPDATE sessions
-                                    SET expires = %(then)s
+                                    SET expires = '%(then)s'
                                     WHERE session_id = %(session_id)s""" % {
                                     'then': then,
                                     'session_id': session_id })
 
                 # we should have a valid session_id here
-                self.add({"session_id": session_id})
-
-#----------------------------------------------------------------------
-# action:bot
-#
-# parameters:   none
-#
-# response:     facebook_id     int         // some facebook_id for testing bots
-#               name            str
-#----------------------------------------------------------------------
-
-class botHandler(Handler):
-
-    def handle(self):
-        try:
-            friendID = int(getDaemonResponse('f'))
-            with closing(self.cursor()) as cur:
-                # count the bots
-                cur.execute("select count(*) as bot_count from people where facebook_id < 0")
-                row = cur.fetchone()
-                bot_count = row['bot_count']
-
-                # decide which one to use
-                cur.execute("lock table globals write")
-                cur.execute("update globals set next_bot = mod(next_bot + 1, %s)", (bot_count))
-                cur.execute("select next_bot from globals")
-                next_bot = cur.fetchone()["next_bot"]
-                cur.execute("unlock tables")
-
-                # get it
-                cur.execute("select * from people where facebook_id = %s", (-1 - next_bot))
-                row = cur.fetchone()
-
-                self.add(row)
-        except mdb.DatabaseError, e:
-            pprint(e)
-            pass
-
-#----------------------------------------------------------------------
-# action:friend
-#
-# parameters:   none
-#
-# response:     facebook_id     int         // some facebook_id for testing bots
-#----------------------------------------------------------------------
-
-class friendHandler(Handler):
-
-    def handle(self):
-        try:
-            friendID = int(getDaemonResponse('f'))
-            with closing(self.cursor()) as cur:
-                cur.execute("select friends.facebook_id from friends where friend_id = %s", (friendID))
-                row = cur.fetchone()
-                self.add(row)
-        except mdb.DatabaseError, e:
-            pass
-
-#----------------------------------------------------------------------
-# action:players
-#
-# parameters:   none
-#
-# response:     player_count    int
-#----------------------------------------------------------------------
-
-class playersHandler(Handler):
-
-    def handle(self):
-        with closing(self.cursor()) as cur:
-            sql = "select count(*) as player_count from boards where game_id = (select game_id from games order by game_id desc limit 1)"
-            cur.execute(sql)
-            self.add(cur.fetchone())
-
-#----------------------------------------------------------------------
-# action:register
-#
-# parameters:   facebook_id     uint64      // facebook_id
-#
-# response:     name            str         // facebook name
-#----------------------------------------------------------------------
-
-class registerHandler(Handler):
-
-    def handle(self):
-        try:
-            postData = self.getPostData()
-            fbid = int(postData['facebook_id'])
-            if fbid > 0:
-                name = getJSONURL("http://graph.facebook.com/?fields=name&id=%s" % (str(fbid)))['name']
-                with closing(self.cursor()) as cur:
-                    sql = "insert into people (facebook_id, name, first_seen, last_seen) values (%s,%s,%s,%s) on duplicate key update name=%s, last_seen=%s"
-                    now = datetime.datetime.now()
-                    cur.execute(sql, (fbid, name, now, now, name, now))
-                    self.add({ "name": name })
-        except ValueError, e:
-            error(self.output, Error.E_BADINPUT)
-        except mdb.DatabaseError, e:
+                self.add({"session_id": session_id,
+                          "user_id": user_id,
+                          "user_name": user_name,
+                          "user_picture": user_picture })
+        except mdb.Error, e:
+            pprint("Database error %d: %s" % (e.args[0], e.args[1]))
             error(self.output, Error.E_DBASEERROR)
-        except KeyError, e:
-            error(self.output, Error.E_MISSINGPARAM)
-
-#----------------------------------------------------------------------
-# action:game
-#
-# parameters:   facebook_id     uint64      // facebook_id OR
-#               game_id         uint64      // game_id
-#
-# response:     game_id         int         // current game_id
-#               random_seed     int         // random seed for current game
-#               start_time      datetime    // start time for this game
-#               end_time        datetime    // end time for this game
-#               current_time    datetime    // current server time
-#               board           str         // board for this game
-#               board_id        int         // current board entry or 0 if they haven't played this game yet
-#----------------------------------------------------------------------
-
-class gameHandler(Handler):
-
-    def handle(self):
-        postData = self.getPostData()
-        if postData.has_key('facebook_id'):
-            facebookID = int(postData["facebook_id"])
-            game = self.getCurrentGame()
-            if game:
-                self.add({"board_id": self.getBoardID(facebookID, int(game["game_id"]))})
-                self.add(game)
-            else:
-                error(self.output, Error.E_NOGAME)
-        elif postData.has_key('game_id'):
-            gameID = int(postData['game_id'])
-            game = self.getSpecificGame(gameID)
-            if game:
-                self.add(game)
-            else:
-                error(self.output, Error.E_NOGAME, ":" + str(gameID))
-        else:
-            error(self.output, Error.E_BADINPUT)
-
-#----------------------------------------------------------------------
-# action:getLeaderboard
-#
-# parameters:   game_id         int
-#               board_id        optional int        either specify this or the next parameter
-#               offset          optional int        if this exists, use it, else centre on the boardid
-#
-# response:     offset          int                 offset, total_rows only returned if boardid specified
-#               total_rows      int
-#               rows            int                 # of rows in the results
-#               board_id[0..N]  int
-#               board[0..N]     char[35]
-#               score[0..N]     int
-#               ranking[0..N]   int
-#               facebook_id[0..N] int
-#----------------------------------------------------------------------
-
-class getLeaderboardHandler(Handler):
-
-    def handle(self):
-        postData = self.getPostData()
-        try:
-            gameID = int(postData['game_id'])
-            with closing(self.cursor()) as cur:
-                # people[facebookid].games_played += 1
-                rows = None
-                if postData.has_key('offset'):
-                    sql = "select * from boards inner join people on people.facebook_id=boards.facebook_id where game_id=%s order by score desc, time_stamp asc limit %s,9"
-                    cur.execute(sql, (gameID, int(postData['offset'])))
-                    rows = cur.fetchall()
-                elif postData.has_key('board_id'):
-                    boardID = int(postData['board_id'])
-                    sql = "select count(*) as rows from boards where game_id=%s"
-                    cur.execute(sql, (gameID))
-                    totalRows = cur.fetchone()['rows']
-                    sql = "call getLeaderboard(%s)"
-                    cur.execute(sql, (boardID))
-                    rows = cur.fetchall()
-                    self.add({"total_rows": totalRows})
-                else:
-                    error(self.output, Error.E_MISSINGPARAM)
-                if rows:
-                    rowIndex = 0
-                    for row in rows:
-                        self.add({
-                            "board_id%d" % (rowIndex): row['board_id'],
-                            "board%d" % (rowIndex): row['board'],
-                            "score%d" % (rowIndex): row['score'],
-                            "ranking%d" % (rowIndex): row['ranking'],
-                            "offset%d" % (rowIndex): row['offset'],
-                            "facebook_id%d" % (rowIndex): row['facebook_id'],
-                            "name%d" % (rowIndex): row['name']
-                                })
-                        rowIndex += 1
-                    self.add({"rows": rowIndex})
-        except KeyError, e:
-            error(self.output, Error.E_MISSINGPARAM)
-        except ValueError, e:
-            error(self.output, Error.E_BADINPUT)
-        except mdb.DatabaseError, e:
-            error(self.output, Error.E_DBASEERROR)
-
-#----------------------------------------------------------------------
-# action:results
-#
-# parameters:   game_id         int
-#               board_id        optional int        either specify this or the next parameter
-#               offset          optional int        if this exists, use it, else centre on the boardid
-#
-# response:     offset          int                 offset, total_rows only returned if boardid specified
-#               total_rows      int
-#               rows            int                 # of rows in the results
-#               board_id[0..N]  int
-#               board[0..N]     char[35]
-#               score[0..N]     int
-#               ranking[0..N]   int
-#               facebook_id[0..N] int
-#----------------------------------------------------------------------
-
-class resultsHandler(Handler):
-
-    def handle(self):
-        postData = self.getPostData()
-        try:
-            gameID = int(postData['game_id'])
-            with closing(self.cursor()) as cur:
-                # people[facebookid].games_played += 1
-                rows = None
-                if postData.has_key('offset'):
-                    sql = "select * from boards inner join people on people.facebook_id=boards.facebook_id where game_id=%s order by score desc, time_stamp asc limit %s,9"
-                    cur.execute(sql, (gameID, int(postData['offset'])))
-                    rows = cur.fetchall()
-                elif postData.has_key('board_id'):
-                    boardID = int(postData['board_id'])
-                    sql = "select count(*) as rows from boards where game_id=%s"
-                    cur.execute(sql, (gameID))
-                    totalRows = cur.fetchone()['rows']
-                    sql = "call getLeaderboard(%s)"
-                    cur.execute(sql, (boardID))
-                    rows = cur.fetchall()
-                    self.add({"total_rows": totalRows})
-                else:
-                    error(self.output, Error.E_MISSINGPARAM)
-                if rows:
-                    rowIndex = 0
-                    for row in rows:
-                        self.add({
-                            "board_id%d" % (rowIndex): row['board_id'],
-                            "board%d" % (rowIndex): row['board'],
-                            "score%d" % (rowIndex): row['score'],
-                            "ranking%d" % (rowIndex): row['ranking'],
-                            "offset%d" % (rowIndex): row['offset'],
-                            "facebook_id%d" % (rowIndex): row['facebook_id'],
-                            "name%d" % (rowIndex): row['name']
-                                })
-                        rowIndex += 1
-                    self.add({"rows": rowIndex})
-        except KeyError, e:
-            error(self.output, Error.E_MISSINGPARAM)
-        except ValueError, e:
-            error(self.output, Error.E_BADINPUT)
-        except mdb.DatabaseError, e:
-            error(self.output, Error.E_DBASEERROR)
-
-#----------------------------------------------------------------------
-# action:post
-#
-# parameters:   facebook_id     uint64      // facebook_id
-#               board           char[35]    // current board
-#               game_id     int             // current game_id
-#
-# response:     score           int         // score of that board
-#               board_id        int         // index into boards table
-#               end_time        datetime    // when current game ends
-#               current_time    datetime    // server time
-#----------------------------------------------------------------------
-
-class postHandler(Handler):
-
-    def updateBoard(self, boardID, board, score):
-        try:
-            with closing(self.cursor()) as cur:
-                tm = getCurrentTime()
-                sql = "update boards set board=%s, score=%s, time_stamp=%s where board_id=%s"
-                cur.execute(sql, (board, score, tm, boardID))
-        except mdb.DatabaseError, e:
-            pass
-        return None
-
-    #----------------------------------------------------------------------
-
-    def insertNewBoard(self, board, score, fbid, gameID):
-        try:
-            with closing(self.cursor()) as cur:
-                sql = "insert into boards (game_id, board, score, time_stamp, facebook_id) values (%s,%s,%s,%s,%s)"
-                cur.execute(sql, (gameID, board, score, getCurrentTime(), fbid))
-                return cur.lastrowid
-        except mdb.DatabaseError, e:
-            return None
-
-    #----------------------------------------------------------------------
-
-    def getLBPosition(self, score, fbid, gameID):
-        try:
-            with closing(self.cursor()) as cur:
-                sql = """
-                    select
-                        (select count(*) from boards where game_id = %s) as leaderboard_size,
-                        (select count(*) from boards where game_id = %s and score > %s order by score desc, time_stamp asc) as leaderboard_position
-                    """
-                cur.execute(sql, (gameID, gameID, score))
-                return cur.fetchone()
-        except mdb.DatabaseError, e:
-            return None
-
-    #----------------------------------------------------------------------
-
-    def handle(self):
-        try:
-            postData = self.getPostData()
-
-            # convert to the right datatypes
-            try:
-                boardID = int(postData["board_id"])
-                board = postData["board"]
-                facebookID = int(postData["facebook_id"])
-                gameID = int(postData["game_id"])
-            except KeyError, e:
-                error(self.output, Error.E_MISSINGPARAM)
-                return None
-
-            game = self.getCurrentGame()
-
-            # check for some errors
-            if not game:
-                error(self.output, Error.E_NOGAME)
-            elif int(gameID) != game["game_id"]:
-                error(self.output, Error.E_BADGAMEID)
-            else:
-                final = False
-                if game["current_time"] > game["end_time"]:
-                    self.add({"final":1})
-                score = getScore(board)
-                if score < 0:
-                    error(self.output, Error.E_BADBOARD)
-                else:
-                    if boardID == 0:
-                        boardID = self.insertNewBoard(board, score, facebookID, gameID)
-                    else:
-                        self.updateBoard(boardID, board, score)
-                    self.add({
-                        "score": int(score),
-                        "board_id": int(boardID),
-                        "end_time": game["end_time"],
-                        "current_time": game["current_time"]
-                        })
-                    self.add(self.getLBPosition(int(score), facebookID, int(gameID)))
-        except ValueError, e:
-            error(self.output, Error.E_MISSINGPARAM)
 
 #----------------------------------------------------------------------
 # application
@@ -677,20 +329,27 @@ def application(environ, start_response):
     try:
         with closing(opendb()) as db:
             db.autocommit(True)
-            org = environ['HTTP_ORIGIN']
+            if 'HTTP_ORIGIN' in environ:
+                org = environ['HTTP_ORIGIN']
+            else:
+                pprint("No ORG!")
+                pprint(environ)
+                org = ""
             valid = 0
             with closing(cursor(db)) as cur:
-                sql = "SELECT COUNT(*) AS valid FROM sites WHERE site_url = %s"
-                cur.execute(sql, (org))
+                cur.execute("SELECT COUNT(*) AS valid FROM sites WHERE site_url = %s", (org))
                 valid = cur.fetchone()['valid']
             if valid == 1:
                 headers.append(('Access-Control-Allow-Origin', org))
                 getData = environ['QUERY_STRING']
                 if getData:
                     data = urlparse.parse_qs(getData)
-                    try:
-                        globals()[data['action'][0] + "Handler"](environ, db, output).handle()
-                    except KeyError:
+                    pprint("GET:")
+                    pprint(data)
+                    func = data['action'][0] + 'Handler'
+                    if func in globals():
+                        globals()[func](environ, db, output).handle()
+                    else:
                         error(output, Error.E_BADACTION, ":" + data['action'][0])
                 else:
                     error(output, Error.E_NOACTION)
@@ -701,15 +360,13 @@ def application(environ, start_response):
             else:
                 error(output, Error.E_BADREFERER, ":" + org)
 
-    except ValueError:
-        error(output, Error.E_BADINPUT)
-        pprint("Bad input: %s" % (environ['QUERY_STRING']))
-
     except mdb.Error, e:
         pprint("Database error %d: %s" % (e.args[0], e.args[1]))
         error(output, Error.E_DBASEERROR)
 
     output = encoded_dict(output)
+    pprint("REPLY:")
+    pprint(output)
     outputStr = json.dumps(output, indent = 4, separators=(',',': '))
     headers.append(('Content-Length', str(len(outputStr))))
     start_response('200 OK', headers)

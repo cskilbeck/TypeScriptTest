@@ -4,6 +4,8 @@ GLOBAL.mtw = {};
 
 var net = require('net');
 
+var dictionary = require('./dictionary.json');
+
 require('./class.js');
 require('./list.js');
 require('./random.js');
@@ -11,6 +13,8 @@ require('./word.js');
 require('./dictionary.js');
 require('./tile.js');
 require('./board.js');
+
+mtw.Dictionary.init(dictionary);
 
 var queryStringToJSON = function (url) {
     "use strict";

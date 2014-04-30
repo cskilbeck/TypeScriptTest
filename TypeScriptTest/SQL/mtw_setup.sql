@@ -37,27 +37,17 @@ CREATE TABLE oauth_providers
 	oauth_icon		VARCHAR(5000)				-- url of an icon to show on login screen
 );
 
--- people who have been seen logging in at some point
--- refresh the names each time they log in
-
 SELECT '*** Create users table' as '';
 CREATE TABLE users
 (
 	user_id			INT NOT NULL auto_increment,
 					PRIMARY KEY(user_id),
-	oauth_sub		VARCHAR(255) NOT NULL,		-- unique per provider
-	oauth_provider	INT NOT NULL,				-- const reference (Google = 1, Facebook = 2 etc)
+	oauth_sub		VARCHAR(255) NOT NULL,
+	oauth_provider	INT NOT NULL,
 	name			VARCHAR(255),
 	picture			VARCHAR(1024),
 					UNIQUE INDEX (oauth_sub, oauth_provider)
 );
-
--- activity sessions
--- create a new one each time the web page is refreshed?
--- session is valid if:
---   created < now
---   now < expires
---   user_id exists in users table
 
 SELECT '*** Create sessions table' as '';
 CREATE TABLE sessions

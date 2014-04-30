@@ -1,7 +1,6 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-// do it like this for node
-var dictionary = require('./dictionary.json');
+var dictionary = null;
 
 mtw.Dictionary = (function () {
     "use strict";
@@ -12,9 +11,9 @@ mtw.Dictionary = (function () {
 
         // load it with ajax and pass it in in the browser...
 
-        //init: function (dict) {
-        //    dictionary = dict;
-        //},
+        init: function (dict) {
+            dictionary = dict;
+        },
 
         words: function () {
             return dictionary.words;

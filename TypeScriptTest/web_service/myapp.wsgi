@@ -257,62 +257,60 @@ class loginHandler(Handler):
                 then = formattedTime(timestamp + datetime.timedelta(days = 30))
                 p = self.getPostData();
 
+                cur.execute("""INSERT INTO users (
+                                oauth_sub,
+                                oauth_provider,
+                                name,
+                                picture)
+                            VALUES (
+                                '%(oauth_sub)s',
+                                %(oauth_provider)s,
+                                '%(name)s',
+                                '%(picture)s' )
+                            ON DUPLICATE KEY UPDATE
+                                name = '%(name)s',
+                                picture = '%(picture)s'""" % p)
                 cur.execute("""SELECT * FROM users
-                                WHERE oauth_sub = %(oauth_sub)s
-                                AND oauth_provider = %(oauth_provider)s""" % p)
-
-                row = cur.fetchone();
-                if row is None:
-                    cur.execute("""INSERT INTO users (
-                                    oauth_sub,
-                                    oauth_provider,
-                                    name,
-                                    picture)
-                                VALUES (
-                                    '%(oauth_sub)s',
-                                    %(oauth_provider)s,
-                                    '%(name)s',
-                                    '%(picture)s' )""" % p)
-                    user_id = self.db.insert_id();
-                    user_name = p['name'];
-                    user_picture = p['picture'];
-                else:
-                    user_id = row['user_id'];
+                                WHERE oauth_sub='%(oauth_sub)s'
+                                AND oauth_provider='%(oauth_provider)s'""" % p)
+                row = cur.fetchone()
+                if not row is None:
+                    user_id = row['user_id']
                     user_name = row['name'];
                     user_picture = row['picture'];
 
-                # create or extend session
-                cur.execute("""SELECT * FROM sessions
-                                WHERE user_id = %(user_id)s
-                                    AND expires > '%(now)s'
-                                ORDER BY created DESC LIMIT 1""" %
-                            {
-                                'user_id': user_id,
-                                'now': now
-                            });
-                row = cur.fetchone()
-                if row is None:
-                    # session expired, create a new one
-                    cur.execute("""INSERT INTO sessions(user_id, created, expires)
-                                    VALUES (%(user_id)s, '%(now)s', '%(then)s')""" % {
+                    # create or extend session
+                    cur.execute("""SELECT * FROM sessions
+                                    WHERE user_id = %(user_id)s
+                                        AND expires > '%(now)s'
+                                    ORDER BY created DESC LIMIT 1""" %
+                                {
                                     'user_id': user_id,
-                                    'now': now,
-                                    'then': then })
-                    session_id = self.db.insert_id()
-                else:
-                    # existing session, extend it
-                    session_id = row['session_id']
-                    cur.execute("""UPDATE sessions
-                                    SET expires = '%(then)s'
-                                    WHERE session_id = %(session_id)s""" % {
-                                    'then': then,
-                                    'session_id': session_id })
+                                    'now': now
+                                });
+                    row = cur.fetchone()
+                    if row is None:
+                        # session expired, or didn't exist, create a new one
+                        cur.execute("""INSERT INTO sessions(user_id, created, expires)
+                                        VALUES (%(user_id)s, '%(now)s', '%(then)s')""" % {
+                                        'user_id': user_id,
+                                        'now': now,
+                                        'then': then })
+                        session_id = self.db.insert_id()
+                    else:
+                        # existing session, extend it
+                        session_id = row['session_id']
+                        cur.execute("""UPDATE sessions
+                                        SET expires = '%(then)s'
+                                        WHERE session_id = %(session_id)s""" % {
+                                        'then': then,
+                                        'session_id': session_id })
 
-                # we should have a valid session_id here
-                self.add({"session_id": session_id,
-                          "user_id": user_id,
-                          "user_name": user_name,
-                          "user_picture": user_picture })
+                    # we should have a valid session_id here
+                    self.add({"session_id": session_id,
+                              "user_id": user_id,
+                              "user_name": user_name,
+                              "user_picture": user_picture })
         except mdb.Error, e:
             pprint("Database error %d: %s" % (e.args[0], e.args[1]))
             error(self.output, Error.E_DBASEERROR)

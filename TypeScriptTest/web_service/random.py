@@ -1,5 +1,5 @@
-﻿def rshift(x, y):
-    return (x % 0x100000000) >> y
+﻿def _rshift(x, y):
+    return (x & 0xFFFFFFFF) >> y
 
 class Random:
 
@@ -14,10 +14,10 @@ class Random:
         self.v = seed
 
     def next():
-        t = x ^ rshift(x,7)
+        t = x ^ _rshift(x,7)
         x = y
         y = z
         z = w
         w = v
         v = v ^ (v << 6) ^ (t ^ (t << 13))
-        return rshift((y + y + 1) * v, 16)
+        return _rshift((y + y + 1) * v, 16)

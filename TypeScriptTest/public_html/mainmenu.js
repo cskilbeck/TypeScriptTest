@@ -89,6 +89,11 @@
             h = this.height,
             pw = w / 1.25,
             ph = h / 1.25;
+
+
+            chs.User.name = user_name;
+            chs.User.id = user_id;
+
             chs.desktop.removeChild(loader);
             this.game.loadComplete();
             this.panel = new chs.Panel(w / 2, h / 2, pw, ph, "darkslategrey", "white", 25, 4, 255).setPivot(0.5, 0.5);

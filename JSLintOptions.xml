@@ -712,6 +712,10 @@
       <string>LoginScreen</string>
       <string>mtw</string>
       <string>XDomainRequest</string>
+      <string>require</string>
+      <string>process</string>
+      <string>module</string>
+      <string>GLOBAL</string>
     </PreDefined>
   </JSLintOptions>
   <BuildFileTypes>JS</BuildFileTypes>

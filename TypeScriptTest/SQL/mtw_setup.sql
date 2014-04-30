@@ -18,7 +18,7 @@ USE mtwdb;
 
 -- these web sites can use the web service
 
-SELECT '*** Create sites' as '';
+SELECT '*** Create sites table' as '';
 CREATE TABLE sites
 (
 	site_id			INT NOT NULL auto_increment,
@@ -28,7 +28,7 @@ CREATE TABLE sites
 
 -- see data section below for list of oauth providers currently supported
 
-SELECT '*** Create oauth_providers' as '';
+SELECT '*** Create oauth_providers table' as '';
 CREATE TABLE oauth_providers
 (
 	oauth_provider	INT NOT NULL,				-- const reference (Google = 1, Facebook = 2 etc)
@@ -40,7 +40,7 @@ CREATE TABLE oauth_providers
 -- people who have been seen logging in at some point
 -- refresh the names each time they log in
 
-SELECT '*** Create users' as '';
+SELECT '*** Create users table' as '';
 CREATE TABLE users
 (
 	user_id			INT NOT NULL auto_increment,
@@ -48,7 +48,8 @@ CREATE TABLE users
 	oauth_sub		VARCHAR(255) NOT NULL,		-- unique per provider
 	oauth_provider	INT NOT NULL,				-- const reference (Google = 1, Facebook = 2 etc)
 	name			VARCHAR(255),
-	picture			VARCHAR(1024)
+	picture			VARCHAR(1024),
+					UNIQUE INDEX (oauth_sub, oauth_provider)
 );
 
 -- activity sessions
@@ -58,7 +59,7 @@ CREATE TABLE users
 --   now < expires
 --   user_id exists in users table
 
-SELECT '*** Create sessions' as '';
+SELECT '*** Create sessions table' as '';
 CREATE TABLE sessions
 (
 	session_id		INT NOT NULL auto_increment,
@@ -66,6 +67,30 @@ CREATE TABLE sessions
 	user_id			VARCHAR(255) NOT NULL,
 	created			DATETIME NOT NULL,
 	expires			DATETIME NOT NULL
+);
+
+SELECT '*** Create games table' as '';
+CREATE TABLE games
+(
+	game_id			INT NOT NULL auto_increment,
+					PRIMARY KEY(game_id),
+	seed			INT NOT NULL,
+	board			CHAR(35),
+	start_time		DATETIME,
+	end_time		DATETIME
+);
+
+SELECT '*** Create boards table' as '';
+CREATE TABLE boards
+(
+	board_id		INT NOT NULL auto_increment,
+					PRIMARY KEY(board_id),
+	seed			INT NOT NULL,
+	board			CHAR(35),
+	score			INT NOT NULL,
+	user_id			INT NOT NULL,
+	time_stamp		DATETIME NOT NULL,
+					UNIQUE INDEX (user_id, seed)
 );
 
 -- ----------------------------------------------------------------------

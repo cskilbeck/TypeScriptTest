@@ -1,5 +1,8 @@
 #----------------------------------------------------------------------
 
+import sys
+sys.path.append('/usr/local/www/wsgi-scripts/')
+
 import datetime
 import socket
 import json
@@ -35,6 +38,16 @@ def error(output, err, extra=""):
 
 #----------------------------------------------------------------------
 # utils
+#----------------------------------------------------------------------
+
+# get something from the local helper
+
+def service(dict):
+    with closing(socket.socket()) as s:
+        s.connect(("127.0.0.1", 1338))
+        s.send(urllib.urlencode(dict))
+        return json.loads(s.recv(8192))
+
 #----------------------------------------------------------------------
 
 def encoded_dict(in_dict):
@@ -84,27 +97,13 @@ def seconds(td):
 
 #----------------------------------------------------------------------
 
-def getDaemonResponse(input):
-    try:
-        with closing(socket.socket()) as s:
-            s.connect(("localhost", 32768))
-            s.send(input)
-            result = s.recv(256)
-            return result
-
-    except socket.error, (value, message):
-        print "socket error: " + message
-        return None
-
-#----------------------------------------------------------------------
-
-def getScore(board):
-    return getDaemonResponse('b' + board) if len(board) == 35 else -1
+def getScore(board, seed):
+    return service({'action': 'getscore', 'seed': seed, 'board': board })
 
 #----------------------------------------------------------------------
 
 def getBoard(seed):
-    return getDaemonResponse("s" + str(seed))
+    return service({'action': 'getboard', 'seed': seed })
 
 #----------------------------------------------------------------------
 
@@ -138,10 +137,11 @@ def getJSONURL(path):
 
 class Handler(object):
 
-    def __init__(self, environ, db, output):
+    def __init__(self, environ, params, db, output):
         self.environ = environ
         self.db = db
         self.output = output
+        self.params = params
 
     def cursor(self):
         return cursor(self.db)
@@ -245,6 +245,8 @@ class oauthlistHandler(Handler):
 # if not, create a session
 # return the session, either way
 
+# now that we have a unique index in the users table we can use 'insert/on duplicate key update' here...
+
 class loginHandler(Handler):
 
     def handle(self):
@@ -315,6 +317,62 @@ class loginHandler(Handler):
             pprint("Database error %d: %s" % (e.args[0], e.args[1]))
             error(self.output, Error.E_DBASEERROR)
 
+class definitionHandler(Handler):
+
+    def handle(self):
+        self.add(service({'action': 'getdefinition', 'word': self.params['word'][0] }))
+
+# posting a new best board
+
+class boardHandler(Handler):
+
+    def handle(self):
+        p = self.getPostData()
+        board = p.get('board')
+        user_id = p.get('user_id')
+        seed = p.get('seed')
+        if None in (board, user_id, seed):
+            self.add({"error": "missing parameter"})
+        else:
+            check = service({'action': 'getscore', 'board': p['board'], 'seed': p['seed']});
+            if(check.get('valid') == True):
+                self.add({"score": check.get('score')})
+                try:
+                    with closing(self.cursor()) as cur:
+                        timestamp = datetime.datetime.now()
+                        now = formattedTime(timestamp)
+                        cur.execute("SELECT user_id FROM users WHERE user_id=%(user_id)s" % p);
+                        if not cur.fetchone() is None:
+                            cur.execute("""INSERT INTO boards (
+                                            seed,
+                                            board,
+                                            score,
+                                            user_id,
+                                            time_stamp)
+                                        VALUES (
+                                            %(seed)s,
+                                            '%(board)s',
+                                            %(score)s,
+                                            %(user_id)s,
+                                            '%(time_stamp)s')
+                                        ON DUPLICATE KEY UPDATE
+                                            board='%(board)s',
+                                            score=%(score)s,
+                                            time_stamp='%(time_stamp)s'"""
+                                        % {
+                                           'seed': p['seed'],
+                                           'board': p['board'],
+                                           'score': check['score'],
+                                           'user_id': p['user_id'],
+                                           'time_stamp': now});
+                        else:
+                            self.add({"error":"unknown user"})
+                except mdb.Error, e:
+                    pprint("Database error %d: %s" % (e.args[0], e.args[1]))
+                    error(self.output, Error.E_DBASEERROR)
+            else:
+                self.add({"error": "invalid board"})
+
 #----------------------------------------------------------------------
 # application
 #----------------------------------------------------------------------
@@ -338,10 +396,11 @@ def application(environ, start_response):
                 headers.append(('Access-Control-Allow-Origin', org))
                 getData = environ['QUERY_STRING']
                 if getData:
+                    pprint(getData)
                     data = urlparse.parse_qs(getData)
                     func = data['action'][0] + 'Handler'
                     if func in globals():
-                        globals()[func](environ, db, output).handle()
+                        globals()[func](environ, data, db, output).handle()
                     else:
                         error(output, Error.E_BADACTION, ":" + data['action'][0])
                 else:
@@ -359,6 +418,7 @@ def application(environ, start_response):
 
     output = encoded_dict(output)
     outputStr = json.dumps(output, indent = 4, separators=(',',': '))
+    pprint(outputStr)
     headers.append(('Content-Length', str(len(outputStr))))
     start_response('200 OK', headers)
     return outputStr

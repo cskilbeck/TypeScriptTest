@@ -23,6 +23,7 @@ var Game = (function () {
         wordButton,
         scoreButton,
         bestButton,
+        bestScore,
         scoreLabel,
         bestLabel,
         board,
@@ -71,20 +72,20 @@ var Game = (function () {
             menuButton = new chs.TextButton("Menu", consolas, 270, 515, 100, 40, this.menu, this).setPivot(0.5, 0);
             this.addChild(menuButton);
 
-            words = new chs.Drawable().setPosition(chs.desktop.width - 120, 70);
+            words = new chs.Drawable().setPosition(chs.desktop.width - 125, 70);
             this.addChild(words);
 
             this.addChild(new chs.SpriteButton(undoImage, "scale", 800, 510, this.undo, null));
             this.addChild(new chs.SpriteButton(redoImage, "scale", 850, 510, this.redo, null));
 
-            scoreButton = new chs.PanelButton(chs.desktop.width - 120, 10, 120, 26, 'black', undefined, 3, 0, null, null);
+            scoreButton = new chs.PanelButton(chs.desktop.width - 125, 10, 120, 26, 'black', undefined, 3, 0, null, null);
             scoreLabel = new chs.Label("0", consolas).setPosition(116, 4).setPivot(1, 0);
             scoreButton.addChild(scoreLabel);
             scoreButton.addChild(new chs.Label("Score:", consolas).setPosition(4, 4));
             scoreButton.transparency = 128;
             this.addChild(scoreButton);
 
-            bestButton = new chs.PanelButton(chs.desktop.width - 120, 39, 120, 26, 'black', undefined, 3, 0, this.bestClicked, this);
+            bestButton = new chs.PanelButton(chs.desktop.width - 125, 39, 120, 26, 'black', undefined, 3, 0, this.bestClicked, this);
             bestLabel = new chs.Label("0", consolas).setPosition(116, 4).setPivot(1, 0);
             bestButton.addChild(bestLabel);
             bestButton.addChild(new chs.Label("Best:", consolas).setPosition(4, 4));
@@ -94,6 +95,7 @@ var Game = (function () {
             board = new Board(200, 0, this);
             board.mainBoard = true;
             this.addChild(board);
+            bestScore = 0;
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -222,8 +224,8 @@ var Game = (function () {
             def = Dictionary.getDefinition(w.str),
 
             window = new chs.Window({
-                x: 400,
-                y: 300,
+                x: chs.desktop.width / 2,
+                y: chs.desktop.height / 2,
                 width: 640,
                 height: 480,
                 caption: w.str.toUpperCase(),
@@ -290,7 +292,12 @@ var Game = (function () {
                 }, this);
                 board.changed = false;
                 scoreLabel.text = board.score.toString();
-                bestLabel.text = board.bestScore.toString();
+                bestLabel.text = board.bestScore.toString();    // if board.bestScore has gone up, flash this!
+
+                if (board.bestScore > bestScore && chs.User.id) {
+                    bestScore = board.bestScore;
+                    chs.WebService.post("board", {}, { board: board.toString(), user_id: chs.User.id, seed: board.seed });
+                }
             }
         }
 

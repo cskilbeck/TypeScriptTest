@@ -18,6 +18,15 @@
     <JSLintSkip>\dictionary.js</JSLintSkip>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="nodejs\board.js" />
+    <Content Include="nodejs\class.js" />
+    <Content Include="nodejs\client.js" />
+    <Content Include="nodejs\dictionary.js" />
+    <Content Include="nodejs\helper.js" />
+    <Content Include="nodejs\list.js" />
+    <Content Include="nodejs\random.js" />
+    <Content Include="nodejs\tile.js" />
+    <Content Include="nodejs\word.js" />
     <Content Include="public_html\class.js" />
     <Content Include="public_html\browser.js" />
     <Content Include="public_html\ajax.js" />
@@ -33,12 +42,9 @@
     <Content Include="public_html\img\allColour.png" />
     <Content Include="public_html\php\HttpPost.class.php" />
     <Content Include="public_html\index.php" />
+    <Content Include="public_html\user.js" />
     <Content Include="public_html\webservice.js" />
     <Content Include="s.py" />
-    <Content Include="web_service\board.py" />
-    <Content Include="web_service\letters.py" />
-    <Content Include="web_service\random.py" />
-    <Content Include="web_service\word.py" />
     <Content Include="mirror.bat" />
     <None Include="public_html\img\Arial.json" />
     <Content Include="public_html\img\Arial0.png" />
@@ -77,7 +83,6 @@
     <Content Include="public_html\oauth2callback\index.php" />
     <Content Include="SQL\mtw_procs.sql" />
     <Content Include="SQL\mtw_setup.sql" />
-    <Content Include="web_service\dictionary.py" />
     <Content Include="web_service\myapp.wsgi" />
     <Content Include="public_html\php\login.php" />
     <Content Include="public_html\php\google.php" />

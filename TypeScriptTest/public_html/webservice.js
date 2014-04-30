@@ -18,11 +18,31 @@
                         console.log("Bad result from web service: " + json);
                         d = null;
                     }
-                    if (d !== null) {
+                    if (d !== null && callback) {
+                        callback.call(context, d);
+                    }
+                }, null, this, false, true);
+            },
+
+            post: function (command, params, data, callback, context) {
+                var url;
+                params.action = command;
+                url = chs.ajax.url(serviceURL, params, false);
+                chs.ajax.post(url, data, function (url, json) {
+                    var d;
+                    try {
+                        d = JSON.parse(json);
+                    }
+                    catch (e) {
+                        console.log("Bad result from web service: " + json);
+                        d = null;
+                    }
+                    if (d !== null && callback) {
                         callback.call(context, d);
                     }
                 }, null, this, false, true);
             }
+
         }
     });
 

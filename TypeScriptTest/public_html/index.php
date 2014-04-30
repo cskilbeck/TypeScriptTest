@@ -7,10 +7,11 @@
     <title>Make The Words</title>
     <link rel="stylesheet" href="app.css" type="text/css" />
 
-    <![if gte IE 9]>
+    <!--[if gte IE 9]><!-->
     <script src="chs.js"></script>
     <script src="browser.js"></script>
     <script src="class.js"></script>
+    <script src="user.js"></script>
     <script src="polyfill.js"></script>
     <script src="util.js"></script>
     <script src="event.js"></script>
@@ -45,7 +46,7 @@
     <script src="mainmenu.js"></script>
     <script src="main.js"></script>
     <script src="startup.js"></script>
-    <![endif]>
+    <!--<![endif]-->
 </head>
 
 <body id="screen">
@@ -74,9 +75,9 @@
     </div>
     <![endif]-->
 
-    <![if gte IE 9]>
+    <!--[if gte IE 9]><!-->
     <canvas id="myCanvas" width="1000" height="600"></canvas>
-    <![endif]>
+    <!--<![endif]-->
 
 </body>
 

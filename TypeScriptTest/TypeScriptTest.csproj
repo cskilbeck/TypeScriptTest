@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <ProjectGuid>{69307E68-3C4B-4B6E-BC6F-B5E77AB2FC96}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <OutputPath>bin</OutputPath>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <TypeScriptToolsVersion>0.9</TypeScriptToolsVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <JSLintSkip>\dictionary.js</JSLintSkip>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="nodejs\board.js" />
+    <Content Include="nodejs\class.js" />
+    <Content Include="nodejs\client.js" />
+    <Content Include="nodejs\dictionary.js" />
+    <Content Include="nodejs\helper.js" />
+    <Content Include="nodejs\list.js" />
+    <Content Include="nodejs\random.js" />
+    <Content Include="nodejs\tile.js" />
+    <Content Include="nodejs\word.js" />
+    <Content Include="public_html\class.js" />
+    <Content Include="public_html\browser.js" />
+    <Content Include="public_html\ajax.js" />
+    <Content Include="public_html\app.css" />
+    <Content Include="public_html\board.js" />
+    <Content Include="public_html\button.js" />
+    <Content Include="public_html\chs.js" />
+    <Content Include="public_html\cookies.js" />
+    <Content Include="public_html\debug.js" />
+    <Content Include="public_html\drawable.js" />
+    <Content Include="public_html\event.js" />
+    <Content Include="public_html\game.js" />
+    <Content Include="public_html\img\allColour.png" />
+    <Content Include="public_html\img\button.png" />
+    <Content Include="public_html\img\digits0.png" />
+    <Content Include="public_html\php\HttpPost.class.php" />
+    <Content Include="public_html\index.php" />
+    <Content Include="public_html\user.js" />
+    <Content Include="public_html\webservice.js" />
+    <Content Include="s.py" />
+    <Content Include="mirror.bat" />
+    <Content Include="public_html\img\Arial.bitmapfont" />
+    <None Include="public_html\img\Arial.json" />
+    <Content Include="public_html\img\Arial0.png" />
+    <Content Include="public_html\img\Consolas_Italic.json" />
+    <Content Include="public_html\img\Consolas.bitmapfont" />
+    <Content Include="public_html\img\Consolas_Italic.bitmapfont" />
+    <None Include="public_html\img\dictionary.json" />
+    <Content Include="public_html\img\digits.bitmapfont" />
+    <Content Include="public_html\img\Fixedsys.bitmapfont" />
+    <None Include="public_html\img\Fixedsys.json" />
+    <None Include="public_html\img\Consolas.json" />
+    <Content Include="public_html\img\Consolas0.png" />
+    <Content Include="public_html\img\Consolas_Italic0.png" />
+    <Content Include="public_html\img\Fixedsys0.png" />
+    <Content Include="public_html\img\redo.png" />
+    <Content Include="public_html\img\undo.png" />
+    <Content Include="public_html\keyboard.js" />
+    <Content Include="public_html\label.js" />
+    <Content Include="public_html\list.js" />
+    <Content Include="public_html\loginscreen.js" />
+    <Content Include="public_html\main.js" />
+    <Content Include="public_html\mainmenu.js" />
+    <Content Include="public_html\matrix.js" />
+    <Content Include="public_html\menu.js" />
+    <Content Include="public_html\messagebox.js" />
+    <Content Include="public_html\mouse.js" />
+    <Content Include="public_html\panel.js" />
+    <Content Include="public_html\polyfill.js" />
+    <Content Include="public_html\random.js" />
+    <Content Include="public_html\sprite.js" />
+    <Content Include="public_html\font.js" />
+    <Content Include="public_html\spritebutton.js" />
+    <Content Include="public_html\startup.js" />
+    <Content Include="public_html\textbutton.js" />
+    <Content Include="public_html\timer.js" />
+    <Content Include="public_html\util.js" />
+    <Content Include="public_html\window.js" />
+    <Content Include="public_html\word.js" />
+    <Content Include="public_html\loader.js" />
+    <Content Include="public_html\oauth2callback\index.php" />
+    <Content Include="SQL\mtw_procs.sql" />
+    <Content Include="SQL\mtw_setup.sql" />
+    <Content Include="web_service\myapp.wsgi" />
+    <Content Include="public_html\php\login.php" />
+    <Content Include="public_html\php\google.php" />
+    <Content Include="server.bat" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="public_html\dictionary.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="public_html\tile.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="public_html\js\" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RootNamespace>TypeScriptTest</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <SaveServerSettingsInUserFile>True</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <TypeScriptTarget>ES3</TypeScriptTarget>
+    <TypeScriptRemoveComments>false</TypeScriptRemoveComments>
+    <TypeScriptSourceMap>False</TypeScriptSourceMap>
+    <TypeScriptModuleKind>none</TypeScriptModuleKind>
+    <PublishDatabases>false</PublishDatabases>
+    <ExcludeGeneratedDebugSymbol>true</ExcludeGeneratedDebugSymbol>
+    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptRemoveComments>true</TypeScriptRemoveComments>
+    <TypeScriptSourceMap>false</TypeScriptSourceMap>
+    <TypeScriptModuleKind>AMD</TypeScriptModuleKind>
+  </PropertyGroup>
+  <Import Project="$(VSToolsPath)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(VSToolsPath)\TypeScript\Microsoft.TypeScript.targets')" />
+</Project>

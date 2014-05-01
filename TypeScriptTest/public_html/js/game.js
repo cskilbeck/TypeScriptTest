@@ -134,7 +134,7 @@ var Game = (function () {
             }
             if (msg) {
                 msgBox = new chs.MessageBox(msg, consolasItalicBold, btns, goBack, this);
-                brd = new Board(0, 0, this);
+                brd = new mtw.BoardGame(0, 0, this);
                 brd.setFromString(board.bestBoard);
                 brd.setScale(0.5);
                 brd.setPivot(0.5, 0);
@@ -150,7 +150,7 @@ var Game = (function () {
         onClosed: function () {
             if (this.mainBoard) {
                 chs.Cookies.set("game", board.seed, 10);
-                chs.Cookies.set("board", board.toString(), 10);
+                chs.Cookies.set("board", board.getAsString(), 10);
             }
         },
 
@@ -163,7 +163,7 @@ var Game = (function () {
                     n;
                 if (idx === 0) {
                     r = new chs.Random();
-                    board.beforeDrag = board.toString();
+                    board.beforeDrag = board.getAsString();
                     for (i = 0; i < board.tiles.length - 1; ++i) {
                         n = i + (r.next() % (board.tiles.length - 1 - i));
                         board.tiles[i].swap(board.tiles[n]);
@@ -296,7 +296,7 @@ var Game = (function () {
 
                 if (board.bestScore > bestScore && chs.User.id) {
                     bestScore = board.bestScore;
-                    chs.WebService.post("board", {}, { board: board.toString(), user_id: chs.User.id, seed: board.seed });
+                    chs.WebService.post("board", {}, { board: board.getAsString(), user_id: chs.User.id, seed: board.seed });
                 }
             }
         }

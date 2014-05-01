@@ -85,7 +85,7 @@ Tile = (function () {
             } else {
                 pos = Middle;
             }
-            wrd = (w.orientation === Word.horizontal) ? this.horizontal : this.vertical;
+            wrd = (w.orientation === mtw.Word.horizontal) ? this.horizontal : this.vertical;
             wrd.word = w;
             wrd.index = i;
             wrd.position = pos;

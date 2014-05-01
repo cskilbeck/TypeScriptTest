@@ -414,7 +414,7 @@ Board = (function () {
                             m += offset;
                         }
                         if (Dictionary.isWord(str)) {
-                            foundWords.pushBack(new Word(str, x, y, orientation, Board.getWordScore(str)));
+                            foundWords.pushBack(new mtw.Word(str, x, y, orientation, Board.getWordScore(str)));
                         }
                     }
                 }
@@ -440,8 +440,8 @@ Board = (function () {
             }
 
             // find all words, including overlapping ones
-            this.markWordPass(Word.horizontal, 1, this.tileWidth, 1, 0);
-            this.markWordPass(Word.vertical, this.tileWidth, this.tileHeight, 0, 1);
+            this.markWordPass(mtw.Word.horizontal, 1, this.tileWidth, 1, 0);
+            this.markWordPass(mtw.Word.vertical, this.tileWidth, this.tileHeight, 0, 1);
 
             // sort by score, length, alphabet
             foundWords.sort(function (a, b) {
@@ -457,10 +457,10 @@ Board = (function () {
                 w = foundWords.popFront();
                 for (i = 0; i < w.str.length; ++i) {
                     t = this.getWordTile(w, i);
-                    if (t.vertical.word !== null && w.orientation === Word.vertical) {
+                    if (t.vertical.word !== null && w.orientation === mtw.Word.vertical) {
                         break;
                     }
-                    if (t.horizontal.word !== null && w.orientation === Word.horizontal) {
+                    if (t.horizontal.word !== null && w.orientation === mtw.Word.horizontal) {
                         break;
                     }
                 }

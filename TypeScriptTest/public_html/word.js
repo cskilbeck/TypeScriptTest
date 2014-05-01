@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-var Word = (function () {
+mtw.Word = (function () {
     "use strict";
 
     return chs.Class({

@@ -3,7 +3,8 @@
 
     chs.User = {
         id: 0,
-        name: ""
+        name: "",
+        picture: null
     };
 
 }());

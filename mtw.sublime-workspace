@@ -3,31 +3,85 @@
 	{
 		"selected_items":
 		[
+			[
+				"nod",
+				"nodejs"
+			]
 		]
 	},
 	"buffers":
 	[
 		{
-			"file": "mtw.sublime-project",
+			"contents": "//////////////////////////////////////////////////////////////////////\n\n(function () {\n    \"use strict\";\n\n    //////////////////////////////////////////////////////////////////////\n\n    function send(url, callback, progressCallback, context, method, data, binary, crossDomain) {\n\n        var cd = crossDomain === undefined ? false : crossDomain,\n            ie9,\n            xr;\n\n        if (chs.Browser.type === 'MSIE' && chs.Browser.version <= 10 && crossDomain) {\n            xr = new XDomainRequest();\n            ie9 = true;\n        } else {\n            xr = new XMLHttpRequest();\n            ie9 = false;\n        }\n\n        xr.open(method, url);\n\n        if (!ie9) {\n            if (binary) {\n                xr.responseType = 'arraybuffer';\n            } else {\n                xr.responseType = 'application/json';\n            }\n            xr.onreadystatechange = function () {\n                if (xr.readyState === XMLHttpRequest.DONE) {\n                    if (binary) {\n                        callback.call(context, url, chs.Util.getResponseAsArray(xr));\n                    } else {\n                        callback.call(context, url, xr.responseText);\n                    }\n                }\n            };\n            xr.onprogress = function (e) {\n                if (progressCallback) {\n                    progressCallback.call(context, url, e);\n                }\n            };\n        } elseasd {\n            xr.onload = function () {\n                callback.call(context, url, xr.responseText);\n            };\n        }\n        if (method === 'POST') {\n            xr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');\n        }\n        xr.send(data);\n        return xr;\n    }\n\n    //////////////////////////////////////////////////////////////////////\n\n    chs.ajax = chs.Class({\n\n        static$: {\n\n            url: function (url, data, force) {\n                var query = [],\n                    key,\n                    u,\n                    q = \"\",\n                    a = \"?\";\n                for (key in data) {\n                    query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));\n                    q = \"?\";\n                    a = \"&\";\n                }\n                u = url + q + query.join('&') + (force ? (a + (new Date()).getTime() + '=1') : \"\");\n                return u;\n            },\n\n            //////////////////////////////////////////////////////////////////////\n\n            get: function (url, callback, progressCallback, context, binary, crossDomain) {\n\n                send(url, callback, progressCallback, context, 'GET', null, binary, crossDomain);\n            },\n\n            //////////////////////////////////////////////////////////////////////\n\n            post: function (url, data, callback, progressCallback, context, binary, crossDomain) {\n\n                var query = [],\n                    key;\n                for (key in data) {\n                    query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));\n                }\n                send(url, callback, progressCallback, context, 'POST', query.join('&'), binary, crossDomain);\n            }\n        }\n    });\n\n}());\n\n//////////////////////////////////////////////////////////////////////\n",
+			"file": "TypeScriptTest/public_html/js/ajax.js",
+			"file_size": 3380,
+			"file_write_time": 130434166733096613,
 			"settings":
 			{
-				"buffer_size": 109,
-				"line_ending": "Unix"
+				"buffer_size": 3280,
+				"line_ending": "Windows"
 			}
 		}
 	],
 	"build_system": "",
 	"command_palette":
 	{
-		"height": 0.0,
+		"height": 312.0,
 		"selected_items":
 		[
+			[
+				"Package Control: ",
+				"Package Control: Remove Package"
+			],
+			[
+				"jshint",
+				"JSHint: Set `node` Path"
+			],
+			[
+				"jsh",
+				"JSHint"
+			],
+			[
+				"packa",
+				"Package Control: Install Package"
+			],
+			[
+				"pack",
+				"Package Control: Install Package"
+			],
+			[
+				"jshin",
+				"JSHint: Set `node` Path"
+			],
+			[
+				"color",
+				"Package Control: Discover Packages"
+			],
+			[
+				"jshi",
+				"JSHint: Set Linting Preferences"
+			],
+			[
+				"js",
+				"JSHint: Set Plugin Options"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			]
 		],
-		"width": 0.0
+		"width": 416.0
 	},
 	"console":
 	{
-		"height": 0.0
+		"height": 301.0,
+		"history":
+		[
+			"view.run_command(\"jshint\")",
+			"jshint.cmd",
+			"jshint",
+			"import urllib.request,os,hashlib; h = '7183a2d3e96f11eeadd761d777e62404' + 'e330c659d4bb41d3bdf022e94cab3cd0'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://sublime.wbond.net/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
 	},
 	"distraction_free":
 	{
@@ -40,11 +94,38 @@
 	},
 	"file_history":
 	[
+		"/d/Users/chs/AppData/Roaming/Sublime Text 3/Packages/JSHint Gutter/JSHint.sublime-settings",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/ajax.js",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/game.js",
+		"/d/Users/chs/AppData/Roaming/Sublime Text 3/Packages/User/Preferences.sublime-settings",
+		"/d/Users/chs/AppData/Roaming/Sublime Text 3/Packages/Default/Preferences.sublime-settings",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/mainmenu.js",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/web_service/myapp.wsgi",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/oauth2callback/index.php",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/SQL/mtw_setup.sql",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/nodejs/client.js",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/php/login.php",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/sftp-config.json",
+		"/d/Users/chs/AppData/Roaming/Sublime Text 2/Packages/JSHint Gutter/JSHint.sublime-settings",
+		"/d/Users/chs/AppData/Roaming/Sublime Text 2/Packages/Default/Default (Windows).sublime-keymap",
+		"/d/Users/chs/AppData/Roaming/Sublime Text 2/Packages/User/PHP.sublime-settings",
+		"/d/Users/chs/AppData/Roaming/Sublime Text 2/Packages/User/Preferences.sublime-settings",
+		"/C/Program Files/Sublime Text 2/Pristine Packages/Color Scheme - Default.sublime-package",
+		"/D/Users/chs/AppData/Roaming/Sublime Text 2/Packages/Theme - Default/Default.sublime-theme",
+		"/d/Users/chs/AppData/Roaming/Sublime Text 2/Packages/Default/Preferences.sublime-settings",
+		"/D/Users/chs/AppData/Roaming/Sublime Text 2/Packages/JavaScript/JavaScript.tmLanguage",
+		"/d/Users/chs/AppData/Roaming/Sublime Text 2/Packages/JSHint Gutter/.jshintrc",
+		"/d/Users/chs/AppData/Roaming/Sublime Text 2/Packages/Package Control/Package Control.sublime-settings",
+		"/d/Users/chs/AppData/Roaming/Sublime Text 2/Packages/JSHint Gutter/Default (Windows).sublime-keymap",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/browser.js",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/board.js",
+		"/d/Users/chs/AppData/Roaming/Sublime Text 2/Packages/User/JavaScript.sublime-settings",
+		"/d/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/mtw.sublime-project",
 		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/nodejs/helper.js"
 	],
 	"find":
 	{
-		"height": 0.0
+		"height": 34.0
 	},
 	"find_in_files":
 	{
@@ -80,28 +161,35 @@
 			[
 				{
 					"buffer": 0,
-					"file": "mtw.sublime-project",
+					"file": "TypeScriptTest/public_html/js/ajax.js",
+					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 109,
+						"buffer_size": 3280,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								109,
-								109
+								981,
+								981
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/JavaScript/JSON.tmLanguage"
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 240.0,
 						"zoom_level": 1.0
 					},
+					"stack_index": 0,
 					"type": "text"
 				}
 			]
@@ -138,6 +226,19 @@
 		]
 	},
 	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 584.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.sftp":
+	{
+		"height": 0.0
+	},
+	"project": "mtw.sublime-project",
 	"replace":
 	{
 		"height": 0.0
@@ -159,10 +260,24 @@
 		],
 		"width": 0.0
 	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"settings":
+	{
+	},
 	"show_minimap": true,
 	"show_open_files": false,
-	"show_tabs": false,
+	"show_tabs": true,
 	"side_bar_visible": true,
 	"side_bar_width": 251.0,
-	"status_bar_visible": true
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
 }

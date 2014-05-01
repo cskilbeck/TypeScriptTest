@@ -1,4 +1,4 @@
-﻿var MainMenu = (function () {
+var MainMenu = (function () {
     "use strict";
 
     var loader,
@@ -65,34 +65,29 @@
                     this.panel.addChild(new chs.Label("Logging out...", consolasItalic).setPosition(this.panel.width / 2, this.panel.height / 2).setPivot(0.5, 0.5));
                 }
             }, this, consolas));
-            // remove all session and user cookies here
-            // then reload page
         },
 
         loadComplete: function () {
-            var user_name = chs.Cookies.get('user_name'),
-                user_id = chs.Cookies.get('user_id'),
-                user_picture = chs.Cookies.get('user_picture'),
-                session_id = chs.Cookies.get('session_id'),
+            var session_id = chs.Cookies.get('session_id'),
                 login_error = chs.Cookies.get('login_error'),
                 buttons = [
-                "Options",
-                "How to play",
-                "Credits"
-            ],
-            callbacks = [
-                this.showOptions,
-                this.showHowToPlay,
-                this.showCredits
-            ],
-            w = this.width,
-            h = this.height,
-            pw = w / 1.25,
-            ph = h / 1.25;
+                    "Options",
+                    "How to play",
+                    "Credits"
+                ],
+                callbacks = [
+                    this.showOptions,
+                    this.showHowToPlay,
+                    this.showCredits
+                ],
+                w = this.width,
+                h = this.height,
+                pw = w / 1.25,
+                ph = h / 1.25;
 
-
-            chs.User.name = user_name;
-            chs.User.id = user_id;
+            chs.User.name = chs.Cookies.get('user_name');
+            chs.User.id = chs.Cookies.get('user_id');
+            chs.User.picture = chs.Cookies.get('user_picture');
 
             chs.desktop.removeChild(loader);
             this.game.loadComplete();
@@ -111,9 +106,8 @@
                     chs.Cookies.remove("login_error");
                 }
             } else {
-                if (user_picture !== null) {
-                    this.panel.addChild(new UserImage(12, 12, 64, 64, user_picture));
-                    console.log(user_picture);
+                if (chs.User.picture !== null) {
+                    this.panel.addChild(new UserImage(12, 12, 64, 64, chs.User.picture));
                 } else if (user_name !== null) {
                     this.panel.addChild(new chs.TextButton(user_name, consolasItalic, 12, 12, 128, 35));
                 }

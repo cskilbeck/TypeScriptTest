@@ -14,13 +14,12 @@ var Game = (function () {
     "use strict";
 
     //////////////////////////////////////////////////////////////////////
-    
+
     var consolas,
         consolasItalic,
         consolasItalicBold,
         arial,
         words,
-        wordButton,
         scoreButton,
         bestButton,
         bestScore,
@@ -57,7 +56,6 @@ var Game = (function () {
             arial = chs.Font.load("Arial", loader);
             consolasItalic = chs.Font.load("Consolas_Italic", loader);
             consolasItalicBold = chs.Font.load("Consolas_Italic", loader);
-            wordButton = loader.load("wordbutton.png");
             undoImage = loader.load("undo.png");
             redoImage = loader.load("redo.png");
         },
@@ -217,13 +215,13 @@ var Game = (function () {
 
         showDefinition: function (w) {
             var def,
-                window,
+                win,
                 scoreLabel,
                 textBox;
 
             def = mtw.Dictionary.getDefinition(w.str),
 
-            window = new chs.Window({
+            win = new chs.Window({
                 x: chs.desktop.width / 2,
                 y: chs.desktop.height / 2,
                 width: 640,
@@ -242,10 +240,10 @@ var Game = (function () {
                 modal: true
             });
 
-            window.setPivot(0.5, 0.5);
-            window.setScale(0.75);
-            window.age = 0.5;
-            window.onUpdate = function (time, deltaTime) {
+            win.setPivot(0.5, 0.5);
+            win.setScale(0.75);
+            win.age = 0.5;
+            win.onUpdate = function (time, deltaTime) {
                 var a;
                 if (this.age < 1) {
                     this.age += deltaTime / 750;
@@ -259,15 +257,15 @@ var Game = (function () {
             };
             scoreLabel = new chs.Label(w.score.toString() + " points", consolasItalic);
             textBox = new chs.TextBox(16, 16, 640 - 32, 480 - 32, def, consolasItalic, '\r    ', function (link) {
-                window.text = link.toUpperCase();
+                win.text = link.toUpperCase();
                 textBox.text = mtw.Dictionary.getDefinition(link);
                 scoreLabel.text = mtw.Letters.getWordScore(link).toString() + " points";
             });
-            scoreLabel.setPosition(window.titleBar.width - 16, window.titleBar.height / 2);
+            scoreLabel.setPosition(win.titleBar.width - 16, win.titleBar.height / 2);
             scoreLabel.setPivot(1, consolasItalic.midPivot);
-            window.titleBar.addChild(scoreLabel);
-            window.client.addChild(textBox);
-            this.addChild(window);
+            win.titleBar.addChild(scoreLabel);
+            win.client.addChild(textBox);
+            this.addChild(win);
         },
 
         //////////////////////////////////////////////////////////////////////

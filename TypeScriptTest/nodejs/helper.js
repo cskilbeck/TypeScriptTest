@@ -6,13 +6,14 @@ var net = require('net');
 
 var dictionary = require('./dictionary.json');
 
-require('./class.js');
-require('./list.js');
-require('./random.js');
-require('./word.js');
-require('./dictionary.js');
-require('./tile.js');
-require('./board.js');
+require('./js/class.js');
+require('./js/list.js');
+require('./js/random.js');
+require('./js/letters.js');
+require('./js/word.js');
+require('./js/dictionary.js');
+require('./js/tile.js');
+require('./js/board.js');
 
 mtw.Dictionary.init(dictionary);
 
@@ -83,7 +84,7 @@ net.createServer(function (socket) {
             if (params.seed !== undefined) {
                 board = new mtw.Board();
                 board.randomize(parseInt(params.seed, 10));
-                output.board = board.toString();
+                output.board = board.getAsString();
             }
             break;
 

@@ -1,93 +1,15 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-mtw.Board = (function () {
+(function () {
     "use strict";
 
     //////////////////////////////////////////////////////////////////////
-    // private static
 
-    var letters = [
-            { score: 1, frequency: 9 },     //A
-            { score: 3, frequency: 2 },     //B
-            { score: 3, frequency: 2 },     //C
-            { score: 2, frequency: 4 },     //D
-            { score: 1, frequency: 12 },    //E
-            { score: 4, frequency: 2 },     //F
-            { score: 2, frequency: 3 },     //G
-            { score: 4, frequency: 2 },     //H
-            { score: 1, frequency: 9 },     //I
-            { score: 8, frequency: 1 },     //J
-            { score: 5, frequency: 1 },     //K
-            { score: 1, frequency: 4 },     //L
-            { score: 3, frequency: 2 },     //M
-            { score: 1, frequency: 6 },     //N
-            { score: 1, frequency: 8 },     //O
-            { score: 3, frequency: 2 },     //P
-            { score: 10, frequency: 1 },    //Q
-            { score: 1, frequency: 6 },     //R
-            { score: 1, frequency: 4 },     //S
-            { score: 1, frequency: 6 },     //T
-            { score: 1, frequency: 4 },     //U
-            { score: 4, frequency: 2 },     //V
-            { score: 4, frequency: 2 },     //W
-            { score: 8, frequency: 1 },     //X
-            { score: 4, frequency: 2 },     //Y
-            { score: 10, frequency: 1 }     //Z
-        ],
+    mtw.Board = chs.Class({
 
-        asciiA = "a".charCodeAt(0),
-        distribution = [],
-        undoMax = 1000,
-        foundWords = new chs.List("listNode"),
-        clickedTile,
-        snapX,
-        snapY,
-        tileX,
-        tileY,
-        newSwapTile,
-        y;
-
-
-    //////////////////////////////////////////////////////////////////////
-    // Get a random letter from the distribution table
-
-    function randomLetter(random) {
-        return distribution[random.next() % distribution.length];
-    }
-
-    //////////////////////////////////////////////////////////////////////
-    // static initialization
-
-    // init the distribution table
-    (function () {
-        var i,
-            j;
-        for (i = 0; i < letters.length; ++i) {
-            for (j = 0; j < letters[i].frequency; ++j) {
-                distribution.push(String.fromCharCode(i + asciiA));
-            }
-        }
-    }());
-
-    //////////////////////////////////////////////////////////////////////
-
-    return chs.Class({
-
-        static$: {
-
-            getWordScore: function (str) {
-                var s = 0,
-                    i;
-                for (i = 0; i < str.length; ++i) {
-                    s += letters[str.charCodeAt(i) - asciiA].score;
-                }
-                return s * str.length;
-            }
-
-        },
-
-        $: function (x, y, game) {
-            var i;
+        $: function (tileType) {
+            var i,
+                tt = tileType !== undefined ? tileType : 'Tile';
 
             this.tileWidth = 7;
             this.tileHeight = 5;
@@ -98,7 +20,7 @@ mtw.Board = (function () {
             this.tiles = [];
             this.tiles.length = this.tileWidth * this.tileHeight;
             for (i = 0; i < this.tiles.length; ++i) {
-                this.tiles[i] = new mtw.Tile("A", i % this.tileWidth, (i / this.tileWidth) >>> 0);
+                this.tiles[i] = new mtw[tt]("A", i % this.tileWidth, (i / this.tileWidth) >>> 0);
             }
         },
 
@@ -112,19 +34,19 @@ mtw.Board = (function () {
             // fill with random letters
             this.random.seed(seed);
             for (i = 0; i < this.tiles.length; ++i) {
-                this.tiles[i].letter = randomLetter(this.random);
+                this.tiles[i].letter = mtw.Letters.random(this.random);
             }
 
             // nobble it until there are no words on it
             while (this.markAllWords() !== 0) {
-                this.getWordTile(this.words.head(), 0).letter = randomLetter(this.random);
+                this.getWordTile(this.words.head(), 0).letter = mtw.Letters.random(this.random);
             }
         },
 
         //////////////////////////////////////////////////////////////////////
         // Get the board as an ascii string
 
-        toString: function () {
+        getAsString: function () {
             var i,
                 s = "";
             for (i = 0; i < this.tiles.length; ++i) {
@@ -168,7 +90,9 @@ mtw.Board = (function () {
         //////////////////////////////////////////////////////////////////////
         // Find all the words on the board and return a score
 
-        markWordPass: function (orientation, offset, limit, xMul, yMul) {
+        // this finds all [horizontal or vertical] words
+
+        markWordPass: function (orientation, offset, limit, xMul, yMul, list) {
 
             var xLim = this.tileWidth - 2 * xMul,
                 yLim = this.tileHeight - 2 * yMul,
@@ -193,7 +117,7 @@ mtw.Board = (function () {
                             m += offset;
                         }
                         if (mtw.Dictionary.isWord(str)) {
-                            foundWords.pushBack(new mtw.Word(str, x, y, orientation, mtw.Board.getWordScore(str)));
+                            list.pushBack(new mtw.Word(str, x, y, orientation));
                         }
                     }
                 }
@@ -205,9 +129,8 @@ mtw.Board = (function () {
             var w,
                 i,
                 t,
-                j;
-
-            foundWords.clear();
+                j,
+                foundWords = new chs.List("listNode");
 
             this.changed = true;
             this.words.clear();
@@ -219,8 +142,8 @@ mtw.Board = (function () {
             }
 
             // find all words, including overlapping ones
-            this.markWordPass(mtw.Word.horizontal, 1, this.tileWidth, 1, 0);
-            this.markWordPass(mtw.Word.vertical, this.tileWidth, this.tileHeight, 0, 1);
+            this.markWordPass(mtw.Word.horizontal, 1, this.tileWidth, 1, 0, foundWords);
+            this.markWordPass(mtw.Word.vertical, this.tileWidth, this.tileHeight, 0, 1, foundWords);
 
             // sort by score, length, alphabet
             foundWords.sort(function (a, b) {
@@ -236,10 +159,10 @@ mtw.Board = (function () {
                 w = foundWords.popFront();
                 for (i = 0; i < w.str.length; ++i) {
                     t = this.getWordTile(w, i);
-                    if (t.vertical.word !== null && w.orientation === mtw.Word.vertical) {
+                    if (t.hasVerticalWord && w.orientation === mtw.Word.vertical) {
                         break;
                     }
-                    if (t.horizontal.word !== null && w.orientation === mtw.Word.horizontal) {
+                    if (t.hasHorizontalWord && w.orientation === mtw.Word.horizontal) {
                         break;
                     }
                 }

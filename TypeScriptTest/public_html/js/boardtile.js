@@ -1,24 +1,19 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-Tile = (function () {
+(function () {
     "use strict";
 
     //////////////////////////////////////////////////////////////////////
 
-    var None = 0,
-        Beginning = 1,
-        Middle = 2,
-        End = 3,
-        tileWidth = 96,
+    var tileWidth = 96,
         tileHeight = 96,
         font,
         tileImage;
 
     //////////////////////////////////////////////////////////////////////
 
-
-    return chs.Class({
-        inherit$: [chs.Sprite],
+    mtw.BoardTile = chs.Class({
+        inherit$: [mtw.Tile, chs.Sprite],
 
         static$: {
 
@@ -29,17 +24,16 @@ Tile = (function () {
                 font = chs.Font.load("Arial", loader);
                 tileImage = loader.load("allColour.png");
             }
-
         },
 
         $: function (letter, x, y) {
+            mtw.Tile.call(this, letter);
             chs.Sprite.call(this, tileImage);
             this.font = font;
             this.framesWide = 5;
             this.framesHigh = 5;
             this.frameWidth = tileWidth;
             this.frameHeight = tileHeight;
-            this.myLetter = letter;
             this.selected = false;
             this.swapped = false;
             this.setPivot(0.5, 0.5);
@@ -48,20 +42,12 @@ Tile = (function () {
                 x: this.position.x,
                 y: this.position.y
             };
-            this.horizontal = {
-                word: null,
-                index: 0,
-                position: 0
-            };
-            this.vertical = {
-                word: null,
-                index: 0,
-                position: 0
-            };
             this.label = new chs.Label(letter, font).setPivot(0.5, font.midPivot);
             this.label.setPosition(this.width / 2 - 1, this.height / 2);
             this.addChild(this.label);
         },
+
+        //////////////////////////////////////////////////////////////////////
 
         letter: {
             get: function () {
@@ -71,33 +57,6 @@ Tile = (function () {
                 this.myLetter = s;
                 this.label.text = s.toUpperCase();
             }
-        },
-
-        //////////////////////////////////////////////////////////////////////
-
-        setWord: function (w, i) {
-            var pos,
-                wrd;
-            if (i === 0) {
-                pos = Beginning;
-            } else if (i === w.str.length - 1) {
-                pos = End;
-            } else {
-                pos = Middle;
-            }
-            wrd = (w.orientation === Word.horizontal) ? this.horizontal : this.vertical;
-            wrd.word = w;
-            wrd.index = i;
-            wrd.position = pos;
-        },
-
-        //////////////////////////////////////////////////////////////////////
-
-        clearWords: function () {
-            this.horizontal.word = null;
-            this.vertical.word = null;
-            this.horizontal.position = None;
-            this.vertical.position = None;
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -136,9 +95,11 @@ Tile = (function () {
         // draw tile background
 
         onUpdate: function (context) {
-            var sx = this.horizontal.position,
-                sy = this.vertical.position;
-            if (this.horizontal.word === null && this.vertical.word === null) {
+            var hi = this.wordIndices[mtw.Word.horizontal],
+                vi = this.wordIndices[mtw.Word.vertical],
+                sx = hi.position,
+                sy = vi.position;
+            if (hi.word === null && vi.word === null) {
                 sx = 0;
                 sy = 4;
             }

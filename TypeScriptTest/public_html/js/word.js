@@ -1,21 +1,21 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-mtw.Word = (function () {
+(function () {
     "use strict";
 
-    return chs.Class({
+    mtw.Word = chs.Class({
         
         static$: {
             horizontal: 0,
             vertical: 1
         },
 
-        $: function (str, x, y, orientation, score) {
+        $: function (str, x, y, orientation) {
             this.str = str;
             this.x = x;
             this.y = y;
             this.orientation = orientation;
-            this.score = score;
+            this.score = mtw.Letters.getWordScore(str);
             this.index = 0;
             this.listNode = chs.List.Node(this);
         },

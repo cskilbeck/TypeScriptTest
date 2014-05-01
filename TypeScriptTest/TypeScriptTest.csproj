@@ -18,37 +18,33 @@
     <JSLintSkip>\dictionary.js</JSLintSkip>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="nodejs\board.js" />
-    <Content Include="nodejs\class.js" />
     <Content Include="nodejs\client.js" />
-    <Content Include="nodejs\dictionary.js" />
     <Content Include="nodejs\helper.js" />
-    <Content Include="nodejs\list.js" />
-    <Content Include="nodejs\random.js" />
-    <Content Include="nodejs\tile.js" />
-    <Content Include="nodejs\word.js" />
-    <Content Include="public_html\class.js" />
-    <Content Include="public_html\browser.js" />
-    <Content Include="public_html\ajax.js" />
+    <Content Include="public_html\js\boardgame.js" />
+    <Content Include="public_html\js\boardtile.js" />
+    <Content Include="public_html\js\class.js" />
+    <Content Include="public_html\js\browser.js" />
+    <Content Include="public_html\js\ajax.js" />
     <Content Include="public_html\app.css" />
-    <Content Include="public_html\board.js" />
-    <Content Include="public_html\button.js" />
-    <Content Include="public_html\chs.js" />
-    <Content Include="public_html\cookies.js" />
-    <Content Include="public_html\debug.js" />
-    <Content Include="public_html\drawable.js" />
-    <Content Include="public_html\event.js" />
-    <Content Include="public_html\game.js" />
+    <Content Include="public_html\js\board.js" />
+    <Content Include="public_html\js\button.js" />
+    <Content Include="public_html\js\chs.js" />
+    <Content Include="public_html\js\cookies.js" />
+    <Content Include="public_html\js\debug.js" />
+    <Content Include="public_html\js\drawable.js" />
+    <Content Include="public_html\js\event.js" />
+    <Content Include="public_html\js\game.js" />
     <Content Include="public_html\img\allColour.png" />
     <Content Include="public_html\img\button.png" />
     <Content Include="public_html\img\digits0.png" />
+    <Content Include="public_html\js\letters.js" />
     <Content Include="public_html\php\HttpPost.class.php" />
     <Content Include="public_html\index.php" />
-    <Content Include="public_html\user.js" />
-    <Content Include="public_html\webservice.js" />
-    <Content Include="s.py" />
+    <Content Include="public_html\js\user.js" />
+    <Content Include="public_html\js\webservice.js" />
     <Content Include="mirror.bat" />
     <Content Include="public_html\img\Arial.bitmapfont" />
+    <Content Include="nodejs\dictionary.json" />
     <None Include="public_html\img\Arial.json" />
     <Content Include="public_html\img\Arial0.png" />
     <Content Include="public_html\img\Consolas_Italic.json" />
@@ -64,42 +60,44 @@
     <Content Include="public_html\img\Fixedsys0.png" />
     <Content Include="public_html\img\redo.png" />
     <Content Include="public_html\img\undo.png" />
-    <Content Include="public_html\keyboard.js" />
-    <Content Include="public_html\label.js" />
-    <Content Include="public_html\list.js" />
-    <Content Include="public_html\loginscreen.js" />
-    <Content Include="public_html\main.js" />
-    <Content Include="public_html\mainmenu.js" />
-    <Content Include="public_html\matrix.js" />
-    <Content Include="public_html\menu.js" />
-    <Content Include="public_html\messagebox.js" />
-    <Content Include="public_html\mouse.js" />
-    <Content Include="public_html\panel.js" />
-    <Content Include="public_html\polyfill.js" />
-    <Content Include="public_html\random.js" />
-    <Content Include="public_html\sprite.js" />
-    <Content Include="public_html\font.js" />
-    <Content Include="public_html\spritebutton.js" />
-    <Content Include="public_html\startup.js" />
-    <Content Include="public_html\textbutton.js" />
-    <Content Include="public_html\timer.js" />
-    <Content Include="public_html\util.js" />
-    <Content Include="public_html\window.js" />
-    <Content Include="public_html\word.js" />
-    <Content Include="public_html\loader.js" />
+    <Content Include="public_html\js\keyboard.js" />
+    <Content Include="public_html\js\label.js" />
+    <Content Include="public_html\js\list.js" />
+    <Content Include="public_html\js\loginscreen.js" />
+    <Content Include="public_html\js\main.js" />
+    <Content Include="public_html\js\mainmenu.js" />
+    <Content Include="public_html\js\matrix.js" />
+    <Content Include="public_html\js\menu.js" />
+    <Content Include="public_html\js\messagebox.js" />
+    <Content Include="public_html\js\mouse.js" />
+    <Content Include="public_html\js\panel.js" />
+    <Content Include="public_html\js\polyfill.js" />
+    <Content Include="public_html\js\random.js" />
+    <Content Include="public_html\js\sprite.js" />
+    <Content Include="public_html\js\font.js" />
+    <Content Include="public_html\js\spritebutton.js" />
+    <Content Include="public_html\js\startup.js" />
+    <Content Include="public_html\js\textbutton.js" />
+    <Content Include="public_html\js\timer.js" />
+    <Content Include="public_html\js\util.js" />
+    <Content Include="public_html\js\window.js" />
+    <Content Include="public_html\js\word.js" />
+    <Content Include="public_html\js\loader.js" />
     <Content Include="public_html\oauth2callback\index.php" />
     <Content Include="SQL\mtw_procs.sql" />
     <Content Include="SQL\mtw_setup.sql" />
     <Content Include="web_service\myapp.wsgi" />
     <Content Include="public_html\php\login.php" />
     <Content Include="public_html\php\google.php" />
-    <Content Include="server.bat" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="public_html\dictionary.js" />
+    <Content Include="public_html\js\dictionary.js" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="public_html\tile.js" />
+    <Content Include="public_html\js\tile.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="nodejs\js\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

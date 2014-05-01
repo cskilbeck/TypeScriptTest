@@ -92,7 +92,7 @@ var Game = (function () {
             bestButton.transparency = 128;
             this.addChild(bestButton);
 
-            board = new Board(200, 0, this);
+            board = new mtw.BoardGame(200, 0, this);
             board.mainBoard = true;
             this.addChild(board);
             bestScore = 0;
@@ -221,7 +221,7 @@ var Game = (function () {
                 scoreLabel,
                 textBox;
 
-            def = Dictionary.getDefinition(w.str),
+            def = mtw.Dictionary.getDefinition(w.str),
 
             window = new chs.Window({
                 x: chs.desktop.width / 2,
@@ -260,12 +260,12 @@ var Game = (function () {
             scoreLabel = new chs.Label(w.score.toString() + " points", consolasItalic);
             textBox = new chs.TextBox(16, 16, 640 - 32, 480 - 32, def, consolasItalic, '\r    ', function (link) {
                 window.text = link.toUpperCase();
-                textBox.text = Dictionary.getDefinition(link);
-                scoreLabel.text = Board.getWordScore(link).toString() + " points";
+                textBox.text = mtw.Dictionary.getDefinition(link);
+                scoreLabel.text = mtw.Letters.getWordScore(link).toString() + " points";
             });
-            //scoreLabel.setPosition(window.titleBar.width - 16, window.titleBar.height / 2);
-            //scoreLabel.setPivot(1, consolasItalic.midPivot);
-            //window.titleBar.addChild(scoreLabel);
+            scoreLabel.setPosition(window.titleBar.width - 16, window.titleBar.height / 2);
+            scoreLabel.setPivot(1, consolasItalic.midPivot);
+            window.titleBar.addChild(scoreLabel);
             window.client.addChild(textBox);
             this.addChild(window);
         },

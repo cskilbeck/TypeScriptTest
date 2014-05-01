@@ -1,13 +1,11 @@
 ﻿//////////////////////////////////////////////////////////////////////
 
-var Dictionary = (function () {
+(function () {
     "use strict";
-
-    //////////////////////////////////////////////////////////////////////
 
     var dictionary = null;
 
-    return {
+    mtw.Dictionary = {
 
         init: function (dict) {
             dictionary = dict;
@@ -22,7 +20,7 @@ var Dictionary = (function () {
         },
 
         getDefinition: function (str) {
-            return Dictionary.isWord(str) ? dictionary.words[str] : "??";
+            return mtw.Dictionary.isWord(str) ? dictionary.words[str] : "";
         }
     };
 

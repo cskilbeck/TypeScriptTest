@@ -18,7 +18,7 @@ if(isset($_GET['code'])) {
 
     // get the userinfo
     $r = call('https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=' . $r->access_token, NULL);
-    
+
     if(!isset($r->error)) {
         $u = servicecall('login', array(
               "oauth_provider" => $oauth2_provider_id,
@@ -29,11 +29,8 @@ if(isset($_GET['code'])) {
 
         // set the session cookie and go back to the app
         if(!isset($u->error)) {
-            setcookie('provider_id', $oauth2_provider_id, mktime().time() + 60 * 60 * 24 * 30, '/');
-            setcookie('session_id', $u->session_id, 0, '/');
-            setcookie('user_id', $u->user_id, 0, '/');
-            setcookie('user_name', urldecode($u->user_name), 0, '/');
-            setcookie('user_picture', urldecode($u->user_picture), 0, '/');
+            setcookie('provider_id', $oauth2_provider_id, mktime().time() + 60 * 60 * 24 * 3000, '/');
+            setcookie('session_id', $u->session_id, mktime().time() + 60 * 60 * 24 * 30, '/');
         } else {
             setcookie('login_error', urldecode($u->error), 0, '/');
         }

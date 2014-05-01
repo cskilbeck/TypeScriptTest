@@ -37,6 +37,7 @@ var MainMenu = (function () {
 
         $: function () {
             chs.Drawable.call(this);
+            chs.User.id = 0;
             this.enabled = false;
             this.visible = false;
             this.dimensions = { width: chs.desktop.width, height: chs.desktop.height };
@@ -85,10 +86,6 @@ var MainMenu = (function () {
                 pw = w / 1.25,
                 ph = h / 1.25;
 
-            chs.User.name = chs.Cookies.get('user_name');
-            chs.User.id = chs.Cookies.get('user_id');
-            chs.User.picture = chs.Cookies.get('user_picture');
-
             chs.desktop.removeChild(loader);
             this.game.loadComplete();
             this.panel = new chs.Panel(w / 2, h / 2, pw, ph, "darkslategrey", "white", 25, 4, 255).setPivot(0.5, 0.5);
@@ -96,23 +93,33 @@ var MainMenu = (function () {
             this.button = new chs.TextButton("PLAY!", consolasItalic, pw / 2, ph / 2, 200, 50, this.playClicked, this).setPivot(0.5, 0.5);
             this.panel.addChild(this.button);
             this.addChild(this.panel);
-
             if (session_id === null) {
                 buttons.push('Login');
                 callbacks.push(this.showLogin);
-
                 if (login_error !== null) {
                     this.panel.addChild(new chs.Label("Login error: " + login_error, consolas).setPosition(this.panel.width - 24, 16).setPivot(1, 0));
                     chs.Cookies.remove("login_error");
                 }
             } else {
-                if (chs.User.picture !== null) {
-                    this.panel.addChild(new UserImage(12, 12, 64, 64, chs.User.picture));
-                } else if (user_name !== null) {
-                    this.panel.addChild(new chs.TextButton(user_name, consolasItalic, 12, 12, 128, 35));
-                }
-                buttons.push('Logout');
-                callbacks.push(this.logout);
+                chs.WebService.get('session', { session_id: session_id }, function (data) {
+                    if (data.error !== undefined) {
+                        // there was a session_id, but it's probably expired
+                        // redirect to the auth...
+                        // need to know what the auth was
+                        // get it with the session?
+                    } else {
+                        chs.User.id = data.user_id;
+                        chs.User.name = data.name;
+                        chs.User.picture = data.picture;
+                        if(chs.User.picture) {
+                            this.panel.addChild(new UserImage(12, 12, 64, 64, chs.User.picture));
+                        } else {
+                            this.panel.addChild(new chs.TextButton(chs.User.name, consolasItalic, 12, 12, 20, 35));
+                        }
+                        buttons.push('Logout');
+                        callbacks.push(this.logout);
+                    }
+                }, this);
             }
             this.panel.addChild(new chs.Menu(20, this.panel.height - 20, consolasItalic, buttons, callbacks, this).setPivot(0, 1));
             this.enabled = true;

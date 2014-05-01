@@ -130,6 +130,28 @@ var Game = (function () {
             menuButton.setCapture(false);
             board.randomize(seed);
             board.load();
+
+            // right, if there's a user logged in, try and get their board for this game
+            // but only splat into the board if this is the first time they've played this session...
+            if(chs.User.id !== 0) {
+                // disable play until this comes back, either way
+                chs.WebService.get("game", { seed: seed, user_id: chs.User.id }, function (data) {
+                    if(data.error !== undefined) {
+                        // probly 1st time playing this seed
+                    } else {
+                        board.setFromString(data.board);
+                        board.markAllWords();
+                        board.bestScore = board.score;
+                        bestScore = board.bestScore;
+                        this.updateWordList();
+                        board.changed = false;
+                        scoreLabel.text = board.score.toString();
+                        bestLabel.text = board.bestScore.toString();    // if board.bestScore has gone up, flash this!
+                    }
+
+                }, this);
+            }
+
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -296,43 +318,47 @@ var Game = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
+        updateWordList: function () {
+            var y = 0;
+            words.removeChildren();
+            board.wordList().forEach(function (w) {
+                var button = new chs.PanelButton(0, y, 120, 26, "darkslategrey", undefined, 4, 0, function () {
+                    button.state = chs.Button.idle;
+                    this.showDefinition(w);
+                }, this);
+                button.addChild(new chs.Label(w.str, consolas).setPosition(5, button.height / 2).setPivot(0, consolas.midPivot));
+                button.addChild(new chs.Label(w.score.toString(), consolas).setPosition(114, button.height / 2).setPivot(1, consolas.midPivot));
+                button.onIdle = function () {
+                    this.fillColour = "darkslategrey";
+                    deHighlightWords.push(this.word);
+                };
+                button.onPressed = function () { this.fillColour = "aquamarine"; };
+                button.onHover = function () {
+                    this.fillColour = "lightslategrey";
+                    highlightWords.push(this.word);
+                };
+                button.word = w;
+                y += button.height + 1;
+                words.addChild(button);
+            }, this);
+            board.changed = false;
+            scoreLabel.text = board.score.toString();
+            bestLabel.text = board.bestScore.toString();    // if board.bestScore has gone up, flash this!
+
+            if (board.bestScore > bestScore) {
+                bestButton.highlight = 1000;
+                bestScore = board.bestScore;
+                if(chs.User.id) {
+                    chs.WebService.post("board", {}, { board: board.getAsString(), user_id: chs.User.id, seed: board.seed });
+                }
+            }
+        },
+
         onUpdate: function (time, deltaTime) {
-            var y = 0,
-                i,
+            var i,
                 j;
             if (board.changed) {
-                words.removeChildren();
-                board.wordList().forEach(function (w) {
-                    var button = new chs.PanelButton(0, y, 120, 26, "darkslategrey", undefined, 4, 0, function () {
-                        button.state = chs.Button.idle;
-                        this.showDefinition(w);
-                    }, this);
-                    button.addChild(new chs.Label(w.str, consolas).setPosition(5, button.height / 2).setPivot(0, consolas.midPivot));
-                    button.addChild(new chs.Label(w.score.toString(), consolas).setPosition(114, button.height / 2).setPivot(1, consolas.midPivot));
-                    button.onIdle = function () {
-                        this.fillColour = "darkslategrey";
-                        deHighlightWords.push(this.word);
-                    };
-                    button.onPressed = function () { this.fillColour = "aquamarine"; };
-                    button.onHover = function () {
-                        this.fillColour = "lightslategrey";
-                        highlightWords.push(this.word);
-                    };
-                    button.word = w;
-                    y += button.height + 1;
-                    words.addChild(button);
-                }, this);
-                board.changed = false;
-                scoreLabel.text = board.score.toString();
-                bestLabel.text = board.bestScore.toString();    // if board.bestScore has gone up, flash this!
-
-                if (board.bestScore > bestScore) {
-                    bestButton.highlight = 500;
-                    bestScore = board.bestScore;
-                    if(chs.User.id) {
-                        chs.WebService.post("board", {}, { board: board.getAsString(), user_id: chs.User.id, seed: board.seed });
-                    }
-                }
+                this.updateWordList();
             }
 
             // remove any from true which are also in false...

@@ -110,7 +110,7 @@ def getBoard(seed):
 def getGlobal(db, name):
     try:
         with closing(cursor(db)) as cur:
-            cur.execute("select `%s` from globals limit 1" % (name))
+            cur.execute("select %s from globals limit 1", (name))
             row = cur.fetchone()
             if row:
                 return row[name]
@@ -226,6 +226,70 @@ class oauthlistHandler(Handler):
             pprint(e)
 
 #----------------------------------------------------------------------
+# action:game
+#
+# parameters:   GET
+#               user_id     uint32
+#               seed        uint32
+#
+# response:     board       string
+#----------------------------------------------------------------------
+
+class gameHandler(Handler):
+
+    def handle(self):
+        try:
+            with closing(self.cursor()) as cur:
+                cur.execute("""SELECT board FROM boards
+                                WHERE user_id=%(user_id)s
+                                AND seed=%(seed)s""",
+                            {
+                                "user_id": self.params["user_id"][0],
+                                "seed": self.params["seed"][0]
+                            })
+                row = cur.fetchone()
+                if row is None:
+                    self.add({"error": "No such board for user,seed"})
+                else:
+                    self.add({"board": row["board"]})
+        except mdb.DatabaseError, e:
+            pprint(e)
+            error(self.output, Error.E_DBASEERROR)
+
+#----------------------------------------------------------------------
+# action:session
+#
+# parameters: POST
+#               session_id => "X",
+#
+# response:     user_id     uint32
+#               user_name   string
+#               user_picture url
+#----------------------------------------------------------------------
+
+class sessionHandler(Handler):
+
+    def handle(self):
+        try:
+            with closing(self.cursor()) as cur:
+                cur.execute("""SELECT users.user_id, users.name, users.picture FROM sessions
+                                INNER JOIN users ON users.user_id = sessions.user_id
+                                WHERE sessions.session_id = %(session_id)s
+                                AND sessions.expires > %(now)s""",
+                            {
+                                "session_id": self.params["session_id"][0],
+                                "now": formattedTime(datetime.datetime.now())
+                            })
+                row = cur.fetchone()
+                if row is None:
+                    self.add({"error": "Session expired"})
+                else:
+                    self.add(row)
+        except mdb.Error, e:
+            pprint("Database error %d: %s" % (e.args[0], e.args[1]))
+            error(self.output, Error.E_DBASEERROR)
+
+#----------------------------------------------------------------------
 # action:login
 #
 # parameters: POST
@@ -263,18 +327,20 @@ class loginHandler(Handler):
                                 name,
                                 picture)
                             VALUES (
-                                '%(oauth_sub)s',
+                                %(oauth_sub)s,
                                 %(oauth_provider)s,
-                                '%(name)s',
-                                '%(picture)s' )
+                                %(name)s,
+                                %(picture)s )
                             ON DUPLICATE KEY UPDATE
-                                name = '%(name)s',
-                                picture = '%(picture)s'""" % p)
+                                name = %(name)s,
+                                picture = %(picture)s""", p)
                 cur.execute("""SELECT * FROM users
-                                WHERE oauth_sub='%(oauth_sub)s'
-                                AND oauth_provider='%(oauth_provider)s'""" % p)
+                                WHERE oauth_sub=%(oauth_sub)s
+                                AND oauth_provider=%(oauth_provider)s""", p)
                 row = cur.fetchone()
-                if not row is None:
+                if row is None:
+                    pass
+                else:
                     user_id = row['user_id']
                     user_name = row['name'];
                     user_picture = row['picture'];
@@ -282,8 +348,8 @@ class loginHandler(Handler):
                     # create or extend session
                     cur.execute("""SELECT * FROM sessions
                                     WHERE user_id = %(user_id)s
-                                        AND expires > '%(now)s'
-                                    ORDER BY created DESC LIMIT 1""" %
+                                        AND expires > %(now)s
+                                    ORDER BY created DESC LIMIT 1""",
                                 {
                                     'user_id': user_id,
                                     'now': now
@@ -292,7 +358,8 @@ class loginHandler(Handler):
                     if row is None:
                         # session expired, or didn't exist, create a new one
                         cur.execute("""INSERT INTO sessions(user_id, created, expires)
-                                        VALUES (%(user_id)s, '%(now)s', '%(then)s')""" % {
+                                        VALUES (%(user_id)s, %(now)s, %(then)s)""",
+                                    {
                                         'user_id': user_id,
                                         'now': now,
                                         'then': then })
@@ -301,16 +368,12 @@ class loginHandler(Handler):
                         # existing session, extend it
                         session_id = row['session_id']
                         cur.execute("""UPDATE sessions
-                                        SET expires = '%(then)s'
-                                        WHERE session_id = %(session_id)s""" % {
+                                        SET expires = %(then)s
+                                        WHERE session_id = %(session_id)s""",
+                                    {
                                         'then': then,
                                         'session_id': session_id })
-
-                    # we should have a valid session_id here
-                    self.add({"session_id": session_id,
-                              "user_id": user_id,
-                              "user_name": user_name,
-                              "user_picture": user_picture })
+                    self.add({"session_id": session_id})
         except mdb.Error, e:
             pprint("Database error %d: %s" % (e.args[0], e.args[1]))
             error(self.output, Error.E_DBASEERROR)
@@ -334,7 +397,7 @@ class boardHandler(Handler):
                     with closing(self.cursor()) as cur:
                         timestamp = datetime.datetime.now()
                         now = formattedTime(timestamp)
-                        cur.execute("SELECT user_id FROM users WHERE user_id=%(user_id)s" % p);
+                        cur.execute("SELECT user_id FROM users WHERE user_id=%(user_id)s", p);
                         if not cur.fetchone() is None:
                             cur.execute("""INSERT INTO boards (
                                             seed,
@@ -344,15 +407,15 @@ class boardHandler(Handler):
                                             time_stamp)
                                         VALUES (
                                             %(seed)s,
-                                            '%(board)s',
+                                            %(board)s,
                                             %(score)s,
                                             %(user_id)s,
-                                            '%(time_stamp)s')
+                                            %(time_stamp)s)
                                         ON DUPLICATE KEY UPDATE
-                                            board='%(board)s',
+                                            board=%(board)s,
                                             score=%(score)s,
-                                            time_stamp='%(time_stamp)s'"""
-                                        % {
+                                            time_stamp=%(time_stamp)s""",
+                                        {
                                            'seed': p['seed'],
                                            'board': p['board'],
                                            'score': check['score'],

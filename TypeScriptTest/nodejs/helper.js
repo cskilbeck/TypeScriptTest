@@ -6,14 +6,14 @@ var net = require('net');
 
 var dictionary = require('./dictionary.json');
 
-require('./js/class.js');
-require('./js/list.js');
-require('./js/random.js');
-require('./js/letters.js');
-require('./js/word.js');
-require('./js/dictionary.js');
-require('./js/tile.js');
-require('./js/board.js');
+require('js/class.js');
+require('js/list.js');
+require('js/random.js');
+require('js/letters.js');
+require('js/word.js');
+require('js/dictionary.js');
+require('js/tile.js');
+require('js/board.js');
 
 mtw.Dictionary.init(dictionary);
 

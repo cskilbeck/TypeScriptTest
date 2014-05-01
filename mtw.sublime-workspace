@@ -4,6 +4,42 @@
 		"selected_items":
 		[
 			[
+				"lett",
+				"letter"
+			],
+			[
+				"lo",
+				"load"
+			],
+			[
+				"fun",
+				"function"
+			],
+			[
+				"tr",
+				"transparency"
+			],
+			[
+				"best",
+				"bestButton"
+			],
+			[
+				"for",
+				"for	for (…) {…}"
+			],
+			[
+				"window",
+				"windowDesc"
+			],
+			[
+				"o",
+				"oauth_name"
+			],
+			[
+				"oauth",
+				"oauth_providers"
+			],
+			[
 				"nod",
 				"nodejs"
 			]
@@ -12,13 +48,18 @@
 	"buffers":
 	[
 		{
-			"contents": "//////////////////////////////////////////////////////////////////////\n\n(function () {\n    \"use strict\";\n\n    //////////////////////////////////////////////////////////////////////\n\n    function send(url, callback, progressCallback, context, method, data, binary, crossDomain) {\n\n        var cd = crossDomain === undefined ? false : crossDomain,\n            ie9,\n            xr;\n\n        if (chs.Browser.type === 'MSIE' && chs.Browser.version <= 10 && crossDomain) {\n            xr = new XDomainRequest();\n            ie9 = true;\n        } else {\n            xr = new XMLHttpRequest();\n            ie9 = false;\n        }\n\n        xr.open(method, url);\n\n        if (!ie9) {\n            if (binary) {\n                xr.responseType = 'arraybuffer';\n            } else {\n                xr.responseType = 'application/json';\n            }\n            xr.onreadystatechange = function () {\n                if (xr.readyState === XMLHttpRequest.DONE) {\n                    if (binary) {\n                        callback.call(context, url, chs.Util.getResponseAsArray(xr));\n                    } else {\n                        callback.call(context, url, xr.responseText);\n                    }\n                }\n            };\n            xr.onprogress = function (e) {\n                if (progressCallback) {\n                    progressCallback.call(context, url, e);\n                }\n            };\n        } elseasd {\n            xr.onload = function () {\n                callback.call(context, url, xr.responseText);\n            };\n        }\n        if (method === 'POST') {\n            xr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');\n        }\n        xr.send(data);\n        return xr;\n    }\n\n    //////////////////////////////////////////////////////////////////////\n\n    chs.ajax = chs.Class({\n\n        static$: {\n\n            url: function (url, data, force) {\n                var query = [],\n                    key,\n                    u,\n                    q = \"\",\n                    a = \"?\";\n                for (key in data) {\n                    query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));\n                    q = \"?\";\n                    a = \"&\";\n                }\n                u = url + q + query.join('&') + (force ? (a + (new Date()).getTime() + '=1') : \"\");\n                return u;\n            },\n\n            //////////////////////////////////////////////////////////////////////\n\n            get: function (url, callback, progressCallback, context, binary, crossDomain) {\n\n                send(url, callback, progressCallback, context, 'GET', null, binary, crossDomain);\n            },\n\n            //////////////////////////////////////////////////////////////////////\n\n            post: function (url, data, callback, progressCallback, context, binary, crossDomain) {\n\n                var query = [],\n                    key;\n                for (key in data) {\n                    query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));\n                }\n                send(url, callback, progressCallback, context, 'POST', query.join('&'), binary, crossDomain);\n            }\n        }\n    });\n\n}());\n\n//////////////////////////////////////////////////////////////////////\n",
-			"file": "TypeScriptTest/public_html/js/ajax.js",
-			"file_size": 3380,
-			"file_write_time": 130434166733096613,
+			"file": "TypeScriptTest/public_html/js/game.js",
 			"settings":
 			{
-				"buffer_size": 3280,
+				"buffer_size": 14272,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "TypeScriptTest/web_service/myapp.wsgi",
+			"settings":
+			{
+				"buffer_size": 15634,
 				"line_ending": "Windows"
 			}
 		}
@@ -26,12 +67,40 @@
 	"build_system": "",
 	"command_palette":
 	{
-		"height": 312.0,
+		"height": 82.0,
 		"selected_items":
 		[
 			[
+				"Snippet: for",
+				"Snippet: for (…) {…}"
+			],
+			[
 				"Package Control: ",
-				"Package Control: Remove Package"
+				"Package Control: Install Package"
+			],
+			[
+				"subli",
+				"SublimeLinter: Lint This View"
+			],
+			[
+				"packl",
+				"Package Control: Install Package"
+			],
+			[
+				"pack",
+				"Package Control: Install Package"
+			],
+			[
+				"lin",
+				"Preferences: SublimeLinter Settings – Default"
+			],
+			[
+				"sublim",
+				"SublimeLinter: Choose Lint Mode"
+			],
+			[
+				"sub",
+				"SublimeLinter: Choose Lint Mode"
 			],
 			[
 				"jshint",
@@ -43,10 +112,6 @@
 			],
 			[
 				"packa",
-				"Package Control: Install Package"
-			],
-			[
-				"pack",
 				"Package Control: Install Package"
 			],
 			[
@@ -94,18 +159,37 @@
 	},
 	"file_history":
 	[
-		"/d/Users/chs/AppData/Roaming/Sublime Text 3/Packages/JSHint Gutter/JSHint.sublime-settings",
 		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/ajax.js",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/chs.js",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/button.js",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/drawable.js",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/SQL/mtw_setup.sql",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/web_service/myapp.wsgi",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/keyboard.js",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/mainmenu.js",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/tile.js",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/panel.js",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/boardtile.js",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/letters.js",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/board.js",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/word.js",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/sftp-config.json",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/mirror.bat",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/window.js",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/user.js",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/label.js",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest.sln",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/img/digits.json",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/nodejs/dictionary.json",
+		"/d/Users/chs/AppData/Roaming/Sublime Text 3/Packages/User/SublimeLinter.sublime-settings",
+		"/d/Users/chs/AppData/Roaming/Sublime Text 3/Packages/SublimeLinter/SublimeLinter.sublime-settings",
+		"/d/Users/chs/AppData/Roaming/Sublime Text 3/Packages/JSHint Gutter/JSHint.sublime-settings",
 		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/game.js",
 		"/d/Users/chs/AppData/Roaming/Sublime Text 3/Packages/User/Preferences.sublime-settings",
 		"/d/Users/chs/AppData/Roaming/Sublime Text 3/Packages/Default/Preferences.sublime-settings",
-		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/mainmenu.js",
-		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/web_service/myapp.wsgi",
 		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/oauth2callback/index.php",
-		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/SQL/mtw_setup.sql",
 		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/nodejs/client.js",
 		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/php/login.php",
-		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/sftp-config.json",
 		"/d/Users/chs/AppData/Roaming/Sublime Text 2/Packages/JSHint Gutter/JSHint.sublime-settings",
 		"/d/Users/chs/AppData/Roaming/Sublime Text 2/Packages/Default/Default (Windows).sublime-keymap",
 		"/d/Users/chs/AppData/Roaming/Sublime Text 2/Packages/User/PHP.sublime-settings",
@@ -118,14 +202,13 @@
 		"/d/Users/chs/AppData/Roaming/Sublime Text 2/Packages/Package Control/Package Control.sublime-settings",
 		"/d/Users/chs/AppData/Roaming/Sublime Text 2/Packages/JSHint Gutter/Default (Windows).sublime-keymap",
 		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/browser.js",
-		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/board.js",
 		"/d/Users/chs/AppData/Roaming/Sublime Text 2/Packages/User/JavaScript.sublime-settings",
 		"/d/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/mtw.sublime-project",
 		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/nodejs/helper.js"
 	],
 	"find":
 	{
-		"height": 34.0
+		"height": 24.0
 	},
 	"find_in_files":
 	{
@@ -139,6 +222,15 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"highlight",
+			"bestButton",
+			"bestLabel",
+			"bestButton",
+			"bestClicked",
+			"bestscore",
+			"bestButton",
+			"wordButton",
+			"user_picture"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -156,37 +248,64 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 1,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "TypeScriptTest/public_html/js/ajax.js",
+					"file": "TypeScriptTest/public_html/js/game.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3280,
+						"buffer_size": 14272,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								981,
-								981
+								10839,
+								10839
 							]
 						],
 						"settings":
 						{
-							"incomplete_sync": null,
-							"remote_loading": false,
-							"synced": false,
 							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
 							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 240.0,
+						"translation.y": 3587.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "TypeScriptTest/web_service/myapp.wsgi",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 15634,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								9639,
+								9639
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 3891.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
@@ -197,7 +316,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 0.0
+		"height": 24.0
 	},
 	"input":
 	{
@@ -238,10 +357,14 @@
 	{
 		"height": 0.0
 	},
+	"output.unsaved_changes":
+	{
+		"height": 119.0
+	},
 	"project": "mtw.sublime-project",
 	"replace":
 	{
-		"height": 0.0
+		"height": 44.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -249,6 +372,42 @@
 		"height": 0.0,
 		"selected_items":
 		[
+			[
+				"letter",
+				"TypeScriptTest\\public_html\\js\\letters.js"
+			],
+			[
+				"boardt",
+				"TypeScriptTest\\public_html\\js\\boardtile.js"
+			],
+			[
+				"tile",
+				"TypeScriptTest\\public_html\\js\\tile.js"
+			],
+			[
+				"draw",
+				"TypeScriptTest\\public_html\\js\\drawable.js"
+			],
+			[
+				"game",
+				"TypeScriptTest\\public_html\\js\\game.js"
+			],
+			[
+				"button",
+				"TypeScriptTest\\public_html\\js\\button.js"
+			],
+			[
+				"panel",
+				"TypeScriptTest\\public_html\\js\\panel.js"
+			],
+			[
+				"drawa",
+				"TypeScriptTest\\public_html\\js\\drawable.js"
+			],
+			[
+				"word",
+				"TypeScriptTest\\public_html\\js\\word.js"
+			]
 		],
 		"width": 0.0
 	},
@@ -275,7 +434,7 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 251.0,
+	"side_bar_width": 262.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{

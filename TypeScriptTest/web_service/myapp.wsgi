@@ -315,11 +315,6 @@ class loginHandler(Handler):
             pprint("Database error %d: %s" % (e.args[0], e.args[1]))
             error(self.output, Error.E_DBASEERROR)
 
-class definitionHandler(Handler):
-
-    def handle(self):
-        self.add(service({'action': 'getdefinition', 'word': self.params['word'][0] }))
-
 # posting a new best board
 
 class boardHandler(Handler):

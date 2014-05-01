@@ -1,8 +1,6 @@
-﻿//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
 // fix font util (comine channels plugin)
-// highlight word on board when word in list hovered (use font layer mask)
-// user database/sessions
-// Remember login choice (Google/Facebook etc) in a cookie, then try to reauth on page refresh
+// try to reauth on page refresh without a header redirect (refresh token?)
 // Mobile: Android/Chrome, iOS/Safari, Windows Phone: IE // Touch Support
 // Fix tile grabbing/moving/swapping/lerping
 // Flying scores/fizz/particles
@@ -88,6 +86,24 @@ var Game = (function () {
             bestButton.addChild(bestLabel);
             bestButton.addChild(new chs.Label("Best:", consolas).setPosition(4, 4));
             bestButton.transparency = 128;
+            bestButton.highlight = 0;
+            bestButton.flash = 0;
+            bestButton.onIdle = function () { this.fillColour = 'black'; this.transparency = 128; };
+            bestButton.onHover = function () { this.fillColour = 'black'; this.transparency = 255; };
+            bestButton.onPressed = function () { this.fillColour = 'red'; this.transparency = 128; };
+            bestButton.onUpdate = function (time, deltaTime) {
+                if (this.highlight > 0) {
+                    this.highlight -= deltaTime;
+                    this.flash = 1 - this.flash;
+                    if (this.flash && this.highlight > 0) {
+                        this.transparency = 255;
+                        this.fillColour = "white";
+                    } else {
+                        this.transparency = 128;
+                        this.fillColour = "black";
+                    }
+                }
+            };
             this.addChild(bestButton);
 
             board = new mtw.BoardGame(200, 0, this);
@@ -275,26 +291,41 @@ var Game = (function () {
             if (board.changed) {
                 words.removeChildren();
                 board.wordList().forEach(function (w) {
-                    var button = new chs.PanelButton(0, y, 120, 24, "darkslategrey", undefined, 4, 0, function () {
+                    var button = new chs.PanelButton(0, y, 120, 26, "darkslategrey", undefined, 4, 0, function () {
                         button.state = chs.Button.idle;
                         this.showDefinition(w);
                     }, this);
                     button.addChild(new chs.Label(w.str, consolas).setPosition(5, button.height / 2).setPivot(0, consolas.midPivot));
                     button.addChild(new chs.Label(w.score.toString(), consolas).setPosition(114, button.height / 2).setPivot(1, consolas.midPivot));
-                    button.onIdle = function () { this.fillColour = "darkslategrey"; };
-                    button.onHover = function () { this.fillColour = "cornflowerblue"; };
+                    button.onIdle = function () {
+                        var i;
+                        this.fillColour = "darkslategrey";
+                        for (i = 0; i < this.word.str.length; i++) {
+                            board.getWordTile(this.word, i).pulse = false;
+                        }
+                    };
                     button.onPressed = function () { this.fillColour = "aquamarine"; };
+                    button.onHover = function () {
+                        var i;
+                        this.fillColour = "cornflowerblue";
+                        for (i = 0; i < this.word.str.length; i++) {
+                            board.getWordTile(this.word, i).pulse = true;
+                        }
+                    };
                     button.word = w;
-                    y += button.height + 4;
+                    y += button.height + 1;
                     words.addChild(button);
                 }, this);
                 board.changed = false;
                 scoreLabel.text = board.score.toString();
                 bestLabel.text = board.bestScore.toString();    // if board.bestScore has gone up, flash this!
 
-                if (board.bestScore > bestScore && chs.User.id) {
+                if (board.bestScore > bestScore) {
+                    bestButton.highlight = 500;
                     bestScore = board.bestScore;
-                    chs.WebService.post("board", {}, { board: board.getAsString(), user_id: chs.User.id, seed: board.seed });
+                    if(chs.User.id) {
+                        chs.WebService.post("board", {}, { board: board.getAsString(), user_id: chs.User.id, seed: board.seed });
+                    }
                 }
             }
         }

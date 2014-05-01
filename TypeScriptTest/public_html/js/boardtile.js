@@ -94,7 +94,7 @@
         //////////////////////////////////////////////////////////////////////
         // draw tile background
 
-        onUpdate: function (context) {
+        onUpdate: function (time, deltaTime) {
             var hi = this.wordIndices[mtw.Word.horizontal],
                 vi = this.wordIndices[mtw.Word.vertical],
                 sx = hi.position,
@@ -113,6 +113,9 @@
                 sy = 0;
             } else {
                 this.setScale(1);
+            }
+            if (this.pulse) {
+                this.label.setScale(Math.sin(time / 75) * 0.05 + 1.1);
             }
             this.setFrameXY(sx, sy);
         }

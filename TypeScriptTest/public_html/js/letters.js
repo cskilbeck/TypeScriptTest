@@ -58,6 +58,10 @@
                     s += letters[str.charCodeAt(i) - asciiA].score;
                 }
                 return s * str.length;
+            },
+
+            letterScore: function (letter) {
+                return letters[letter.toLowerCase().charCodeAt(0) - asciiA].score;
             }
         }
     });

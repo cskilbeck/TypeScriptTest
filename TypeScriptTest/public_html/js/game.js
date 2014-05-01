@@ -5,7 +5,6 @@
 // Fix tile grabbing/moving/swapping/lerping
 // Flying scores/fizz/particles
 // Tile graphics/Score on tiles
-// Event model
 //////////////////////////////////////////////////////////////////////
 
 var Game = (function () {

@@ -8,6 +8,7 @@
     var tileWidth = 96,
         tileHeight = 96,
         font,
+        digits,
         tileImage;
 
     //////////////////////////////////////////////////////////////////////
@@ -22,6 +23,7 @@
 
             load: function (loader) {
                 font = chs.Font.load("Arial", loader);
+                digits = chs.Font.load("digits", loader);
                 tileImage = loader.load("allColour.png");
             }
         },
@@ -44,7 +46,10 @@
             };
             this.label = new chs.Label(letter, font).setPivot(0.5, font.midPivot);
             this.label.setPosition(this.width / 2 - 1, this.height / 2);
+            this.digits = new chs.Label(mtw.Letters.letterScore(letter).toString(), digits).setPivot(1, 1).setPosition(this.width - 12, this.height - 8);
+            this.digits.transparency = 64;
             this.addChild(this.label);
+            this.addChild(this.digits);
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -56,6 +61,7 @@
             set: function (s) {
                 this.myLetter = s;
                 this.label.text = s.toUpperCase();
+                this.digits.text = mtw.Letters.letterScore(s).toString();
             }
         },
 
@@ -115,7 +121,7 @@
                 this.setScale(1);
             }
             if (this.pulse) {
-                this.label.setScale(Math.sin(time / 75) * 0.05 + 1.1);
+                this.label.setScale(Math.sin(time / 25) * 0.025 + 1.1);
             }
             this.setFrameXY(sx, sy);
         }

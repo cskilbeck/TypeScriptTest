@@ -69,7 +69,7 @@ net.createServer(function (socket) {
                 params.seed !== undefined) {
                 board = new mtw.Board();
                 board.randomize(parseInt(params.seed, 10));
-                trueBoard = board.toString().split('').sort().join('');
+                trueBoard = board.getAsString().split('').sort().join('');
                 checkBoard = params.board.split('').sort().join('');
                 output.valid = checkBoard.localeCompare(trueBoard) === 0;
                 if (output.valid) {

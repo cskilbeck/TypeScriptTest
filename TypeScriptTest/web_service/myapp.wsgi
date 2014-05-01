@@ -369,7 +369,7 @@ class boardHandler(Handler):
                     pprint("Database error %d: %s" % (e.args[0], e.args[1]))
                     error(self.output, Error.E_DBASEERROR)
             else:
-                self.add({"error": "invalid board"})
+                self.add({"error": "invalid board: %s" % (board)})
 
 #----------------------------------------------------------------------
 # application

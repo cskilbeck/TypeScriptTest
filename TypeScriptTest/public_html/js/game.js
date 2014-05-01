@@ -25,7 +25,17 @@ var Game = (function () {
         board,
         undoImage,
         redoImage,
+        highlightWords = [],
+        deHighlightWords = [],
         menuButton;
+
+
+    function setWordHightlight(word, h) {
+        var i;
+        for (i = 0; i < word.str.length; i++) {
+            board.getWordTile(word, i).pulse = h;
+        }
+    }
 
         //dummyDef = "jksldh fjklsdh fklsdh fkljsdh flkjsdh flkj lksdj fklsdj flksdj flksdj flksdj flksdj " +
         //    "flskdjf @lskdjf@ lsdkfj\njkh fdkjdsh fksjdfh kjsdhf\nsjkdhf kjsdh fkjsdh fkjsdhf ksjdhf\n" +
@@ -87,6 +97,7 @@ var Game = (function () {
             bestButton.transparency = 128;
             bestButton.highlight = 0;
             bestButton.flash = 0;
+
             bestButton.onIdle = function () { this.fillColour = 'black'; this.transparency = 128; };
             bestButton.onHover = function () { this.fillColour = 'black'; this.transparency = 255; };
             bestButton.onPressed = function () { this.fillColour = 'red'; this.transparency = 128; };
@@ -286,7 +297,9 @@ var Game = (function () {
         //////////////////////////////////////////////////////////////////////
 
         onUpdate: function (time, deltaTime) {
-            var y = 0;
+            var y = 0,
+                i,
+                j;
             if (board.changed) {
                 words.removeChildren();
                 board.wordList().forEach(function (w) {
@@ -297,19 +310,13 @@ var Game = (function () {
                     button.addChild(new chs.Label(w.str, consolas).setPosition(5, button.height / 2).setPivot(0, consolas.midPivot));
                     button.addChild(new chs.Label(w.score.toString(), consolas).setPosition(114, button.height / 2).setPivot(1, consolas.midPivot));
                     button.onIdle = function () {
-                        var i;
                         this.fillColour = "darkslategrey";
-                        for (i = 0; i < this.word.str.length; i++) {
-                            board.getWordTile(this.word, i).pulse = false;
-                        }
+                        deHighlightWords.push(this.word);
                     };
                     button.onPressed = function () { this.fillColour = "aquamarine"; };
                     button.onHover = function () {
-                        var i;
-                        this.fillColour = "cornflowerblue";
-                        for (i = 0; i < this.word.str.length; i++) {
-                            board.getWordTile(this.word, i).pulse = true;
-                        }
+                        this.fillColour = "lightslategrey";
+                        highlightWords.push(this.word);
                     };
                     button.word = w;
                     y += button.height + 1;
@@ -326,6 +333,23 @@ var Game = (function () {
                         chs.WebService.post("board", {}, { board: board.getAsString(), user_id: chs.User.id, seed: board.seed });
                     }
                 }
+            }
+
+            // remove any from true which are also in false...
+
+            for (i = 0; i < highlightWords.length; ++i) {
+                for (j = 0; j < deHighlightWords.length; ++j) {
+                    if(highlightWords[i] === deHighlightWords[j]) {
+                        highlightWords.splice(i, 1);
+                    }
+                }
+            }
+
+            while(deHighlightWords.length > 0) {
+                setWordHightlight(deHighlightWords.shift(), false);
+            }
+            while(highlightWords.length > 0) {
+                setWordHightlight(highlightWords.shift(), true);
             }
         }
 

@@ -21,10 +21,10 @@
     mtw.BoardGame = chs.Class({
         inherit$: [mtw.Board, chs.Drawable],
 
-        $: function (x, y, game) {
+        $: function (x, y, game, mainBoard) {
             var i;
 
-            mtw.Board.call(this, 'BoardTile');
+            mtw.Board.call(this, 'BoardTile', mainBoard);
             chs.Drawable.call(this);
             this.setPosition(x, y);
             this.bestScore = 0;
@@ -41,9 +41,9 @@
             this.undoPointer = 0;
             this.undoLength = 0;
             this.beforeDrag = "";
-            this.mainBoard = false;
+            this.mainBoard = mainBoard;
             for (i = 0; i < this.tiles.length; ++i) {
-                this.addChild(this.tiles[i]);
+                this.addChild(this.tiles[i], mainBoard);
             }
         },
 

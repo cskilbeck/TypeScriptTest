@@ -7,7 +7,7 @@
 
     var Item = chs.Class({
         inherit$: [chs.EventSource],
-        
+
         $: function (url, data, loader) {
             chs.EventSource.call(this);
             this.url = url;
@@ -58,11 +58,10 @@
         },
 
         then: function (c, f) {
-            var ctx = c || Item.then.caller;
             if (this.loaded) {
-                f.call(ctx, this.object);
+                f.call(c, this.object);
             } else {
-                this.addEventHandler("loaded", f, ctx, true);
+                this.addEventHandler("loaded", f, c, true);
             }
         },
 
@@ -88,6 +87,9 @@
             },
 
             processJPEG: function (data) {
+                var that = this;
+                this.object.onLoad = function () {
+                };
                 this.object.src = 'data:image/jpeg;base64,' + chs.Util.btoa(data);
             },
 
@@ -96,7 +98,7 @@
             },
 
             processBinary: function (data) {
-                this.object.setArray(data);
+                this.object.set(data, 0);
             }
         }
     });

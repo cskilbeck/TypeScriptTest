@@ -1,8 +1,8 @@
 #----------------------------------------------------------------------
+# !NOTE! this runs as (potentially) many simultaneous processes...
+#----------------------------------------------------------------------
 
 import sys
-sys.path.append('/usr/local/www/wsgi-scripts/')
-
 import datetime
 import socket
 import json
@@ -11,34 +11,32 @@ from contextlib import closing
 import urlparse
 import urllib
 import urllib2
-from pprint import pprint
+import pprint
 
-# !NOTE! GLOBALS MUST BE READ ONLY, this runs as >1 simultaneous processes...
+#sys.path.append('/usr/local/www/wsgi-scripts/')
 
 #----------------------------------------------------------------------
 
 class Error:
-    E_NOACTION = [1, "Action required"]
-    E_BADACTION = [2, "Bad action"]
-    E_DBASEBUSY = [3, "Database is busy"]
-    E_GAMEENDED = [4, "Game ended"]
-    E_BADGAMEID = [5, "Wrong game id"]
-    E_BADINPUT = [6, "Bad input"]
-    E_DBASEERROR = [7, "Database error"]
-    E_BADBOARD = [8, "Malformed board"]
-    E_MISSINGPARAM = [9, "Missing parameter"]
-    E_NOGAME = [10,"No game!?"]
-    E_NETWORKPROBLEM = [11,"Network problem"]
-    E_BADREFERER = [11,"Invalid request origin"]
-
-#----------------------------------------------------------------------
+    E_BADACTION = [1, "Bad action", "400 Bad Request"]
+    E_DBASEBUSY = [2, "Database is busy", "500 Internal Server Error"]
+    E_DBASEERROR = [3, "Database error", "500 Internal Server Error"]
+    E_BADREFERER = [4,"Invalid request origin", "401 Unauthorized"]
 
 def error(output, err, extra=""):
+    pprint(err)
     output.update({"error": err[0], "errorDescription": err[1] + extra})
+    return err[2]
 
 #----------------------------------------------------------------------
 # utils
 #----------------------------------------------------------------------
+
+# switch offable log
+
+def log(x, y = ""):
+    pprint.pprint(x + pprint.pformat(y, 0, 120))
+    # pass
 
 # get something from the local helper
 
@@ -48,7 +46,12 @@ def service(dict):
         s.send(urllib.urlencode(dict))
         return json.loads(s.recv(8192))
 
-#----------------------------------------------------------------------
+# turn a urlencoded string into a dictionary, duplicate assignments are discarded
+
+def query_to_JSON(q):
+    return dict((k, v[0]) for k, v in urlparse.parse_qs(q).iteritems())
+
+# turn a dictionary into a urlencoded string
 
 def encoded_dict(in_dict):
     out_dict = {}
@@ -60,7 +63,7 @@ def encoded_dict(in_dict):
         out_dict[k] = v
     return out_dict
 
-#----------------------------------------------------------------------
+# open the database
 
 def opendb():
     return  mdb.connect(host        = 'mtwdb.cnk16j9pzvyy.us-east-1.rds.amazonaws.com',
@@ -68,68 +71,13 @@ def opendb():
                         passwd      = 'mtwpassword',
                         db          = 'mtwdb',
                         use_unicode = True,
+                        cursorclass = mdb.cursors.DictCursor,
                         charset     = 'utf8')
 
-#----------------------------------------------------------------------
-
-def cursor(db):
-    return db.cursor(mdb.cursors.DictCursor)
-
-#----------------------------------------------------------------------
+# get a time formatted for MySQL
 
 def formattedTime(t):
     return datetime.datetime.strftime(t, "%Y-%m-%d %H:%M:%S.%f")
-
-#----------------------------------------------------------------------
-
-def getCurrentTime():
-    return formattedTime(datetime.datetime.now())
-
-#----------------------------------------------------------------------
-
-def getOffsetTime(cur, off):
-    return formattedTime(cur + off)
-
-#----------------------------------------------------------------------
-
-def seconds(td):
-    return td.days * 86400 + td.seconds
-
-#----------------------------------------------------------------------
-
-def getScore(board, seed):
-    return service({'action': 'getscore', 'seed': seed, 'board': board })
-
-#----------------------------------------------------------------------
-
-def getBoard(seed):
-    return service({'action': 'getboard', 'seed': seed })
-
-#----------------------------------------------------------------------
-
-def getGlobal(db, name):
-    try:
-        with closing(cursor(db)) as cur:
-            cur.execute("select %s from globals limit 1", (name))
-            row = cur.fetchone()
-            if row:
-                return row[name]
-            else:
-                return None
-    except mdb.DatabaseError, e:
-        return None
-
-#----------------------------------------------------------------------
-
-def getJSONURL(path):
-    try:
-        req = urllib2.Request(path)
-        page = urllib2.urlopen(req)
-        data = page.read()
-        dct = json.loads(data)
-        return dct
-    except HTTPError, e:
-        return None
 
 #----------------------------------------------------------------------
 # Handler - base for all request handlers
@@ -137,99 +85,49 @@ def getJSONURL(path):
 
 class Handler(object):
 
-    def __init__(self, environ, params, db, output):
-        self.environ = environ
-        self.db = db
+    def __init__(self, query, post, output):
+        self.query = query
+        self.post = post
         self.output = output
-        self.params = params
-
-    def cursor(self):
-        return cursor(self.db)
-
-    #----------------------------------------------------------------------
-
-    def createOrUpdatePerson(self, oauth_id, oauth_sub):
-        try:
-            with closing(self.cursor()) as cur:
-                cur.execute("select count(*) as existence from people where oauth_provider=%s and oauth_sub=%s", (oauth_id, oauth_sub))
-                if cur.fetchone()['existence'] == 0:
-                    # new user, insert into database
-                    name = getJSONURL("http://graph.facebook.com/?fields=name&id=%s" % (str(fbid)))
-                    if name:
-                        realName = name['name']
-                        sql = "insert into people (facebook_id, name) values (%s,%s)"
-                        cur.execute(sql, (fbid, realName, realName))
-                else:
-                    # existing user, update name
-                    pass
-        except mdb.DatabaseError, e:
-            pass
+        self.status = '200 OK'
 
     #----------------------------------------------------------------------
 
     def add(self, x):
         self.output.update(x)
 
+    def err(e, extra = ""):
+        self.status = error(self.output, e, extra)
+
     #----------------------------------------------------------------------
 
-    def getPostData(self):
-        return dict((k, v if len(v) > 1 else v[0]) for k, v in urlparse.parse_qs(self.environ['wsgi.input'].read(), True).iteritems())
+    def processRequest(self, db):
+        with closing(db.cursor()) as cur:
+            self.handle(cur)
+            db.commit()
+            return self.status
 
 #----------------------------------------------------------------------
-# action:quit
+# GET:oauthlist
 #
 # parameters:   none
 #
-# response:     bye             string      // bye
-#----------------------------------------------------------------------
-
-class quitHandler(Handler):
-
-    def handle(self):
-        self.add({"bye": "bye"})
-
-#----------------------------------------------------------------------
-# action:ping
-#
-# parameters:   none
-#
-# response:     pong            datetime        // server time
-#----------------------------------------------------------------------
-
-class pingHandler(Handler):
-
-    def handle(self):
-        self.add({"pong": getCurrentTime()})
-
-#----------------------------------------------------------------------
-# action:oauthlist
-#
-# parameters:   none
-#
-# response:     id              int
-#               name            int
-#               logo            url
+# response:     array of:
+#                   id              int
+#                   name            int
+#                   logo            url
 #----------------------------------------------------------------------
 
 class oauthlistHandler(Handler):
 
-    def handle(self):
-        try:
-            with closing(self.cursor()) as cur:
-                cur.execute("select * from oauth_providers where oauth_provider > 0")
-                providers = []
-                rows = cur.fetchall()
-                for row in rows:
-                    providers.append(row)
-                self.add({"providers": providers})
-        except mdb.DatabaseError, e:
-            pprint(e)
+    def handle(self, cur):
+        cur.execute("SELECT * FROM oauth_providers WHERE oauth_provider > 0")
+        self.add( { "providers": cur.fetchall() } )
 
 #----------------------------------------------------------------------
-# action:game
+# GET:game
 #
-# parameters:   GET
-#               user_id     uint32
+# parameters:   user_id     uint32
 #               seed        uint32
 #
 # response:     board       string
@@ -237,30 +135,18 @@ class oauthlistHandler(Handler):
 
 class gameHandler(Handler):
 
-    def handle(self):
-        try:
-            with closing(self.cursor()) as cur:
-                cur.execute("""SELECT board FROM boards
-                                WHERE user_id=%(user_id)s
-                                AND seed=%(seed)s""",
-                            {
-                                "user_id": self.params["user_id"][0],
-                                "seed": self.params["seed"][0]
-                            })
-                row = cur.fetchone()
-                if row is None:
-                    self.add({"error": "No such board for user,seed"})
-                else:
-                    self.add({"board": row["board"]})
-        except mdb.DatabaseError, e:
-            pprint(e)
-            error(self.output, Error.E_DBASEERROR)
+    def handle(self, cur):
+        cur.execute("""SELECT board, score FROM boards WHERE user_id=%(user_id)s AND seed=%(seed)s""", self.query)
+        row = cur.fetchone()
+        if row is None:
+            self.add({"error": "No such board for user,seed"})
+        else:
+            self.add(row)
 
 #----------------------------------------------------------------------
-# action:session
+# GET:session
 #
-# parameters: POST
-#               session_id => "X",
+# parameters:   session_id => "X",
 #
 # response:     user_id     uint32
 #               user_name   string
@@ -269,165 +155,127 @@ class gameHandler(Handler):
 
 class sessionHandler(Handler):
 
-    def handle(self):
-        try:
-            with closing(self.cursor()) as cur:
-                cur.execute("""SELECT users.user_id, users.name, users.picture FROM sessions
-                                INNER JOIN users ON users.user_id = sessions.user_id
-                                WHERE sessions.session_id = %(session_id)s
-                                AND sessions.expires > %(now)s""",
-                            {
-                                "session_id": self.params["session_id"][0],
-                                "now": formattedTime(datetime.datetime.now())
-                            })
-                row = cur.fetchone()
-                if row is None:
-                    self.add({"error": "Session expired"})
-                else:
-                    self.add(row)
-        except mdb.Error, e:
-            pprint("Database error %d: %s" % (e.args[0], e.args[1]))
-            error(self.output, Error.E_DBASEERROR)
+    def handle(self, cur):
+        cur.execute("""SELECT users.user_id, users.name, users.picture, oauth_providers.oauth_name as providerName FROM sessions
+                        INNER JOIN users ON users.user_id = sessions.user_id
+                        INNER JOIN oauth_providers ON oauth_providers.oauth_provider = users.oauth_provider
+                        WHERE sessions.session_id = %(session_id)s
+                        AND sessions.expires > %(now)s""",
+                        {   'session_id': self.query['session_id'],
+                            'now': formattedTime(datetime.datetime.now())
+                        })
+        row = cur.fetchone()
+        if row is None:
+            self.add({"error": "Session expired"})
+        else:
+            self.add(row)
 
 #----------------------------------------------------------------------
-# action:login
+# POST:login
 #
-# parameters: POST
-#               oauth_provider" => "1",
-#               oauth_sub" => $r->id,
-#               oauth_name" => $r->name,
-#               oauth_picture" => $r->picture,
+# parameters:   oauth_provider: uint32
+#               oauth_sub: string
+#               name: string
+#               picture: string
 #
-# response:     session     uint32
-#               user_id     uint32
-#               user_name   string
-#               user_picture url
+# response:     session_id: uint32
 #----------------------------------------------------------------------
-
-# create or update entry in the users table
-# check if an unexpired session already exists for this user
-# if not, create a session
-# return the session, either way
-
-# now that we have a unique index in the users table we can use 'insert/on duplicate key update' here...
 
 class loginHandler(Handler):
 
-    def handle(self):
-        try:
-            with closing(self.cursor()) as cur:
-                timestamp = datetime.datetime.now()
-                now = formattedTime(timestamp)
-                then = formattedTime(timestamp + datetime.timedelta(days = 30))
-                p = self.getPostData();
+    def handle(self, cur):
+        timestamp = datetime.datetime.now()
+        now = formattedTime(timestamp)
+        then = formattedTime(timestamp + datetime.timedelta(days = 30))
+        cur.execute("""INSERT INTO users (oauth_sub, oauth_provider, name, picture)
+                        VALUES (%(oauth_sub)s, %(oauth_provider)s, %(name)s, %(picture)s)
+                        ON DUPLICATE KEY UPDATE name = %(name)s, picture = %(picture)s""", self.post)
+        cur.execute("""SELECT * FROM users
+                        WHERE oauth_sub=%(oauth_sub)s
+                        AND oauth_provider=%(oauth_provider)s""", self.post)
+        row = cur.fetchone()
+        if row is None:
+            self.err(Error.E_DBASEERROR)
+            self.status = "500 Internal Server Error"
+        else:
+            user_id = row['user_id']
+            user_name = row['name'];
+            user_picture = row['picture'];
+            cur.execute("""SELECT * FROM sessions
+                            WHERE user_id = %(user_id)s AND expires > %(now)s
+                            ORDER BY created DESC LIMIT 1""",
+                            { 'user_id': user_id, 'now': now })
+            row = cur.fetchone()
+            if row is None:
+                # session expired, or didn't exist, create a new one
+                cur.execute("""INSERT INTO sessions(user_id, created, expires)
+                                VALUES (%(user_id)s, %(now)s, %(then)s)""",
+                                { 'user_id': user_id, 'now': now, 'then': then })
+                session_id = self.db.insert_id()
+            else:
+                # existing session, extend it
+                session_id = row['session_id']
+                cur.execute("""UPDATE sessions
+                                SET expires = %(then)s
+                                WHERE session_id = %(session_id)s""",
+                                { 'then': then, 'session_id': session_id })
+            self.add({"session_id": session_id})
 
-                cur.execute("""INSERT INTO users (
-                                oauth_sub,
-                                oauth_provider,
-                                name,
-                                picture)
-                            VALUES (
-                                %(oauth_sub)s,
-                                %(oauth_provider)s,
-                                %(name)s,
-                                %(picture)s )
-                            ON DUPLICATE KEY UPDATE
-                                name = %(name)s,
-                                picture = %(picture)s""", p)
-                cur.execute("""SELECT * FROM users
-                                WHERE oauth_sub=%(oauth_sub)s
-                                AND oauth_provider=%(oauth_provider)s""", p)
-                row = cur.fetchone()
-                if row is None:
-                    pass
-                else:
-                    user_id = row['user_id']
-                    user_name = row['name'];
-                    user_picture = row['picture'];
-
-                    # create or extend session
-                    cur.execute("""SELECT * FROM sessions
-                                    WHERE user_id = %(user_id)s
-                                        AND expires > %(now)s
-                                    ORDER BY created DESC LIMIT 1""",
-                                {
-                                    'user_id': user_id,
-                                    'now': now
-                                });
-                    row = cur.fetchone()
-                    if row is None:
-                        # session expired, or didn't exist, create a new one
-                        cur.execute("""INSERT INTO sessions(user_id, created, expires)
-                                        VALUES (%(user_id)s, %(now)s, %(then)s)""",
-                                    {
-                                        'user_id': user_id,
-                                        'now': now,
-                                        'then': then })
-                        session_id = self.db.insert_id()
-                    else:
-                        # existing session, extend it
-                        session_id = row['session_id']
-                        cur.execute("""UPDATE sessions
-                                        SET expires = %(then)s
-                                        WHERE session_id = %(session_id)s""",
-                                    {
-                                        'then': then,
-                                        'session_id': session_id })
-                    self.add({"session_id": session_id})
-        except mdb.Error, e:
-            pprint("Database error %d: %s" % (e.args[0], e.args[1]))
-            error(self.output, Error.E_DBASEERROR)
-
-# posting a new best board
+#----------------------------------------------------------------------
+# action:board
+#
+# parameters:
+#               board: string
+#               user_id: uint32
+#               seed: uint32
+#
+# response:     score:      uint32
+#----------------------------------------------------------------------
 
 class boardHandler(Handler):
 
-    def handle(self):
-        p = self.getPostData()
-        board = p.get('board')
-        user_id = p.get('user_id')
-        seed = p.get('seed')
+    def handle(self, cur):
+        board = self.post.get('board')
+        user_id = self.post.get('user_id')
+        seed = self.post.get('seed')
         if None in (board, user_id, seed):
             self.add({"error": "missing parameter"})
+            self.status = "400 Bad Request"
         else:
-            check = service({'action': 'getscore', 'board': p['board'], 'seed': p['seed']});
+            check = service({'action': 'getscore', 'board': self.post['board'], 'seed': self.post['seed']});
             if(check.get('valid') == True):
-                self.add({"score": check.get('score')})
-                try:
-                    with closing(self.cursor()) as cur:
-                        timestamp = datetime.datetime.now()
-                        now = formattedTime(timestamp)
-                        cur.execute("SELECT user_id FROM users WHERE user_id=%(user_id)s", p);
-                        if not cur.fetchone() is None:
-                            cur.execute("""INSERT INTO boards (
-                                            seed,
-                                            board,
-                                            score,
-                                            user_id,
-                                            time_stamp)
-                                        VALUES (
-                                            %(seed)s,
-                                            %(board)s,
-                                            %(score)s,
-                                            %(user_id)s,
-                                            %(time_stamp)s)
-                                        ON DUPLICATE KEY UPDATE
-                                            board=%(board)s,
-                                            score=%(score)s,
-                                            time_stamp=%(time_stamp)s""",
-                                        {
-                                           'seed': p['seed'],
-                                           'board': p['board'],
-                                           'score': check['score'],
-                                           'user_id': p['user_id'],
-                                           'time_stamp': now});
-                        else:
-                            self.add({"error":"unknown user"})
-                except mdb.Error, e:
-                    pprint("Database error %d: %s" % (e.args[0], e.args[1]))
-                    error(self.output, Error.E_DBASEERROR)
+                score = check.get('score')
+                self.add({ "score": score })
+                timestamp = datetime.datetime.now()
+                now = formattedTime(timestamp)
+                cur.execute("SELECT COUNT(*) AS count FROM users WHERE user_id=%(user_id)s", self.post);
+                if cur.fetchone()['count'] > 0:
+                    cur.execute("""SELECT * FROM boards WHERE user_id=%(user_id)s AND seed=%(seed)s""",
+                                    { 'user_id': user_id, 'seed': seed })
+                    row = cur.fetchone()
+                    if row is None:
+                        cur.execute("""INSERT INTO boards (seed, board, score, user_id, time_stamp)
+                                        VALUES (%(seed)s, %(board)s, %(score)s, %(user_id)s, %(time_stamp)s)""",
+                                        { 'seed': seed, 'board': board, 'score': score, 'user_id': user_id, 'time_stamp': now });
+                    elif row['score'] < score:
+                        cur.execute("""UPDATE boards SET board=%(board)s, score=%(score)s
+                                        WHERE user_id=%(user_id)s AND seed=%(seed)s""",
+                                        { 'board': board, 'score': score, 'user_id': user_id, 'seed': seed } )
+                else:
+                    self.status = "400 Bad Request"
+                    self.add({"error":"unknown user"})
             else:
+                self.status = "400 Bad Request"
                 self.add({"error": "invalid board: %s" % (board)})
+
+#----------------------------------------------------------------------
+
+def origin_is_valid(db, environ):
+    if 'HTTP_ORIGIN' in environ:
+        with closing(db.cursor()) as cur:
+            cur.execute("SELECT COUNT(*) AS count FROM sites WHERE site_url = %(HTTP_ORIGIN)s", environ)
+            return cur.fetchone()['count'] > 0
+    return false
 
 #----------------------------------------------------------------------
 # application
@@ -437,44 +285,36 @@ def application(environ, start_response):
 
     headers = [('Content-type', 'application/json')]
     output = dict()
+    status = '200 OK'
     try:
         with closing(opendb()) as db:
-            db.autocommit(True)
-            if 'HTTP_ORIGIN' in environ:
-                org = environ['HTTP_ORIGIN']
-            else:
-                org = ""
-            valid = 0
-            with closing(cursor(db)) as cur:
-                cur.execute("SELECT COUNT(*) AS valid FROM sites WHERE site_url = %s", (org))
-                valid = cur.fetchone()['valid']
-            if valid == 1:
-                headers.append(('Access-Control-Allow-Origin', org))
-                getData = environ['QUERY_STRING']
-                if getData:
-                    pprint(getData)
-                    data = urlparse.parse_qs(getData)
-                    func = data['action'][0] + 'Handler'
-                    if func in globals():
-                        globals()[func](environ, data, db, output).handle()
-                    else:
-                        error(output, Error.E_BADACTION, ":" + data['action'][0])
+            if origin_is_valid(db, environ):
+                headers.append(('Access-Control-Allow-Origin', environ['HTTP_ORIGIN']))
+                method = environ['REQUEST_METHOD']
+                query = query_to_JSON(environ.get('QUERY_STRING', ""))
+                post = dict()
+                log("Method:", method)
+                log("Query:", query)
+                if method == 'POST':
+                    post = query_to_JSON(environ['wsgi.input'].read(int(environ.get('CONTENT_LENGTH', 4096), 10)))  # 4096? should be enough...
+                    log("Post:", post)
+                elif method != 'GET':
+                    status = '405 Method not allowed'
+                func = query.get('action', '!nosuch') + 'Handler'
+                if func in globals():
+                    status = globals()[func](query, post, output).processRequest(db)
                 else:
-                    error(output, Error.E_NOACTION)
-
-                mpt = getGlobal(db, 'min_ping_time')
-                if mpt:
-                    output.update({ "min_ping_time":  mpt })
+                    status = error(output, Error.E_BADACTION)
             else:
-                error(output, Error.E_BADREFERER, ":" + org)
-
+                status = error(output, Error.E_BADREFERER)
     except mdb.Error, e:
-        pprint("Database error %d: %s" % (e.args[0], e.args[1]))
-        error(output, Error.E_DBASEERROR)
+        log("Database error %d: %s" % (e.args[0], e.args[1]))
+        status = error(output, Error.E_DBASEERROR)
 
+    log("Output:", output)
+    log("--------------------------------------------------------------------------------")
     output = encoded_dict(output)
     outputStr = json.dumps(output, indent = 4, separators=(',',': '))
-    pprint(outputStr)
     headers.append(('Content-Length', str(len(outputStr))))
-    start_response('200 OK', headers)
+    start_response(status, headers)
     return outputStr

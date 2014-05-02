@@ -1,3 +1,26 @@
+<?
+session_start();
+require('php/HttpPost.class.php');
+if(!isset($_COOKIE['session_id']) && isset($_COOKIE['provider_id'])) {
+    switch($_COOKIE['provider_id']) {
+        case '1':
+            require('php/google.php');
+            $query_params = array(
+                        'response_type' => $oauth2_response_type,
+                        'client_id' => $oauth2_client_id,
+                        'redirect_uri' => $oauth2_redirect,
+                        'scope' => $oauth2_scope
+                        );
+            header("Location: " . $oauth2_server_url. '?' . http_build_query($query_params));
+            echo("redirect to " . $oauth2_server_url. '?' . http_build_query($query_params));
+            break;
+        case '2': header("blah.php");
+            break;
+        default:
+            echo("Provider ID is" . $_COOKIE['provider_id']);
+    }
+}
+?>
 <!DOCTYPE html>
 
 <html>

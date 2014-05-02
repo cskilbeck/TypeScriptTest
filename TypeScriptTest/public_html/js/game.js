@@ -116,7 +116,7 @@ var Game = (function () {
             };
             this.addChild(bestButton);
 
-            board = new mtw.BoardGame(200, 0, this);
+            board = new mtw.BoardGame(200, 0, this, true);
             board.mainBoard = true;
             this.addChild(board);
             bestScore = 0;
@@ -139,19 +139,15 @@ var Game = (function () {
                     if(data.error !== undefined) {
                         // probly 1st time playing this seed
                     } else {
-                        board.setFromString(data.board);
-                        board.markAllWords();
-                        board.bestScore = board.score;
+                        board.bestScore = data.score;
+                        board.bestBoard = data.board;
+                        board.bestSeed = seed;
                         bestScore = board.bestScore;
-                        this.updateWordList();
-                        board.changed = false;
-                        scoreLabel.text = board.score.toString();
                         bestLabel.text = board.bestScore.toString();    // if board.bestScore has gone up, flash this!
+                        bestButton.highlight = 1000;
                     }
-
                 }, this);
             }
-
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -180,7 +176,7 @@ var Game = (function () {
             }
             if (msg) {
                 msgBox = new chs.MessageBox(msg, consolasItalicBold, btns, goBack, this);
-                brd = new mtw.BoardGame(0, 0, this);
+                brd = new mtw.BoardGame(0, 0, this, false);
                 brd.setFromString(board.bestBoard);
                 brd.setScale(0.5);
                 brd.setPivot(0.5, 0);

@@ -20,7 +20,6 @@ var MainMenu = (function () {
                 this.addChild(this.clipRect);
                 this.loader.loadItem(url).then(this, function (img) {
                     this.image = new chs.Sprite(img);
-                    this.image.scaleTo(this.width, this.height);
                     this.clipRect.addChild(this.image);
                 });
                 this.border = new chs.Panel(0, 0, this.width, this.height, undefined, "black", this.clipRect.radius, 2, 255);
@@ -29,6 +28,12 @@ var MainMenu = (function () {
                 this.onIdle = function () { this.setPosition(this.org.x, this.org.y); this.border.lineColour = "black"; };
                 this.onHover = function () { this.setPosition(this.org.x, this.org.y); this.border.lineColour = "white"; };
                 this.onPressed = function () { this.setPosition(this.org.x + 1, this.org.y + 1); this.border.lineColour = "white"; };
+            },
+
+            onUpdate: function(time, deltaTime) {
+                if(this.image) {
+                    this.image.scaleTo(this.width, this.height);
+                }
             }
         });
 
@@ -54,18 +59,12 @@ var MainMenu = (function () {
         },
 
         logout: function () {
-            this.addChild(new chs.MessageBox("Are you sure you want to log out?\n", consolasItalic, ['Yes, log me out', 'No'], function (id) {
-                if (id === 0) {
-                    chs.Cookies.remove('user_name');
-                    chs.Cookies.remove('user_id');
-                    chs.Cookies.remove('user_picture');
-                    chs.Cookies.remove('session_id');
-                    chs.Cookies.remove('login_error');
-                    window.location.reload();
-                    this.panel.removeChildren();
-                    this.panel.addChild(new chs.Label("Logging out...", consolasItalic).setPosition(this.panel.width / 2, this.panel.height / 2).setPivot(0.5, 0.5));
-                }
-            }, this, consolas));
+            chs.Cookies.remove('provider_id');
+            chs.Cookies.remove('session_id');
+            chs.Cookies.remove('login_error');
+            window.location.reload();
+            this.panel.removeChildren();
+            this.panel.addChild(new chs.Label("Logging out...", consolasItalic).setPosition(this.panel.width / 2, this.panel.height / 2).setPivot(0.5, 0.5));
         },
 
         loadComplete: function () {
@@ -102,22 +101,34 @@ var MainMenu = (function () {
                 }
             } else {
                 chs.WebService.get('session', { session_id: session_id }, function (data) {
+                    var logoutButton;
                     if (data.error !== undefined) {
-                        // there was a session_id, but it's probably expired
-                        // redirect to the auth...
-                        // need to know what the auth was
-                        // get it with the session?
+                        if(chs.Cookies.get('provider_id')) {
+                            location.reload();
+                        }
                     } else {
                         chs.User.id = data.user_id;
                         chs.User.name = data.name;
                         chs.User.picture = data.picture;
+                        chs.User.providerName = data.providerName;
                         if(chs.User.picture) {
-                            this.panel.addChild(new UserImage(12, 12, 64, 64, chs.User.picture));
+                            logoutButton = new UserImage(12, 12, 64, 64, chs.User.picture);
                         } else {
-                            this.panel.addChild(new chs.TextButton(chs.User.name, consolasItalic, 12, 12, 20, 35));
+                            logoutButton = new chs.TextButton(chs.User.name, consolasItalic, 12, 12, 20, 35);
                         }
-                        buttons.push('Logout');
-                        callbacks.push(this.logout);
+                        this.panel.addChild(logoutButton);
+                        logoutButton.addEventHandler("clicked", function () {
+                            this.addChild(
+                                new chs.MessageBox(
+                                    "You are logged in as " + chs.User.name + " with " + chs.User.providerName + ", would you like to log out?",
+                                    consolasItalic,
+                                    ['Yes, log me out', 'No'],
+                                    function (button) {
+                                        if(button === 0) {
+                                            this.logout();
+                                        }
+                            }, this, consolas));
+                        }, this);
                     }
                 }, this);
             }

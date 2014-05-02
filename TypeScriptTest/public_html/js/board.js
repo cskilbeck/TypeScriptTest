@@ -7,7 +7,7 @@
 
     mtw.Board = chs.Class({
 
-        $: function (tileType) {
+        $: function (tileType, mainBoard) {
             var i,
                 tt = tileType !== undefined ? tileType : 'Tile';
 
@@ -20,7 +20,7 @@
             this.tiles = [];
             this.tiles.length = this.tileWidth * this.tileHeight;
             for (i = 0; i < this.tiles.length; ++i) {
-                this.tiles[i] = new mtw[tt]("A", i % this.tileWidth, (i / this.tileWidth) >>> 0);
+                this.tiles[i] = new mtw[tt]("A", i % this.tileWidth, (i / this.tileWidth) >>> 0, mainBoard);
             }
         },
 

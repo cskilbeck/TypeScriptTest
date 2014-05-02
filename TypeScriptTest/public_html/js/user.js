@@ -4,7 +4,8 @@
     chs.User = {
         id: 0,
         name: "",
-        picture: null
+        picture: null,
+        providerName: ""
     };
 
 }());

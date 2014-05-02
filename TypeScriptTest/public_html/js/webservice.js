@@ -9,7 +9,7 @@
 
             get: function (command, params, callback, context) {
                 params.action = command;
-                chs.ajax.get(chs.ajax.url(serviceURL, params, false), function (url, json) {
+                chs.ajax.get(chs.ajax.url(serviceURL, params, true), function (url, json) {
                     var d;
                     try {
                         d = JSON.parse(json);
@@ -27,7 +27,7 @@
             post: function (command, params, data, callback, context) {
                 var url;
                 params.action = command;
-                url = chs.ajax.url(serviceURL, params, false);
+                url = chs.ajax.url(serviceURL, params, true);
                 chs.ajax.post(url, data, function (url, json) {
                     var d;
                     try {

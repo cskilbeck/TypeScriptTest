@@ -41,13 +41,13 @@
                     progressCallback.call(context, url, e);
                 }
             };
+            if (method === 'POST') {
+                xr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            }
         } else {
             xr.onload = function () {
                 callback.call(context, url, xr.responseText);
             };
-        }
-        if (method === 'POST') {
-            xr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         }
         xr.send(data);
         return xr;

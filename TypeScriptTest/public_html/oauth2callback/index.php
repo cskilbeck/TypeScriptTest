@@ -29,8 +29,8 @@ if(isset($_GET['code'])) {
 
         // set the session cookie and go back to the app
         if(!isset($u->error)) {
-            setcookie('provider_id', $oauth2_provider_id, mktime().time() + 60 * 60 * 24 * 3000, '/');
-            setcookie('session_id', $u->session_id, mktime().time() + 60 * 60 * 24 * 30, '/');
+            setcookie('provider_id', $oauth2_provider_id, time() + 60 * 60 * 24 * 365, '/');
+            setcookie('session_id', $u->session_id, time() + 60 * 60 * 24 * 30, '/');
         } else {
             setcookie('login_error', urldecode($u->error), 0, '/');
         }

@@ -28,7 +28,7 @@
             }
         },
 
-        $: function (letter, x, y) {
+        $: function (letter, x, y, showDigits) {
             mtw.Tile.call(this, letter);
             chs.Sprite.call(this, tileImage);
             this.font = font;
@@ -46,10 +46,14 @@
             };
             this.label = new chs.Label(letter, font).setPivot(0.5, font.midPivot);
             this.label.setPosition(this.width / 2 - 1, this.height / 2);
-            this.digits = new chs.Label(mtw.Letters.letterScore(letter).toString(), digits).setPivot(1, 1).setPosition(this.width - 12, this.height - 8);
-            this.digits.transparency = 64;
+            if (showDigits) {
+                this.digits = new chs.Label(mtw.Letters.letterScore(letter).toString(), digits).setPivot(1, 1).setPosition(this.width - 12, this.height - 8);
+                this.digits.transparency = 64;
+                this.addChild(this.digits);
+            } else {
+                this.digits = null;
+            }
             this.addChild(this.label);
-            this.addChild(this.digits);
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -61,7 +65,9 @@
             set: function (s) {
                 this.myLetter = s;
                 this.label.text = s.toUpperCase();
-                this.digits.text = mtw.Letters.letterScore(s).toString();
+                if (this.digits) {
+                    this.digits.text = mtw.Letters.letterScore(s).toString();
+                }
             }
         },
 

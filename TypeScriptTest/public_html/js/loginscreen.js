@@ -20,7 +20,7 @@
                     logo = new chs.Image();
                 chs.PanelButton.call(this, x, y, 320, fh + 24, "rgb(255, 255, 255)", "white", 4, 2, function () {
                     chs.Cookies.set('provider_id', provider.oauth_provider, 30);
-                    window.location = window.location.origin + '/php/login.php';
+                    location.reload();
                 });
                 this.transparency = 160;
                 this.addChild(new chs.Label(provider.oauth_name, pfont).setPosition(8, this.height / 2).setPivot(0, pfont.midPivot));

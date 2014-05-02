@@ -13,6 +13,8 @@ import urllib
 import urllib2
 import pprint
 
+# might need this later
+
 #sys.path.append('/usr/local/www/wsgi-scripts/')
 
 #----------------------------------------------------------------------

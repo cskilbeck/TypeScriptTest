@@ -6,6 +6,7 @@ var net = require('net');
 
 var dictionary = require('./dictionary.json');
 
+require('./js/util.js');
 require('./js/class.js');
 require('./js/list.js');
 require('./js/random.js');
@@ -32,7 +33,7 @@ net.createServer(function (socket) {
 
     socket.on('data', function (data) {
 
-        var params = queryStringToJSON(data.toString()),
+        var params = chs.Util.queryStringToJSON(data.toString()),
             board,
             checkBoard,
             trueBoard,

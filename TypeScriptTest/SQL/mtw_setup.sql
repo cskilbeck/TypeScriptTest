@@ -83,6 +83,7 @@ CREATE TABLE boards
 					UNIQUE INDEX (user_id, seed)
 );
 
+
 -- ----------------------------------------------------------------------
 -- indices
 

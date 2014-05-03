@@ -1,4 +1,4 @@
-﻿
+
 GLOBAL.chs = {};    // global namespaces
 GLOBAL.mtw = {};
 

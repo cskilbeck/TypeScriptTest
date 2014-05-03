@@ -1,4 +1,4 @@
-﻿var LoginScreen = (function () {
+var LoginScreen = (function () {
     "use strict";
 
     var pfont,

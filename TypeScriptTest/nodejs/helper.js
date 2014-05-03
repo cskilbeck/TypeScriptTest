@@ -94,7 +94,6 @@ net.createServer(function (socket) {
             }
             break;
         }
-
         socket.write(JSON.stringify(output));
     });
 

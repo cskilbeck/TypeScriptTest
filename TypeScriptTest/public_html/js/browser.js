@@ -11,12 +11,13 @@
         }
         if (M[1] === 'Chrome') {
             tem = ua.match(/\bOPR\/(\d+)/);
-            if (tem != null) {
+            if (tem !== null) {
                 return 'Opera ' + tem[1];
             }
         }
         M = M[2] ? [M[1], M[2]] : [navigator.appName, navigator.appVersion, '-?'];
-        if ((tem = ua.match(/version\/(\d+)/i)) != null) {
+        tem = ua.match(/version\/(\d+)/i);
+        if (tem !== null) {
             M.splice(1, 1, tem[1]);
         }
         return M.join(' ');

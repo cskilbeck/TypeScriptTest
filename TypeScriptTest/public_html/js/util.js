@@ -138,6 +138,29 @@
             ctx.closePath();
         },
 
+        queryStringToJSON: function (url) {
+
+            var result = {},
+                pairs,
+                idx,
+                pair;
+            if (url) {
+                pairs = url.split('&');
+                for (idx in pairs) {
+                    pair = pairs[idx];
+                    if (pair.indexOf('=') !== -1) {
+                        pair = pair.split('=');
+                        if (!!pair[0]) {
+                            result[pair[0].toLowerCase()] = decodeURIComponent(pair[1] || '');
+                        } else {
+                            result[pair.toLowerCase()] = true;
+                        }
+                    }
+                }
+            }
+            return result;
+        },
+
         //////////////////////////////////////////////////////////////////////
 
         getExtension: function (url) {

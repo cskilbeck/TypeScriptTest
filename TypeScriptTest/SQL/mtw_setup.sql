@@ -99,6 +99,7 @@ CREATE VIEW users_view AS
 		INNER JOIN oauth_providers ON users.oauth_provider = oauth_providers.oauth_provider
 	ORDER BY name ASC;
 
+
 -- ----------------------------------------------------------------------
 -- data
 

@@ -14,7 +14,7 @@ import urllib
 import urllib2
 import pprint
 
-sys.path.append('/usr/local/www/wsgi-scripts/')
+#sys.path.append('/usr/local/www/wsgi-scripts/')
 
 import dbaselogin
 
@@ -57,7 +57,7 @@ class Error:
 log_output = [];
 
 def log(x, y = ""):
-    log_output.append(pprint.pformat(x + pprint.pformat(y, 0, 120)))
+    log_output.append(pprint.pformat(x + pprint.pformat(y, 4, 120)))
     # pass
 
 # get something from the local helper
@@ -317,16 +317,17 @@ def application(environ, start_response):
             method = environ['REQUEST_METHOD']
             query = query_to_JSON(environ.get('QUERY_STRING', ""))
             post = dict()
-            log("Method:", method)
-            log("Query:", query)
             if method == 'POST':
                 post = query_to_JSON(environ['wsgi.input'].read(int(environ.get('CONTENT_LENGTH', 4096), 10)))  # 4096? should be enough...
-                log("Post:", post)
             elif method != 'GET':
                 raise(Error(E_BADMETHOD))
             func = query.get('action', '!') + 'Handler'
             if not func in globals():
                 raise(Error(E_BADACTION))
+            log("Method:", method)
+            log("Action: ", query['action'])
+            log("Query:", query)
+            log("Post:", post)
             status = globals()[func](query, post, output).processRequest(db)
     except Error as e:
         output.update(e.output())
@@ -339,7 +340,7 @@ def application(environ, start_response):
     log("--------------------------------------------------------------------------------")
 
     for line in log_output:
-        print(line)
+        print >> sys.stderr, line.replace("\\n", "\n")
 
     outputStr = json.dumps(output, indent = 4, separators=(',',': '))
     headers.append(('Content-Length', str(len(outputStr))))

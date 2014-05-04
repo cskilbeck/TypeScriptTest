@@ -4,6 +4,182 @@
 		"selected_items":
 		[
 			[
+				"cur",
+				"currentScore"
+			],
+			[
+				"scre",
+				"scoreLabel"
+			],
+			[
+				"high",
+				"highlight"
+			],
+			[
+				"upd",
+				"onUpdate"
+			],
+			[
+				"tr",
+				"trueBoard"
+			],
+			[
+				"E_BAD",
+				"E_BADORIGIN"
+			],
+			[
+				"oau",
+				"oauth_provider"
+			],
+			[
+				"check",
+				"check_parameters"
+			],
+			[
+				"E_",
+				"E_MISSINGPARAMETER"
+			],
+			[
+				"oa",
+				"oauth_sub"
+			],
+			[
+				"R",
+				"Request"
+			],
+			[
+				"pro",
+				"provider_id"
+			],
+			[
+				"u",
+				"url"
+			],
+			[
+				"Proces",
+				"processJPEG"
+			],
+			[
+				"usr",
+				"user_id"
+			],
+			[
+				"consol",
+				"consolas"
+			],
+			[
+				"log",
+				"logoutButton"
+			],
+			[
+				"My",
+				"MySQLdb"
+			],
+			[
+				"RE",
+				"REQUEST_METHOD"
+			],
+			[
+				"q",
+				"query"
+			],
+			[
+				"proc",
+				"processRequest"
+			],
+			[
+				"req",
+				"request_body_size"
+			],
+			[
+				"E_NO",
+				"E_NOACTION"
+			],
+			[
+				"requ",
+				"request_body"
+			],
+			[
+				"origin",
+				"origin_is_valid"
+			],
+			[
+				"be",
+				"bestBoard"
+			],
+			[
+				"Me",
+				"MessageBox"
+			],
+			[
+				"con",
+				"console"
+			],
+			[
+				"bes",
+				"bestScore"
+			],
+			[
+				"user",
+				"user_id"
+			],
+			[
+				"ex",
+				"execute"
+			],
+			[
+				"cu",
+				"cursor"
+			],
+			[
+				"set",
+				"setFromString"
+			],
+			[
+				"und",
+				"undefined"
+			],
+			[
+				"us",
+				"user_id"
+			],
+			[
+				"setP",
+				"setPosition"
+			],
+			[
+				"para",
+				"params"
+			],
+			[
+				"ses",
+				"session_id"
+			],
+			[
+				"sess",
+				"sessions"
+			],
+			[
+				"session",
+				"session_id"
+			],
+			[
+				"sessio",
+				"session_id"
+			],
+			[
+				"hi",
+				"highlightWord"
+			],
+			[
+				"de",
+				"deHighlightWord"
+			],
+			[
+				"hig",
+				"deHighlightWord"
+			],
+			[
 				"lett",
 				"letter"
 			],
@@ -14,10 +190,6 @@
 			[
 				"fun",
 				"function"
-			],
-			[
-				"tr",
-				"transparency"
 			],
 			[
 				"best",
@@ -48,35 +220,247 @@
 	"buffers":
 	[
 		{
-			"file": "TypeScriptTest/public_html/js/game.js",
+			"file": "TypeScriptTest/web_service/myapp.wsgi",
 			"settings":
 			{
-				"buffer_size": 14272,
+				"buffer_size": 12418,
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"file": "TypeScriptTest/web_service/myapp.wsgi",
+			"file": "TypeScriptTest/web_service/dbaselogin.py",
 			"settings":
 			{
-				"buffer_size": 15634,
+				"buffer_size": 178,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "TypeScriptTest/public_html/js/game.js",
+			"settings":
+			{
+				"buffer_size": 17186,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "TypeScriptTest/public_html/js/boardgame.js",
+			"settings":
+			{
+				"buffer_size": 9323,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "TypeScriptTest/SQL/mtw_setup.sql",
+			"settings":
+			{
+				"buffer_size": 4046,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "TypeScriptTest/nodejs/client.js",
+			"settings":
+			{
+				"buffer_size": 464,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "TypeScriptTest/nodejs/helper.js",
+			"settings":
+			{
+				"buffer_size": 2479,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "TypeScriptTest/public_html/js/board.js",
+			"settings":
+			{
+				"buffer_size": 6048,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "TypeScriptTest/public_html/js/chs.js",
+			"settings":
+			{
+				"buffer_size": 27,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "TypeScriptTest/public_html/js/boardtile.js",
+			"settings":
+			{
+				"buffer_size": 4213,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "TypeScriptTest/public_html/js/drawable.js",
+			"settings":
+			{
+				"buffer_size": 17949,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "TypeScriptTest/public_html/js/event.js",
+			"settings":
+			{
+				"buffer_size": 2472,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "TypeScriptTest/public_html/oauth2callback/index.php",
+			"settings":
+			{
+				"buffer_size": 1386,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "TypeScriptTest/public_html/js/browser.js",
+			"settings":
+			{
+				"buffer_size": 898,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/d/Users/charlie/AppData/Roaming/Sublime Text 3/Packages/User/GitGutter.sublime-settings",
+			"settings":
+			{
+				"buffer_size": 1192,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "TypeScriptTest/public_html/js/util.js",
+			"settings":
+			{
+				"buffer_size": 6476,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "TypeScriptTest/SQL/mtw_procs.sql",
+			"settings":
+			{
+				"buffer_size": 2771,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "TypeScriptTest/public_html/js/mainmenu.js",
+			"settings":
+			{
+				"buffer_size": 7151,
 				"line_ending": "Windows"
 			}
 		}
 	],
-	"build_system": "",
+	"build_system": "Packages/User/jshint.sublime-build",
 	"command_palette":
 	{
-		"height": 82.0,
+		"height": 392.0,
 		"selected_items":
 		[
 			[
-				"Snippet: for",
-				"Snippet: for (…) {…}"
+				"pus",
+				"Git: Push"
+			],
+			[
+				"com",
+				"Git: Quick Commit"
+			],
+			[
+				"push",
+				"Git: Push"
+			],
+			[
+				"comm",
+				"Git: Quick Commit"
+			],
+			[
+				"status",
+				"Git: Status"
+			],
+			[
+				"stat",
+				"Git: Quick Status"
+			],
+			[
+				"pull",
+				"Git: Pull"
+			],
+			[
+				"qui",
+				"Git: Quick Commit"
+			],
+			[
+				"sta",
+				"Git: Status"
+			],
+			[
+				"git",
+				"Git: Show"
+			],
+			[
+				"pul",
+				"Git: Pull"
+			],
+			[
+				"add",
+				"Git: Add Current File"
+			],
+			[
+				"git ad",
+				"Git: Add Current File"
+			],
+			[
+				"quic",
+				"Git: Quick Commit"
+			],
+			[
+				"quit",
+				"Git: Quick Commit"
+			],
+			[
+				"license",
+				"SublimeGit: Add License"
+			],
+			[
+				"buy",
+				"SublimeGit: Buy License"
+			],
+			[
+				"help",
+				"Git: Help"
+			],
+			[
+				"quick",
+				"Git: Quick Commit"
+			],
+			[
+				"commit",
+				"Git: Commit"
+			],
+			[
+				"Package Control: ins",
+				"Package Control: Install Package"
 			],
 			[
 				"Package Control: ",
 				"Package Control: Install Package"
+			],
+			[
+				"Snippet: for",
+				"Snippet: for (…) {…}"
 			],
 			[
 				"subli",
@@ -142,6 +526,7 @@
 		"height": 301.0,
 		"history":
 		[
+			"import urllib.request,os,hashlib; h = '7183a2d3e96f11eeadd761d777e62404' + 'e330c659d4bb41d3bdf022e94cab3cd0'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://sublime.wbond.net/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)",
 			"view.run_command(\"jshint\")",
 			"jshint.cmd",
 			"jshint",
@@ -159,6 +544,86 @@
 	},
 	"file_history":
 	[
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/web_service/dbaselogin.py",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/messagebox.js",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/loginscreen.js",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/label.js",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/game.js",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/nodejs/dictionary.json",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/drawable.js",
+		"/C/Program Files/Sublime Text 3/sublime.py",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/img/Consolas.bitmapfont",
+		"/d/Users/charlie/AppData/Roaming/Sublime Text 3/Packages/GitGutter/GitGutter.sublime-settings",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/TypeScriptTest.csproj.user",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/TypeScriptTest.csproj",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/mirror.bat",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/polyfill.js",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/random.js",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/sftp-config.json",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/sprite.js",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/spritebutton.js",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/panel.js",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/mouse.js",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/menu.js",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/matrix.js",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/mainmenu.js",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/main.js",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/loader.js",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/list.js",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/letters.js",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/keyboard.js",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/font.js",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/event.js",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/dictionary.js",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/debug.js",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/cookies.js",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/class.js",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/chs.js",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/button.js",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/browser.js",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/boardtile.js",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/boardgame.js",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/board.js",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/ajax.js",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/img/Fixedsys.json",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/img/Fixedsys.bitmapfont",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/img/digits.json",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/img/digits.bitmapfont",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/img/dictionary.json",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/img/Consolas_Italic.json",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/img/Consolas_Italic.bitmapfont",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/img/Consolas.json",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/img/Arial.json",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/img/Arial.bitmapfont",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/index.php",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/app.css",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/nodejs/helper.js",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/nodejs/client.js",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/SQL/mtw_procs.sql",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/oauth2callback/index.php",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/php/google.php",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/SQL/mtw_setup.sql",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/user.js",
+		"/d/Users/charlie/AppData/Roaming/Sublime Text 3/Packages/User/GitGutter.sublime-settings",
+		"/d/Users/charlie/AppData/Roaming/Sublime Text 3/Packages/SublimeGit/SublimeGit.sublime-settings",
+		"/d/Users/charlie/AppData/Roaming/Sublime Text 3/Packages/User/Github Tools.sublime-settings",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/php/login.php",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/webservice.js",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/php/HttpPost.class.php",
+		"/d/Users/charlie/AppData/Roaming/Sublime Text 3/Packages/User/Preferences.sublime-settings",
+		"/d/Users/charlie/AppData/Roaming/Sublime Text 3/Packages/Default/Preferences.sublime-settings",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/textbutton.js",
+		"/d/Users/charlie/AppData/Roaming/npm-cache/jshint/2.5.0/package/src/jshint.js",
+		"/d/Users/charlie/AppData/Roaming/Sublime Text 3/Packages/User/SublimeLinter.sublime-settings",
+		"/D/Users/charlie/AppData/Roaming/Sublime Text 3/Packages/User/jshint.sublime-build",
+		"/d/Users/charlie/AppData/Roaming/Sublime Text 3/Packages/SideBarEnhancements/Side Bar.sublime-settings",
+		"/d/Users/charlie/AppData/Roaming/Sublime Text 3/Packages/User/jshint.sublime-build",
+		"/d/Users/charlie/AppData/Roaming/Sublime Text 3/Packages/SublimeLinter/SublimeLinter.sublime-settings",
+		"/d/Users/charlie/Desktop/JavaScript.tmLanguage",
+		"/d/Users/charlie/Desktop/ActionScript.tmLanguage",
+		"/C/Temp/charlie/7zEDC8A.tmp/ActionScript.tmLanguage",
+		"/C/Program Files/Sublime Text 3/Packages/ActionScript.sublime-package",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/img/allColour.png",
 		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/ajax.js",
 		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/chs.js",
 		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/button.js",
@@ -208,13 +673,14 @@
 	],
 	"find":
 	{
-		"height": 24.0
+		"height": 34.0
 	},
 	"find_in_files":
 	{
-		"height": 0.0,
+		"height": 90.0,
 		"where_history":
 		[
+			""
 		]
 	},
 	"find_state":
@@ -222,6 +688,65 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"bestScore",
+			"scoreLabel",
+			"scoreButton",
+			"scoreLabel",
+			"scoreButton",
+			"scoreLabel",
+			"scoreButton",
+			"E_BADREFERER",
+			"origin_is_valid",
+			"encoded_dict",
+			"E_MISSINGPARAMETER",
+			"self.err",
+			"console.log",
+			"chs.User",
+			"logout",
+			"bestSeed",
+			"set Bestseed",
+			"pprint",
+			"272",
+			"closing",
+			"E_BADBOARD",
+			"E_DBASEERROR",
+			"E_BADINPUT",
+			"E_BADGAMEID",
+			"E_GAMEENDED",
+			"Error.",
+			"output",
+			"rror",
+			"encoded_dict",
+			"getJSONURL",
+			"getGlobal",
+			"getBoard",
+			"def",
+			"getScore",
+			"seconds",
+			"getOffsetTime",
+			"getCurrentTime",
+			"encoded_dict",
+			"pprint",
+			"createOrUpdatePerson",
+			"][0]",
+			"bestScore",
+			"board.bestScore",
+			"this.digits",
+			"new mtw.BoardGame",
+			"digits",
+			"cookies.get",
+			"'game",
+			"cookies",
+			"session_id",
+			".score",
+			"chs.User.",
+			"markAllWords",
+			"buttons",
+			"self.params",
+			"params",
+			"getPostData",
+			".execute",
+			"setWordHightlight",
 			"highlight",
 			"bestButton",
 			"bestLabel",
@@ -248,54 +773,24 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 2,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "TypeScriptTest/public_html/js/game.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 14272,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								10839,
-								10839
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 3587.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
 					"file": "TypeScriptTest/web_service/myapp.wsgi",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 15634,
+						"buffer_size": 12418,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								8531,
-								8531
+								1847,
+								1847
 							]
 						],
 						"settings":
@@ -305,10 +800,512 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
+						"translation.y": 970.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "TypeScriptTest/web_service/dbaselogin.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 178,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								178,
+								178
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage"
+						},
+						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "TypeScriptTest/public_html/js/game.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 17186,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4629,
+								4629
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1518.0,
+						"zoom_level": 1.0
+					},
 					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "TypeScriptTest/public_html/js/boardgame.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 9323,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 1.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "TypeScriptTest/SQL/mtw_setup.sql",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4046,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1736,
+								1736
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/SQL/SQL.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": -0.0,
+						"translation.y": 517.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "TypeScriptTest/nodejs/client.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 464,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								464,
+								464
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 14,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "TypeScriptTest/nodejs/helper.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2479,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1915,
+								1915
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 446.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "TypeScriptTest/public_html/js/board.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6048,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 2286.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "TypeScriptTest/public_html/js/chs.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 27,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								27,
+								27
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "TypeScriptTest/public_html/js/boardtile.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4213,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								430,
+								430
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": -0.0,
+						"translation.y": 47.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 11,
+					"type": "text"
+				},
+				{
+					"buffer": 10,
+					"file": "TypeScriptTest/public_html/js/drawable.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 17949,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								619,
+								619
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 10,
+					"type": "text"
+				},
+				{
+					"buffer": 11,
+					"file": "TypeScriptTest/public_html/js/event.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2472,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1451,
+								1451
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 735.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 9,
+					"type": "text"
+				},
+				{
+					"buffer": 12,
+					"file": "TypeScriptTest/public_html/oauth2callback/index.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1386,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1386,
+								1386
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 8,
+					"type": "text"
+				},
+				{
+					"buffer": 13,
+					"file": "TypeScriptTest/public_html/js/browser.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 898,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								898,
+								898
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 15,
+					"type": "text"
+				},
+				{
+					"buffer": 14,
+					"file": "/d/Users/charlie/AppData/Roaming/Sublime Text 3/Packages/User/GitGutter.sublime-settings",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1192,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1192,
+								1192
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JSON.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 16,
+					"type": "text"
+				},
+				{
+					"buffer": 15,
+					"file": "TypeScriptTest/public_html/js/util.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6476,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4184,
+								4184
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 2248.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 17,
+					"type": "text"
+				},
+				{
+					"buffer": 16,
+					"file": "TypeScriptTest/SQL/mtw_procs.sql",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2771,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								464,
+								464
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/SQL/SQL.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 13,
+					"type": "text"
+				},
+				{
+					"buffer": 17,
+					"file": "TypeScriptTest/public_html/js/mainmenu.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 7151,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								161,
+								161
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 12,
 					"type": "text"
 				}
 			]
@@ -316,11 +1313,11 @@
 	],
 	"incremental_find":
 	{
-		"height": 24.0
+		"height": 25.0
 	},
 	"input":
 	{
-		"height": 0.0
+		"height": 33.0
 	},
 	"layout":
 	{
@@ -347,11 +1344,23 @@
 	"menu_visible": true,
 	"output.exec":
 	{
-		"height": 584.0
+		"height": 467.0
 	},
 	"output.find_results":
 	{
 		"height": 0.0
+	},
+	"output.git-commit":
+	{
+		"height": 112.0
+	},
+	"output.git-pull":
+	{
+		"height": 112.0
+	},
+	"output.git-push":
+	{
+		"height": 112.0
 	},
 	"output.sftp":
 	{
@@ -364,7 +1373,7 @@
 	"project": "mtw.sublime-project",
 	"replace":
 	{
-		"height": 44.0
+		"height": 46.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -372,6 +1381,62 @@
 		"height": 0.0,
 		"selected_items":
 		[
+			[
+				"",
+				"nodejs\\client.js"
+			],
+			[
+				"mya",
+				"web_service\\myapp.wsgi"
+			],
+			[
+				"messa",
+				"public_html\\js\\messagebox.js"
+			],
+			[
+				"mtw",
+				"SQL\\mtw_setup.sql"
+			],
+			[
+				"load",
+				"public_html\\js\\loader.js"
+			],
+			[
+				"aja",
+				"public_html\\js\\ajax.js"
+			],
+			[
+				"main",
+				"public_html\\js\\mainmenu.js"
+			],
+			[
+				"webs",
+				"public_html\\js\\webservice.js"
+			],
+			[
+				"game",
+				"public_html\\js\\game.js"
+			],
+			[
+				"bo",
+				"public_html\\js\\board.js"
+			],
+			[
+				"boa",
+				"public_html\\js\\boardgame.js"
+			],
+			[
+				"mainm",
+				"public_html\\js\\mainmenu.js"
+			],
+			[
+				"gam",
+				"public_html\\js\\game.js"
+			],
+			[
+				"textb",
+				"public_html\\js\\textbutton.js"
+			],
 			[
 				"letter",
 				"TypeScriptTest\\public_html\\js\\letters.js"
@@ -387,10 +1452,6 @@
 			[
 				"draw",
 				"TypeScriptTest\\public_html\\js\\drawable.js"
-			],
-			[
-				"game",
-				"TypeScriptTest\\public_html\\js\\game.js"
 			],
 			[
 				"button",
@@ -421,11 +1482,19 @@
 	},
 	"select_symbol":
 	{
-		"height": 0.0,
+		"height": 83.0,
 		"selected_items":
 		[
+			[
+				"Drawa",
+				"chs.Drawable"
+			],
+			[
+				"draw",
+				"chs.Drawable"
+			]
 		],
-		"width": 0.0
+		"width": 392.0
 	},
 	"settings":
 	{
@@ -434,7 +1503,7 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 262.0,
+	"side_bar_width": 210.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{

@@ -95,7 +95,7 @@ var Game = (function () {
                 this.fillColour = color;
                 this.transparency = 255;
                 this.highlight = 500;
-            }
+            };
 
             scoreButton.setScore = function (score) {
                 this.scoreLabel.text = score.toString();
@@ -104,7 +104,7 @@ var Game = (function () {
                 } else if(score < currentScore) {
                     this.flash("rgb(255,0,0)");
                 }
-            }
+            };
 
             scoreButton.onUpdate = function (time, deltaTime) {
                 if(this.highlight > 0) {

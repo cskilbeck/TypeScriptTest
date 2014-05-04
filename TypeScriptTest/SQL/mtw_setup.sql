@@ -65,7 +65,6 @@ CREATE TABLE games
 	game_id			INT NOT NULL auto_increment,
 					PRIMARY KEY(game_id),
 	seed			INT NOT NULL,
-	board			CHAR(35) NOT NULL,
 	start_time		DATETIME,
 	end_time		DATETIME
 );

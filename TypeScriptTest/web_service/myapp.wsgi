@@ -54,8 +54,10 @@ class Error:
 
 # switch offable log
 
+log_output = [];
+
 def log(x, y = ""):
-    pprint.pprint(x + pprint.pformat(y, 0, 120))
+    log_output.append(pprint.pformat(x + pprint.pformat(y, 0, 120)))
     # pass
 
 # get something from the local helper
@@ -306,6 +308,7 @@ def application(environ, start_response):
     headers = [('Content-type', 'application/json')]
     output = dict()
     status = '200 OK'
+    log("--------------------------------------------------------------------------------")
     try:
         with closing(opendb()) as db:
             if not origin_is_valid(db, environ):
@@ -334,6 +337,10 @@ def application(environ, start_response):
 
     log("Output:", output)
     log("--------------------------------------------------------------------------------")
+
+    for line in log_output:
+        print(line)
+
     outputStr = json.dumps(output, indent = 4, separators=(',',': '))
     headers.append(('Content-Length', str(len(outputStr))))
     start_response(status, headers)

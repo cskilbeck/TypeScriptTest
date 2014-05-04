@@ -20,7 +20,7 @@ var Game = (function () {
         scoreButton,
         bestButton,
         bestScore,
-        scoreLabel,
+        currentScore,
         bestLabel,
         board,
         undoImage,
@@ -84,11 +84,37 @@ var Game = (function () {
             this.addChild(new chs.SpriteButton(redoImage, "scale", 850, 510, this.redo, null));
 
             scoreButton = new chs.PanelButton(chs.desktop.width - 125, 10, 120, 26, 'black', undefined, 3, 0, null, null);
-            scoreLabel = new chs.Label("0", consolas).setPosition(116, 4).setPivot(1, 0);
-            scoreButton.addChild(scoreLabel);
+            scoreButton.scoreLabel = new chs.Label("0", consolas).setPosition(116, 4).setPivot(1, 0);
+            scoreButton.addChild(scoreButton.scoreLabel);
             scoreButton.addChild(new chs.Label("Score:", consolas).setPosition(4, 4));
             scoreButton.transparency = 128;
             this.addChild(scoreButton);
+            scoreButton.highlight = 0;
+
+            scoreButton.flash = function (color) {
+                this.fillColour = color;
+                this.transparency = 255;
+                this.highlight = 500;
+            }
+
+            scoreButton.setScore = function (score) {
+                this.scoreLabel.text = score.toString();
+                if(score > currentScore) {
+                    this.flash("rgb(0,255,0)");
+                } else if(score < currentScore) {
+                    this.flash("rgb(255,0,0)");
+                }
+            }
+
+            scoreButton.onUpdate = function (time, deltaTime) {
+                if(this.highlight > 0) {
+                    this.highlight -= deltaTime;
+                    if(this.highlight <= 0) {
+                        this.fillColour = "black";
+                        this.transparency = 128;
+                    }
+                }
+            };
 
             bestButton = new chs.PanelButton(chs.desktop.width - 125, 39, 120, 26, 'black', undefined, 3, 0, this.bestClicked, this);
             bestLabel = new chs.Label("0", consolas).setPosition(116, 4).setPivot(1, 0);
@@ -104,11 +130,17 @@ var Game = (function () {
             bestButton.onUpdate = function (time, deltaTime) {
                 if (this.highlight > 0) {
                     this.highlight -= deltaTime;
-                    this.flash = 1 - this.flash;
-                    if (this.flash && this.highlight > 0) {
-                        this.transparency = 255;
-                        this.fillColour = "white";
+                    if(this.highlight > 0) {
+                        this.flash += 1;
+                        if ((this.flash % 4) !== 0) {
+                            this.transparency = 255;
+                            this.fillColour = "rgb(0,255,0)";
+                        } else {
+                            this.transparency = 255;
+                            this.fillColour = "black";
+                        }
                     } else {
+                        this.flash = 0;
                         this.transparency = 128;
                         this.fillColour = "black";
                     }
@@ -117,9 +149,13 @@ var Game = (function () {
             this.addChild(bestButton);
 
             board = new mtw.BoardGame(200, 0, this, true);
-            board.mainBoard = true;
             this.addChild(board);
             bestScore = 0;
+
+            board.addEventHandler("movecomplete", function () {
+                currentScore = board.score;
+                console.log("New current score " + currentScore.toString());
+            });
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -338,7 +374,7 @@ var Game = (function () {
                 words.addChild(button);
             }, this);
             board.changed = false;
-            scoreLabel.text = board.score.toString();
+            scoreButton.setScore(board.score);
             bestLabel.text = board.bestScore.toString();    // if board.bestScore has gone up, flash this!
 
             if (board.bestScore > bestScore) {

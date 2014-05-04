@@ -201,6 +201,7 @@
                     this.pushUndo();
                 }
                 this.setCapture(false);
+                this.dispatchEvent("movecomplete");
             }
         },
 

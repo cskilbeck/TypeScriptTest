@@ -25,53 +25,59 @@ var net = require('net');
 //                                  result: { 'definition': 'the definition' }
 //
 
+handlers = {
+
+    getscore: function(params) {
+        var board,
+            checkBoard,
+            trueBoard;
+        if (params.board !== undefined &&
+            params.seed !== undefined) {
+            board = new mtw.Board();
+            board.randomize(parseInt(params.seed, 10));
+            trueBoard = board.getAsString().split('').sort().join('');
+            checkBoard = params.board.split('').sort().join('');
+            this.valid = checkBoard.localeCompare(trueBoard) === 0;
+            if (this.valid) {
+                board.setFromString(params.board);
+                this.score = board.markAllWords();
+            }
+        }
+    },
+
+    getboard: function(params) {
+        if (params.seed !== undefined) {
+            board = new mtw.Board();
+            board.randomize(parseInt(params.seed, 10));
+            this.board = board.getAsString();
+        }
+    },
+
+    getdefinition: function(params) {
+        if (params.word !== undefined) {
+            this.definition = mtw.Dictionary.getDefinition(params.word);
+        }
+    }
+};
+
 net.createServer(function (socket) {
     "use strict";
 
     socket.on('data', function (data) {
 
         var params = chs.Util.queryStringToJSON(data.toString()),
-            board,
-            checkBoard,
-            trueBoard,
+            action,
             output = {};
 
         if (typeof params.action === 'string') {
-
-            switch (params.action.toLowerCase()) {
-
-            case 'getscore':
-                if (params.board !== undefined &&
-                    params.seed !== undefined) {
-                    board = new mtw.Board();
-                    board.randomize(parseInt(params.seed, 10));
-                    trueBoard = board.getAsString().split('').sort().join('');
-                    checkBoard = params.board.split('').sort().join('');
-                    output.valid = checkBoard.localeCompare(trueBoard) === 0;
-                    if (output.valid) {
-                        board.setFromString(params.board);
-                        board.markAllWords();
-                        output.score = board.score;
-                    }
-                }
-                break;
-
-            case 'getboard':
-                if (params.seed !== undefined) {
-                    board = new mtw.Board();
-                    board.randomize(parseInt(params.seed, 10));
-                    output.board = board.getAsString();
-                }
-                break;
-
-            case 'getdefinition':
-                if (params.word !== undefined) {
-                    output.definition = mtw.Dictionary.getDefinition(params.word);
-                }
-                break;
+            action = params.action.toLowerCase();
+            if(action in handlers) {
+                handlers[action].call(output);
             }
-            socket.write(JSON.stringify(output));
+        } else {
+            output.error = "bad action";
         }
+        socket.write(JSON.stringify(output));
     });
 
 }).listen(1338, '127.0.0.1');

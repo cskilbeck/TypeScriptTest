@@ -1,11 +1,6 @@
-
-GLOBAL.chs = {};    // global namespaces
-GLOBAL.mtw = {};
-
-var net = require('net');
-
 var dictionary = require('./dictionary.json');
 
+require('./js/chs.js');
 require('./js/util.js');
 require('./js/class.js');
 require('./js/list.js');
@@ -17,6 +12,8 @@ require('./js/tile.js');
 require('./js/board.js');
 
 mtw.Dictionary.init(dictionary);
+
+var net = require('net');
 
 // Board server: 1338
 

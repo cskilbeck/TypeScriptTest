@@ -14,6 +14,8 @@ import urllib
 import urllib2
 import pprint
 
+import dbaselogin
+
 #sys.path.append('/usr/local/www/wsgi-scripts/')
 
 #----------------------------------------------------------------------
@@ -83,10 +85,10 @@ def encoded_dict(in_dict):
 # open the database
 
 def opendb():
-    return  mdb.connect(host        = 'mtwdb.cnk16j9pzvyy.us-east-1.rds.amazonaws.com',
-                        user        = 'mtwuser',
-                        passwd      = 'mtwpassword',
-                        db          = 'mtwdb',
+    return  mdb.connect(host        = dbaselogin.host(),
+                        user        = dbaselogin.user(),
+                        passwd      = dbaselogin.password(),
+                        db          = dbaselogin.db(),
                         use_unicode = True,
                         cursorclass = MySQLdb.cursors.DictCursor,
                         charset     = 'utf8')

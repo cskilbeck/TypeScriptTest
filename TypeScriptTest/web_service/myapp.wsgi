@@ -24,7 +24,7 @@ import dbaselogin
 E_BADACTION             = [1, "Bad action", "400 Bad Request"]
 E_DBASEBUSY             = [2, "Database is busy", "500 Internal Server Error"]
 E_DBASEERROR            = [3, "Database error", "500 Internal Server Error"]
-E_BADREFERER            = [4, "Invalid request origin", "401 Unauthorized"]
+E_BADORIGIN             = [4, "Invalid request origin", "401 Unauthorized"]
 E_UNKNOWNUSER           = [5, "unknown user", "400 Bad Request"]
 E_INVALIDBOARD          = [6, "invalid board", "400 Bad Request"]
 E_MISSINGPARAMETER      = [7, "missing parameter", "400 Bad Request"]
@@ -71,18 +71,6 @@ def service(dict):
 def query_to_JSON(q):
     return dict((k, v[0]) for k, v in urlparse.parse_qs(q).iteritems())
 
-# turn a dictionary into a urlencoded string
-
-def encoded_dict(in_dict):
-    out_dict = {}
-    for k, v in in_dict.iteritems():
-        if isinstance(v, unicode):
-            v = v.encode('utf8')
-        elif isinstance(v, str):
-            v.decode('utf8') # Must be encoded in UTF-8 - set the option in the database
-        out_dict[k] = v
-    return out_dict
-
 # open the database
 
 def opendb():
@@ -104,10 +92,21 @@ def formattedTime(t):
 def get_board_score(board, seed):
     return service({ 'action': 'getscore', 'board': board, 'seed': seed })
 
+# check list of parameters in a query or post string
+
 def check_parameters(pq, strings):
     for i in strings:
         if not i in pq:
             raise(Error(E_MISSINGPARAMETER))
+
+# check http origin is in the valid list
+
+def origin_is_valid(db, environ):
+    if 'HTTP_ORIGIN' in environ:
+        with closing(db.cursor()) as cur:
+            cur.execute("SELECT COUNT(*) AS count FROM sites WHERE site_url = %(HTTP_ORIGIN)s", environ)
+            return cur.fetchone()['count'] > 0
+    return false
 
 #----------------------------------------------------------------------
 # Handler - base for all request handlers
@@ -140,7 +139,7 @@ class Handler(object):
             return self.status
 
 #----------------------------------------------------------------------
-# GET:oauthlist
+# GET:oauthlist - get a list of oauth providers
 #
 # parameters:   none
 #
@@ -157,7 +156,7 @@ class oauthlistHandler(Handler):
         self.add( { "providers": cur.fetchall() } )
 
 #----------------------------------------------------------------------
-# GET:game
+# GET:game - get board for a user's game in progress, if there is one
 #
 # parameters:   user_id     uint32
 #               seed        uint32
@@ -178,7 +177,8 @@ class gameHandler(Handler):
             self.add(row)
 
 #----------------------------------------------------------------------
-# GET:session
+# GET:session - get current or extend or create session
+#               this will become relevant when refresh tokens are used
 #
 # parameters:   session_id => "X",
 #
@@ -207,7 +207,7 @@ class sessionHandler(Handler):
             self.add(row)
 
 #----------------------------------------------------------------------
-# POST:login
+# POST:login - login a user, return a session_id
 #
 # parameters:   oauth_provider: uint32
 #               oauth_sub: string
@@ -257,7 +257,7 @@ class loginHandler(Handler):
         self.add({"session_id": session_id})
 
 #----------------------------------------------------------------------
-# action:board
+# action:board - post a new best board for a user
 #
 # parameters:
 #               board: string
@@ -298,15 +298,6 @@ class boardHandler(Handler):
         self.add({ "score": score })
 
 #----------------------------------------------------------------------
-
-def origin_is_valid(db, environ):
-    if 'HTTP_ORIGIN' in environ:
-        with closing(db.cursor()) as cur:
-            cur.execute("SELECT COUNT(*) AS count FROM sites WHERE site_url = %(HTTP_ORIGIN)s", environ)
-            return cur.fetchone()['count'] > 0
-    return false
-
-#----------------------------------------------------------------------
 # application
 #----------------------------------------------------------------------
 
@@ -318,7 +309,7 @@ def application(environ, start_response):
     try:
         with closing(opendb()) as db:
             if not origin_is_valid(db, environ):
-                raise(Error(E_BADREFERER))
+                raise(Error(E_BADORIGIN))
             headers.append(('Access-Control-Allow-Origin', environ['HTTP_ORIGIN']))
             method = environ['REQUEST_METHOD']
             query = query_to_JSON(environ.get('QUERY_STRING', ""))
@@ -330,21 +321,19 @@ def application(environ, start_response):
                 log("Post:", post)
             elif method != 'GET':
                 raise(Error(E_BADMETHOD))
-            func = query.get('action', '!nosuch') + 'Handler'
+            func = query.get('action', '!') + 'Handler'
             if not func in globals():
                 raise(Error(E_BADACTION))
             status = globals()[func](query, post, output).processRequest(db)
     except Error as e:
-        print("!")
         output.update(e.output())
         status = e.status()
     except mdb.Error, e:
-        log("Database error %d: %s" % (e.args[0], e.args[1]))
-        status = error(output, Error.E_DBASEERROR)
+        print("Database error %s: %s" % (e.args[0], e.args[1]))
+        status = "500 Internal Server Error"
 
     log("Output:", output)
     log("--------------------------------------------------------------------------------")
-    output = encoded_dict(output)
     outputStr = json.dumps(output, indent = 4, separators=(',',': '))
     headers.append(('Content-Length', str(len(outputStr))))
     start_response(status, headers)

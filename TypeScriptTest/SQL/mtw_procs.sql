@@ -19,38 +19,12 @@ begin
 	select * from `boards` inner join `people` on `people`.`facebook_id`=`boards`.`facebook_id` where `game_id`=gameID order by `score` desc, `time_stamp` asc limit placing, 9;
 end //
 
-create procedure updateRankings(in gameID int)
-begin
-	set @currentRank = 0,
-		@lastRating = null,
-		@curOffset = -1,
-		@rowNumber = 1;
-	update
-		`boards` r
-		inner join (
-			select
-				`board_id`,
-				@curOffset := @curOffset + 1 `offset`,
-				@currentRank := if(@lastRating = `score`, @currentRank, @rowNumber) `rank`,
-				-- @rowNumber := @rowNumber + if(@lastRating = `score`, 0, 1) `rowNumber`,
-				@rowNumber := @rowNumber + 1 `rowNumber`,
-				@lastRating := `score`
-			from `boards`
-			where `game_id` = gameID
-			order by `score` desc, `time_stamp` asc
-		) var on
-			var.`board_id` = r.`board_id`
-	set
-		r.`ranking` = var.`rank`,
-		r.`offset` = var.`offset`;
-end //
-
 create procedure getLB(in boardID int)
 begin
 	prepare stmt from "
-	select	game_id,
+	select	seed,
 			name,
-			boards.facebook_id,
+			boards.user_id,
 			time_stamp,
 			board,
 			@prev := @curr,
@@ -58,7 +32,7 @@ begin
 			@rank := if(@prev = @curr, @rank, @rank+1) as rank,
 			score
 	from boards
-	inner join people on boards.facebook_id = people.facebook_id,
+	inner join users on boards.user_id = users.user_id,
 			(select @curr := null, @prev := null, @rank := 0) sel1
 	order by score desc, time_stamp asc
 	limit ?, 30;";

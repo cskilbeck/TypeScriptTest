@@ -18,12 +18,12 @@ class HttpPost {
 	public $postString;
 	public $httpResponse;
 	public $ch;
-    
+
 	public function __construct($url) {
 		$this->url = $url;
 		$this->ch = curl_init( $this->url );
         $host = get_protocol() . $_SERVER['HTTP_HOST'];
-		curl_setopt( $this->ch, CURLOPT_FOLLOWLOCATION, false );
+		curl_setopt( $this->ch, CURLOPT_FOLLOWLOCATION, true );
 		curl_setopt( $this->ch, CURLOPT_RETURNTRANSFER, true );
         curl_setopt( $this->ch, CURLINFO_HEADER_OUT, true);
 		curl_setopt( $this->ch, CURLOPT_HTTPHEADER, array("Origin: $host", "HTTP_ORIGIN: $host" ));
@@ -32,7 +32,7 @@ class HttpPost {
 	public function __destruct() {
 		curl_close($this->ch);
 	}
-    
+
     public function clearPostData() {
         cur_setopt( $this->ch, CURLOPT_POST, false);
     }

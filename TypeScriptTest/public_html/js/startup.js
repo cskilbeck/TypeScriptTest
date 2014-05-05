@@ -12,7 +12,13 @@ window.onload = function () {
 
                 init: function () {
                     var pw,
-                        ph;
+                        ph,
+                        oauth2_client_id,
+                        oauth2_redirect,
+                        oauth2_server_url,
+                        oauth2_scope,
+                        oauth2_response_type,
+                        params = {};
 
                     window.onresize = function () {
                         pw = screen.clientWidth;
@@ -21,6 +27,21 @@ window.onload = function () {
                         canvas.style.left = (pw - canvas.width) / 2 + "px";
                     };
 
+                    if (chs.Cookies.get('session_id') === null) {
+                        switch(chs.Cookies.get('provider_id')) {
+                        case '1':
+                            params = {
+                                response_type: 'code',
+                                client_id: '1070809812407-drgaq8tgn9q9ill90jv5aumlap8d886s.apps.googleusercontent.com',
+                                redirect_uri: 'http://make-the-words.com/oauth2callback',
+                                scope: 'https://www.googleapis.com/auth/userinfo.profile'
+                            };
+                            document.location = 'https://accounts.google.com/o/oauth2/auth' + "?" + chs.Util.objectToQueryString(params);
+                            break;
+                        default:
+                            break;
+                        }
+                    }
                     screen = document.getElementById("screen");
                     canvas = document.getElementById("myCanvas");
                     window.onresize();

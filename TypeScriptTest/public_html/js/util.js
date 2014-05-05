@@ -163,6 +163,17 @@
 
         //////////////////////////////////////////////////////////////////////
 
+        objectToQueryString: function (obj) {
+            var str = [];
+            for(var p in obj)
+                if (obj.hasOwnProperty(p)) {
+                    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+            }
+            return str.join("&");
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
         getExtension: function (url) {
             return url.match(/(?:(?:[\w\W]+)\.)([\w\W]+?)(\?|$)/)[1].toLowerCase();
         },

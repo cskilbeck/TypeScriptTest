@@ -136,7 +136,7 @@ class Handler(object):
 
     def processRequest(self, db):
         with closing(db.cursor()) as cur:
-            self.handle(cur)
+            self.handle(cur, db)
             db.commit()
             return self.status
 
@@ -153,7 +153,7 @@ class Handler(object):
 
 class oauthlistHandler(Handler):
 
-    def handle(self, cur):
+    def handle(self, cur, db):
         cur.execute("SELECT * FROM oauth_providers WHERE oauth_provider > 0")
         self.add( { "providers": cur.fetchall() } )
 
@@ -168,7 +168,7 @@ class oauthlistHandler(Handler):
 
 class gameHandler(Handler):
 
-    def handle(self, cur):
+    def handle(self, cur, db):
         check_parameters(self.query, ['user_id', 'seed'])
 
         cur.execute("""SELECT board, score FROM boards WHERE user_id=%(user_id)s AND seed=%(seed)s""", self.query)
@@ -191,7 +191,7 @@ class gameHandler(Handler):
 
 class sessionHandler(Handler):
 
-    def handle(self, cur):
+    def handle(self, cur, db):
         check_parameters(self.query, ['session_id'])
 
         cur.execute("""SELECT users.user_id, users.name, users.picture, oauth_providers.oauth_name as providerName FROM sessions
@@ -221,7 +221,7 @@ class sessionHandler(Handler):
 
 class loginHandler(Handler):
 
-    def handle(self, cur):
+    def handle(self, cur, db):
         check_parameters(self.post, ['oauth_sub', 'oauth_provider', 'name', 'picture'])
 
         timestamp = datetime.datetime.now()
@@ -249,7 +249,7 @@ class loginHandler(Handler):
             # session expired, or didn't exist, create a new one
             cur.execute("""INSERT INTO sessions(user_id, created, expires)
                             VALUES (%(user_id)s, %(now)s, %(then)s)""", locals())
-            session_id = self.db.insert_id()
+            session_id = db.insert_id()
         else:
             # existing session, extend it
             session_id = row['session_id']
@@ -271,7 +271,7 @@ class loginHandler(Handler):
 
 class boardHandler(Handler):
 
-    def handle(self, cur):
+    def handle(self, cur, db):
         check_parameters(self.post, ['board', 'user_id', 'seed'])
 
         cur.execute("SELECT COUNT(*) AS count FROM users WHERE user_id=%(user_id)s", self.post);

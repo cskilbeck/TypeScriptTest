@@ -104,7 +104,7 @@ var MainMenu = (function () {
                     var logoutButton;
                     if (data.error !== undefined) {
                         if(chs.Cookies.get('provider_id')) {
-                            location.reload();
+                            window.location.reload();
                         }
                     } else {
                         chs.User.id = data.user_id;

@@ -6,12 +6,9 @@ delimiter //
 create procedure getLB(in boardID int, in buffer int)
 begin
 	prepare stmt from "
-	select	seed,
-			name,
-			boards.user_id,
-			time_stamp,
-			board,
-			@rank := @rank + 1 as rank,
+	select	name,
+			boards.user_id as user_id,
+			@rank := convert(@rank, unsigned) + 1 as rank,
 			score
 	from boards
 	inner join users on boards.user_id = users.user_id, (select @rank := ?) sel1
@@ -21,7 +18,7 @@ begin
 	set	@gameScore = 0,
 		@boardTimeStamp = null,
 		@leaderboard_topsize = 0,
-		@pageSize = buffer * 2 + 1,
+		@pageSize = buffer + buffer + 1,
 		@bufferOffset = buffer;
 
 	-- get the score/timestamp of the board

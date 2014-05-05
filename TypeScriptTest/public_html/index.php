@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html>
 
 <head>
@@ -44,6 +43,7 @@
     <script src="js/board.js"></script>
     <script src="js/boardtile.js"></script>
     <script src="js/boardgame.js"></script>
+    <script src="js/lb.js"></script>
     <script src="js/game.js"></script>
     <script src="js/loginscreen.js"></script>
     <script src="js/mainmenu.js"></script>

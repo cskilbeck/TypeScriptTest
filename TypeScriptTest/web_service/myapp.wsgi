@@ -2,6 +2,8 @@
 # !NOTE! this runs as (potentially) many simultaneous processes...
 #----------------------------------------------------------------------
 
+import dbaselogin
+
 import sys
 import datetime
 import socket
@@ -14,39 +16,20 @@ import urllib
 import urllib2
 import pprint
 
-#sys.path.append('/usr/local/www/wsgi-scripts/')
-
-import dbaselogin
-
-
 #----------------------------------------------------------------------
 
-E_BADACTION             = [1, "Bad action",             "400 Bad Request"]
-E_DBASEBUSY             = [2, "Database is busy",       "500 Internal Server Error"]
-E_DBASEERROR            = [3, "Database error",         "500 Internal Server Error"]
-E_BADORIGIN             = [4, "Invalid request origin", "401 Unauthorized"]
-E_UNKNOWNUSER           = [5, "unknown user",           "400 Bad Request"]
-E_INVALIDBOARD          = [6, "invalid board",          "400 Bad Request"]
-E_MISSINGPARAMETER      = [7, "missing parameter",      "400 Bad Request"]
-E_BADMETHOD             = [8, "invalid method",         "405 Method not allowed"]
+e_badaction             = { "id": 1, "msg": "bad action",             "status": "400 bad request" }
+e_dbasebusy             = { "id": 2, "msg": "database is busy",       "status": "500 internal server error" }
+e_dbaseerror            = { "id": 3, "msg": "database error",         "status": "500 internal server error" }
+e_badorigin             = { "id": 4, "msg": "invalid request origin", "status": "401 unauthorized" }
+e_unknownuser           = { "id": 5, "msg": "unknown user",           "status": "400 bad request" }
+e_invalidboard          = { "id": 6, "msg": "invalid board",          "status": "400 bad request" }
+e_missingparameter      = { "id": 7, "msg": "missing parameter",      "status": "400 bad request" }
+e_badmethod             = { "id": 8, "msg": "invalid method",         "status": "405 method not allowed" }
+e_badparameter          = { "id": 9, "msg": "bad parameter",          "status": "400 bad request" }
 
-class Error:
-
-    def __init__(self, value, message = ""):
-        self.value = value
-        self.message = message
-
-    def index(self):
-        return self.value[0]
-
-    def str(self):
-        return self.value[1]
-
-    def status(self):
-        return self.value[2]
-
-    def output(self):
-        return { "error": self.index(), "errorDescription": self.str() + self.message }
+class Error(Exception):
+    pass
 
 #----------------------------------------------------------------------
 # utils
@@ -70,7 +53,7 @@ def service(dict):
 
 # turn a urlencoded string into a dictionary, duplicate assignments are discarded
 
-def query_to_JSON(q):
+def query_to_dict(q):
     return dict((k, v[0]) for k, v in urlparse.parse_qs(q).iteritems())
 
 # open the database
@@ -99,7 +82,7 @@ def get_board_score(board, seed):
 def check_parameters(pq, strings):
     for i in strings:
         if not i in pq:
-            raise(Error(E_MISSINGPARAMETER))
+            raise(Error(e_missingparameter))
 
 # check http origin is in the valid list
 
@@ -129,8 +112,8 @@ class Handler(object):
 
     #----------------------------------------------------------------------
 
-    def err(e, extra = ""):
-        raise(Error(e, extra))
+    def err(e):
+        raise(Error(e))
 
     #----------------------------------------------------------------------
 
@@ -171,7 +154,7 @@ class gameHandler(Handler):
     def handle(self, cur, db):
         check_parameters(self.query, ['user_id', 'seed'])
 
-        cur.execute("""SELECT board, score FROM boards WHERE user_id=%(user_id)s AND seed=%(seed)s""", self.query)
+        cur.execute("""SELECT board, score, board_id FROM boards WHERE user_id=%(user_id)s AND seed=%(seed)s""", self.query)
         row = cur.fetchone()
         if row is None:
             self.add({"error": "No such board for user,seed"})
@@ -236,7 +219,7 @@ class loginHandler(Handler):
                         AND oauth_provider=%(oauth_provider)s""", self.post)
         row = cur.fetchone()
         if row is None:
-            self.err(E_DBASEERROR)
+            self.err(e_dbaseerror)
 
         user_id = row['user_id']
         user_name = row['name'];
@@ -259,7 +242,7 @@ class loginHandler(Handler):
         self.add({"session_id": session_id})
 
 #----------------------------------------------------------------------
-# action:board - post a new best board for a user
+# POST:board - post a new best board for a user
 #
 # parameters:
 #               board: string
@@ -276,14 +259,14 @@ class boardHandler(Handler):
 
         cur.execute("SELECT COUNT(*) AS count FROM users WHERE user_id=%(user_id)s", self.post);
         if cur.fetchone()['count'] == 0:
-            self.err(E_UNKNOWNUSER)
+            self.err(e_unknownuser)
 
         board = self.post['board']
         user_id = self.post['user_id']
         seed = self.post['seed']
         check = get_board_score(board, seed)
         if(not check.get('valid')):
-            self.err(E_INVALIDBOARD)
+            self.err(e_invalidboard)
 
         score = check.get('score')
         now = datetime.datetime.now()
@@ -294,10 +277,35 @@ class boardHandler(Handler):
         if row is None:
             cur.execute("""INSERT INTO boards (seed, board, score, user_id, time_stamp)
                             VALUES (%(seed)s, %(board)s, %(score)s, %(user_id)s, %(time_stamp)s)""", locals())
-        elif row['score'] < score:
-            cur.execute("""UPDATE boards SET board=%(board)s, score=%(score)s
-                            WHERE user_id=%(user_id)s AND seed=%(seed)s""", locals())
-        self.add({ "score": score })
+            board_id = db.insert_id()
+        else:
+            board_id = row['board_id']
+            if row['score'] < score:
+                cur.execute("""UPDATE boards SET board=%(board)s, score=%(score)s
+                                WHERE user_id=%(user_id)s AND seed=%(seed)s""", locals())
+        self.add({ "score": score, "board_id": board_id })
+
+#----------------------------------------------------------------------
+# GET:leaderboard - get leaderboard
+#
+# parameters:   board_id: uint32
+#               buffer: uint - how many above/below you want
+#
+# response:     a whole mess of json
+#----------------------------------------------------------------------
+
+class leaderboardHandler(Handler):
+
+    def handle(self, cur, db):
+        check_parameters(self.query, ['board_id', 'buffer'])
+        buffer = int(self.query['buffer'], 10)
+        if (buffer > 30):
+            self.err(e_badparameter)
+        cur.execute("SELECT COUNT(*) AS count FROM boards WHERE board_id = %(board_id)s", self.query)
+        if (cur.fetchone()['count'] == 0):
+            self.err(e_invalidboard)
+        cur.execute("CALL getLB(%(board_id)s, %(buffer)s)", self.query)
+        self.add({"leaderboard": cur.fetchall() })
 
 #----------------------------------------------------------------------
 # application
@@ -312,32 +320,35 @@ def application(environ, start_response):
     try:
         with closing(opendb()) as db:
             if not origin_is_valid(db, environ):
-                raise(Error(E_BADORIGIN))
+                raise(Error(e_badorigin))
             headers.append(('Access-Control-Allow-Origin', environ['HTTP_ORIGIN']))
             method = environ['REQUEST_METHOD']
-            query = query_to_JSON(environ.get('QUERY_STRING', ""))
+            query = query_to_dict(environ.get('QUERY_STRING', ""))
             post = dict()
             if method == 'POST':
-                post = query_to_JSON(environ['wsgi.input'].read(int(environ.get('CONTENT_LENGTH', 4096), 10)))  # 4096? should be enough...
+                post = query_to_dict(environ['wsgi.input'].read(int(environ.get('CONTENT_LENGTH', 4096), 10)))  # 4096? should be enough...
             elif method != 'GET':
-                raise(Error(E_BADMETHOD))
-            func = query.get('action', '!') + 'Handler'
-            if not func in globals():
-                raise(Error(E_BADACTION))
-            log("Method:", method)
+                raise(Error(e_badmethod))
             log("Action: ", query['action'])
+            log("Method:", method)
             log("Query:", query)
             log("Post:", post)
+            func = query.get('action', '!') + 'Handler'
+            if not func in globals():
+                raise(Error(e_badaction))
             status = globals()[func](query, post, output).processRequest(db)
     except Error as e:
-        output.update(e.output())
-        status = e.status()
+        d = e.args[0]
+        output = d['msg']
+        status = d['status']
     except mdb.Error, e:
         print("Database error %s: %s" % (e.args[0], e.args[1]))
         status = "500 Internal Server Error"
+    except TypeError, e:
+        print("Type error!?")
+        status = "500 Internal Server Error"
 
     log("Output:", output)
-    log("--------------------------------------------------------------------------------")
 
     for line in log_output:
         print >> sys.stderr, line.replace("\\n", "\n")

@@ -21,6 +21,7 @@ var Game = (function () {
         bestButton,
         bestScore,
         currentScore,
+        leaderBoard,
         bestLabel,
         board,
         undoImage,
@@ -28,7 +29,6 @@ var Game = (function () {
         highlightWords = [],
         deHighlightWords = [],
         menuButton;
-
 
     function setWordHightlight(word, h) {
         var i;
@@ -65,6 +65,7 @@ var Game = (function () {
             consolasItalicBold = chs.Font.load("Consolas_Italic", loader);
             undoImage = loader.load("undo.png");
             redoImage = loader.load("redo.png");
+            this.board_id = 0;
         },
 
         loadComplete: function () {
@@ -73,6 +74,9 @@ var Game = (function () {
             consolasItalic.mask = 2;
 
             consolasItalicBold.softLineSpacing = 4;
+
+            leaderBoard = new mtw.LeaderBoard(consolas, this);
+            this.addChild(leaderBoard);
 
             menuButton = new chs.TextButton("Menu", consolas, 270, 515, 100, 40, this.menu, this).setPivot(0.5, 0);
             this.addChild(menuButton);
@@ -175,6 +179,7 @@ var Game = (function () {
                     if(data.error !== undefined) {
                         // probly 1st time playing this seed
                     } else {
+                        this.board_id = data.board_id;
                         board.bestScore = data.score;
                         board.bestBoard = data.board;
                         board.bestSeed = seed;
@@ -381,7 +386,11 @@ var Game = (function () {
                 bestButton.highlight = 1000;
                 bestScore = board.bestScore;
                 if(chs.User.id) {
-                    chs.WebService.post("board", {}, { board: board.getAsString(), user_id: chs.User.id, seed: board.seed });
+                    chs.WebService.post("board", {}, { board: board.getAsString(), user_id: chs.User.id, seed: board.seed }, function (data) {
+                        if (data.error === undefined) {
+                            this.board_id = data.board_id;  // for LB tracking
+                        }
+                    }, this);
                 }
             }
         },

@@ -4,6 +4,30 @@
 		"selected_items":
 		[
 			[
+				"oatu",
+				"oauth_provider"
+			],
+			[
+				"oaut",
+				"oauth2_scope"
+			],
+			[
+				"oauth",
+				"oauth2_redirect"
+			],
+			[
+				"redi",
+				"redirect_uri"
+			],
+			[
+				"oau",
+				"oauth2_response_type"
+			],
+			[
+				"oa",
+				"oauth2_server_url"
+			],
+			[
 				"cur",
 				"currentScore"
 			],
@@ -28,20 +52,12 @@
 				"E_BADORIGIN"
 			],
 			[
-				"oau",
-				"oauth_provider"
-			],
-			[
 				"check",
 				"check_parameters"
 			],
 			[
 				"E_",
 				"E_MISSINGPARAMETER"
-			],
-			[
-				"oa",
-				"oauth_sub"
 			],
 			[
 				"R",
@@ -208,10 +224,6 @@
 				"oauth_name"
 			],
 			[
-				"oauth",
-				"oauth_providers"
-			],
-			[
 				"nod",
 				"nodejs"
 			]
@@ -223,7 +235,7 @@
 			"file": "TypeScriptTest/web_service/myapp.wsgi",
 			"settings":
 			{
-				"buffer_size": 12418,
+				"buffer_size": 12514,
 				"line_ending": "Windows"
 			}
 		},
@@ -241,6 +253,14 @@
 			{
 				"buffer_size": 17186,
 				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "mtw.sublime-project",
+			"settings":
+			{
+				"buffer_size": 86,
+				"line_ending": "Unix"
 			}
 		},
 		{
@@ -324,6 +344,14 @@
 			}
 		},
 		{
+			"file": "TypeScriptTest/public_html/php/HttpPost.class.php",
+			"settings":
+			{
+				"buffer_size": 1750,
+				"line_ending": "Windows"
+			}
+		},
+		{
 			"file": "TypeScriptTest/public_html/js/browser.js",
 			"settings":
 			{
@@ -343,7 +371,7 @@
 			"file": "TypeScriptTest/public_html/js/util.js",
 			"settings":
 			{
-				"buffer_size": 6476,
+				"buffer_size": 6851,
 				"line_ending": "Windows"
 			}
 		},
@@ -351,7 +379,45 @@
 			"file": "TypeScriptTest/SQL/mtw_procs.sql",
 			"settings":
 			{
-				"buffer_size": 2771,
+				"buffer_size": 1272,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"contents": "DELETE FROM users where oauth_provider = 0;\nINSERT INTO users (oauth_provider, oauth_sub, name, picture) VALUES\n    (0, 1,  'Bobby 123' , 'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/t1.0-1/c20.20.255.255/s160x160/550691_10151688634340207_1569799636_n.jpg'),\n    (0, 2,  'Billy 123' , 'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/t1.0-1/c20.20.255.255/s160x160/550691_10151688634340207_1569799636_n.jpg'),\n    (0, 3,  'Freddy 123', 'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/t1.0-1/c20.20.255.255/s160x160/550691_10151688634340207_1569799636_n.jpg'),\n    (0, 4,  'Jacky 123' , 'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/t1.0-1/c20.20.255.255/s160x160/550691_10151688634340207_1569799636_n.jpg'),\n    (0, 5,  'Tony 123'  , 'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/t1.0-1/c20.20.255.255/s160x160/550691_10151688634340207_1569799636_n.jpg'),\n    (0, 6,  'Bobby 234' , 'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/t1.0-1/c20.20.255.255/s160x160/550691_10151688634340207_1569799636_n.jpg'),\n    (0, 7,  'Billy 234' , 'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/t1.0-1/c20.20.255.255/s160x160/550691_10151688634340207_1569799636_n.jpg'),\n    (0, 8,  'Freddy 234', 'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/t1.0-1/c20.20.255.255/s160x160/550691_10151688634340207_1569799636_n.jpg'),\n    (0, 9,  'Jacky 234' , 'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/t1.0-1/c20.20.255.255/s160x160/550691_10151688634340207_1569799636_n.jpg'),\n    (0, 10, 'Tony 234'  , 'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/t1.0-1/c20.20.255.255/s160x160/550691_10151688634340207_1569799636_n.jpg'),\n    (0, 11, 'Bobby 234' , 'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/t1.0-1/c20.20.255.255/s160x160/550691_10151688634340207_1569799636_n.jpg'),\n    (0, 12, 'Billy 345' , 'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/t1.0-1/c20.20.255.255/s160x160/550691_10151688634340207_1569799636_n.jpg'),\n    (0, 13, 'Freddy 345', 'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/t1.0-1/c20.20.255.255/s160x160/550691_10151688634340207_1569799636_n.jpg'),\n    (0, 14, 'Jacky 345' , 'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/t1.0-1/c20.20.255.255/s160x160/550691_10151688634340207_1569799636_n.jpg'),\n    (0, 15, 'Tony 345'  , 'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/t1.0-1/c20.20.255.255/s160x160/550691_10151688634340207_1569799636_n.jpg'),\n    (0, 16, 'Bobby 456' , 'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/t1.0-1/c20.20.255.255/s160x160/550691_10151688634340207_1569799636_n.jpg'),\n    (0, 17, 'Billy 456' , 'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/t1.0-1/c20.20.255.255/s160x160/550691_10151688634340207_1569799636_n.jpg'),\n    (0, 18, 'Freddy 456', 'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/t1.0-1/c20.20.255.255/s160x160/550691_10151688634340207_1569799636_n.jpg'),\n    (0, 19, 'Jacky 456' , 'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/t1.0-1/c20.20.255.255/s160x160/550691_10151688634340207_1569799636_n.jpg'),\n    (0, 20, 'Tony 456'  , 'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/t1.0-1/c20.20.255.255/s160x160/550691_10151688634340207_1569799636_n.jpg'),\n    (0, 21, 'Bobby 567' , 'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/t1.0-1/c20.20.255.255/s160x160/550691_10151688634340207_1569799636_n.jpg'),\n    (0, 22, 'Billy 567' , 'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/t1.0-1/c20.20.255.255/s160x160/550691_10151688634340207_1569799636_n.jpg'),\n    (0, 23, 'Freddy 567', 'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/t1.0-1/c20.20.255.255/s160x160/550691_10151688634340207_1569799636_n.jpg'),\n    (0, 24, 'Jacky 567' , 'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/t1.0-1/c20.20.255.255/s160x160/550691_10151688634340207_1569799636_n.jpg'),\n    (0, 25, 'Tony 567'  , 'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/t1.0-1/c20.20.255.255/s160x160/550691_10151688634340207_1569799636_n.jpg');\n\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Bobby 123' ), now());\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Billy 123' ), now());\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Freddy 123' ), now());\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Jacky 123' ), now());\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Tony 123' ), now());\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Bobby 234' ), now());\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Billy 234' ), now());\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Freddy 234' ), now());\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Jacky 234' ), now());\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Tony 234' ), now());\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Bobby 345' ), now());\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Billy 345' ), now());\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Freddy 345' ), now());\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Jacky 345' ), now());\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Tony 345' ), now());\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Bobby 456' ), now());\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Billy 456' ), now());\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Freddy 345' ), now());\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Jacky 345' ), now());\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Tony 234' ), now());\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Bobby 123' ), now());\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Billy 123' ), now());\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Freddy 123' ), now());\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Jacky 123' ), now());\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Tony 123' ), now());\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Bobby 234' ), now());\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Billy 234' ), now());\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Freddy 234' ), now());\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Jacky 234' ), now());\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Tony 234' ), now());\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Bobby 123' ), now());\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Billy 123' ), now());\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Freddy 123' ), now());\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Jacky 123' ), now());\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Tony 123' ), now());\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Bobby 234' ), now());\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Billy 234' ), now());\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Freddy 234' ), now());\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Jacky 234' ), now());\nINSERT INTO boards (seed, board, score, user_id, time_stamp) VALUES (1, 'sreapanuduenkamorieeivuaxeemurgenob', 50, (SELECT user_id FROM users WHERE name='Tony 234' ), now());\n\n",
+			"file": "TypeScriptTest/SQL/create_bots.sql",
+			"file_size": 10438,
+			"file_write_time": 130437823538137487,
+			"settings":
+			{
+				"buffer_size": 11079,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"contents": "<!DOCTYPE html>\ns\n<html>\n\n<head>\n    <meta charset=\"utf-8\" />\n    <title>Make The Words</title>\n    <link rel=\"stylesheet\" href=\"app.css\" type=\"text/css\" />\n\n    <!--[if gte IE 9]><!-->\n    <script src=\"js/chs.js\"></script>\n    <script src=\"js/browser.js\"></script>\n    <script src=\"js/class.js\"></script>\n    <script src=\"js/user.js\"></script>\n    <script src=\"js/polyfill.js\"></script>\n    <script src=\"js/util.js\"></script>\n    <script src=\"js/event.js\"></script>\n    <script src=\"js/random.js\"></script>\n    <script src=\"js/cookies.js\"></script>\n    <script src=\"js/ajax.js\"></script>\n    <script src=\"js/webservice.js\"></script>\n    <script src=\"js/list.js\"></script>\n    <script src=\"js/timer.js\"></script>\n    <script src=\"js/matrix.js\"></script>\n    <script src=\"js/drawable.js\"></script>\n    <script src=\"js/loader.js\"></script>\n    <script src=\"js/sprite.js\"></script>\n    <script src=\"js/button.js\"></script>\n    <script src=\"js/panel.js\"></script>\n    <script src=\"js/label.js\"></script>\n    <script src=\"js/font.js\"></script>\n    <script src=\"js/textbutton.js\"></script>\n    <script src=\"js/spritebutton.js\"></script>\n    <script src=\"js/menu.js\"></script>\n    <script src=\"js/window.js\"></script>\n    <script src=\"js/messagebox.js\"></script>\n    <script src=\"js/keyboard.js\"></script>\n    <script src=\"js/mouse.js\"></script>\n    <script src=\"js/debug.js\"></script>\n    <script src=\"js/dictionary.js\"></script>\n    <script src=\"js/letters.js\"></script>\n    <script src=\"js/word.js\"></script>\n    <script src=\"js/tile.js\"></script>\n    <script src=\"js/board.js\"></script>\n    <script src=\"js/boardtile.js\"></script>\n    <script src=\"js/boardgame.js\"></script>\n    <script src=\"js/game.js\"></script>\n    <script src=\"js/loginscreen.js\"></script>\n    <script src=\"js/mainmenu.js\"></script>\n    <script src=\"js/main.js\"></script>\n    <script src=\"js/startup.js\"></script>\n    <!--<![endif]-->\n</head>\n\n<body id=\"screen\">\n\n    <!--[if lt IE 9]>\n    <div id=\"message\">\n        <h3>\n            <p>Sorry, this version of Internet Explorer isn't supported.</p>\n        </h3>\n        <p>These new ones all seem to work:</p>\n        <div>\n            <a href=\"http://windows.microsoft.com/en-us/internet-explorer/download-ie\">\n                <img class='smalllogo' src=\"http://res1.windows.microsoft.com/resbox/en/internet explorer/main/51eae848-5a97-4216-a941-d6af8e941b07_5.png\"/>\n            </a>\n        </div>\n        <div>\n            <a href=\"http://www.google.com/intl/en_us/chrome/browser/\">\n                <img class='logo' src=\"http://www.google.com/intl/en/chrome/assets/common/images/chrome_logo_2x.png\"/>\n            </a>\n        </div>\n        <div>\n            <a href=\"http://www.mozilla.org/en-US/firefox/new/\">\n                <img class='logo' src=\"http://mozorg.cdn.mozilla.net/media/img/firefox/new/header-firefox.png?2013-06\"/>\n            </a>\n        </div>\n    </div>\n    <![endif]-->\n\n    <!--[if gte IE 9]><!-->\n    <canvas id=\"myCanvas\" width=\"1000\" height=\"600\"></canvas>\n    <!--<![endif]-->\n\n</body>\n\n</html>\n",
+			"file": "TypeScriptTest/public_html/index.php",
+			"file_size": 3132,
+			"file_write_time": 130437535080718666,
+			"settings":
+			{
+				"buffer_size": 3046,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "TypeScriptTest/public_html/js/startup.js",
+			"settings":
+			{
+				"buffer_size": 3216,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "TypeScriptTest/public_html/php/google.php",
+			"settings":
+			{
+				"buffer_size": 566,
 				"line_ending": "Windows"
 			}
 		},
@@ -359,7 +425,7 @@
 			"file": "TypeScriptTest/public_html/js/mainmenu.js",
 			"settings":
 			{
-				"buffer_size": 7151,
+				"buffer_size": 7158,
 				"line_ending": "Windows"
 			}
 		}
@@ -688,6 +754,8 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"    def handle(self, cur):\n",
+			"session_id",
 			"bestScore",
 			"scoreLabel",
 			"scoreButton",
@@ -773,7 +841,7 @@
 	"groups":
 	[
 		{
-			"selected": 2,
+			"selected": 19,
 			"sheets":
 			[
 				{
@@ -782,15 +850,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 12418,
+						"buffer_size": 12514,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1847,
-								1847
+								9096,
+								9096
 							]
 						],
 						"settings":
@@ -800,10 +868,10 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 970.0,
+						"translation.y": 4159.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 4,
 					"type": "text"
 				},
 				{
@@ -831,7 +899,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 13,
 					"type": "text"
 				},
 				{
@@ -861,11 +929,39 @@
 						"translation.y": 1518.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 12,
 					"type": "text"
 				},
 				{
 					"buffer": 3,
+					"file": "mtw.sublime-project",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 86,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								86,
+								86
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JSON.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 11,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
 					"file": "TypeScriptTest/public_html/js/boardgame.js",
 					"semi_transient": false,
 					"settings":
@@ -889,11 +985,11 @@
 						"translation.y": 1.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
+					"stack_index": 14,
 					"type": "text"
 				},
 				{
-					"buffer": 4,
+					"buffer": 5,
 					"file": "TypeScriptTest/SQL/mtw_setup.sql",
 					"semi_transient": false,
 					"settings":
@@ -905,8 +1001,8 @@
 						"selection":
 						[
 							[
-								1736,
-								1736
+								1224,
+								1224
 							]
 						],
 						"settings":
@@ -915,14 +1011,14 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": -0.0,
-						"translation.y": 517.0,
+						"translation.y": 1.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 7,
+					"stack_index": 1,
 					"type": "text"
 				},
 				{
-					"buffer": 5,
+					"buffer": 6,
 					"file": "TypeScriptTest/nodejs/client.js",
 					"semi_transient": false,
 					"settings":
@@ -948,11 +1044,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 14,
+					"stack_index": 21,
 					"type": "text"
 				},
 				{
-					"buffer": 6,
+					"buffer": 7,
 					"file": "TypeScriptTest/nodejs/helper.js",
 					"semi_transient": false,
 					"settings":
@@ -978,11 +1074,11 @@
 						"translation.y": 446.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 6,
+					"stack_index": 17,
 					"type": "text"
 				},
 				{
-					"buffer": 7,
+					"buffer": 8,
 					"file": "TypeScriptTest/public_html/js/board.js",
 					"semi_transient": false,
 					"settings":
@@ -1008,11 +1104,11 @@
 						"translation.y": 2286.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 5,
+					"stack_index": 16,
 					"type": "text"
 				},
 				{
-					"buffer": 8,
+					"buffer": 9,
 					"file": "TypeScriptTest/public_html/js/chs.js",
 					"semi_transient": false,
 					"settings":
@@ -1036,11 +1132,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 15,
 					"type": "text"
 				},
 				{
-					"buffer": 9,
+					"buffer": 10,
 					"file": "TypeScriptTest/public_html/js/boardtile.js",
 					"semi_transient": false,
 					"settings":
@@ -1066,11 +1162,11 @@
 						"translation.y": 47.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 11,
+					"stack_index": 20,
 					"type": "text"
 				},
 				{
-					"buffer": 10,
+					"buffer": 11,
 					"file": "TypeScriptTest/public_html/js/drawable.js",
 					"semi_transient": false,
 					"settings":
@@ -1096,11 +1192,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 10,
+					"stack_index": 19,
 					"type": "text"
 				},
 				{
-					"buffer": 11,
+					"buffer": 12,
 					"file": "TypeScriptTest/public_html/js/event.js",
 					"semi_transient": false,
 					"settings":
@@ -1126,11 +1222,11 @@
 						"translation.y": 735.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 9,
+					"stack_index": 18,
 					"type": "text"
 				},
 				{
-					"buffer": 12,
+					"buffer": 13,
 					"file": "TypeScriptTest/public_html/oauth2callback/index.php",
 					"semi_transient": false,
 					"settings":
@@ -1142,8 +1238,8 @@
 						"selection":
 						[
 							[
-								1386,
-								1386
+								772,
+								772
 							]
 						],
 						"settings":
@@ -1156,11 +1252,39 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 8,
+					"stack_index": 6,
 					"type": "text"
 				},
 				{
-					"buffer": 13,
+					"buffer": 14,
+					"file": "TypeScriptTest/public_html/php/HttpPost.class.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1750,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								383,
+								383
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 15,
 					"file": "TypeScriptTest/public_html/js/browser.js",
 					"semi_transient": false,
 					"settings":
@@ -1186,11 +1310,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 15,
+					"stack_index": 22,
 					"type": "text"
 				},
 				{
-					"buffer": 14,
+					"buffer": 16,
 					"file": "/d/Users/charlie/AppData/Roaming/Sublime Text 3/Packages/User/GitGutter.sublime-settings",
 					"semi_transient": false,
 					"settings":
@@ -1216,24 +1340,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 16,
+					"stack_index": 23,
 					"type": "text"
 				},
 				{
-					"buffer": 15,
+					"buffer": 17,
 					"file": "TypeScriptTest/public_html/js/util.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6476,
+						"buffer_size": 6851,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								4184,
-								4184
+								5184,
+								5184
 							]
 						],
 						"settings":
@@ -1243,27 +1367,27 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 2248.0,
+						"translation.y": 1977.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 17,
+					"stack_index": 9,
 					"type": "text"
 				},
 				{
-					"buffer": 16,
+					"buffer": 18,
 					"file": "TypeScriptTest/SQL/mtw_procs.sql",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2771,
+						"buffer_size": 1272,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								464,
-								464
+								1043,
+								1043
 							]
 						],
 						"settings":
@@ -1272,27 +1396,85 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 1.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 13,
+					"stack_index": 2,
 					"type": "text"
 				},
 				{
-					"buffer": 17,
-					"file": "TypeScriptTest/public_html/js/mainmenu.js",
+					"buffer": 19,
+					"file": "TypeScriptTest/SQL/create_bots.sql",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 7151,
+						"buffer_size": 11079,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								161,
-								161
+								7184,
+								7184
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/SQL/SQL.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 208.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 20,
+					"file": "TypeScriptTest/public_html/index.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3046,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								17,
+								17
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 10,
+					"type": "text"
+				},
+				{
+					"buffer": 21,
+					"file": "TypeScriptTest/public_html/js/startup.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3216,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								309,
+								309
 							]
 						],
 						"settings":
@@ -1305,7 +1487,65 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 12,
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 22,
+					"file": "TypeScriptTest/public_html/php/google.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 566,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								259,
+								259
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 8,
+					"type": "text"
+				},
+				{
+					"buffer": 23,
+					"file": "TypeScriptTest/public_html/js/mainmenu.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 7158,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4063,
+								4063
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1078.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
 					"type": "text"
 				}
 			]
@@ -1474,11 +1714,15 @@
 	},
 	"select_project":
 	{
-		"height": 0.0,
+		"height": 500.0,
 		"selected_items":
 		[
+			[
+				"",
+				"D:\\Users\\charlie\\Projects\\TypeScriptTest\\mtw.sublime-project"
+			]
 		],
-		"width": 0.0
+		"width": 380.0
 	},
 	"select_symbol":
 	{

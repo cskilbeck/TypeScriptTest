@@ -21,14 +21,14 @@ import dbaselogin
 
 #----------------------------------------------------------------------
 
-E_BADACTION             = [1, "Bad action", "400 Bad Request"]
-E_DBASEBUSY             = [2, "Database is busy", "500 Internal Server Error"]
-E_DBASEERROR            = [3, "Database error", "500 Internal Server Error"]
+E_BADACTION             = [1, "Bad action",             "400 Bad Request"]
+E_DBASEBUSY             = [2, "Database is busy",       "500 Internal Server Error"]
+E_DBASEERROR            = [3, "Database error",         "500 Internal Server Error"]
 E_BADORIGIN             = [4, "Invalid request origin", "401 Unauthorized"]
-E_UNKNOWNUSER           = [5, "unknown user", "400 Bad Request"]
-E_INVALIDBOARD          = [6, "invalid board", "400 Bad Request"]
-E_MISSINGPARAMETER      = [7, "missing parameter", "400 Bad Request"]
-E_BADMETHOD             = [8, "invalid method", '405 Method not allowed']
+E_UNKNOWNUSER           = [5, "unknown user",           "400 Bad Request"]
+E_INVALIDBOARD          = [6, "invalid board",          "400 Bad Request"]
+E_MISSINGPARAMETER      = [7, "missing parameter",      "400 Bad Request"]
+E_BADMETHOD             = [8, "invalid method",         "405 Method not allowed"]
 
 class Error:
 

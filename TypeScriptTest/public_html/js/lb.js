@@ -12,12 +12,14 @@
             this.names = new chs.ClipRect(0, this.topLabel.height + 2, 170, chs.desktop.height - this.topLabel.height - 2);
             this.addChild(this.names);
 
-            this.scores = new chs.ClipRect(172, this.names.)
+            this.scores = new chs.ClipRect(172, this.names.y, 28, this.names.height);
+            this.addChild(this.scores);
+
 
 
         },
 
-        update: function () {
+        onUpdate: function (time, deltaTime) {
             // call webservice, get LB, update names and scores
         }
 

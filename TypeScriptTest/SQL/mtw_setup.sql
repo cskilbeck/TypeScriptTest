@@ -37,6 +37,13 @@ CREATE TABLE oauth_providers
 	oauth_icon		VARCHAR(5000)				-- url of an icon to show on login screen
 );
 
+SELECT '*** Create anon table' as '';
+CREATE TABLE anons (
+	anon_id			INT NOT NULL auto_increment,
+					PRIMARY KEY(anon_id),
+	created			DATETIME NOT NULL
+);
+
 SELECT '*** Create users table' as '';
 CREATE TABLE users
 (
@@ -106,7 +113,7 @@ CREATE VIEW users_view AS
 
 SELECT '*** Insert oauth_providers' as '';
 INSERT INTO oauth_providers (oauth_provider, oauth_name, oauth_icon) VALUES
-	(0,	'Bot',		'http://www.make-the-words.com/bot.png'),
+	(0,	'Anon',		'http://make-the-words.com/img/anon.png'),
 	(1,	'Google',	'http://www.google.com/images/logos/google_logo_41.png'),
 	(2,	'Facebook',	'https://www.facebookbrand.com/img/assets/asset.f.logo.lg.png'),
 	(3,	'Yahoo',	'https://s1.yimg.com/rz/d/yahoo_en-GB_f_p_bestfit.png'),

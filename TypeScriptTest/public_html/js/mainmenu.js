@@ -69,6 +69,7 @@ var MainMenu = (function () {
 
         loadComplete: function () {
             var session_id = chs.Cookies.get('session_id'),
+                provider_id = chs.Cookies.get('provider_id'),   // this will be null if nothing chosen or 0 if Anon or valid provider ID
                 login_error = chs.Cookies.get('login_error'),
                 buttons = [
                     "Options",
@@ -92,18 +93,19 @@ var MainMenu = (function () {
             this.button = new chs.TextButton("PLAY!", consolasItalic, pw / 2, ph / 2, 200, 50, this.playClicked, this).setPivot(0.5, 0.5);
             this.panel.addChild(this.button);
             this.addChild(this.panel);
-            if (session_id === null) {
+            if (session_id === null || provider_id === null || parseInt(provider_id, 10) === 0) {
                 buttons.push('Login');
                 callbacks.push(this.showLogin);
                 if (login_error !== null) {
                     this.panel.addChild(new chs.Label("Login error: " + login_error, consolas).setPosition(this.panel.width - 24, 16).setPivot(1, 0));
                     chs.Cookies.remove("login_error");
                 }
-            } else {
+            }
+            if (session_id !== null) {
                 chs.WebService.get('session', { session_id: session_id }, function (data) {
                     var logoutButton;
                     if (data.error !== undefined) {
-                        if(chs.Cookies.get('provider_id')) {
+                        if(provider_id !== 0) {
                             window.location.reload();
                         }
                     } else {

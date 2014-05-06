@@ -1,11 +1,11 @@
-def host():
+def db_host():
     return 'mtwdb.cnk16j9pzvyy.us-east-1.rds.amazonaws.com'
 
-def user():
+def db_user():
     return 'mtwuser'
 
-def password():
+def db_password():
     return 'mtwpassword'
 
-def db():
+def db_db():
     return 'mtwdb'

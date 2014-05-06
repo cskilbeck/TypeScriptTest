@@ -156,3 +156,5 @@ $RECYCLE.BIN/
 .DS_Store
 TypeScriptTest/OneDrive.lnk
 *.sublime-workspace
+TypeScriptTest/web_service/dbaselogin.py
+*.sublime-workspace

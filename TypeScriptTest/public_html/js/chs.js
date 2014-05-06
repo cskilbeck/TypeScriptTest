@@ -1,2 +1,2 @@
-﻿var chs = {};
+var chs = {};
 var mtw = {};

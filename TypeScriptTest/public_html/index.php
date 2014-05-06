@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <? session_start(); ?>
 =======
 <?
@@ -25,8 +26,9 @@ if(!isset($_COOKIE['session_id']) && isset($_COOKIE['provider_id'])) {
 }
 ?>
 >>>>>>> FETCH_HEAD
+=======
+>>>>>>> FETCH_HEAD
 <!DOCTYPE html>
-
 <html>
 
 <head>
@@ -121,6 +123,7 @@ if(!isset($_COOKIE['session_id']) && isset($_COOKIE['provider_id'])) {
     <script src="js/board.js"></script>
     <script src="js/boardtile.js"></script>
     <script src="js/boardgame.js"></script>
+    <script src="js/lb.js"></script>
     <script src="js/game.js"></script>
     <script src="js/loginscreen.js"></script>
     <script src="js/mainmenu.js"></script>
@@ -157,7 +160,7 @@ if(!isset($_COOKIE['session_id']) && isset($_COOKIE['provider_id'])) {
     <![endif]-->
 
     <!--[if gte IE 9]><!-->
-    <canvas id="myCanvas" width="1000" height="600"></canvas>
+    <canvas id="myCanvas" width="1280" height="720"></canvas>
     <!--<![endif]-->
 
 </body>

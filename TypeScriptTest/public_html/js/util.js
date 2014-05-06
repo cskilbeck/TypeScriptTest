@@ -1,4 +1,4 @@
-﻿//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
 
 (function () {
     "use strict";
@@ -82,19 +82,30 @@
 
         getResponseAsArray: function (xr) {
 
+            function toUint8Array(x) {
+                if (x !== null) {
+                    return new Uint8Array(x);
+                } else {
+                    return null;
+                }
+            }
+
             if (xr.response !== undefined) {
-                return new Uint8Array(xr.response);
+                return toUint8Array(xr.response);
             }
             if (xr.mozResponseArrayBuffer !== undefined) {
-                return new Uint8Array(xr.mozResponseArrayBuffer);
+                return toUint8Array(xr.mozResponseArrayBuffer);
             }
             if (xr.mozResponse !== undefined) {
-                return new Uint8Array(xr.mozResponse);
+                return toUint8Array(xr.mozResponse);
             }
             if (xr.responseArrayBuffer !== undefined) {
-                return new Uint8Array(xr.responseArrayBuffer);
+                return toUint8Array(xr.responseArrayBuffer);
             }
-            return new Uint8Array(new VBArray(xr.responseBody).toArray());
+            if (xr.responseBody !== null) {
+                return toUint8Array(new VBArray(xr.responseBody).toArray());
+            }
+            return null;
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -136,6 +147,40 @@
                 ctx.quadraticCurveTo(x, y, x + r, y);
             }
             ctx.closePath();
+        },
+
+        queryStringToJSON: function (url) {
+
+            var result = {},
+                pairs,
+                idx,
+                pair;
+            if (url) {
+                pairs = url.split('&');
+                for (idx in pairs) {
+                    pair = pairs[idx];
+                    if (pair.indexOf('=') !== -1) {
+                        pair = pair.split('=');
+                        if (!!pair[0]) {
+                            result[pair[0].toLowerCase()] = decodeURIComponent(pair[1] || '');
+                        } else {
+                            result[pair.toLowerCase()] = true;
+                        }
+                    }
+                }
+            }
+            return result;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        objectToQueryString: function (obj) {
+            var str = [];
+            for(var p in obj)
+                if (obj.hasOwnProperty(p)) {
+                    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+            }
+            return str.join("&");
         },
 
         //////////////////////////////////////////////////////////////////////

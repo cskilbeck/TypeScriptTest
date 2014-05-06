@@ -18,7 +18,6 @@ if(isset($_GET['code'])) {
         "client_id" => $oauth2_client_id,
         "client_secret" => $oauth2_secret,
         "redirect_uri" => $oauth2_redirect,
-<<<<<<< HEAD
         "grant_type" => "authorization_code"
     );
 
@@ -39,10 +38,6 @@ if(isset($_GET['code'])) {
     $_SESSION['id'] = $r->id;
     $_SESSION['name'] = $r->name;
     header('Location: http://www.make-the-words.com');
-}
-=======
-        "grant_type" => $oauth2_grant_type
-    ));
 
     // get the userinfo
     $r = call('https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=' . $r->access_token, NULL);

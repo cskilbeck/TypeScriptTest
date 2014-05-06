@@ -79,7 +79,7 @@
     <![endif]-->
 
     <!--[if gte IE 9]><!-->
-    <canvas id="myCanvas" width="1000" height="600"></canvas>
+    <canvas id="myCanvas" width="1280" height="720"></canvas>
     <!--<![endif]-->
 
 </body>

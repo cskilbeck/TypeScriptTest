@@ -82,19 +82,30 @@
 
         getResponseAsArray: function (xr) {
 
+            function toUint8Array(x) {
+                if (x !== null) {
+                    return new Uint8Array(x);
+                } else {
+                    return null;
+                }
+            }
+
             if (xr.response !== undefined) {
-                return new Uint8Array(xr.response);
+                return toUint8Array(xr.response);
             }
             if (xr.mozResponseArrayBuffer !== undefined) {
-                return new Uint8Array(xr.mozResponseArrayBuffer);
+                return toUint8Array(xr.mozResponseArrayBuffer);
             }
             if (xr.mozResponse !== undefined) {
-                return new Uint8Array(xr.mozResponse);
+                return toUint8Array(xr.mozResponse);
             }
             if (xr.responseArrayBuffer !== undefined) {
-                return new Uint8Array(xr.responseArrayBuffer);
+                return toUint8Array(xr.responseArrayBuffer);
             }
-            return new Uint8Array(new VBArray(xr.responseBody).toArray());
+            if (xr.responseBody !== null) {
+                return toUint8Array(new VBArray(xr.responseBody).toArray());
+            }
+            return null;
         },
 
         //////////////////////////////////////////////////////////////////////

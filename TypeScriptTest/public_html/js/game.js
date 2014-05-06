@@ -1,10 +1,9 @@
 //////////////////////////////////////////////////////////////////////
 // fix font util (comine channels plugin)
-// try to reauth on page refresh without a header redirect (refresh token?)
 // Mobile: Android/Chrome, iOS/Safari, Windows Phone: IE // Touch Support
 // Fix tile grabbing/moving/swapping/lerping
 // Flying scores/fizz/particles
-// Tile graphics/Score on tiles
+// Allow anonymous users in the leaderboards
 //////////////////////////////////////////////////////////////////////
 
 var Game = (function () {
@@ -15,11 +14,13 @@ var Game = (function () {
     var consolas,
         consolasItalic,
         consolasItalicBold,
+        calibri,
         arial,
         words,
         scoreButton,
         bestButton,
         bestScore,
+        retry = false,
         currentScore,
         leaderBoard,
         bestLabel,
@@ -63,6 +64,7 @@ var Game = (function () {
             arial = chs.Font.load("Arial", loader);
             consolasItalic = chs.Font.load("Consolas_Italic", loader);
             consolasItalicBold = chs.Font.load("Consolas_Italic", loader);
+            calibri = chs.Font.load("Calibri", loader);
             undoImage = loader.load("undo.png");
             redoImage = loader.load("redo.png");
             this.board_id = 0;
@@ -75,17 +77,17 @@ var Game = (function () {
 
             consolasItalicBold.softLineSpacing = 4;
 
-            leaderBoard = new mtw.LeaderBoard(consolas, this);
+            leaderBoard = new mtw.LeaderBoard(calibri, this);
             this.addChild(leaderBoard);
 
-            menuButton = new chs.TextButton("Menu", consolas, 270, 515, 100, 40, this.menu, this).setPivot(0.5, 0);
+            menuButton = new chs.TextButton("Menu", consolas, chs.desktop.width / 2, chs.desktop.height - 10, 100, 40, this.menu, this).setPivot(0.5, 1);
             this.addChild(menuButton);
 
             words = new chs.Drawable().setPosition(chs.desktop.width - 125, 70);
             this.addChild(words);
 
-            this.addChild(new chs.SpriteButton(undoImage, "scale", 800, 510, this.undo, null));
-            this.addChild(new chs.SpriteButton(redoImage, "scale", 850, 510, this.redo, null));
+            this.addChild(new chs.SpriteButton(undoImage, "scale", 900, 530, this.undo, null));
+            this.addChild(new chs.SpriteButton(redoImage, "scale", 950, 530, this.redo, null));
 
             scoreButton = new chs.PanelButton(chs.desktop.width - 125, 10, 120, 26, 'black', undefined, 3, 0, null, null);
             scoreButton.scoreLabel = new chs.Label("0", consolas).setPosition(116, 4).setPivot(1, 0);
@@ -152,7 +154,7 @@ var Game = (function () {
             };
             this.addChild(bestButton);
 
-            board = new mtw.BoardGame(200, 0, this, true);
+            board = new mtw.BoardGame(chs.desktop.width / 2, 16, this, true).setPivot(0.5, 0);
             this.addChild(board);
             bestScore = 0;
 
@@ -176,16 +178,18 @@ var Game = (function () {
             if(chs.User.id !== 0) {
                 // disable play until this comes back, either way
                 chs.WebService.get("game", { seed: seed, user_id: chs.User.id }, function (data) {
-                    if(data.error !== undefined) {
-                        // probly 1st time playing this seed
-                    } else {
-                        this.board_id = data.board_id;
-                        board.bestScore = data.score;
-                        board.bestBoard = data.board;
-                        board.bestSeed = seed;
-                        bestScore = board.bestScore;
-                        bestLabel.text = board.bestScore.toString();    // if board.bestScore has gone up, flash this!
-                        bestButton.highlight = 1000;
+                    if(data && !data.error) {
+                        if (data.score > bestScore) {
+                            this.board_id = data.board_id;
+                            board.bestScore = data.score;
+                            board.bestBoard = data.board;
+                            board.bestSeed = seed;
+                            bestScore = board.bestScore;
+                            bestLabel.text = board.bestScore.toString();    // if board.bestScore has gone up, flash this!
+                            bestButton.highlight = 1000;
+                        } else {
+
+                        }
                     }
                 }, this);
             }
@@ -272,8 +276,10 @@ var Game = (function () {
         //////////////////////////////////////////////////////////////////////
 
         menu: function () {
+            var top = {x: 0, y: 0 };
             menuButton.state = chs.Button.idle;
-            this.addChild(new chs.PopupMenu(menuButton.x, menuButton.y - 12, consolas,
+            top = menuButton.clientToScreen(top);
+            this.addChild(new chs.PopupMenu(menuButton.x, top.y - 4, consolas,
                 [
                     "Quit",
                     "Shuffle!"
@@ -382,13 +388,17 @@ var Game = (function () {
             scoreButton.setScore(board.score);
             bestLabel.text = board.bestScore.toString();    // if board.bestScore has gone up, flash this!
 
-            if (board.bestScore > bestScore) {
+            if (board.bestScore > bestScore || retry) {
                 bestButton.highlight = 1000;
                 bestScore = board.bestScore;
                 if(chs.User.id) {
                     chs.WebService.post("board", {}, { board: board.getAsString(), user_id: chs.User.id, seed: board.seed }, function (data) {
-                        if (data.error === undefined) {
+                        if (data && !data.error) {
                             this.board_id = data.board_id;  // for LB tracking
+                            retry = false;
+                        } else {
+                            console.log("Error! " + data.error);
+                            retry = true;
                         }
                     }, this);
                 }

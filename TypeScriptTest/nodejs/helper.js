@@ -1,11 +1,7 @@
-﻿
-GLOBAL.chs = {};    // global namespaces
-GLOBAL.mtw = {};
-
-var net = require('net');
-
 var dictionary = require('./dictionary.json');
 
+require('./js/chs.js');
+require('./js/util.js');
 require('./js/class.js');
 require('./js/list.js');
 require('./js/random.js');
@@ -17,29 +13,7 @@ require('./js/board.js');
 
 mtw.Dictionary.init(dictionary);
 
-var queryStringToJSON = function (url) {
-    "use strict";
-
-    var result = {},
-        pairs,
-        idx,
-        pair;
-    if (url) {
-        pairs = url.split('&');
-        for (idx in pairs) {
-            pair = pairs[idx];
-            if (pair.indexOf('=') !== -1) {
-                pair = pair.split('=');
-                if (!!pair[0]) {
-                    result[pair[0].toLowerCase()] = decodeURIComponent(pair[1] || '');
-                } else {
-                    result[pair.toLowerCase()] = true;
-                }
-            }
-        }
-    }
-    return result;
-};
+var net = require('net');
 
 // Board server: 1338
 
@@ -51,50 +25,58 @@ var queryStringToJSON = function (url) {
 //                                  result: { 'definition': 'the definition' }
 //
 
+handlers = {
+
+    getscore: function(params) {
+        var board,
+            checkBoard,
+            trueBoard;
+        if (params.board !== undefined &&
+            params.seed !== undefined) {
+            board = new mtw.Board();
+            board.randomize(parseInt(params.seed, 10));
+            trueBoard = board.getAsString().split('').sort().join('');
+            checkBoard = params.board.split('').sort().join('');
+            this.valid = checkBoard.localeCompare(trueBoard) === 0;
+            if (this.valid) {
+                board.setFromString(params.board);
+                this.score = board.markAllWords();
+            }
+        }
+    },
+
+    getboard: function(params) {
+        if (params.seed !== undefined) {
+            board = new mtw.Board();
+            board.randomize(parseInt(params.seed, 10));
+            this.board = board.getAsString();
+        }
+    },
+
+    getdefinition: function(params) {
+        if (params.word !== undefined) {
+            this.definition = mtw.Dictionary.getDefinition(params.word);
+        }
+    }
+};
+
 net.createServer(function (socket) {
     "use strict";
 
     socket.on('data', function (data) {
 
-        var params = queryStringToJSON(data.toString()),
-            board,
-            checkBoard,
-            trueBoard,
+        var params = chs.Util.queryStringToJSON(data.toString()),
+            action,
             output = {};
 
-        switch (params.action.toLowerCase()) {
-
-        case 'getscore':
-            if (params.board !== undefined &&
-                params.seed !== undefined) {
-                board = new mtw.Board();
-                board.randomize(parseInt(params.seed, 10));
-                trueBoard = board.getAsString().split('').sort().join('');
-                checkBoard = params.board.split('').sort().join('');
-                output.valid = checkBoard.localeCompare(trueBoard) === 0;
-                if (output.valid) {
-                    board.setFromString(params.board);
-                    board.markAllWords();
-                    output.score = board.score;
-                }
+        if (typeof params.action === 'string') {
+            action = params.action.toLowerCase();
+            if(action in handlers) {
+                handlers[action].call(output);
             }
-            break;
-
-        case 'getboard':
-            if (params.seed !== undefined) {
-                board = new mtw.Board();
-                board.randomize(parseInt(params.seed, 10));
-                output.board = board.getAsString();
-            }
-            break;
-
-        case 'getdefinition':
-            if (params.word !== undefined) {
-                output.definition = mtw.Dictionary.getDefinition(params.word);
-            }
-            break;
+        } else {
+            output.error = "bad action";
         }
-
         socket.write(JSON.stringify(output));
     });
 

@@ -1,4 +1,4 @@
-﻿(function () {
+(function () {
     "use strict";
 
     var net = require('net'),
@@ -17,3 +17,4 @@
     s.write(process.argv[3]);
 
 }());
+

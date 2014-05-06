@@ -1,4 +1,4 @@
-﻿chs.Cookies = (function () {
+chs.Cookies = (function () {
     "use strict";
 
     return {

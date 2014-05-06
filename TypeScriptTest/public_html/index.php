@@ -1,28 +1,4 @@
-<?
-session_start();
-require('php/HttpPost.class.php');
-if(!isset($_COOKIE['session_id']) && isset($_COOKIE['provider_id'])) {
-    switch($_COOKIE['provider_id']) {
-        case '1':
-            require('php/google.php');
-            $query_params = array(
-                        'response_type' => $oauth2_response_type,
-                        'client_id' => $oauth2_client_id,
-                        'redirect_uri' => $oauth2_redirect,
-                        'scope' => $oauth2_scope
-                        );
-            header("Location: " . $oauth2_server_url. '?' . http_build_query($query_params));
-            echo("redirect to " . $oauth2_server_url. '?' . http_build_query($query_params));
-            break;
-        case '2': header("blah.php");
-            break;
-        default:
-            echo("Provider ID is" . $_COOKIE['provider_id']);
-    }
-}
-?>
 <!DOCTYPE html>
-
 <html>
 
 <head>
@@ -67,6 +43,7 @@ if(!isset($_COOKIE['session_id']) && isset($_COOKIE['provider_id'])) {
     <script src="js/board.js"></script>
     <script src="js/boardtile.js"></script>
     <script src="js/boardgame.js"></script>
+    <script src="js/lb.js"></script>
     <script src="js/game.js"></script>
     <script src="js/loginscreen.js"></script>
     <script src="js/mainmenu.js"></script>
@@ -102,7 +79,7 @@ if(!isset($_COOKIE['session_id']) && isset($_COOKIE['provider_id'])) {
     <![endif]-->
 
     <!--[if gte IE 9]><!-->
-    <canvas id="myCanvas" width="1000" height="600"></canvas>
+    <canvas id="myCanvas" width="1280" height="720"></canvas>
     <!--<![endif]-->
 
 </body>

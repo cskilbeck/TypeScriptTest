@@ -1,10 +1,9 @@
 //////////////////////////////////////////////////////////////////////
 // fix font util (comine channels plugin)
-// try to reauth on page refresh without a header redirect (refresh token?)
 // Mobile: Android/Chrome, iOS/Safari, Windows Phone: IE // Touch Support
 // Fix tile grabbing/moving/swapping/lerping
 // Flying scores/fizz/particles
-// Tile graphics/Score on tiles
+// Allow anonymous users in the leaderboards
 //////////////////////////////////////////////////////////////////////
 
 var Game = (function () {
@@ -15,12 +14,15 @@ var Game = (function () {
     var consolas,
         consolasItalic,
         consolasItalicBold,
+        calibri,
         arial,
         words,
         scoreButton,
         bestButton,
         bestScore,
-        scoreLabel,
+        retry = false,
+        currentScore,
+        leaderBoard,
         bestLabel,
         board,
         undoImage,
@@ -28,7 +30,6 @@ var Game = (function () {
         highlightWords = [],
         deHighlightWords = [],
         menuButton;
-
 
     function setWordHightlight(word, h) {
         var i;
@@ -63,8 +64,10 @@ var Game = (function () {
             arial = chs.Font.load("Arial", loader);
             consolasItalic = chs.Font.load("Consolas_Italic", loader);
             consolasItalicBold = chs.Font.load("Consolas_Italic", loader);
+            calibri = chs.Font.load("Calibri", loader);
             undoImage = loader.load("undo.png");
             redoImage = loader.load("redo.png");
+            this.board_id = 0;
         },
 
         loadComplete: function () {
@@ -74,21 +77,50 @@ var Game = (function () {
 
             consolasItalicBold.softLineSpacing = 4;
 
-            menuButton = new chs.TextButton("Menu", consolas, 270, 515, 100, 40, this.menu, this).setPivot(0.5, 0);
+            leaderBoard = new mtw.LeaderBoard(calibri, this);
+            this.addChild(leaderBoard);
+
+            menuButton = new chs.TextButton("Menu", consolas, chs.desktop.width / 2, chs.desktop.height - 10, 100, 40, this.menu, this).setPivot(0.5, 1);
             this.addChild(menuButton);
 
             words = new chs.Drawable().setPosition(chs.desktop.width - 125, 70);
             this.addChild(words);
 
-            this.addChild(new chs.SpriteButton(undoImage, "scale", 800, 510, this.undo, null));
-            this.addChild(new chs.SpriteButton(redoImage, "scale", 850, 510, this.redo, null));
+            this.addChild(new chs.SpriteButton(undoImage, "scale", 900, 530, this.undo, null));
+            this.addChild(new chs.SpriteButton(redoImage, "scale", 950, 530, this.redo, null));
 
             scoreButton = new chs.PanelButton(chs.desktop.width - 125, 10, 120, 26, 'black', undefined, 3, 0, null, null);
-            scoreLabel = new chs.Label("0", consolas).setPosition(116, 4).setPivot(1, 0);
-            scoreButton.addChild(scoreLabel);
+            scoreButton.scoreLabel = new chs.Label("0", consolas).setPosition(116, 4).setPivot(1, 0);
+            scoreButton.addChild(scoreButton.scoreLabel);
             scoreButton.addChild(new chs.Label("Score:", consolas).setPosition(4, 4));
             scoreButton.transparency = 128;
             this.addChild(scoreButton);
+            scoreButton.highlight = 0;
+
+            scoreButton.flash = function (color) {
+                this.fillColour = color;
+                this.transparency = 255;
+                this.highlight = 500;
+            };
+
+            scoreButton.setScore = function (score) {
+                this.scoreLabel.text = score.toString();
+                if(score > currentScore) {
+                    this.flash("rgb(0,255,0)");
+                } else if(score < currentScore) {
+                    this.flash("rgb(255,0,0)");
+                }
+            };
+
+            scoreButton.onUpdate = function (time, deltaTime) {
+                if(this.highlight > 0) {
+                    this.highlight -= deltaTime;
+                    if(this.highlight <= 0) {
+                        this.fillColour = "black";
+                        this.transparency = 128;
+                    }
+                }
+            };
 
             bestButton = new chs.PanelButton(chs.desktop.width - 125, 39, 120, 26, 'black', undefined, 3, 0, this.bestClicked, this);
             bestLabel = new chs.Label("0", consolas).setPosition(116, 4).setPivot(1, 0);
@@ -104,11 +136,17 @@ var Game = (function () {
             bestButton.onUpdate = function (time, deltaTime) {
                 if (this.highlight > 0) {
                     this.highlight -= deltaTime;
-                    this.flash = 1 - this.flash;
-                    if (this.flash && this.highlight > 0) {
-                        this.transparency = 255;
-                        this.fillColour = "white";
+                    if(this.highlight > 0) {
+                        this.flash += 1;
+                        if ((this.flash % 4) !== 0) {
+                            this.transparency = 255;
+                            this.fillColour = "rgb(0,255,0)";
+                        } else {
+                            this.transparency = 255;
+                            this.fillColour = "black";
+                        }
                     } else {
+                        this.flash = 0;
                         this.transparency = 128;
                         this.fillColour = "black";
                     }
@@ -116,10 +154,14 @@ var Game = (function () {
             };
             this.addChild(bestButton);
 
-            board = new mtw.BoardGame(200, 0, this, true);
-            board.mainBoard = true;
+            board = new mtw.BoardGame(chs.desktop.width / 2, 16, this, true).setPivot(0.5, 0);
             this.addChild(board);
             bestScore = 0;
+
+            board.addEventHandler("movecomplete", function () {
+                currentScore = board.score;
+                console.log("New current score " + currentScore.toString());
+            });
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -136,15 +178,18 @@ var Game = (function () {
             if(chs.User.id !== 0) {
                 // disable play until this comes back, either way
                 chs.WebService.get("game", { seed: seed, user_id: chs.User.id }, function (data) {
-                    if(data.error !== undefined) {
-                        // probly 1st time playing this seed
-                    } else {
-                        board.bestScore = data.score;
-                        board.bestBoard = data.board;
-                        board.bestSeed = seed;
-                        bestScore = board.bestScore;
-                        bestLabel.text = board.bestScore.toString();    // if board.bestScore has gone up, flash this!
-                        bestButton.highlight = 1000;
+                    if(data && !data.error) {
+                        if (data.score > bestScore) {
+                            this.board_id = data.board_id;
+                            board.bestScore = data.score;
+                            board.bestBoard = data.board;
+                            board.bestSeed = seed;
+                            bestScore = board.bestScore;
+                            bestLabel.text = board.bestScore.toString();    // if board.bestScore has gone up, flash this!
+                            bestButton.highlight = 1000;
+                        } else {
+
+                        }
                     }
                 }, this);
             }
@@ -231,8 +276,10 @@ var Game = (function () {
         //////////////////////////////////////////////////////////////////////
 
         menu: function () {
+            var top = {x: 0, y: 0 };
             menuButton.state = chs.Button.idle;
-            this.addChild(new chs.PopupMenu(menuButton.x, menuButton.y - 12, consolas,
+            top = menuButton.clientToScreen(top);
+            this.addChild(new chs.PopupMenu(menuButton.x, top.y - 4, consolas,
                 [
                     "Quit",
                     "Shuffle!"
@@ -338,14 +385,22 @@ var Game = (function () {
                 words.addChild(button);
             }, this);
             board.changed = false;
-            scoreLabel.text = board.score.toString();
+            scoreButton.setScore(board.score);
             bestLabel.text = board.bestScore.toString();    // if board.bestScore has gone up, flash this!
 
-            if (board.bestScore > bestScore) {
+            if (board.bestScore > bestScore || retry) {
                 bestButton.highlight = 1000;
                 bestScore = board.bestScore;
                 if(chs.User.id) {
-                    chs.WebService.post("board", {}, { board: board.getAsString(), user_id: chs.User.id, seed: board.seed });
+                    chs.WebService.post("board", {}, { board: board.getAsString(), user_id: chs.User.id, seed: board.seed }, function (data) {
+                        if (data && !data.error) {
+                            this.board_id = data.board_id;  // for LB tracking
+                            retry = false;
+                        } else {
+                            console.log("Error! " + data.error);
+                            retry = true;
+                        }
+                    }, this);
                 }
             }
         },

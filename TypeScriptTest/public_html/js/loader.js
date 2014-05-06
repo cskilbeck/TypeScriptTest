@@ -1,4 +1,4 @@
-﻿//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
 
 (function () {
     "use strict";
@@ -83,22 +83,32 @@
             },
 
             processImage: function (data) {
-                this.object.src = 'data:image/png;base64,' + chs.Util.btoa(data);
+                if (data) {
+                    this.object.src = 'data:image/png;base64,' + chs.Util.btoa(data);
+                } else {
+                    this.object.src = 'http://www.underconsideration.com/brandnew/archives/google_broken_image_00_a_logo.gif';
+                }
             },
 
             processJPEG: function (data) {
-                var that = this;
-                this.object.onLoad = function () {
-                };
-                this.object.src = 'data:image/jpeg;base64,' + chs.Util.btoa(data);
+                if (data) {
+                    this.object.src = 'data:image/jpeg;base64,' + chs.Util.btoa(data);
+                } else {
+                    this.object.src = 'http://www.underconsideration.com/brandnew/archives/google_broken_image_00_a_logo.gif';
+                }
             },
 
             processJSON: function (data) {
-                chs.Util.shallowCopy(JSON.parse(data), this.object);    // fuckit
+                if (data) {
+                    chs.Util.shallowCopy(JSON.parse(data), this.object);    // fuckit
+                } else {
+                }
             },
 
             processBinary: function (data) {
-                this.object.set(data, 0);
+                if (data) {
+                    this.object.set(data, 0);
+                }
             }
         }
     });

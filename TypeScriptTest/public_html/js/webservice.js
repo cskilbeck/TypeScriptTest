@@ -1,4 +1,4 @@
-﻿(function () {
+(function () {
     "use strict";
 
     var serviceURL = "http://ec2-75-101-200-254.compute-1.amazonaws.com/mtw";

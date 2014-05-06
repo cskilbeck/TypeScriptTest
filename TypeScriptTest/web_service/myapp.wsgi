@@ -107,6 +107,7 @@ class Handler(object):
         self.query = query
         self.post = post
         self.output = output
+        self.showOutput = True
         self.status = '200 OK'
 
     #----------------------------------------------------------------------
@@ -125,6 +126,9 @@ class Handler(object):
         with closing(db.cursor()) as cur:
             self.handle(cur, db)
             db.commit()
+            if self.showOutput:
+                print >> sys.stderr, "Output:"
+                print >> sys.stderr, json.dumps(self.output, indent = 4, separators=(',',': '))
             return self.status
 
 #----------------------------------------------------------------------
@@ -234,6 +238,7 @@ def createSession(self, cur, db, d):
                         SET expires = %(then)s
                         WHERE session_id = %(session_id)s""", locals())
     self.add({"session_id": session_id})
+    self.add({"user_id": user_id})
 
 class anonHandler(Handler):
 
@@ -253,17 +258,31 @@ class anonHandler(Handler):
 #               oauth_sub: string
 #               name: string
 #               picture: string
+#               [anon_user_id]: int
 #
-# response:     session_id: uint32
+# response:     session_id: int
 #----------------------------------------------------------------------
 
 class loginHandler(Handler):
 
     def handle(self, cur, db):
         check_parameters(self.post, ['oauth_sub', 'oauth_provider', 'name', 'picture'])
-        cur.execute("""INSERT INTO users (oauth_sub, oauth_provider, name, picture)
-                        VALUES (%(oauth_sub)s, %(oauth_provider)s, %(name)s, %(picture)s)
-                        ON DUPLICATE KEY UPDATE name = %(name)s, picture = %(picture)s""", self.post)
+        if('anon_user_id' in self.post):
+            cur.execute("""SELECT COUNT(*) AS count FROM users
+                            WHERE oauth_sub=%(oauth_sub)s
+                            AND oauth_provider=%(oauth_provider)s""", self.post)
+            if cur.fetchone()['count'] == 0:
+                print >> sys.stderr, "Migrating user " + str(self.post['anon_user_id'])
+                cur.execute("""UPDATE users SET
+                                oauth_sub = %(oauth_sub)s,
+                                oauth_provider=%(oauth_provider)s,
+                                name = %(name)s,
+                                picture = %(picture)s
+                                WHERE user_id=%(anon_user_id)s""", self.post)
+        else:
+            cur.execute("""INSERT INTO users (oauth_sub, oauth_provider, name, picture)
+                            VALUES (%(oauth_sub)s, %(oauth_provider)s, %(name)s, %(picture)s)
+                            ON DUPLICATE KEY UPDATE name = %(name)s, picture = %(picture)s""", self.post)
         createSession(self, cur, db, self.post)
 
 #----------------------------------------------------------------------
@@ -337,6 +356,7 @@ class leaderboardHandler(Handler):
         cur = db.cursor()
         cur.execute("CALL getLB(%(board_id)s, %(buffer)s)", self.query)
         self.add({"leaderboard": cur.fetchall() })
+        self.showOutput = False
 
 #----------------------------------------------------------------------
 # application
@@ -397,9 +417,6 @@ def application(environ, start_response):
         raise
 
     outputStr = json.dumps(output, indent = 0, separators=(',',': '))
-
-    print >> sys.stderr, "Output..."
-
     headers.append(('Content-Length', str(len(outputStr))))
     start_response(status, headers)
     return outputStr

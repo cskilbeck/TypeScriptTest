@@ -86,6 +86,7 @@ var MainMenu = (function () {
                 pw = w / 1.25,
                 ph = h / 1.25;
 
+            provider_id = provider_id ? parseInt(provider_id, 10) : 0;
             chs.desktop.removeChild(loader);
             this.game.loadComplete();
             this.panel = new chs.Panel(w / 2, h / 2, pw, ph, "darkslategrey", "white", 25, 4, 255).setPivot(0.5, 0.5);
@@ -93,7 +94,7 @@ var MainMenu = (function () {
             this.button = new chs.TextButton("PLAY!", consolasItalic, pw / 2, ph / 2, 200, 50, this.playClicked, this).setPivot(0.5, 0.5);
             this.panel.addChild(this.button);
             this.addChild(this.panel);
-            if (session_id === null || provider_id === null || parseInt(provider_id, 10) === 0) {
+            if (session_id === null || provider_id === 0) {
                 buttons.push('Login');
                 callbacks.push(this.showLogin);
                 if (login_error !== null) {
@@ -120,16 +121,20 @@ var MainMenu = (function () {
                         }
                         this.panel.addChild(logoutButton);
                         logoutButton.addEventHandler("clicked", function () {
-                            this.addChild(
-                                new chs.MessageBox(
-                                    "You are logged in as " + chs.User.name + " with " + chs.User.providerName + ", would you like to log out?",
-                                    consolasItalic,
-                                    ['Yes, log me out', 'No'],
-                                    function (button) {
-                                        if(button === 0) {
-                                            this.logout();
-                                        }
-                            }, this, consolas));
+                            if(provider_id === 0) {
+                                this.showLogin();
+                            } else {
+                                this.addChild(
+                                    new chs.MessageBox(
+                                        "You are logged in as " + chs.User.name + " with " + chs.User.providerName + ", would you like to log out?",
+                                        consolasItalic,
+                                        ['Yes, log me out', 'No'],
+                                        function (button) {
+                                            if(button === 0) {
+                                                this.logout();
+                                            }
+                                }, this, consolas));
+                            }
                         }, this);
                     }
                 }, this);

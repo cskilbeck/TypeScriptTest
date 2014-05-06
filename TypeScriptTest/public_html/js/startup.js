@@ -18,6 +18,7 @@ window.onload = function () {
                         oauth2_server_url,
                         oauth2_scope,
                         oauth2_response_type,
+                        provider_id,
                         params = {};
 
                     window.onresize = function () {
@@ -27,7 +28,7 @@ window.onload = function () {
                         canvas.style.left = (pw - canvas.width) / 2 + "px";
                     };
 
-                    if (chs.Cookies.get('session_id') === null) {
+                    if (chs.Cookies.get('session_id') === null || chs.Cookies.get('anon_user_id') !== null) {
                         switch (chs.Cookies.get('provider_id')) {
                         case '1':
                             params = {
@@ -41,10 +42,12 @@ window.onload = function () {
                             return;
                         default:
                             // log them in as an anonymous user
-                            // allow the anonymous user_id to be converted to a real one later
+                            // allow the anonymous user_id to be converted to a real one later (anon_user_id cookie)
                             chs.WebService.post("anon", {}, {}, function(data) {
                                 if (data && !data.error) {
                                     chs.Cookies.set('session_id', data.session_id);
+                                    chs.Cookies.set('anon_user_id', data.user_id);
+                                    console.log("Set anon_user_id to " + data.user_id.toString());
                                 }
                             }, this);
                             break;

@@ -1,4 +1,9 @@
+<<<<<<< HEAD
+<?
+// oauth2callback/index.php
+=======
 <?php
+>>>>>>> FETCH_HEAD
 
 session_start();
 
@@ -13,6 +18,29 @@ if(isset($_GET['code'])) {
         "client_id" => $oauth2_client_id,
         "client_secret" => $oauth2_secret,
         "redirect_uri" => $oauth2_redirect,
+<<<<<<< HEAD
+        "grant_type" => "authorization_code"
+    );
+
+    // build a new HTTP POST request
+    $request = new HttpPost($url);
+    $request->setPostData($params);
+    $request->send();
+
+    // decode the incoming string as JSON
+    $responseObj = json_decode($request->getHttpResponse());
+
+    // get the userinfo
+    $url = 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=' . $responseObj->access_token;
+    $request = new HttpPost($url);
+    $request->send();
+    $response = $request->getHttpResponse();
+    $r = json_decode($response);
+    $_SESSION['id'] = $r->id;
+    $_SESSION['name'] = $r->name;
+    header('Location: http://www.make-the-words.com');
+}
+=======
         "grant_type" => $oauth2_grant_type
     ));
 
@@ -52,3 +80,4 @@ if(isset($_GET['code'])) {
 }
 header('Location: http://make-the-words.com');
 ?>
+>>>>>>> FETCH_HEAD

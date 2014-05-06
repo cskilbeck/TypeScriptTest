@@ -1,3 +1,33 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
+<? session_start(); ?>
+=======
+<?
+session_start();
+require('php/HttpPost.class.php');
+if(!isset($_COOKIE['session_id']) && isset($_COOKIE['provider_id'])) {
+    switch($_COOKIE['provider_id']) {
+        case '1':
+            require('php/google.php');
+            $query_params = array(
+                        'response_type' => $oauth2_response_type,
+                        'client_id' => $oauth2_client_id,
+                        'redirect_uri' => $oauth2_redirect,
+                        'scope' => $oauth2_scope
+                        );
+            header("Location: " . $oauth2_server_url. '?' . http_build_query($query_params));
+            echo("redirect to " . $oauth2_server_url. '?' . http_build_query($query_params));
+            break;
+        case '2': header("blah.php");
+            break;
+        default:
+            echo("Provider ID is" . $_COOKIE['provider_id']);
+    }
+}
+?>
+>>>>>>> FETCH_HEAD
+=======
+>>>>>>> FETCH_HEAD
 <!DOCTYPE html>
 <html>
 
@@ -5,6 +35,56 @@
     <meta charset="utf-8" />
     <title>Make The Words</title>
     <link rel="stylesheet" href="app.css" type="text/css" />
+<<<<<<< HEAD
+    <script>
+    mtw = {
+        User: {
+<?
+    if(isset($_SESSION['id']) && isset($_SESSION['name'])) {
+        echo "        id: " . $_SESSION['id'] . ",
+";
+        echo "        name: " . $_SESSION['name'] . "
+";
+    }
+?>
+        }
+    }
+    </script>
+    <script src="polyfill.js"></script>
+    <script src="chs.js"></script>
+    <script src="util.js"></script>
+    <script src="event.js"></script>
+    <script src="random.js"></script>
+    <script src="cookies.js"></script>
+    <script src="ajax.js"></script>
+    <script src="list.js"></script>
+    <script src="timer.js"></script>
+    <script src="matrix.js"></script>
+    <script src="drawable.js"></script>
+    <script src="loader.js"></script>
+    <script src="sprite.js"></script>
+    <script src="button.js"></script>
+    <script src="panel.js"></script>
+    <script src="label.js"></script>
+    <script src="font.js"></script>
+    <script src="textbutton.js"></script>
+    <script src="spritebutton.js"></script>
+    <script src="menu.js"></script>
+    <script src="window.js"></script>
+    <script src="messagebox.js"></script>
+    <script src="keyboard.js"></script>
+    <script src="mouse.js"></script>
+    <script src="debug.js"></script>
+    <script src="dictionary.js"></script>
+    <script src="word.js"></script>
+    <script src="tile.js"></script>
+    <script src="board.js"></script>
+    <script src="game.js"></script>
+    <script src="loginscreen.js"></script>
+    <script src="mainmenu.js"></script>
+    <script src="startup.js"></script>
+    <script src="main.js"></script>
+=======
 
     <!--[if gte IE 9]><!-->
     <script src="js/chs.js"></script>
@@ -50,6 +130,7 @@
     <script src="js/main.js"></script>
     <script src="js/startup.js"></script>
     <!--<![endif]-->
+>>>>>>> FETCH_HEAD
 </head>
 
 <body id="screen">
@@ -83,5 +164,8 @@
     <!--<![endif]-->
 
 </body>
+<<<<<<< HEAD
+=======
 
+>>>>>>> FETCH_HEAD
 </html>

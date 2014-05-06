@@ -61,7 +61,7 @@
           <string>browser</string>
         </key>
         <value>
-          <boolean>false</boolean>
+          <boolean>true</boolean>
         </value>
       </item>
       <item>
@@ -125,7 +125,7 @@
           <string>devel</string>
         </key>
         <value>
-          <boolean>false</boolean>
+          <boolean>true</boolean>
         </value>
       </item>
       <item>
@@ -691,26 +691,20 @@
     <SelectedLinter>JSHint</SelectedLinter>
     <FindTodos>false</FindTodos>
     <PreDefined>
-      <string>console</string>
-      <string>window</string>
-      <string>document</string>
       <string>chs</string>
-      <string>HTMLCanvasElement</string>
-      <string>Image</string>
-      <string>performance</string>
-      <string>Tile</string>
-      <string>Dictionary</string>
-      <string>Word</string>
-      <string>requestAnimFrame</string>
-      <string>Board</string>
-      <string>XMLHttpRequest</string>
       <string>Game</string>
-      <string>FB</string>
       <string>Uint8Array</string>
       <string>VBArray</string>
       <string>MainMenu</string>
       <string>LoginScreen</string>
       <string>mtw</string>
+      <string>XDomainRequest</string>
+      <string>require</string>
+      <string>process</string>
+      <string>module</string>
+      <string>GLOBAL</string>
+      <string>performance</string>
+      <string>requestAnimFrame</string>
     </PreDefined>
   </JSLintOptions>
   <BuildFileTypes>JS</BuildFileTypes>
@@ -719,5 +713,5 @@
   <IgnoreErrorStart>/*ignore jslint start*/</IgnoreErrorStart>
   <IgnoreErrorEnd>/*ignore jslint end*/</IgnoreErrorEnd>
   <IgnoreErrorLine>//ignore jslint</IgnoreErrorLine>
-  <RunOnSave>false</RunOnSave>
+  <RunOnSave>true</RunOnSave>
 </Options>

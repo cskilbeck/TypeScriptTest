@@ -1,26 +1,24 @@
+<<<<<<< HEAD
 <?
 // oauth2callback/index.php
+=======
+<?php
+>>>>>>> FETCH_HEAD
 
 session_start();
 
-require('../config.php');
-require('../HttpPost.class.php');
+require('../php/google.php');
+require('../php/HttpPost.class.php');
 
-/**
- * the OAuth server should have brought us to this page with a $_GET['code']
- */
 if(isset($_GET['code'])) {
 
-    // try to get an access token
-    $code = $_GET['code'];
-    $url = 'https://accounts.google.com/o/oauth2/token';
-
-    // this will be our POST data to send back to the OAuth server in exchange for an access token
-    $params = array(
-        "code" => $code,
+    // get an access token
+    $r = call($oauth2_tokenurl, array(
+        "code" => $_GET['code'],
         "client_id" => $oauth2_client_id,
         "client_secret" => $oauth2_secret,
         "redirect_uri" => $oauth2_redirect,
+<<<<<<< HEAD
         "grant_type" => "authorization_code"
     );
 
@@ -42,3 +40,34 @@ if(isset($_GET['code'])) {
     $_SESSION['name'] = $r->name;
     header('Location: http://www.make-the-words.com');
 }
+=======
+        "grant_type" => $oauth2_grant_type
+    ));
+
+    // get the userinfo
+    $r = call('https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=' . $r->access_token, NULL);
+
+    if(!isset($r->error)) {
+        $u = servicecall('login', array(
+              "oauth_provider" => $oauth2_provider_id,
+              "oauth_sub" => $r->id,
+              "name" => $r->name,
+              "picture" => $r->picture
+        ));
+
+        // set the session cookie and go back to the app
+        if(!isset($u->error)) {
+            setcookie('provider_id', $oauth2_provider_id, time() + 60 * 60 * 24 * 365, '/');
+            setcookie('session_id', $u->session_id, time() + 60 * 60 * 24 * 30, '/');
+        } else {
+            setcookie('login_error', urldecode($u->error), 0, '/');
+        }
+    } else {
+        setcookie('login_error', urldecode($r->message), 0, '/');
+    }
+} else if(isset($_GET['error'])) {
+    setcookie('login_error', urldecode($_GET['error']), 0, '/');
+}
+header('Location: http://make-the-words.com');
+?>
+>>>>>>> FETCH_HEAD

@@ -1,0 +1,442 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"lett",
+				"letter"
+			],
+			[
+				"lo",
+				"load"
+			],
+			[
+				"fun",
+				"function"
+			],
+			[
+				"tr",
+				"transparency"
+			],
+			[
+				"best",
+				"bestButton"
+			],
+			[
+				"for",
+				"for	for (…) {…}"
+			],
+			[
+				"window",
+				"windowDesc"
+			],
+			[
+				"o",
+				"oauth_name"
+			],
+			[
+				"oauth",
+				"oauth_providers"
+			],
+			[
+				"nod",
+				"nodejs"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "TypeScriptTest/public_html/js/game.js",
+			"settings":
+			{
+				"buffer_size": 14272,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "TypeScriptTest/web_service/myapp.wsgi",
+			"settings":
+			{
+				"buffer_size": 15634,
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 82.0,
+		"selected_items":
+		[
+			[
+				"Snippet: for",
+				"Snippet: for (…) {…}"
+			],
+			[
+				"Package Control: ",
+				"Package Control: Install Package"
+			],
+			[
+				"subli",
+				"SublimeLinter: Lint This View"
+			],
+			[
+				"packl",
+				"Package Control: Install Package"
+			],
+			[
+				"pack",
+				"Package Control: Install Package"
+			],
+			[
+				"lin",
+				"Preferences: SublimeLinter Settings – Default"
+			],
+			[
+				"sublim",
+				"SublimeLinter: Choose Lint Mode"
+			],
+			[
+				"sub",
+				"SublimeLinter: Choose Lint Mode"
+			],
+			[
+				"jshint",
+				"JSHint: Set `node` Path"
+			],
+			[
+				"jsh",
+				"JSHint"
+			],
+			[
+				"packa",
+				"Package Control: Install Package"
+			],
+			[
+				"jshin",
+				"JSHint: Set `node` Path"
+			],
+			[
+				"color",
+				"Package Control: Discover Packages"
+			],
+			[
+				"jshi",
+				"JSHint: Set Linting Preferences"
+			],
+			[
+				"js",
+				"JSHint: Set Plugin Options"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 416.0
+	},
+	"console":
+	{
+		"height": 301.0,
+		"history":
+		[
+			"view.run_command(\"jshint\")",
+			"jshint.cmd",
+			"jshint",
+			"import urllib.request,os,hashlib; h = '7183a2d3e96f11eeadd761d777e62404' + 'e330c659d4bb41d3bdf022e94cab3cd0'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://sublime.wbond.net/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/ajax.js",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/chs.js",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/button.js",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/drawable.js",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/SQL/mtw_setup.sql",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/web_service/myapp.wsgi",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/keyboard.js",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/mainmenu.js",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/tile.js",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/panel.js",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/boardtile.js",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/letters.js",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/board.js",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/word.js",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/sftp-config.json",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/mirror.bat",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/window.js",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/user.js",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/label.js",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest.sln",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/img/digits.json",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/nodejs/dictionary.json",
+		"/d/Users/chs/AppData/Roaming/Sublime Text 3/Packages/User/SublimeLinter.sublime-settings",
+		"/d/Users/chs/AppData/Roaming/Sublime Text 3/Packages/SublimeLinter/SublimeLinter.sublime-settings",
+		"/d/Users/chs/AppData/Roaming/Sublime Text 3/Packages/JSHint Gutter/JSHint.sublime-settings",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/game.js",
+		"/d/Users/chs/AppData/Roaming/Sublime Text 3/Packages/User/Preferences.sublime-settings",
+		"/d/Users/chs/AppData/Roaming/Sublime Text 3/Packages/Default/Preferences.sublime-settings",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/oauth2callback/index.php",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/nodejs/client.js",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/php/login.php",
+		"/d/Users/chs/AppData/Roaming/Sublime Text 2/Packages/JSHint Gutter/JSHint.sublime-settings",
+		"/d/Users/chs/AppData/Roaming/Sublime Text 2/Packages/Default/Default (Windows).sublime-keymap",
+		"/d/Users/chs/AppData/Roaming/Sublime Text 2/Packages/User/PHP.sublime-settings",
+		"/d/Users/chs/AppData/Roaming/Sublime Text 2/Packages/User/Preferences.sublime-settings",
+		"/C/Program Files/Sublime Text 2/Pristine Packages/Color Scheme - Default.sublime-package",
+		"/D/Users/chs/AppData/Roaming/Sublime Text 2/Packages/Theme - Default/Default.sublime-theme",
+		"/d/Users/chs/AppData/Roaming/Sublime Text 2/Packages/Default/Preferences.sublime-settings",
+		"/D/Users/chs/AppData/Roaming/Sublime Text 2/Packages/JavaScript/JavaScript.tmLanguage",
+		"/d/Users/chs/AppData/Roaming/Sublime Text 2/Packages/JSHint Gutter/.jshintrc",
+		"/d/Users/chs/AppData/Roaming/Sublime Text 2/Packages/Package Control/Package Control.sublime-settings",
+		"/d/Users/chs/AppData/Roaming/Sublime Text 2/Packages/JSHint Gutter/Default (Windows).sublime-keymap",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/browser.js",
+		"/d/Users/chs/AppData/Roaming/Sublime Text 2/Packages/User/JavaScript.sublime-settings",
+		"/d/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/mtw.sublime-project",
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/nodejs/helper.js"
+	],
+	"find":
+	{
+		"height": 24.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"highlight",
+			"bestButton",
+			"bestLabel",
+			"bestButton",
+			"bestClicked",
+			"bestscore",
+			"bestButton",
+			"wordButton",
+			"user_picture"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 1,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "TypeScriptTest/public_html/js/game.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 14272,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								10839,
+								10839
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 3587.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "TypeScriptTest/web_service/myapp.wsgi",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 15634,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								8531,
+								8531
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 24.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 584.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.sftp":
+	{
+		"height": 0.0
+	},
+	"output.unsaved_changes":
+	{
+		"height": 119.0
+	},
+	"project": "mtw.sublime-project",
+	"replace":
+	{
+		"height": 44.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+			[
+				"letter",
+				"TypeScriptTest\\public_html\\js\\letters.js"
+			],
+			[
+				"boardt",
+				"TypeScriptTest\\public_html\\js\\boardtile.js"
+			],
+			[
+				"tile",
+				"TypeScriptTest\\public_html\\js\\tile.js"
+			],
+			[
+				"draw",
+				"TypeScriptTest\\public_html\\js\\drawable.js"
+			],
+			[
+				"game",
+				"TypeScriptTest\\public_html\\js\\game.js"
+			],
+			[
+				"button",
+				"TypeScriptTest\\public_html\\js\\button.js"
+			],
+			[
+				"panel",
+				"TypeScriptTest\\public_html\\js\\panel.js"
+			],
+			[
+				"drawa",
+				"TypeScriptTest\\public_html\\js\\drawable.js"
+			],
+			[
+				"word",
+				"TypeScriptTest\\public_html\\js\\word.js"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 262.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

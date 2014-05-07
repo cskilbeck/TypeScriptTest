@@ -58,12 +58,11 @@
     chs.Panel = chs.Class({
         inherit$: [chs.Rectangle],
 
-        $: function (x, y, w, h, fillColour, outlineColour, radius, lineWidth, lineTransparency) {
+        $: function (x, y, w, h, fillColour, outlineColour, radius, lineWidth) {
             chs.Rectangle.call(this, x, y, w, h, radius);
             this.fillColour = fillColour;
             this.lineColour = outlineColour;
             this.lineWidth = lineWidth;
-            this.lineTransparency = lineTransparency;
         },
 
         onDraw: function (context) {
@@ -75,7 +74,6 @@
             if (this.lineColour !== undefined) {
                 context.strokeStyle = this.lineColour;
                 context.lineWidth = this.lineWidth || 1;
-                //context.globalAlpha = (this.lineTransparency || 255) / 255.0;
                 context.stroke();
             }
         }

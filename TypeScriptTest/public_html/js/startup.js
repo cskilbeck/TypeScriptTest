@@ -19,7 +19,8 @@ window.onload = function () {
                         oauth2_scope,
                         oauth2_response_type,
                         provider_id,
-                        params = {};
+                        params = {},
+                        url = null;
 
                     window.onresize = function () {
                         pw = screen.clientWidth;
@@ -28,39 +29,16 @@ window.onload = function () {
                         canvas.style.left = (pw - canvas.width) / 2 + "px";
                     };
 
-                    if (chs.Cookies.get('session_id') === null || chs.Cookies.get('anon_user_id') !== null) {
-                        switch (chs.Cookies.get('provider_id')) {
-                        case '1':
-                            params = {
-                                response_type: 'code',
-                                client_id: '1070809812407-drgaq8tgn9q9ill90jv5aumlap8d886s.apps.googleusercontent.com',
-                                redirect_uri: 'http://make-the-words.com/oauth2callback',
-                                scope: 'https://www.googleapis.com/auth/userinfo.profile',
-                                access_type: 'offline'
-                            };
-                            window.location.replace('https://accounts.google.com/o/oauth2/auth' + "?" + chs.Util.objectToQueryString(params));
-                            return;
-                        default:
-                            // log them in as an anonymous user
-                            // allow the anonymous user_id to be converted to a real one later (anon_user_id cookie)
-                            chs.WebService.post("anon", {}, {}, function(data) {
-                                if (data && !data.error) {
-                                    chs.Cookies.set('session_id', data.session_id);
-                                    chs.Cookies.set('anon_user_id', data.user_id);
-                                    console.log("Set anon_user_id to " + data.user_id.toString());
-                                }
-                            }, this);
-                            break;
-                        }
+                    if(chs.OAuth.login()) {
+                        screen = document.getElementById("screen");
+                        canvas = document.getElementById("myCanvas");
+                        window.onresize();
+                        context = canvas.getContext('2d');
+                        loader = new chs.Loader('img/');
+                        chs.Debug.init(context, chs.Font.load("Fixedsys", loader));
+                        loader.addEventHandler("complete", Startup.start);
+                        loader.start();
                     }
-                    screen = document.getElementById("screen");
-                    canvas = document.getElementById("myCanvas");
-                    window.onresize();
-                    context = canvas.getContext('2d');
-                    loader = new chs.Loader('img/');
-                    chs.Debug.init(context, chs.Font.load("Fixedsys", loader));
-                    loader.addEventHandler("complete", Startup.start);
-                    loader.start();
                 },
 
                 start: function () {

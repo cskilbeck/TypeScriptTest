@@ -149,6 +149,8 @@
             ctx.closePath();
         },
 
+        //////////////////////////////////////////////////////////////////////
+
         queryStringToJSON: function (url) {
 
             var result = {},

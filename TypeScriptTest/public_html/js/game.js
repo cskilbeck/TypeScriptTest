@@ -130,24 +130,21 @@ var Game = (function () {
             bestButton.highlight = 0;
             bestButton.flash = 0;
 
-            bestButton.onIdle = function () { this.fillColour = 'black'; this.transparency = 128; };
-            bestButton.onHover = function () { this.fillColour = 'black'; this.transparency = 255; };
-            bestButton.onPressed = function () { this.fillColour = 'red'; this.transparency = 128; };
+            bestButton.onIdle = function () { this.fillColour = 'black'; };
+            bestButton.onHover = function () { this.fillColour = 'black'; };
+            bestButton.onPressed = function () { this.fillColour = 'red'; };
             bestButton.onUpdate = function (time, deltaTime) {
                 if (this.highlight > 0) {
                     this.highlight -= deltaTime;
                     if(this.highlight > 0) {
                         this.flash += 1;
                         if ((this.flash % 4) !== 0) {
-                            this.transparency = 255;
                             this.fillColour = "rgb(0,255,0)";
                         } else {
-                            this.transparency = 255;
                             this.fillColour = "black";
                         }
                     } else {
                         this.flash = 0;
-                        this.transparency = 128;
                         this.fillColour = "black";
                     }
                 }

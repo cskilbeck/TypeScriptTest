@@ -1,5 +1,5 @@
 set CURDIR=%CD%
-WinSCP /command "open HostPapa" "synchronize remote -delete ""%CURDIR%\public_html"" /home/maket847/public_html" "exit"
+WinSCP /command "open HostPapa" "synchronize remote ""%CURDIR%\public_html"" /home/maket847/public_html" "exit"
 WinSCP /command "open EC2" "synchronize remote ""%CURDIR%\SQL"" /home/ec2-user/sql" "exit"
 WinSCP /command "open EC2" "synchronize remote ""%CURDIR%\web_service"" /usr/local/www/wsgi-scripts" "exit"
 WinSCP /command "open EC2" "synchronize remote ""%CURDIR%\nodejs"" /home/ec2-user/nodejs" "exit"

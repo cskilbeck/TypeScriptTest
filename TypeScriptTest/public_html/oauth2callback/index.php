@@ -1,16 +1,12 @@
-<<<<<<< HEAD
 <?
-// oauth2callback/index.php
-=======
-<?php
->>>>>>> FETCH_HEAD
-
 session_start();
 
-require('../php/google.php');
 require('../php/HttpPost.class.php');
 
-if(isset($_GET['code'])) {
+if(isset($_GET['code']) && isset($_COOKIE['provider_id'])) {
+
+    // try/catch an error here...
+    require('../php/cb' . $_COOKIE['provider_id'] . '.php')
 
     // get an access token
     $r = call($oauth2_tokenurl, array(
@@ -30,28 +26,23 @@ if(isset($_GET['code'])) {
     $responseObj = json_decode($request->getHttpResponse());
 
     // get the userinfo
-    $url = 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=' . $responseObj->access_token;
+    $url = str_replace("{ACCESS_TOKEN}", $responseObj->access_token, $oauth2_user_id_url);
     $request = new HttpPost($url);
     $request->send();
     $response = $request->getHttpResponse();
     $r = json_decode($response);
-    $_SESSION['id'] = $r->id;
-    $_SESSION['name'] = $r->name;
-    header('Location: http://www.make-the-words.com');
-
-    // get the userinfo
-    $r = call('https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=' . $r->access_token, NULL);
 
     if(!isset($r->error)) {
 
+        // got userinfo, register a session with the web service
         $params = array(
-              "oauth_provider" => $oauth2_provider_id,
-              "oauth_sub" => $r->id,
-              "name" => $r->name,
-              "picture" => $r->picture
+            "oauth_provider" => $oauth2_provider_id,
+            "oauth_sub" => $r->id,
+            "name" => $r->name,
+            "picture" => $r->picture
         );
 
-        // if user_id is set, convert that user...
+        // if anon_user_id is set, convert that user...
         if(isset($_COOKIE['anon_user_id'])) {
             $params['anon_user_id'] = $_COOKIE['anon_user_id'];
             setcookie('anon_user_id', null, time() - 3600, '/');
@@ -75,4 +66,3 @@ if(isset($_GET['code'])) {
 }
 header('Location: http://make-the-words.com');
 ?>
->>>>>>> FETCH_HEAD

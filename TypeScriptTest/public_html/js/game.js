@@ -327,7 +327,7 @@ var Game = (function () {
                 border: true,
                 borderColour: "white",
                 borderWidth: 4,
-                transparency: 224,
+                backgroundTransparency: 216,
                 modal: true
             });
 

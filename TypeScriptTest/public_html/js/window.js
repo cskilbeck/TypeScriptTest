@@ -2,7 +2,7 @@
     "use strict";
 
     chs.Window = chs.Class({
-        inherit$: [chs.Panel],
+        inherit$: [chs.Drawable],
 
         $: function (desc) {
             var hasCloseButton = (desc.closeButton === undefined) ? false : desc.closeButton,
@@ -18,7 +18,12 @@
                 titleBarHeight = Math.max(hasTitleBar ? desc.font.height * captionScale + borderWidth * 4 : 0, radius),
                 titleBarWidth = desc.width;
 
-            chs.Panel.call(this, desc.x, desc.y, desc.width, desc.height, bgcol, undefined, radius, 0);
+            chs.Drawable.call(this);
+            this.dimensions = { width: desc.width, height: desc.height };
+            this.setPosition(desc.x, desc.y);
+
+            this.panel = new chs.Panel(0, 0, desc.width, desc.height, bgcol, undefined, radius, 0);
+            this.addChild(this.panel);
 
             if (hasCloseButton) {
                 titleBarWidth -= titleBarHeight;
@@ -84,8 +89,8 @@
                 };
             }
 
-            if (desc.transparency !== undefined) {
-                this.client.transparency = desc.transparency;
+            if(desc.backgroundTransparency !== undefined) {
+                this.panel.transparency = desc.backgroundTransparency;
             }
 
             if (desc.modal !== undefined) {
@@ -95,9 +100,11 @@
 
         height: {
             get: function () {
-                return this.clip.height;
+                return this.dimensions.height;
             },
             set: function (h) {
+                this.dimensions.height = h;
+                this.panel.height = h;
                 this.clip.height = h;
                 this.client.height = h - this.clientOffset;
                 if (this.border) {
@@ -109,9 +116,11 @@
 
         width: {
             get: function () {
-                return this.clip.width;
+                return this.dimensions.width;
             },
             set: function (w) {
+                this.dimensions.width = w;
+                this.panel.width = w;
                 this.clip.width = w;
                 this.client.width = w;
                 if (this.border) {

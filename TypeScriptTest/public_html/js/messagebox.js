@@ -61,12 +61,15 @@
     });
 
     chs.MessageBox = chs.Class({
-        inherit$: [chs.Panel],
+        inherit$: [chs.Drawable],
 
         $: function (text, textFont, buttons, callback, context, buttonFont) {
-            chs.Panel.call(this, 0, 0, chs.desktop.width, chs.desktop.height, "black");
-            this.transparency = 96;
+            chs.Drawable.call(this);
+            this.panel = new chs.Panel(0, 0, chs.desktop.width, chs.desktop.height, "black");
+            this.panel.transparency = 96;
             this.msgBox = new chs.MessageWindow(text, textFont, buttons, callback, context, buttonFont);
+            this.msgBox.transparency = 192;
+            this.addChild(this.panel);
             this.addChild(this.msgBox);
             this.msgBox.addEventHandler('closing', function () {
                 this.close();

@@ -209,13 +209,14 @@
 
         //////////////////////////////////////////////////////////////////////
 
-        draw: function (context, matrix) {
+        draw: function (context, matrix, transparency) {
             var self = this.drawableData,
                 m,
                 t,
                 d,
                 c,
-                p;
+                p,
+                tr;
             if (self.visible) {
                 if (self.reorder) {
                     self.children.sort(function (a, b) {
@@ -227,10 +228,11 @@
                 self.pickMatrix = self.globalMatrix.inverse();
                 context.save();
                 self.globalMatrix.setContextTransform(context);
-                context.globalAlpha = self.transparency / 255;
+                tr = (transparency * self.transparency) / 255;
+                context.globalAlpha = tr / 255;
                 this.onDraw(context);
                 for (c = self.children.begin() ; c !== self.children.end() ; c = c.next) {
-                    c.item.draw(context, self.globalMatrix);
+                    c.item.draw(context, self.globalMatrix, tr);
                 }
                 context.restore();
             }

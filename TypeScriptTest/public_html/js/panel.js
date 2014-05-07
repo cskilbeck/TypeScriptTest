@@ -42,7 +42,7 @@
 
     chs.ClipRect = chs.Class({
         inherit$: [chs.Rectangle],
-        
+
         $: function (x, y, w, h, radius) {
             chs.Rectangle.call(this, x, y, w, h, radius);
         },
@@ -75,7 +75,7 @@
             if (this.lineColour !== undefined) {
                 context.strokeStyle = this.lineColour;
                 context.lineWidth = this.lineWidth || 1;
-                context.globalAlpha = (this.lineTransparency || 255) / 255.0;
+                //context.globalAlpha = (this.lineTransparency || 255) / 255.0;
                 context.stroke();
             }
         }
@@ -85,7 +85,7 @@
 
     chs.Line = chs.Class({
         inherit$: [chs.Drawable],
-        
+
         $: function (x1, y1, x2, y2, colour, width) {
             chs.Drawable.call(this);
             this.x1 = x1;

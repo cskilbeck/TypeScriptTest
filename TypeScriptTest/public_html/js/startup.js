@@ -79,7 +79,7 @@ window.onload = function () {
                     chs.Keyboard.update();
                     chs.Mouse.update(chs.desktop);
                     chs.desktop.update(chs.Timer.time, chs.Timer.delta);
-                    chs.desktop.draw(context, chs.Matrix.identity());
+                    chs.desktop.draw(context, chs.Matrix.identity(), 255);
                     chs.Debug.draw();
                     requestAnimFrame(Startup.run);
                 }

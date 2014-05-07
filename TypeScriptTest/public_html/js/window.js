@@ -85,7 +85,7 @@
             }
 
             if (desc.transparency !== undefined) {
-                this.transparency = desc.transparency;
+                this.client.transparency = desc.transparency;
             }
 
             if (desc.modal !== undefined) {

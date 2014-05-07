@@ -344,6 +344,7 @@ var Game = (function () {
                     a = chs.Util.ease(chs.Util.ease(this.age));
                     this.rotation = (a - 1) * 3.14159265 * 0.5;
                     this.setScale(a);
+                    this.transparency = (this.age - 0.5) * 510;
                 }
             };
             scoreLabel = new chs.Label(w.score.toString() + " points", consolasItalic);

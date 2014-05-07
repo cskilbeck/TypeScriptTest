@@ -22,7 +22,7 @@ var MainMenu = (function () {
                     this.image = new chs.Sprite(img);
                     this.clipRect.addChild(this.image);
                 });
-                this.border = new chs.Panel(0, 0, this.width, this.height, undefined, "black", this.clipRect.radius, 2, 255);
+                this.border = new chs.OutlineRectangle(0, 0, this.width, this.height, this.clipRect.radius, "black", 3);
                 this.addChild(this.border);
                 this.loader.start();
                 this.onIdle = function () { this.setPosition(this.org.x, this.org.y); this.border.lineColour = "black"; };
@@ -132,7 +132,7 @@ var MainMenu = (function () {
                                             if(button === 0) {
                                                 this.logout();
                                             }
-                                }, this, consolas));
+                                        }, this, consolas));
                             }
                         }, this);
                     }

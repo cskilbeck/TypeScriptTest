@@ -4,7 +4,9 @@
     chs.OAuth = chs.Class({
 
         static$: {
-            go: function () {
+            login: function () {
+                var params,
+                    url = null;
                 if (chs.Cookies.get('session_id') === null || chs.Cookies.get('anon_user_id') !== null) {
                     switch (chs.Cookies.get('provider_id')) {
                     // 1: Google

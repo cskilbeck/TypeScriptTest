@@ -8,20 +8,22 @@
         $: function (text, font, x, y, w, h, click, context, radius) {
             chs.Button.call(this, click, context);
             chs.Drawable.call(this);
-            this.panel = new chs.Panel(this, x, y, w, h, "darkSlateGrey", "white", radius === undefined ? h / 3 : radius, 3);
+            this.dimensions = { width: w, height: h };
+            this.setPosition(x, y);
+            this.panel = new chs.Panel(0, 0, w, h, "darkSlateGrey", "white", radius === undefined ? h / 3 : radius, 3);
             this.addChild(this.panel);
             this.label = new chs.Label(text, font);
             this.label.setPivot(0.5, font.midPivot);
+            this.label.setPosition(this.width / 2, this.height / 2);
+            this.addChild(this.label);
+            this.panel.width = Math.max(this.panel.width, this.label.width + 16);
+
             this.idleFillColour = 'darkSlateGrey';
             this.idleLineColour = 'white';
             this.hoverFillColour = 'slateGrey';
             this.hoverLineColour = 'white';
             this.pressedFillColour = 'lightSlateGrey';
             this.pressedLineColour = 'darkSlateGrey';
-            this.addChild(this.label);
-            this.panel.width = Math.max(this.width, this.label.width + 16);
-            this.label.setPosition(this.width / 2, this.height / 2);
-            this.addChild(this.label);
         },
 
         onHover: function () {

@@ -12,7 +12,10 @@
             chs.Drawable.call(this);
             this.setPosition(x, y);
             this.dimensions = { width: w, height: h };
-            this.radius = radius || 0;
+            this.radius = 0;
+            if(radius !== undefined) {
+                this.radius = radius;
+            }
         },
 
         width: {
@@ -34,7 +37,7 @@
         },
 
         onDraw: function (context) {
-            if(radius) {
+            if(this.radius > 0) {
                 chs.Util.roundRect(context, 0, 0, this.width, this.height, this.radius);
             } else {
                 chs.Util.rect(context, 0, 0, this.width, this.height);
@@ -67,10 +70,14 @@
             this.fillColour = fillColour;
         },
 
-        onDraw: function (context) {
-            chs.Rectangle.prototype.onDraw.call(this, context);
+        drawIt: function (context) {
             context.fillStyle = this.fillColour;
             context.fill();
+        },
+
+        onDraw: function (context) {
+            chs.Rectangle.prototype.onDraw.call(this, context);
+            this.drawIt(context);
         }
     });
 
@@ -82,14 +89,18 @@
         $: function (x, y, w, h, radius, lineColour, lineWidth) {
             chs.Rectangle.call(this, x, y, w, h, radius);
             this.lineColour = lineColour;
-            this.lineWidth = lineWidth || 1;
+            this.lineWidth = lineWidth === undefined ? 1 : lineWidth;
+        },
+
+        drawIt: function (context) {
+            context.lineWidth = this.lineWidth;
+            context.strokeStyle = this.lineColour;
+            context.stroke();
         },
 
         onDraw: function (context) {
             chs.Rectangle.prototype.onDraw.call(this, context);
-            context.strokeWidth = this.lineWidth;
-            context.strokeStyle = this.lineColour;
-            context.stroke();
+            this.drawIt(context);
         }
     });
 
@@ -101,17 +112,17 @@
         $: function (x, y, w, h, fillColour, lineColour, radius, lineWidth) {
             chs.Rectangle.call(this, x, y, w, h, radius);
             this.fillColour = fillColour;
-            this.lineColour = outlineColour;
+            this.lineColour = lineColour;
             this.lineWidth = lineWidth || 1;
         },
 
         onDraw: function (context) {
             chs.Rectangle.prototype.onDraw.call(this, context);
             if (this.fillColour !== undefined) {
-                chs.SolidRectangle.prototype.onDraw.call(this, context);
+                chs.SolidRectangle.prototype.drawIt.call(this, context);
             }
             if (this.lineColour !== undefined) {
-                chs.OutlineRectangle.prototype.onDraw.call(this, context);
+                chs.OutlineRectangle.prototype.drawIt.call(this, context);
             }
         }
     });

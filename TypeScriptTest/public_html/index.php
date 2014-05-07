@@ -9,6 +9,7 @@
     <script src="js/browser.js"></script>
     <script src="js/class.js"></script>
     <script src="js/user.js"></script>
+    <script src="js/oauth.js"></script>
     <script src="js/polyfill.js"></script>
     <script src="js/util.js"></script>
     <script src="js/event.js"></script>

@@ -28,7 +28,7 @@
             chs.Drawable.call(this);
             this.setPosition(x, y);
             this.dimensions = { width: w, height: h };
-            this.clip = new chs.ClipRect(0, 0, w, h, 8);
+            this.clip = new chs.ClipRect(0, 0, w, h, 6);
             this.addChild(this.clip);
             this.transparency = 224;
             this.font = font;
@@ -60,11 +60,11 @@
                 ftb.index = i++;
                 ftb.lineColour = "white";
                 ftb.lineTransparency = 255;
-                ftb.onIdle = function () { this.fillColour = 'black'; this.transparency = 192; };
-                ftb.onHover = function () { this.fillColour = 'slategrey'; this.transparency = 255; };
-                ftb.onPressed = function () { this.fillColour = 'darkslategrey'; this.transparency = 255; };
-                ftb.fillColour = 'black';
-                ftb.transparency = 192;
+                ftb.onIdle = function () { this.panel.fillColour = 'black'; this.panel.transparency = 192; };
+                ftb.onHover = function () { this.panel.fillColour = 'slategrey'; this.panel.transparency = 255; };
+                ftb.onPressed = function () { this.panel.fillColour = 'darkslategrey'; this.panel.transparency = 255; };
+                ftb.panel.fillColour = 'black';
+                ftb.panel.transparency = 192;
                 switch (align) {
                 case '<':
                     ftb.label.setPivot(0, font.midPivot);
@@ -79,7 +79,7 @@
                 yp += font.height + 16;
                 this.buttons.push(ftb);
             }, this);
-            this.addChild(new chs.Panel(0, 0, w, h, undefined, "white", 8, 3, 255));
+            this.addChild(new chs.OutlineRectangle(0, 0, w, h, 6, "white", 3)); // border
         }
     });
 

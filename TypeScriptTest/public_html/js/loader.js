@@ -81,7 +81,10 @@
                 this.bytesReceived = e.loaded;
             },
 
-            onLoaded: function (url, data) {
+            onLoaded: function (url, data, contentType) {
+                switch(contentType) {
+                    case 'image/png':
+                }
                 this.finalize.call(this, data);
                 this.inProgress = true;
                 this.loaded = true;

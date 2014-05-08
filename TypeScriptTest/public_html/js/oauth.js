@@ -28,7 +28,7 @@
                             redirect_uri: 'http://make-the-words.com/oauth2callback',
                             scope: 'wl.basic wl.offline_access wl.signin'
                         };
-                        url = 'https://https://login.live.com/oauth20_authorize.srf';
+                        url = 'https://login.live.com/oauth20_authorize.srf';
                         break;
                     default:
                         // log them in as an anonymous user

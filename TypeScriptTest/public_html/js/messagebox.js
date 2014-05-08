@@ -31,7 +31,7 @@
                 height: h,
                 borderWidth: 4,
                 cornerRadius: 8,
-                transparency: 192,
+                backgroundTransparency: 224,
                 modal: true
             });
             this.setPivot(0.5, 0.5);
@@ -66,14 +66,25 @@
         $: function (text, textFont, buttons, callback, context, buttonFont) {
             chs.Drawable.call(this);
             this.panel = new chs.Panel(0, 0, chs.desktop.width, chs.desktop.height, "black");
-            this.panel.transparency = 96;
             this.msgBox = new chs.MessageWindow(text, textFont, buttons, callback, context, buttonFont);
-            this.msgBox.transparency = 192;
             this.addChild(this.panel);
             this.addChild(this.msgBox);
             this.msgBox.addEventHandler('closing', function () {
                 this.close();
             }, this);
+            this.age = 0;
+            this.msgBox.panel.transparency = 0;
+            this.panel.transparency = 0;
+        },
+
+        onUpdate: function (time, deltaTime) {
+            var t;
+            this.age += deltaTime;
+            t = Math.min(1, this.age / 125);    // half a second to face in
+            t = chs.Util.ease(t);
+            this.msgBox.panel.transparency = t * 240;
+            this.panel.transparency = t * 96;
+            this.msgBox.client.transparency = t * 240;
         },
 
         text: {

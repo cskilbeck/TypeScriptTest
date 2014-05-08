@@ -8,7 +8,8 @@
     var Item = chs.Class({
         inherit$: [chs.EventSource],
 
-        $: function (url, data, loader) {
+        $: function (url, data, loader, forceFileType) {
+            var extension;
             chs.EventSource.call(this);
             this.url = url;
             this.size = null;
@@ -19,7 +20,12 @@
             this.inProgress = false;
             this.binary = undefined;
             this.started = false;
-            switch (chs.Util.getExtension(url)) {
+            if (forceFileType === undefined) {
+                extension = chs.Util.getExtension(url);
+            } else {
+                extension = forceFileType;
+            }
+            switch (extension) {
             case 'jpg':
             case 'jpeg':
                 this.object = new Image();
@@ -216,11 +222,11 @@
 
         //////////////////////////////////////////////////////////////////////
 
-        load: function (name, callback, context, data) {
+        load: function (name, callback, context, data, forceFileType) {
             var url = chs.ajax.url(this.baseDir + name, data),
                 item = this.items[url] || null;
             if (item === null) {
-                item = new Item(url, data, this);
+                item = new Item(url, data, this, forceFileType);
                 this.items[url] = item;
             }
             if (item.loaded) {

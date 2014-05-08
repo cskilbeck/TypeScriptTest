@@ -4,8 +4,24 @@
 		"selected_items":
 		[
 			[
+				"cont",
+				"contentType"
+			],
+			[
+				"for",
+				"forceFileType"
+			],
+			[
+				"pic",
+				"picture"
+			],
+			[
 				"pro",
-				"provider_id"
+				"provider"
+			],
+			[
+				"oa",
+				"oauth2_tokenurl"
 			],
 			[
 				"respon",
@@ -98,10 +114,6 @@
 			[
 				"oau",
 				"oauth2_response_type"
-			],
-			[
-				"oa",
-				"oauth2_server_url"
 			],
 			[
 				"cur",
@@ -280,10 +292,6 @@
 				"bestButton"
 			],
 			[
-				"for",
-				"for	for (…) {…}"
-			],
-			[
 				"window",
 				"windowDesc"
 			],
@@ -305,17 +313,6 @@
 			{
 				"buffer_size": 6021,
 				"line_ending": "Windows"
-			}
-		},
-		{
-			"contents": "Remote:   origin @ https://github.com/cskilbeck/TypeScriptTest.git\nLocal:    master ~\\Projects\\TypeScriptTest\nHead:     18913da ..\n\n\nNothing to commit (working directory clean)\n\n# Movement:\n#    r = refresh status\n#    1-5 = jump to section\n#    n = next item, N = next section\n#    p = previous item, P = previous section\n#\n# Staging:\n#    s = stage file/section, S = stage all unstaged files\n#    ctrl+shift+s = stage all unstaged and untracked files\n#    u = unstage file/section, U = unstage all files\n#    backspace = discard file/section, shift+backspace = discard everything\n#\n# Commit:\n#    c = commit, C = commit -a (add unstaged)\n#    ctrl+shift+c = commit --amend (amend previous commit)\n#\n# Other:\n#    i = ignore file, I = ignore pattern\n#    enter = open file\n#    d = view diff\n#\n# Stashes:\n#    a = apply stash, A = pop stash\n#    z = create stash, Z = create stash including untracked files\n#    backspace = discard stash",
-			"settings":
-			{
-				"buffer_size": 938,
-				"line_ending": "Windows",
-				"name": "*git-status*: TypeScriptTest",
-				"read_only": true,
-				"scratch": true
 			}
 		},
 		{
@@ -354,8 +351,17 @@
 			"file": "TypeScriptTest/public_html/js/oauth.js",
 			"settings":
 			{
-				"buffer_size": 2548,
+				"buffer_size": 2539,
 				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/C/Bin/startpageant.bat",
+			"settings":
+			{
+				"buffer_size": 111,
+				"line_ending": "Windows",
+				"name": "@start /B c:\\bin\\pageant.exe c:\\Users\\chs\\.ssh\\put"
 			}
 		},
 		{
@@ -412,7 +418,58 @@
 			"file": "TypeScriptTest/public_html/oauth2callback/index.php",
 			"settings":
 			{
-				"buffer_size": 2204,
+				"buffer_size": 2727,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"contents": "//////////////////////////////////////////////////////////////////////\n\n(function () {\n    \"use strict\";\n\n    //////////////////////////////////////////////////////////////////////\n\n    var Item = chs.Class({\n        inherit$: [chs.EventSource],\n\n        $: function (url, data, loader, forceFileType) {\n            var extension;\n            chs.EventSource.call(this);\n            this.url = url;\n            this.size = null;\n            this.bytesReceived = 0;\n            this.data = data;\n            this.loaded = false;\n            this.loader = loader;\n            this.inProgress = false;\n            this.binary = undefined;\n            this.started = false;\n            if (forceFileType === undefined) {\n                extension = chs.Util.getExtension(url);\n            } else {\n                extension = forceFileType;\n            }\n            switch (extension) {\n            case 'jpg':\n            case 'jpeg':\n                this.object = new Image();\n                this.binary = true;\n                this.finalize = Item.processJPEG;\n                break;\n            case 'png':\n                this.object = new Image();\n                this.binary = true;\n                this.finalize = Item.processImage;\n                break;\n            case 'json':\n                this.object = {};\n                this.binary = false;\n                this.finalize = Item.processJSON;\n                break;\n            //case xml:\n            //case bin:\n            default:\n                this.object = new Uint8Array();\n                this.binary = true;\n                this.finalize = Item.processBinary;\n                break;\n            }\n        },\n\n        load: function () {\n            if (!this.started) {\n                this.started = true;\n                chs.ajax.get(this.url, Item.onLoaded, Item.onProgress, this, this.binary);\n            }\n        },\n\n        doCallback: function () {\n            this.dispatchEvent(\"loaded\", this.object);\n        },\n\n        then: function (c, f) {\n            if (this.loaded) {\n                f.call(c, this.object);\n            } else {\n                this.addEventHandler(\"loaded\", f, c, true);\n            }\n        },\n\n        static$: {\n\n            onProgress: function (url, e) {\n                this.inProgress = true;\n                if (e.lengthComputable && this.size === null) {\n                    this.size = e.total;\n                }\n                this.bytesReceived = e.loaded;\n            },\n\n            onLoaded: function (url, data, contentType) {\n                switch(contentType) {\n                    case 'image/png':\n                }\n                this.finalize.call(this, data);\n                this.inProgress = true;\n                this.loaded = true;\n                this.doCallback();\n            },\n\n            processImage: function (data) {\n                if (data) {\n                    this.object.src = 'data:image/png;base64,' + chs.Util.btoa(data);\n                } else {\n                    this.object.src = 'http://www.underconsideration.com/brandnew/archives/google_broken_image_00_a_logo.gif';\n                }\n            },\n\n            processJPEG: function (data) {\n                if (data) {\n                    this.object.src = 'data:image/jpeg;base64,' + chs.Util.btoa(data);\n                } else {\n                    this.object.src = 'http://www.underconsideration.com/brandnew/archives/google_broken_image_00_a_logo.gif';\n                }\n            },\n\n            processJSON: function (data) {\n                if (data) {\n                    chs.Util.shallowCopy(JSON.parse(data), this.object);    // fuckit\n                } else {\n                }\n            },\n\n            processBinary: function (data) {\n                if (data) {\n                    this.object.set(data, 0);\n                }\n            }\n        }\n    });\n\n    //////////////////////////////////////////////////////////////////////\n\n    chs.Loader = chs.Class({\n        inherit$: [chs.Drawable, chs.EventSource],\n\n        //////////////////////////////////////////////////////////////////////\n\n        $: function (baseDir) {\n            chs.Drawable.call(this);\n            chs.EventSource.call(this);\n            this.baseDir = baseDir || \"\";\n            this.items = {};\n        },\n\n        //////////////////////////////////////////////////////////////////////\n\n        percentComplete: function () {\n            var i,\n                total = 0,\n                received = 0;\n            for (i in this.items) {\n                if (this.items[i].size !== undefined) {\n                    total += this.items[i].size;\n                }\n                received += this.items[i].bytesReceived;\n            }\n            total = total || received;\n            return (received > 0) ? received * 100 / total : 0;\n        },\n\n        //////////////////////////////////////////////////////////////////////\n\n        complete: function () {\n            var i;\n            for (i in this.items) {\n                if (!this.items[i].loaded) {\n                    return false;\n                }\n            }\n            return true;\n        },\n\n        //////////////////////////////////////////////////////////////////////\n        // use debug output for now...\n\n        onUpdate: function () {\n            var i,\n                item,\n                s;\n            chs.Debug.print(\"Loading, \" + this.percentComplete().toFixed(0) + \"% complete...\");\n            chs.Debug.print();\n            for (i in this.items) {\n                item = this.items[i];\n                s = item.bytesReceived.toString();\n                while (s.length < 20) {\n                    s = \" \" + s;\n                }\n                chs.Debug.print(s + \": \" + item.url);\n            }\n        },\n\n        //////////////////////////////////////////////////////////////////////\n\n        reset: function (baseDir) {\n            this.baseDir = baseDir || this.baseDir;\n            this.items = {};\n        },\n\n        //////////////////////////////////////////////////////////////////////\n\n        start: function () {\n            var i;\n            for (i in this.items) {\n                this.items[i].load();\n            }\n        },\n\n        //////////////////////////////////////////////////////////////////////\n\n        itemLoaded: function (item) {\n            if (this.complete()) {\n                if (this.parent !== null) {\n                    this.parent.loaded(this);\n                }\n                this.dispatchEvent(\"complete\");\n            }\n        },\n\n        //////////////////////////////////////////////////////////////////////\n\n        loadItem: function (name, callback, context, data) {\n            var url = chs.ajax.url(this.baseDir + name, data),\n                item = this.items[url] || null;\n            if (item === null) {\n                item = new Item(url, data, this);\n                this.items[url] = item;\n            }\n            item.load();\n            return item;\n        },\n\n        //////////////////////////////////////////////////////////////////////\n\n        load: function (name, callback, context, data, forceFileType) {\n            var url = chs.ajax.url(this.baseDir + name, data),\n                item = this.items[url] || null;\n            if (item === null) {\n                item = new Item(url, data, this, forceFileType);\n                this.items[url] = item;\n            }\n            if (item.loaded) {\n                if (callback) {\n                    callback.call(context, item.object);\n                }\n            } else {\n                if (callback) {\n                    item.addEventHandler(\"loaded\", callback, context);\n                }\n                item.addEventHandler(\"loaded\", this.itemLoaded, this);\n            }\n            return item.object;\n        }\n    });\n\n}());\n",
+			"file": "TypeScriptTest/public_html/js/loader.js",
+			"file_size": 8019,
+			"file_write_time": 130440066874319510,
+			"settings":
+			{
+				"buffer_size": 7880,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "TypeScriptTest/SQL/mtw_procs.sql",
+			"settings":
+			{
+				"buffer_size": 1283,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "TypeScriptTest/public_html/js/ajax.js",
+			"settings":
+			{
+				"buffer_size": 3639,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "TypeScriptTest/public_html/php/HttpPost.class.php",
+			"settings":
+			{
+				"buffer_size": 1750,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "TypeScriptTest/public_html/js/game.js",
+			"settings":
+			{
+				"buffer_size": 17690,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "TypeScriptTest/public_html/js/loginscreen.js",
+			"settings":
+			{
+				"buffer_size": 3407,
 				"line_ending": "Windows"
 			}
 		},
@@ -420,7 +477,7 @@
 			"file": "TypeScriptTest/public_html/php/cb1.php",
 			"settings":
 			{
-				"buffer_size": 677,
+				"buffer_size": 678,
 				"line_ending": "Windows"
 			}
 		},
@@ -428,7 +485,7 @@
 			"file": "TypeScriptTest/public_html/php/cb4.php",
 			"settings":
 			{
-				"buffer_size": 574,
+				"buffer_size": 575,
 				"line_ending": "Windows"
 			}
 		},
@@ -452,12 +509,24 @@
 	"build_system": "Packages/User/jshint.sublime-build",
 	"command_palette":
 	{
-		"height": 151.0,
+		"height": 392.0,
 		"selected_items":
 		[
 			[
+				"git",
+				"Git: Log"
+			],
+			[
 				"push",
 				"Git: Push"
+			],
+			[
+				"stat",
+				"Git: Status"
+			],
+			[
+				"diff",
+				"Git: Diff Current File"
 			],
 			[
 				"st",
@@ -474,10 +543,6 @@
 			[
 				"Package Control: ins",
 				"Package Control: Install Package"
-			],
-			[
-				"stat",
-				"Git: Status"
 			],
 			[
 				"quic",
@@ -530,10 +595,6 @@
 			[
 				"qui",
 				"Git: Quick Commit"
-			],
-			[
-				"git",
-				"Git: Show"
 			],
 			[
 				"pul",
@@ -653,22 +714,27 @@
 	},
 	"file_history":
 	[
+		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/logingoogle.php",
+		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/loader.js",
+		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/lb.js",
+		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/loginscreen.js",
+		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/web_service/dbaselogin.py",
+		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache",
+		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/game.js",
+		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/HttpPost.class.php",
 		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/loginscreen.js",
 		"/C/Users/chs/AppData/Roaming/Sublime Text 3/Packages/User/SublimeGit.sublime-settings",
 		"/C/Users/chs/AppData/Roaming/Sublime Text 3/Packages/GitGutter/GitGutter.sublime-settings",
 		"/C/Users/chs/AppData/Roaming/Sublime Text 3/Packages/User/SublimeLinter.sublime-settings",
 		"/C/Users/chs/AppData/Roaming/Sublime Text 3/Packages/SublimeLinter/SublimeLinter.sublime-settings",
-		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/game.js",
 		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/mirror.bat",
 		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/event.js",
 		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/textbutton.js",
 		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/menu.js",
 		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/messagebox.js",
-		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/lb.js",
 		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/SQL/create_bots.sql",
 		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/TypeScriptTest.csproj",
 		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/sprite.js",
-		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache",
 		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/random.js",
 		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/webservice.js",
 		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/img/dictionary.json",
@@ -775,12 +841,7 @@
 		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/letters.js",
 		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/board.js",
 		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/word.js",
-		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/sftp-config.json",
-		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/mirror.bat",
-		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/window.js",
-		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/user.js",
-		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/label.js",
-		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest.sln"
+		"/D/Users/chs/Documents/Visual Studio 2012/Projects/TypeScriptTest/TypeScriptTest/public_html/js/sftp-config.json"
 	],
 	"find":
 	{
@@ -906,7 +967,7 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 15,
 			"sheets":
 			[
 				{
@@ -933,48 +994,14 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1596.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 11,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 938,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								335,
-								335
-							]
-						],
-						"settings":
-						{
-							"__vi_external_disable": true,
-							"draw_white_space": "none",
-							"git_repo": "C:\\Users\\chs\\Projects\\TypeScriptTest",
-							"git_status": true,
-							"git_view": "status",
-							"syntax": "Packages/SublimeGit/syntax/SublimeGit Status.tmLanguage",
-							"translate_tabs_to_spaces": false,
-							"word_wrap": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
 					"file": "TypeScriptTest/public_html/js/util.js",
 					"semi_transient": false,
 					"settings":
@@ -1000,11 +1027,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 13,
+					"stack_index": 22,
 					"type": "text"
 				},
 				{
-					"buffer": 3,
+					"buffer": 2,
 					"file": "TypeScriptTest/public_html/js/mainmenu.js",
 					"semi_transient": false,
 					"settings":
@@ -1030,11 +1057,11 @@
 						"translation.y": 1328.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
+					"stack_index": 13,
 					"type": "text"
 				},
 				{
-					"buffer": 4,
+					"buffer": 3,
 					"file": "/C/Users/chs/AppData/Roaming/Sublime Text 3/Packages/User/GitGutter.sublime-settings",
 					"semi_transient": false,
 					"settings":
@@ -1058,11 +1085,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 5,
+					"stack_index": 15,
 					"type": "text"
 				},
 				{
-					"buffer": 5,
+					"buffer": 4,
 					"file": "TypeScriptTest/public_html/js/startup.js",
 					"semi_transient": false,
 					"settings":
@@ -1088,24 +1115,24 @@
 						"translation.y": 473.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 9,
+					"stack_index": 19,
 					"type": "text"
 				},
 				{
-					"buffer": 6,
+					"buffer": 5,
 					"file": "TypeScriptTest/public_html/js/oauth.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2548,
+						"buffer_size": 2539,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								375,
-								375
+								1499,
+								1499
 							]
 						],
 						"settings":
@@ -1114,6 +1141,35 @@
 						},
 						"translation.x": 0.0,
 						"translation.y": 320.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "/C/Bin/startpageant.bat",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 111,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1,
+								1
+							]
+						],
+						"settings":
+						{
+							"auto_name": "@start /B c:\\bin\\pageant.exe c:\\Users\\chs\\.ssh\\put",
+							"syntax": "Packages/Batch File/Batch File.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 10,
@@ -1146,7 +1202,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 6,
+					"stack_index": 16,
 					"type": "text"
 				},
 				{
@@ -1176,7 +1232,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 11,
+					"stack_index": 20,
 					"type": "text"
 				},
 				{
@@ -1206,7 +1262,7 @@
 						"translation.y": 1118.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 12,
 					"type": "text"
 				},
 				{
@@ -1265,7 +1321,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 14,
 					"type": "text"
 				},
 				{
@@ -1295,7 +1351,7 @@
 						"translation.y": 4890.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 7,
+					"stack_index": 17,
 					"type": "text"
 				},
 				{
@@ -1325,7 +1381,7 @@
 						"translation.y": 3087.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 8,
+					"stack_index": 18,
 					"type": "text"
 				},
 				{
@@ -1334,15 +1390,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2204,
+						"buffer_size": 2727,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1693,
-								1693
+								1193,
+								1193
 							]
 						],
 						"settings":
@@ -1352,55 +1408,204 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 362.0,
+						"translation.y": 359.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 16,
+					"stack_index": 3,
 					"type": "text"
 				},
 				{
 					"buffer": 14,
-					"file": "TypeScriptTest/public_html/php/cb1.php",
+					"file": "TypeScriptTest/public_html/js/loader.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 677,
+						"buffer_size": 7880,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								677,
-								677
+								2653,
+								2559
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/PHP/PHP.tmLanguage"
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 1149.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 15,
+					"stack_index": 1,
 					"type": "text"
 				},
 				{
 					"buffer": 15,
-					"file": "TypeScriptTest/public_html/php/cb4.php",
+					"file": "TypeScriptTest/SQL/mtw_procs.sql",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 574,
+						"buffer_size": 1283,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								321,
-								321
+								323,
+								323
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/SQL/SQL.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 16,
+					"file": "TypeScriptTest/public_html/js/ajax.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3639,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								653,
+								653
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 47.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 17,
+					"file": "TypeScriptTest/public_html/php/HttpPost.class.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1750,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1005,
+								1005
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.tmLanguage"
+						},
+						"translation.x": -0.0,
+						"translation.y": 187.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 18,
+					"file": "TypeScriptTest/public_html/js/game.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 17690,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								5304,
+								5304
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1730.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 8,
+					"type": "text"
+				},
+				{
+					"buffer": 19,
+					"file": "TypeScriptTest/public_html/js/loginscreen.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3407,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 20,
+					"file": "TypeScriptTest/public_html/php/cb1.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 678,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								675,
+								675
 							]
 						],
 						"settings":
@@ -1411,11 +1616,39 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 14,
+					"stack_index": 9,
 					"type": "text"
 				},
 				{
-					"buffer": 16,
+					"buffer": 21,
+					"file": "TypeScriptTest/public_html/php/cb4.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 575,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								213,
+								230
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 22,
 					"file": "TypeScriptTest/public_html/js/window.js",
 					"semi_transient": false,
 					"settings":
@@ -1441,11 +1674,11 @@
 						"translation.y": 427.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 12,
+					"stack_index": 21,
 					"type": "text"
 				},
 				{
-					"buffer": 17,
+					"buffer": 23,
 					"file": "TypeScriptTest/web_service/myapp.wsgi",
 					"semi_transient": false,
 					"settings":
@@ -1471,7 +1704,7 @@
 						"translation.y": 798.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 17,
+					"stack_index": 23,
 					"type": "text"
 				}
 			]
@@ -1530,7 +1763,7 @@
 	},
 	"output.git-push":
 	{
-		"height": 464.0
+		"height": 149.0
 	},
 	"output.sftp":
 	{
@@ -1551,6 +1784,22 @@
 		"height": 0.0,
 		"selected_items":
 		[
+			[
+				"log",
+				"public_html\\js\\loginscreen.js"
+			],
+			[
+				"loig",
+				"public_html\\loginscreen.js"
+			],
+			[
+				"gam",
+				"public_html\\js\\game.js"
+			],
+			[
+				"",
+				"public_html\\php\\HttpPost.class.php"
+			],
 			[
 				"pan",
 				"public_html\\js\\panel.js"
@@ -1592,10 +1841,6 @@
 				"public_html\\js\\textbutton.js"
 			],
 			[
-				"gam",
-				"public_html\\js\\game.js"
-			],
-			[
 				"wind",
 				"public_html\\js\\window.js"
 			],
@@ -1622,10 +1867,6 @@
 			[
 				"use",
 				"public_html\\js\\user.js"
-			],
-			[
-				"",
-				"nodejs\\client.js"
 			],
 			[
 				"messa",

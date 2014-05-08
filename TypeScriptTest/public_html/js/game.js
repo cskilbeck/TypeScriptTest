@@ -220,7 +220,7 @@ var Game = (function () {
                 brd.setPivot(0.5, 0);
                 msgBox.window.height += brd.height * 0.5;
                 brd.setPosition(msgBox.window.width / 2, Math.floor(msgBox.window.textBox.height + msgBox.window.textBox.y + 16) + 0.5);    // 16 is magic button offset number
-                msgBox.window.addChild(brd);
+                msgBox.window.client.addChild(brd);
                 this.addChild(msgBox);
             }
         },
@@ -320,7 +320,7 @@ var Game = (function () {
                 border: true,
                 borderColour: "white",
                 borderWidth: 4,
-                backgroundTransparency: 216,
+                backgroundTransparency: 236,
                 modal: true
             });
 

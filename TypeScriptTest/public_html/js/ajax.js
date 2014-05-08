@@ -24,15 +24,20 @@
         if (!ie9) {
             if (binary) {
                 xr.responseType = 'arraybuffer';
-            } else {
-                xr.responseType = 'application/json';
             }
             xr.onreadystatechange = function () {
+                var contentType;
                 if (xr.readyState === XMLHttpRequest.DONE) {
-                    if (binary) {
-                        callback.call(context, url, chs.Util.getResponseAsArray(xr));
+                    contentType = xr.getResponseHeader("Content-Type");
+                    console.log("[" + xr.status + "] " + contentType + " from " + url);
+                    if (xr.status === 200) {
+                        if (binary) {
+                            callback.call(context, url, chs.Util.getResponseAsArray(xr), contentType);
+                        } else {
+                            callback.call(context, url, xr.responseText, contentType);
+                        }
                     } else {
-                        callback.call(context, url, xr.responseText);
+                        //debugger;
                     }
                 }
             };

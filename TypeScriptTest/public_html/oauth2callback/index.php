@@ -5,7 +5,8 @@ require('../php/HttpPost.class.php');
 
 if(isset($_GET['code']) && isset($_COOKIE['provider_id'])) {
 
-    $var_file = '../php/cb' . $_COOKIE['provider_id'] . '.php';
+    $provider = $_COOKIE['provider_id'];
+    $var_file = '../php/cb' . $provider . '.php';
     if (file_exists($var_file)) {
 
         require($var_file);
@@ -25,12 +26,24 @@ if(isset($_GET['code']) && isset($_COOKIE['provider_id'])) {
 
             if(!isset($r->error)) {
 
+                $id = $r->id;
+                $name = $r->name;
+                $token = $r->access_token;
+
+                if(isset($r->picture)) {
+                    $pic = $r->picture;
+                } else {
+                    if ($provider == '4') {
+                        $pic = "https://apis.live.net/v5.0/". $id . "/picture";
+                    }
+                }
+
                 // got userinfo, register a session with the web service
                 $params = array(
                     "oauth_provider" => $oauth2_provider_id,
-                    "oauth_sub" => $r->id,
-                    "name" => $r->name,
-                    "picture" => $r->picture
+                    "oauth_sub" => $id,
+                    "name" => $name,
+                    "picture" => $pic
                 );
 
                 // if anon_user_id is set, convert that user...

@@ -19,7 +19,7 @@
                             access_type: 'offline'
                         };
                         url = 'https://accounts.google.com/o/oauth2/auth';
-                        return;
+                        break;
                     // 4: Live ID
                     case '4':
                         params = {

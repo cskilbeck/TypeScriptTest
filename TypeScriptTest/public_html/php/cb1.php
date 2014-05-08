@@ -8,5 +8,5 @@ $oauth2_scope           = 'https://www.googleapis.com/auth/userinfo.profile';
 $oauth2_response_type   = 'code';
 $oauth2_tokenurl        = 'https://accounts.google.com/o/oauth2/token';
 $oauth2_grant_type      = 'authorization_code';
-$oauth2_user_id_url     = 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token={ACCESS_TOKEN}'
+$oauth2_user_id_url     = 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token={ACCESS_TOKEN}';
 ?>

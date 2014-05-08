@@ -93,13 +93,11 @@ var Game = (function () {
             scoreButton.scoreLabel = new chs.Label("0", consolas).setPosition(116, 4).setPivot(1, 0);
             scoreButton.addChild(scoreButton.scoreLabel);
             scoreButton.addChild(new chs.Label("Score:", consolas).setPosition(4, 4));
-            scoreButton.transparency = 128;
             this.addChild(scoreButton);
             scoreButton.highlight = 0;
 
             scoreButton.flash = function (color) {
                 this.fillColour = color;
-                this.transparency = 255;
                 this.highlight = 500;
             };
 
@@ -117,7 +115,6 @@ var Game = (function () {
                     this.highlight -= deltaTime;
                     if(this.highlight <= 0) {
                         this.fillColour = "black";
-                        this.transparency = 128;
                     }
                 }
             };
@@ -126,7 +123,6 @@ var Game = (function () {
             bestLabel = new chs.Label("0", consolas).setPosition(116, 4).setPivot(1, 0);
             bestButton.addChild(bestLabel);
             bestButton.addChild(new chs.Label("Best:", consolas).setPosition(4, 4));
-            bestButton.transparency = 128;
             bestButton.highlight = 0;
             bestButton.flash = 0;
 

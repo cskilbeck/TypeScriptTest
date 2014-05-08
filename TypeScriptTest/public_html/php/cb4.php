@@ -8,5 +8,5 @@ $oauth2_scope           = 'wl.basic wl.signin';
 $oauth2_response_type   = 'code';
 $oauth2_tokenurl        = 'https://login.live.com/oauth20_token.srf';
 $oauth2_grant_type      = 'authorization_code';
-$oauth2_user_id_url     = 'https://apis.live.net/v5.0/me?access_token={ACCESS_TOKEN}'
+$oauth2_user_id_url     = 'https://apis.live.net/v5.0/me?access_token={ACCESS_TOKEN}';
 ?>

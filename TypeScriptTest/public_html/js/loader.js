@@ -81,11 +81,30 @@
                 this.bytesReceived = e.loaded;
             },
 
-            onLoaded: function (url, data, contentType) {
-                switch(contentType) {
+            onLoaded: function (url, xr) {
+                var data = null,
+                    process = null;
+                switch(xr.getResponseHeader('Content-Type')) {
                     case 'image/png':
+                        data = chs.Util.getResponseAsArray(xr);
+                        process = Item.processImage;
+                        break;
+                    case 'image/jpeg':
+                        data = chs.Util.getResponseAsArray(xr);
+                        process = Item.processJPEG;
+                        break;
+                    case 'image/png':
+                        data = xr.responseText;
+                        process = Item.processJSON;
+                        break;
+                    default:
+                        data = xr.responseText;
+                        process = Item.processText;
+                        break;
                 }
-                this.finalize.call(this, data);
+                if(process !== null && data !== null) {
+                    process.call(this, data);
+                }
                 this.inProgress = true;
                 this.loaded = true;
                 this.doCallback();
@@ -112,6 +131,9 @@
                     chs.Util.shallowCopy(JSON.parse(data), this.object);    // fuckit
                 } else {
                 }
+            },
+
+            processText: function (data) {
             },
 
             processBinary: function (data) {

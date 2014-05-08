@@ -15,7 +15,7 @@ var MainMenu = (function () {
                 this.loader = new chs.Loader("");
                 this.dimensions = { width: width, height: height };
                 this.org = { x: x, y: y };
-                this.setPosition(x + 0.5, y + 0.5);
+                this.setPosition(x, y);
                 this.clipRect = new chs.ClipRect(0, 0, this.width, this.height, 14);
                 this.addChild(this.clipRect);
                 this.loader.loadItem(url).then(this, function (img) {
@@ -24,7 +24,6 @@ var MainMenu = (function () {
                 });
                 this.border = new chs.OutlineRectangle(0, 0, this.width, this.height, this.clipRect.radius, "black", 3);
                 this.addChild(this.border);
-                this.loader.start();
                 this.onIdle = function () { this.setPosition(this.org.x, this.org.y); this.border.lineColour = "black"; };
                 this.onHover = function () { this.setPosition(this.org.x, this.org.y); this.border.lineColour = "white"; };
                 this.onPressed = function () { this.setPosition(this.org.x + 1, this.org.y + 1); this.border.lineColour = "white"; };

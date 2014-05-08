@@ -6,6 +6,18 @@
 
     //////////////////////////////////////////////////////////////////////
 
+    chs.PropertyDescriptor = function (desc) {
+        this.desc = desc;
+    };
+
+    //////////////////////////////////////////////////////////////////////
+
+    chs.Property = function (desc) {
+        return new chs.PropertyDescriptor(desc);
+    };
+
+    //////////////////////////////////////////////////////////////////////
+
     function extend(child, proto, force) {
         var names,
             i,
@@ -16,8 +28,8 @@
                 continue;
             }
             desc = Object.getOwnPropertyDescriptor(proto, names[i]);
-            if (Object.prototype.toString.call(desc.value) === '[object Object]') {
-                Object.defineProperty(child, names[i], desc.value);
+            if (desc.value instanceof chs.PropertyDescriptor) {
+                Object.defineProperty(child, names[i], desc.value.desc);
             } else {
                 Object.defineProperty(child, names[i], desc);
             }
@@ -27,21 +39,21 @@
     //////////////////////////////////////////////////////////////////////
 
     chs.Class = function (desc) {
-        var child = {},
+        var newClass = {},
             i;
 
         // constructor
         if (desc.$ !== undefined) {
-            child = desc.$;
+            newClass = desc.$;
         }
 
         // static members
         if (desc.static$ !== undefined) {
-            extend(child, desc.static$, true);
+            extend(newClass, desc.static$, true);
         }
 
         // add the methods and properties
-        extend(child.prototype, desc, true);
+        extend(newClass.prototype, desc, true);
 
         // inheritance
         if (desc.hasOwnProperty('inherit$')) {
@@ -52,13 +64,13 @@
                     if (!desc.inherit$[i]) {
                         throw new TypeError('Inheriting from undefined class!?');
                     } else {
-                        extend(child, desc.inherit$[i], false);
-                        extend(child.prototype, desc.inherit$[i].prototype, false);
+                        extend(newClass, desc.inherit$[i], false);
+                        extend(newClass.prototype, desc.inherit$[i].prototype, false);
                     }
                 }
             }
         }
-        return child;
+        return newClass;
     };
 
 }());

@@ -31,11 +31,7 @@
                     contentType = xr.getResponseHeader("Content-Type");
                     console.log("[" + xr.status + "] " + contentType + " from " + url);
                     if (xr.status === 200) {
-                        if (binary) {
-                            callback.call(context, url, chs.Util.getResponseAsArray(xr), contentType);
-                        } else {
-                            callback.call(context, url, xr.responseText, contentType);
-                        }
+                        callback.call(context, url, xr);
                     } else {
                         //debugger;
                     }

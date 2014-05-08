@@ -14,7 +14,7 @@
             };
         },
 
-        text: {
+        text: chs.Property({
             configurable: true,
             get: function () {
                 return this.labelData.text;
@@ -24,9 +24,9 @@
                 this.labelData.dimensions = null;
                 this.drawableData.dirty = true;
             }
-        },
+        }),
 
-        font: {
+        font: chs.Property({
             get: function () {
                 return this.labelData.font;
             },
@@ -35,7 +35,7 @@
                 this.labelData.dimensions = null;
                 this.drawableData.dirty = true;
             }
-        },
+        }),
 
         size: function () {
             var self = this.labelData;

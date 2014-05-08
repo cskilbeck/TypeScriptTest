@@ -27,35 +27,35 @@
 
         //////////////////////////////////////////////////////////////////////
 
-        midPivot: {
+        midPivot: chs.Property ({
             get: function () {
                 return this.font.baseline / this.font.height / 2;
             }
-        },
+        }),
 
         //////////////////////////////////////////////////////////////////////
 
-        baselinePivot: {
+        baselinePivot: chs.Property ({
             get: function () {
                 return this.font.baseline / this.font.height;
             }
-        },
+        }),
 
         //////////////////////////////////////////////////////////////////////
 
-        height: {
+        height: chs.Property({
             get: function () {
                 return this.font.height;
             }
-        },
+        }),
 
         //////////////////////////////////////////////////////////////////////
 
-        baseline: {
+        baseline: chs.Property({
             get: function () {
                 return this.font.baseline;
             }
-        },
+        }),
 
         //////////////////////////////////////////////////////////////////////
 

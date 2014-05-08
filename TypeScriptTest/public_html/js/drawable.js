@@ -392,7 +392,7 @@
 
         //////////////////////////////////////////////////////////////////////
 
-        rotation: {
+        rotation: chs.Property({
             get: function () {
                 return this.drawableData.rotation;
             },
@@ -400,11 +400,11 @@
                 this.drawableData.rotation = r;
                 this.drawableData.dirty = true;
             }
-        },
+        }),
 
         //////////////////////////////////////////////////////////////////////
 
-        x: {
+        x: chs.Property({
             get: function () {
                 return this.drawableData.position.x;
             },
@@ -412,11 +412,11 @@
                 this.drawableData.position.x = x;
                 this.drawableData.dirty = true;
             }
-        },
+        }),
 
         //////////////////////////////////////////////////////////////////////
 
-        y: {
+        y: chs.Property({
             get: function () {
                 return this.drawableData.position.y;
             },
@@ -424,29 +424,29 @@
                 this.drawableData.position.y = y;
                 this.drawableData.dirty = true;
             }
-        },
+        }),
 
         //////////////////////////////////////////////////////////////////////
 
-        width: {
+        width: chs.Property({
             configurable: true,
             get: function () {
                 return this.size().width;
             }
-        },
+        }),
 
         //////////////////////////////////////////////////////////////////////
 
-        height: {
+        height: chs.Property({
             configurable: true,
             get: function () {
                 return this.size().height;
             }
-        },
+        }),
 
         //////////////////////////////////////////////////////////////////////
 
-        position: {
+        position: chs.Property({
             get: function () {
                 return this.drawableData.position;
             },
@@ -455,11 +455,11 @@
                 this.drawableData.position.y = s.y;
                 this.drawableData.dirty = true;
             }
-        },
+        }),
 
         //////////////////////////////////////////////////////////////////////
 
-        scale: {
+        scale: chs.Property({
             get: function () {
                 return this.drawableData.scale;
             },
@@ -468,11 +468,11 @@
                 this.drawableData.scale.y = s.y;
                 this.drawableData.dirty = true;
             }
-        },
+        }),
 
         //////////////////////////////////////////////////////////////////////
 
-        zIndex: {
+        zIndex: chs.Property({
             configurable: false,
             enumerable: true,
             set: function (z) {
@@ -485,21 +485,21 @@
             get: function () {
                 return this.drawableData.myZindex;
             }
-        },
+        }),
 
         //////////////////////////////////////////////////////////////////////
 
-        parent: {
+        parent: chs.Property({
             configurable: false,
             enumerable: true,
             get: function () {
                 return this.drawableData.parent;
             }
-        },
+        }),
 
         //////////////////////////////////////////////////////////////////////
 
-        enabled: {
+        enabled: chs.Property({
             configurable: false,
             enumerable: true,
             get: function () {
@@ -508,11 +508,11 @@
             set: function (e) {
                 this.drawableData.enabled = e;
             }
-        },
+        }),
 
         //////////////////////////////////////////////////////////////////////
 
-        visible: {
+        visible: chs.Property({
             configurable: false,
             enumerable: true,
             set: function (v) {
@@ -521,11 +521,11 @@
             get: function () {
                 return this.drawableData.visible;
             }
-        },
+        }),
 
         //////////////////////////////////////////////////////////////////////
 
-        transparency: {
+        transparency: chs.Property({
             configurable: false,
             enumerable: true,
             set: function (t) {
@@ -534,11 +534,11 @@
             get: function () {
                 return this.drawableData.transparency;
             }
-        },
+        }),
 
         //////////////////////////////////////////////////////////////////////
 
-        modal: {
+        modal: chs.Property({
             configurable: false,
             enumerable: true,
             set: function (m) {
@@ -547,7 +547,7 @@
             get: function () {
                 return this.drawableData.modal;
             }
-        },
+        }),
 
         //////////////////////////////////////////////////////////////////////
 

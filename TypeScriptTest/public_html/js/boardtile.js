@@ -58,7 +58,7 @@
 
         //////////////////////////////////////////////////////////////////////
 
-        letter: {
+        letter: chs.Property({
             get: function () {
                 return this.myLetter;
             },
@@ -69,7 +69,7 @@
                     this.digits.text = mtw.Letters.letterScore(s).toString();
                 }
             }
-        },
+        }),
 
         //////////////////////////////////////////////////////////////////////
 

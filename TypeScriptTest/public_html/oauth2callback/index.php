@@ -33,9 +33,7 @@ if(isset($_GET['code']) && isset($_COOKIE['provider_id'])) {
                 if(isset($r->picture)) {
                     $pic = $r->picture;
                 } else {
-                    if ($provider == '4') {
-                        $pic = "https://apis.live.net/v5.0/". $id . "/picture";
-                    }
+                    $pic = "https://apis.live.net/v5.0/". $id . "/picture";
                 }
 
                 // got userinfo, register a session with the web service

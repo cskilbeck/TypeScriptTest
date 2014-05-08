@@ -54,7 +54,7 @@
             return true;
         },
 
-        state: {
+        state: chs.Property({
             get: function () {
                 return this.currentState;
             },
@@ -73,7 +73,7 @@
                     break;
                 }
             }
-        }
+        })
     });
 
 }());

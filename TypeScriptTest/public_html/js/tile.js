@@ -18,9 +18,15 @@
 
     mtw.TileWordIndex = chs.Class({
         $: function () {
-            this.word = null;
-            this.index = 0;
-            this.position = 0;
+            this.reset();
+        },
+        reset: function () {
+            set(null, 0, 0);
+        },
+        set: function (w, i, p) {
+            this.word = w;
+            this.index = i;
+            this.position = p;
         }
     });
 
@@ -64,8 +70,7 @@
         //////////////////////////////////////////////////////////////////////
 
         setWord: function (w, i) {
-            var pos,
-                wrd;
+            var pos;
             if (i === 0) {
                 pos = mtw.TilePos.Beginning;
             } else if (i === w.str.length - 1) {
@@ -73,19 +78,14 @@
             } else {
                 pos = mtw.TilePos.Middle;
             }
-            wrd = this.wordIndices[w.orientation];
-            wrd.word = w;
-            wrd.index = i;
-            wrd.position = pos;
+            this.wordIndices[w.orientation].set(w, i, pos);
         },
 
         //////////////////////////////////////////////////////////////////////
 
         clearWords: function () {
-            this.wordIndices[mtw.Word.horizontal].word = null;
-            this.wordIndices[mtw.Word.horizontal].position = mtw.TilePos.None;
-            this.wordIndices[mtw.Word.vertical].word = null;
-            this.wordIndices[mtw.Word.vertical].position = mtw.TilePos.None;
+            this.wordIndices[mtw.Word.horizontal].reset();
+            this.wordIndices[mtw.Word.vertical].reset();
         }
 
     });

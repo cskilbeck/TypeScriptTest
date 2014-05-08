@@ -24,17 +24,17 @@
             this.position = pos;
         },
 
-        x: {
+        x: chs.prototype({
             get: function () {
                 return this.position.x;
             }
-        },
+        }),
 
-        y: {
+        y: chs.prototype({
             get: function () {
                 return this.position.y;
             }
-        }
+        })
     });
 
     chs.EventHandler = chs.Class({

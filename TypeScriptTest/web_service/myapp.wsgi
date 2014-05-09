@@ -330,6 +330,21 @@ class boardHandler(Handler):
         self.add({ "score": score, "board_id": board_id })
 
 #----------------------------------------------------------------------
+# GET:definition - get a word definition
+#
+# parameters:   word: string
+#
+# response:     { "definition": "the definition of the word" }
+#               { "error": "not a word" }
+#----------------------------------------------------------------------
+
+class definitionHandler(Handler):
+
+    def handle(self, cur, db):
+        check_parameters(self.query, ['word'])
+        self.add(service(self.query))
+
+#----------------------------------------------------------------------
 # GET:leaderboard - get leaderboard
 #
 # parameters:   board_id: uint32

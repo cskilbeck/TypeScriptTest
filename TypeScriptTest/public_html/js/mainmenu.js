@@ -48,7 +48,7 @@ var MainMenu = (function () {
             consolasItalic = chs.Font.load("Consolas_Italic", loader);
             consolas = chs.Font.load("Consolas", loader);
             mtw.BoardTile.load(loader);
-            mtw.Dictionary.init(loader.load("dictionary.json"));
+            mtw.Dictionary.init(loader.load("words.json"));
             this.game = new Game(this, loader);
             this.game.addEventHandler("closed", this.activate, this);
             loader.addEventHandler("complete", this.loadComplete, this);

@@ -292,9 +292,14 @@ var Game = (function () {
             var def,
                 win,
                 scoreLabel,
-                textBox;
-
-            def = mtw.Dictionary.getDefinition(w.str),
+                textBox,
+                getDef = function(word) {
+                    chs.WebService.get("definition", { word: word }, function (data) {
+                        if (data && !data.error) {
+                            textBox.text = data.definition;
+                        }
+                    });
+                };
 
             win = new chs.Window({
                 x: chs.desktop.width / 2,
@@ -331,12 +336,14 @@ var Game = (function () {
                     this.transparency = (this.age - 0.5) * 510;
                 }
             };
+
             scoreLabel = new chs.Label(w.score.toString() + " points", consolasItalic);
-            textBox = new chs.TextBox(16, 16, 640 - 32, 480 - 32, def, consolasItalic, '\r    ', function (link) {
+            textBox = new chs.TextBox(16, 16, 640 - 32, 480 - 32, "...", consolasItalic, '\r    ', function (link) {
                 win.text = link.toUpperCase();
-                textBox.text = mtw.Dictionary.getDefinition(link);
                 scoreLabel.text = mtw.Letters.getWordScore(link).toString() + " points";
+                getDef(link);
             });
+            getDef(w.str);
             scoreLabel.setPosition(win.titleBar.width - 16, win.titleBar.height / 2);
             scoreLabel.setPivot(1, consolasItalic.midPivot);
             win.titleBar.addChild(scoreLabel);

@@ -28,14 +28,6 @@ CREATE TABLE sites
 
 -- see data section below for list of oauth providers currently supported
 
-SELECT '*** Create oauth_providers table' as '';
-CREATE TABLE oauth_providers
-(
-	oauth_provider	INT NOT NULL,				-- const reference (Google = 1, Facebook = 2 etc)
-					PRIMARY KEY(oauth_provider),
-	oauth_name		VARCHAR(32),				-- 'Google', 'Facebook' etc
-	oauth_icon		VARCHAR(5000)				-- url of an icon to show on login screen
-);
 
 SELECT '*** Create anon table' as '';
 CREATE TABLE anons (
@@ -111,17 +103,10 @@ CREATE VIEW users_view AS
 -- these indices are globally specified and fixed, referenced from the web server as absolute values
 -- we could use this table to specify the oauth endpoints and parameters one day (but not client secrets)
 
-SELECT '*** Insert oauth_providers' as '';
-INSERT INTO oauth_providers (oauth_provider, oauth_name, oauth_icon) VALUES
-	(0,	'Anon',		'http://make-the-words.com/img/anon.png'),
-	(1,	'Google',	'http://www.google.com/images/logos/google_logo_41.png'),
-	(2,	'Facebook',	'https://www.facebookbrand.com/img/assets/asset.f.logo.lg.png'),
-	(3,	'Yahoo',	'https://s1.yimg.com/rz/d/yahoo_en-GB_f_p_bestfit.png'),
-	(4, 'Live ID', 	'http://c.s-microsoft.com/en-gb/CMSImages/store_symbol.png?version=e2eecca5-4550-10c6-57b1-5114804a4c01');
+source sql/oauth.sql;
 
 SELECT '*** Insert sites' as '';
 INSERT INTO sites(site_url) VALUES
-	('http://www.make-the-words.com'),
 	('http://make-the-words.com');
 
 -- ----------------------------------------------------------------------

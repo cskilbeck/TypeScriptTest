@@ -9,13 +9,13 @@
 
             get: function (command, params, callback, context) {
                 params.action = command;
-                chs.ajax.get(chs.ajax.url(serviceURL, params, true), function (url, json) {
+                chs.ajax.get(chs.ajax.url(serviceURL, params, true), function (url, xr) {
                     var d;
                     try {
-                        d = JSON.parse(json);
+                        d = JSON.parse(xr.responseText);
                     }
                     catch (e) {
-                        console.log("Bad result from web service: " + json);
+                        console.log("Bad result from web service: " + xr.responseText);
                         d = null;
                     }
                     if (d !== null && callback) {
@@ -28,13 +28,13 @@
                 var url;
                 params.action = command;
                 url = chs.ajax.url(serviceURL, params, true);
-                chs.ajax.post(url, data, function (url, json) {
+                chs.ajax.post(url, data, function (url, xr) {
                     var d;
                     try {
-                        d = JSON.parse(json);
+                        d = JSON.parse(xr.responseText);
                     }
                     catch (e) {
-                        console.log("Bad result from web service: " + json);
+                        console.log("Bad result from web service: " + xr.responseText);
                         d = null;
                     }
                     if (d !== null && callback) {

@@ -8,23 +8,33 @@
     chs.Image = chs.Class({
         inherit$: [chs.Drawable],
 
-        $: function () {
+        $: function (url) {
             var that = this;
             chs.Drawable.call(this);
+            this.loaded = false;
             this.image = new Image();
             this.dimensions = { width: 0, height: 0 };
             this.image.onload = function () {
                 that.dimensions = { width: that.image.width, height: that.image.height };
+                that.loaded = true;
                 that.dispatchEvent("loaded");
                 that.onDraw = that.realOnDraw;
             };
+            if(url) {
+                this.image.src = url;
+            }
         },
 
-        src: {
+        scaleTo: function (x, y) {
+            this.setScale(x / this.width, y / this.height);
+            return this;
+        },
+
+        src: chs.Property({
             set: function (s) {
                 this.image.src = s;
             }
-        },
+        }),
 
         onDraw: function (context) {
         },

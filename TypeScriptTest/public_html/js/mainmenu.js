@@ -18,10 +18,8 @@ var MainMenu = (function () {
                 this.setPosition(x, y);
                 this.clipRect = new chs.ClipRect(0, 0, this.width, this.height, 14);
                 this.addChild(this.clipRect);
-                this.loader.loadItem(url).then(this, function (img) {
-                    this.image = new chs.Sprite(img);
-                    this.clipRect.addChild(this.image);
-                });
+                this.image = new chs.Image(url);
+                this.clipRect.addChild(this.image);
                 this.border = new chs.OutlineRectangle(0, 0, this.width, this.height, this.clipRect.radius, "black", 3);
                 this.addChild(this.border);
                 this.onIdle = function () { this.setPosition(this.org.x, this.org.y); this.border.lineColour = "black"; };
@@ -30,7 +28,7 @@ var MainMenu = (function () {
             },
 
             onUpdate: function(time, deltaTime) {
-                if(this.image) {
+                if(this.image.loaded) {
                     this.image.scaleTo(this.width, this.height);
                 }
             }
@@ -92,11 +90,12 @@ var MainMenu = (function () {
             this.button = new chs.TextButton("PLAY!", consolasItalic, pw / 2, ph / 2, 200, 50, this.playClicked, this).setPivot(0.5, 0.5);
             this.panel.addChild(this.button);
             this.addChild(this.panel);
-            if (session_id === null || provider_id === 0) {
+            if (provider_id === 0) {
                 buttons.push('Login');
                 callbacks.push(this.showLogin);
                 if (login_error !== null) {
                     this.panel.addChild(new chs.Label("Login error: " + login_error, consolas).setPosition(this.panel.width - 24, 16).setPivot(1, 0));
+                    alert(login_error);
                     chs.Cookies.remove("login_error");
                 }
             }

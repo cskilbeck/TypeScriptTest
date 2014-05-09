@@ -364,10 +364,10 @@ class leaderboardHandler(Handler):
 
 def application(environ, start_response):
 
+    print >> sys.stderr, "--------------------------------------------------------------------------------"
     headers = [('Content-type', 'application/json')]
     output = dict()
     status = '200 OK'
-    print >> sys.stderr, "--------------------------------------------------------------------------------"
     try:
         with closing(opendb()) as db:
             if not origin_is_valid(db, environ):

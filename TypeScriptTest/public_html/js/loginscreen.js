@@ -5,7 +5,6 @@ var LoginScreen = (function () {
         ploader,
 
         ProviderButton = chs.Class({
-
             inherit$: [chs.PanelButton],
 
             static$: {
@@ -17,10 +16,17 @@ var LoginScreen = (function () {
 
             $: function (x, y, provider) {    // oauth_id, oauth_name, oauth_icon
                 var fh = pfont.height,
+                    params,
                     logo = new chs.Image();
                 chs.PanelButton.call(this, x, y, 320, fh + 24, "rgb(255, 255, 255)", "white", 4, 2, function () {
                     chs.Cookies.set('provider_id', provider.oauth_provider, 30);
-                    location.reload();
+                    params = {
+                        'client_id': provider.client_id,
+                        'scope': provider.scope,
+                        'redirect_uri': "http://make-the-words.com/oauth2callback",
+                        'response_type': "code"
+                    };
+                    window.location.replace(provider.url + "?" + chs.Util.objectToQueryString(params));
                 });
                 this.transparency = 160;
                 this.addChild(new chs.Label(provider.oauth_name, pfont).setPosition(8, this.height / 2).setPivot(0, pfont.midPivot));

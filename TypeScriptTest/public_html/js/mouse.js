@@ -195,29 +195,29 @@
                 cur = active;
             },
 
-            position: {
+            position: chs.Property({
                 get: function () {
                     return cur.position;
                 }
-            },
+            }),
 
-            delta: {
+            delta: chs.Property({
                 get: function () {
                     return cur.delta;
                 }
-            },
+            }),
 
-            left: {
+            left: chs.Property({
                 get: function () {
                     return cur.left;
                 }
-            },
+            }),
 
-            right: {
+            right: chs.Property({
                 get: function () {
                     return cur.right;
                 }
-            }
+            })
         }
     });
 

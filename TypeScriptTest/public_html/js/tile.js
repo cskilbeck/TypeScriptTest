@@ -21,7 +21,7 @@
             this.reset();
         },
         reset: function () {
-            set(null, 0, 0);
+            this.set(null, 0, 0);
         },
         set: function (w, i, p) {
             this.word = w;
@@ -42,30 +42,30 @@
             ];
         },
 
-        letter: {
+        letter: chs.Property({
             get: function () {
                 return this.myLetter;
             },
             set: function (s) {
                 this.myLetter = s;
             }
-        },
+        }),
 
         //////////////////////////////////////////////////////////////////////
 
-        hasHorizontalWord: {
+        hasHorizontalWord: chs.Property({
             get: function () {
                 return this.wordIndices[mtw.Word.horizontal].word !== null;
             }
-        },
+        }),
 
         //////////////////////////////////////////////////////////////////////
 
-        hasVerticalWord: {
+        hasVerticalWord: chs.Property({
             get: function () {
                 return this.wordIndices[mtw.Word.vertical].word !== null;
             }
-        },
+        }),
 
         //////////////////////////////////////////////////////////////////////
 

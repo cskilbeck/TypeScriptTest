@@ -87,19 +87,19 @@
             this.msgBox.client.transparency = t * 240;
         },
 
-        text: {
+        text: chs.Property({
             get: function () {
                 return this.msgBox.text;
             },
             set: function (t) {
                 this.msgBox.text = t;
             }
-        },
-        window: {
+        }),
+        window: chs.Property({
             get: function () {
                 return this.msgBox;
             }
-        }
+        })
     });
 
 }());

@@ -18,23 +18,23 @@
             }
         },
 
-        width: {
+        width: chs.Property({
             set: function (w) {
                 this.dimensions.width = w;
             },
             get: function () {
                 return this.dimensions.width;
             }
-        },
+        }),
 
-        height: {
+        height: chs.Property({
             set: function (h) {
                 this.dimensions.height = h;
             },
             get: function () {
                 return this.dimensions.height;
             }
-        },
+        }),
 
         onDraw: function (context) {
             if(this.radius > 0) {

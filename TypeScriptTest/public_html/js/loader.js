@@ -83,8 +83,9 @@
 
             onLoaded: function (url, xr) {
                 var data = null,
-                    process = null;
-                switch(xr.getResponseHeader('Content-Type')) {
+                    process = null,
+                    contentType = xr.getResponseHeader('Content-Type');
+                switch(contentType) {
                     case 'image/png':
                         data = chs.Util.getResponseAsArray(xr);
                         process = Item.processImage;
@@ -93,11 +94,12 @@
                         data = chs.Util.getResponseAsArray(xr);
                         process = Item.processJPEG;
                         break;
-                    case 'image/png':
+                    case 'application/json':
                         data = xr.responseText;
                         process = Item.processJSON;
                         break;
                     default:
+                        console.log("Unknown Content-Type: " + contentType);
                         data = xr.responseText;
                         process = Item.processText;
                         break;

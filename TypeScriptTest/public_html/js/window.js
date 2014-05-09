@@ -98,7 +98,7 @@
             }
         },
 
-        height: {
+        height: chs.Property({
             get: function () {
                 return this.dimensions.height;
             },
@@ -112,9 +112,9 @@
                 }
                 this.dispatchEvent('resize');
             }
-        },
+        }),
 
-        width: {
+        width: chs.Property({
             get: function () {
                 return this.dimensions.width;
             },
@@ -128,16 +128,16 @@
                 }
                 this.dispatchEvent('resize');
             }
-        },
+        }),
 
-        text: {
+        text: chs.Property({
             get: function () {
                 return this.caption.text;
             },
             set: function (s) {
                 this.caption.text = s;
             }
-        }
+        })
     });
 
 }());

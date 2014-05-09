@@ -24,13 +24,13 @@
             this.position = pos;
         },
 
-        x: chs.prototype({
+        x: chs.Property({
             get: function () {
                 return this.position.x;
             }
         }),
 
-        y: chs.prototype({
+        y: chs.Property({
             get: function () {
                 return this.position.y;
             }

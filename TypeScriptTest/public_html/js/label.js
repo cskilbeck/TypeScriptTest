@@ -76,7 +76,7 @@
             this.text = text;
         },
 
-        text: {
+        text: chs.Property({
             set: function (s) {
                 var links = [],
                     link;
@@ -100,7 +100,7 @@
             get: function (s) {
                 return this.label.text;
             }
-        }
+        })
     });
 
 }());

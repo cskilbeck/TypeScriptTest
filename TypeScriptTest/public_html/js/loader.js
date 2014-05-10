@@ -5,6 +5,11 @@
 
     //////////////////////////////////////////////////////////////////////
 
+    var brokenImageGif = "R0lGODlhHAAeAKIAAMDAwICAgKyomfHv4v8AAAAAAP///wAAACH5BAAAAAAALAAAAAAcAB4AA" +
+                            "AOAKLrc7kOYSau9NuLNp+5g9YXhSHbmuaVG4L4wfLEBCBSzZNXdnV88ji+jqwQ3Q1GREiQQJs5" +
+                            "JkkKrOKNSHBFowWZ/O+uVMvUsJ82nAVs2VHtaJRcONtri1HPrXmcC/oCBf3hmFwWHiImJfSoYL" +
+                            "I1ykCt6koWVjJduA5ucnZ6foAkAOw==";
+
     var Item = chs.Class({
         inherit$: [chs.EventSource],
 
@@ -84,25 +89,31 @@
             onLoaded: function (url, xr) {
                 var data = null,
                     process = null,
+                    status = xr.status,
                     contentType = xr.getResponseHeader('Content-Type');
-                switch(contentType) {
-                    case 'image/png':
-                        data = chs.Util.getResponseAsArray(xr);
-                        process = Item.processImage;
-                        break;
-                    case 'image/jpeg':
-                        data = chs.Util.getResponseAsArray(xr);
-                        process = Item.processJPEG;
-                        break;
-                    case 'application/json':
-                        data = xr.responseText;
-                        process = Item.processJSON;
-                        break;
-                    default:
-                        console.log("Unknown Content-Type: " + contentType);
-                        data = xr.responseText;
-                        process = Item.processText;
-                        break;
+                if(status == 200) {
+                    switch(contentType) {
+                        case 'image/png':
+                            data = chs.Util.getResponseAsArray(xr);
+                            process = Item.processImage;
+                            break;
+                        case 'image/jpeg':
+                            data = chs.Util.getResponseAsArray(xr);
+                            process = Item.processJPEG;
+                            break;
+                        case 'application/json':
+                            data = xr.responseText;
+                            process = Item.processJSON;
+                            break;
+                        default:
+                            console.log("Unknown Content-Type: " + contentType);
+                            data = xr.responseText;
+                            process = Item.processText;
+                            break;
+                    }
+                } else {
+                    // some error...
+                    // check extension of url and maybe give them something
                 }
                 if(process !== null && data !== null) {
                     process.call(this, data);
@@ -116,7 +127,7 @@
                 if (data) {
                     this.object.src = 'data:image/png;base64,' + chs.Util.btoa(data);
                 } else {
-                    this.object.src = 'http://www.underconsideration.com/brandnew/archives/google_broken_image_00_a_logo.gif';
+                    this.object.src = 'data:image/gif;base64,' + brokenImageGif;
                 }
             },
 
@@ -124,13 +135,19 @@
                 if (data) {
                     this.object.src = 'data:image/jpeg;base64,' + chs.Util.btoa(data);
                 } else {
-                    this.object.src = 'http://www.underconsideration.com/brandnew/archives/google_broken_image_00_a_logo.gif';
+                    this.object.src = 'data:image/gif;base64,' + brokenImageGif;
                 }
             },
 
             processJSON: function (data) {
+                var o;
                 if (data) {
-                    chs.Util.shallowCopy(JSON.parse(data), this.object);    // fuckit
+                    try {
+                        o = JSON.parse(data);
+                        chs.Util.shallowCopy(o, this.object);    // fuckit
+                    } catch(e) {
+                        // almost certainly an error in the data
+                    }
                 } else {
                 }
             },

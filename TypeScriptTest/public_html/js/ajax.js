@@ -33,7 +33,7 @@
                     if (xr.status === 200) {
                         callback.call(context, url, xr);
                     } else {
-                        //debugger;
+                        callback.call(context, url, xr);
                     }
                 }
             };

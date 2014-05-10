@@ -1,11 +1,13 @@
 //////////////////////////////////////////////////////////////////////
 // make login robust
-// make loader robust
-// fix font util (comine channels plugin)
-// Mobile: Android/Chrome, iOS/Safari, Windows Phone: IE // Touch Support
+// fix font util (combine channels plugin)
+// Mobile:
+//      viewport/scaling
+//      touch input
+//      wordlist/highscores
+//      dynamic layout
 // Fix tile grabbing/moving/swapping/lerping
 // Flying scores/fizz/particles
-// Allow anonymous users in the leaderboards
 //////////////////////////////////////////////////////////////////////
 
 var Game = (function () {
@@ -171,6 +173,7 @@ var Game = (function () {
                             bestScore = board.bestScore;
                             bestLabel.text = board.bestScore.toString();    // if board.bestScore has gone up, flash this!
                             bestButton.highlight = 1000;
+                            leaderBoard.delay = 1;  // poke a leaderboard update
                         } else {
 
                         }
@@ -386,6 +389,7 @@ var Game = (function () {
                 if(chs.User.id) {
                     chs.WebService.post("board", {}, { board: board.getAsString(), user_id: chs.User.id, seed: board.seed }, function (data) {
                         if (data && !data.error) {
+                            leaderBoard.delay = 0;  // poke a leaderboard update
                             this.board_id = data.board_id;  // for LB tracking
                             retry = false;
                         } else {

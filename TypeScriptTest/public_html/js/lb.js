@@ -34,7 +34,7 @@
             this.names = new chs.ClipRect(rankWidth + 8, this.ranks.y, this.width - (rankWidth + scoreWidth + 8), this.ranks.height);
             this.addChild(this.names);
 
-            this.age = 0;
+            this.delay = 0;
             this.requestInProgress = false;
         },
 
@@ -80,10 +80,10 @@
 
         onUpdate: function (time, deltaTime) {
             // call webservice, get LB, update names and scores
-            this.age -= deltaTime;
+            this.delay -= deltaTime;
 
-            if(this.age <= 0) {
-                this.age = 2000;
+            if(this.delay <= 0) {
+                this.delay = 30000; // update every 30 seconds if idle
                 this.updateLB();
             }
         }

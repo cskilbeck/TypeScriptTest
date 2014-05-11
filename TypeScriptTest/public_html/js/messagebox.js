@@ -12,7 +12,7 @@
         inherit$: [chs.Window],
 
         $: function (text, textFont, buttons, callback, context, buttonFont) {
-            var dw = chs.desktop.width / 2,
+            var dw = chs.desktop.width / 1.25,
                 dh = chs.desktop.height / 2,
                 btnFont = (buttonFont === undefined) ? textFont : buttonFont,
                 wrapped = textFont.wrapText(text, dw - 20, '\r'),

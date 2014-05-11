@@ -473,8 +473,6 @@
         //////////////////////////////////////////////////////////////////////
 
         zIndex: chs.Property({
-            configurable: false,
-            enumerable: true,
             set: function (z) {
                 var self = this.drawableData;
                 self.myZindex = z;
@@ -490,8 +488,6 @@
         //////////////////////////////////////////////////////////////////////
 
         parent: chs.Property({
-            configurable: false,
-            enumerable: true,
             get: function () {
                 return this.drawableData.parent;
             }
@@ -500,8 +496,6 @@
         //////////////////////////////////////////////////////////////////////
 
         enabled: chs.Property({
-            configurable: false,
-            enumerable: true,
             get: function () {
                 return this.drawableData.enabled;
             },
@@ -513,8 +507,6 @@
         //////////////////////////////////////////////////////////////////////
 
         visible: chs.Property({
-            configurable: false,
-            enumerable: true,
             set: function (v) {
                 this.drawableData.visible = v;
             },
@@ -526,8 +518,6 @@
         //////////////////////////////////////////////////////////////////////
 
         transparency: chs.Property({
-            configurable: false,
-            enumerable: true,
             set: function (t) {
                 this.drawableData.transparency = t;
             },
@@ -539,8 +529,6 @@
         //////////////////////////////////////////////////////////////////////
 
         modal: chs.Property({
-            configurable: false,
-            enumerable: true,
             set: function (m) {
                 this.drawableData.modal = m;
             },

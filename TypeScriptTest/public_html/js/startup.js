@@ -30,6 +30,10 @@ window.onload = function () {
                     };
 
                     if(chs.OAuth.login()) {
+
+                        // resize canvas to fill the viewport here...
+                        // then deal with whatever that ends up being
+
                         screen = document.getElementById("screen");
                         canvas = document.getElementById("myCanvas");
                         window.onresize();
@@ -59,7 +63,7 @@ window.onload = function () {
                     chs.desktop.update(chs.Timer.time, chs.Timer.delta);
                     chs.desktop.draw(context, chs.Matrix.identity(), 255);
                     chs.Debug.draw();
-                    requestAnimFrame(Startup.run);
+                    requestAnimationFrame(Startup.run);
                 }
             };
 

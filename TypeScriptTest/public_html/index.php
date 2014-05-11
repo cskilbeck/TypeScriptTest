@@ -2,6 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=852, height=480, user-scalable=no">
     <title>Make The Words</title>
     <link rel="stylesheet" href="app.css" type="text/css" />
     <!--[if gte IE 9]><!-->
@@ -43,6 +44,7 @@
     <script src="js/boardtile.js"></script>
     <script src="js/boardgame.js"></script>
     <script src="js/lb.js"></script>
+    <script src="js/ui.js"></script>
     <script src="js/game.js"></script>
     <script src="js/loginscreen.js"></script>
     <script src="js/mainmenu.js"></script>
@@ -78,7 +80,7 @@
     <![endif]-->
 
     <!--[if gte IE 9]><!-->
-    <canvas id="myCanvas" width="1280" height="720"></canvas>
+    <canvas id="myCanvas" width="852" height="480"></canvas>
     <!--<![endif]-->
 
 </body>

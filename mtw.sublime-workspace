@@ -4,6 +4,22 @@
 		"selected_items":
 		[
 			[
+				"stat",
+				"status"
+			],
+			[
+				"con",
+				"context"
+			],
+			[
+				"call",
+				"callback"
+			],
+			[
+				"le",
+				"leaderBoard"
+			],
+			[
 				"def",
 				"definition"
 			],
@@ -74,10 +90,6 @@
 			[
 				"acce",
 				"access_token"
-			],
-			[
-				"con",
-				"contentType"
 			],
 			[
 				"tr",
@@ -332,26 +344,50 @@
 			}
 		},
 		{
-			"file": "TypeScriptTest/public_html/js/mainmenu.js",
+			"file": "TypeScriptTest/public_html/js/game.js",
 			"settings":
 			{
-				"buffer_size": 7442,
+				"buffer_size": 16674,
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"file": "TypeScriptTest/public_html/img/words.json",
+			"file": "TypeScriptTest/public_html/js/webservice.js",
 			"settings":
 			{
-				"buffer_size": 529105,
+				"buffer_size": 1390,
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"file": "TypeScriptTest/public_html/img/dictionary.json",
+			"file": "TypeScriptTest/public_html/js/loader.js",
 			"settings":
 			{
-				"buffer_size": 5682522,
+				"buffer_size": 9685,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "TypeScriptTest/public_html/js/ajax.js",
+			"settings":
+			{
+				"buffer_size": 3469,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "TypeScriptTest/web_service/myapp.wsgi",
+			"settings":
+			{
+				"buffer_size": 16729,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "TypeScriptTest/public_html/js/lb.js",
+			"settings":
+			{
+				"buffer_size": 3890,
 				"line_ending": "Windows"
 			}
 		}
@@ -359,23 +395,23 @@
 	"build_system": "Packages/User/jshint.sublime-build",
 	"command_palette":
 	{
-		"height": 392.0,
+		"height": 152.0,
 		"selected_items":
 		[
-			[
-				"stat",
-				"Git: Quick Status"
-			],
 			[
 				"push",
 				"Git: Push"
 			],
 			[
-				"status",
+				"statu",
 				"Git: Status"
 			],
 			[
-				"statu",
+				"stat",
+				"Git: Quick Status"
+			],
+			[
+				"status",
 				"Git: Status"
 			],
 			[
@@ -564,19 +600,19 @@
 	},
 	"file_history":
 	[
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/img/dictionary.json",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/img/words.json",
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/mainmenu.js",
 		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/user.js",
 		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/php/cb1.php",
 		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/SQL/mtw_setup.sql",
 		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/SQL/oauth.sql",
 		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/cookies.js",
 		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/startup.js",
-		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/mainmenu.js",
 		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/oauth2callback/index.php",
 		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/sprite.js",
-		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/img/dictionary.json",
 		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/nodejs/helper.js",
 		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/game.js",
-		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/img/words.json",
 		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/loginscreen.js",
 		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/php/cb2.php",
 		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/php/cb4.php",
@@ -710,6 +746,8 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"bestScore",
+			"leaderBoard",
 			"providerName",
 			"sites",
 			"login_error",
@@ -821,7 +859,7 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 4,
 			"sheets":
 			[
 				{
@@ -851,24 +889,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 6,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
-					"file": "TypeScriptTest/public_html/js/mainmenu.js",
+					"file": "TypeScriptTest/public_html/js/game.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 7442,
+						"buffer_size": 16674,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								6401,
-								6401
+								1330,
+								1330
 							]
 						],
 						"settings":
@@ -877,8 +915,8 @@
 							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
-						"translation.x": -0.0,
-						"translation.y": 1457.0,
+						"translation.x": 0.0,
+						"translation.y": 505.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 3,
@@ -886,27 +924,29 @@
 				},
 				{
 					"buffer": 2,
-					"file": "TypeScriptTest/public_html/img/words.json",
+					"file": "TypeScriptTest/public_html/js/webservice.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 529105,
+						"buffer_size": 1390,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								32103,
-								32103
+								588,
+								588
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/JavaScript/JSON.tmLanguage"
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
 						},
-						"translation.x": -0.0,
-						"translation.y": 45231.0,
+						"translation.x": 0.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 2,
@@ -914,31 +954,131 @@
 				},
 				{
 					"buffer": 3,
-					"file": "TypeScriptTest/public_html/img/dictionary.json",
+					"file": "TypeScriptTest/public_html/js/loader.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 5682522,
+						"buffer_size": 9685,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								352303,
-								352303
+								4316,
+								4316
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/JavaScript/JSON.tmLanguage",
-							"translate_tabs_to_spaces": false
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 45256.0,
+						"translation.y": 1435.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "TypeScriptTest/public_html/js/ajax.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3469,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1768,
+								1768
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 209.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "TypeScriptTest/web_service/myapp.wsgi",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 16729,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								474,
+								474
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "TypeScriptTest/public_html/js/lb.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3890,
+						"regions":
+						{
+							"mark":
+							{
+								"flags": 144,
+								"icon": "dot",
+								"regions":
+								[
+								],
+								"scope": "mark"
+							}
+						},
+						"selection":
+						[
+							[
+								3509,
+								3509
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 520.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
 					"type": "text"
 				}
 			]
@@ -1019,12 +1159,20 @@
 		"selected_items":
 		[
 			[
-				"mya",
-				"web_service\\myapp.wsgi"
+				"aja",
+				"public_html\\js\\ajax.js"
 			],
 			[
 				"gam",
 				"public_html\\js\\game.js"
+			],
+			[
+				"lb",
+				"public_html\\js\\lb.js"
+			],
+			[
+				"mya",
+				"web_service\\myapp.wsgi"
 			],
 			[
 				"mainm",
@@ -1099,10 +1247,6 @@
 				"public_html\\index.php"
 			],
 			[
-				"lb",
-				"public_html\\js\\lb.js"
-			],
-			[
 				"game",
 				"public_html\\js\\game.js"
 			],
@@ -1125,10 +1269,6 @@
 			[
 				"mtw",
 				"SQL\\mtw_setup.sql"
-			],
-			[
-				"aja",
-				"public_html\\js\\ajax.js"
 			],
 			[
 				"bo",

@@ -2,18 +2,19 @@
     "use strict";
 
     mtw.LeaderBoard = chs.Class({
-        inherit$: [chs.Panel],
+        inherit$: [chs.Drawable],
 
-        $: function (font, game) {
+        $: function (font, game, width, height) {
             var rankWidth,
                 nameWidth,
                 scoreWidth;
 
-            rankWidth = font.measureText("999").width + 16;
-            nameWidth = font.measureText("Charlie Skilbeck").width + 16;
-            scoreWidth = font.measureText("999").width + 16;
+            rankWidth = font.measureText("999").width;
+            nameWidth = font.measureText("Charlie Skilbeck").width;
+            scoreWidth = font.measureText("999.").width;
 
-            chs.Panel.call(this, 16, 16, rankWidth + nameWidth + scoreWidth, chs.desktop.height - 32, "rgb(16, 16, 16)", "white", 16, 3, 255);
+            chs.Drawable.call(this);
+            this.dimensions = { width: width, height: height };
 
             this.game = game;
             this.font = font;
@@ -21,17 +22,18 @@
             this.topLabel = new chs.Label("NN of NN", font).setPosition(this.width / 2, 8).setPivot(0.5, 0);
             this.addChild(this.topLabel);
 
-            this.highlight = new chs.Panel(4, 0, this.width - 8, this.font.height + 6, "darkslategrey", undefined, 4);
+            this.highlight = new chs.Panel(0, 0, this.width, this.font.height + 6, "darkslategrey", undefined, 4);
             this.addChild(this.highlight);
             this.highlight.visible = false;
 
-            this.ranks = new chs.ClipRect(8, this.topLabel.height + 16, rankWidth, this.height - this.topLabel.height - 16);
+            this.ranks = new chs.ClipRect(0, this.topLabel.height + 16, rankWidth, this.height - this.topLabel.height - 16);
             this.addChild(this.ranks);
 
-            this.scores = new chs.ClipRect(this.width - scoreWidth, this.ranks.y, scoreWidth, this.ranks.height);
+            this.scores = new chs.ClipRect(this.width, this.ranks.y, scoreWidth, this.ranks.height);
+            this.scores.setPivot(1, 0);
             this.addChild(this.scores);
 
-            this.names = new chs.ClipRect(rankWidth + 8, this.ranks.y, this.width - (rankWidth + scoreWidth + 8), this.ranks.height);
+            this.names = new chs.ClipRect(rankWidth, this.ranks.y, this.width - (rankWidth + scoreWidth + 2), this.ranks.height);
             this.addChild(this.names);
 
             this.delay = 0;
@@ -60,7 +62,7 @@
                         for(i in data.leaderboard) {
                             row = data.leaderboard[i];
                             if (row.user_id == chs.User.id) {
-                                this.highlight.setPosition(4, y - 5 + this.names.y);
+                                this.highlight.setPosition(0, y - 5 + this.names.y);
                                 this.highlight.visible = true;
                                 this.topLabel.text = row.rank.toString() + " of " + data.total.toString();
                             }

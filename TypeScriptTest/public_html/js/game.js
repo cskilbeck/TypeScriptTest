@@ -1,4 +1,5 @@
 //////////////////////////////////////////////////////////////////////
+// local linux host...
 // make login robust
 // fix font util (combine channels plugin)
 // Mobile:
@@ -6,6 +7,9 @@
 //      touch input
 //      wordlist/highscores
 //      dynamic layout
+//      deflate/gzip js and json
+//      orientation
+// Drawable: fix width,height
 // Fix tile grabbing/moving/swapping/lerping
 // Flying scores/fizz/particles
 //////////////////////////////////////////////////////////////////////
@@ -25,6 +29,8 @@ var Game = (function () {
         bestButton,
         bestScore,
         retry = false,
+        ui,
+        menu,
         currentScore,
         leaderBoard,
         bestLabel,
@@ -32,8 +38,7 @@ var Game = (function () {
         undoImage,
         redoImage,
         highlightWords = [],
-        deHighlightWords = [],
-        menuButton;
+        deHighlightWords = [];
 
     //////////////////////////////////////////////////////////////////////
 
@@ -51,7 +56,7 @@ var Game = (function () {
 
         $: function (mainMenu, loader) {
             chs.Drawable.call(this);
-            this.dimensions = { width: 800, height: 600 };
+            this.dimensions = { width: chs.desktop.width, height: chs.desktop.height };
             this.mainMenu = mainMenu;
             consolas = chs.Font.load("Consolas", loader);
             arial = chs.Font.load("Arial", loader);
@@ -61,6 +66,7 @@ var Game = (function () {
             undoImage = loader.load("undo.png");
             redoImage = loader.load("redo.png");
             this.board_id = 0;
+            mtw.UI.load(loader);
         },
 
         loadComplete: function () {
@@ -70,23 +76,20 @@ var Game = (function () {
 
             consolasItalicBold.softLineSpacing = 4;
 
-            leaderBoard = new mtw.LeaderBoard(calibri, this);
-            this.addChild(leaderBoard);
+            ui = new mtw.UI();
+            this.addChild(ui);
 
-            menuButton = new chs.TextButton("Menu", consolas, chs.desktop.width / 2, chs.desktop.height - 10, 100, 40, this.menu, this).setPivot(0.5, 1);
-            this.addChild(menuButton);
+            ui.addEventHandler("undo", this.undo, this);
+            ui.addEventHandler("redo", this.redo, this);
 
-            words = new chs.Drawable().setPosition(chs.desktop.width - 125, 70);
-            this.addChild(words);
+            words = new chs.Drawable();
+            words.dimensions = { width: ui.client.width, height: ui.client.height };
 
-            this.addChild(new chs.SpriteButton(undoImage, "scale", 900, 530, this.undo, null));
-            this.addChild(new chs.SpriteButton(redoImage, "scale", 950, 530, this.redo, null));
-
-            scoreButton = new chs.PanelButton(chs.desktop.width - 125, 10, 120, 26, 'black', undefined, 3, 0, null, null);
-            scoreButton.scoreLabel = new chs.Label("0", consolas).setPosition(116, 4).setPivot(1, 0);
+            scoreButton = new chs.PanelButton(ui.client.width / 2, 0, ui.client.width, consolas.height + 8, 'black', undefined, 3, 0, null, null).setPivot(0.5, 0);
+            scoreButton.scoreLabel = new chs.Label("0", consolas).setPosition(scoreButton.width - 4, 4).setPivot(1, 0);
             scoreButton.addChild(scoreButton.scoreLabel);
             scoreButton.addChild(new chs.Label("Score:", consolas).setPosition(4, 4));
-            this.addChild(scoreButton);
+            words.addChild(scoreButton);
             scoreButton.highlight = 0;
 
             scoreButton.flash = function (color) {
@@ -112,8 +115,8 @@ var Game = (function () {
                 }
             };
 
-            bestButton = new chs.PanelButton(chs.desktop.width - 125, 39, 120, 26, 'black', undefined, 3, 0, this.bestClicked, this);
-            bestLabel = new chs.Label("0", consolas).setPosition(116, 4).setPivot(1, 0);
+            bestButton = new chs.PanelButton(ui.client.width / 2, scoreButton.height + 2, ui.client.width, consolas.height + 8, 'black', undefined, 3, 0, this.bestClicked, this).setPivot(0.5, 0);
+            bestLabel = new chs.Label("0", consolas).setPosition(bestButton.width - 4, 4).setPivot(1, 0);
             bestButton.addChild(bestLabel);
             bestButton.addChild(new chs.Label("Best:", consolas).setPosition(4, 4));
             bestButton.highlight = 0;
@@ -138,9 +141,29 @@ var Game = (function () {
                     }
                 }
             };
-            this.addChild(bestButton);
+            words.addChild(bestButton);
+            words.title = "Words";
+            words.wordList = new chs.Drawable().setPosition(0, bestButton.height + bestButton.y + 4);
+            words.addChild(words.wordList);
+            ui.addScreen(words);
 
-            board = new mtw.BoardGame(chs.desktop.width / 2, 16, this, true).setPivot(0.5, 0);
+            leaderBoard = new mtw.LeaderBoard(calibri, this, ui.client.width, ui.client.height);
+            leaderBoard.title = "Leaderboard";
+            ui.addScreen(leaderBoard);
+
+            menu = new chs.Menu(ui.client.width / 2, 8, consolas,
+                [
+                    "Quit",
+                    "Shuffle!"
+                ], [
+                    this.closeIt,
+                    this.shuffle
+                ],
+                this).setPivot(0.5, 0);
+            menu.title = "Menu";
+            ui.addScreen(menu);
+
+            board = new mtw.BoardGame(0, 0, this, true);
             this.addChild(board);
             bestScore = 0;
 
@@ -154,8 +177,6 @@ var Game = (function () {
         // new game starting
 
         init: function (seed) {
-            menuButton.onIdle();
-            menuButton.setCapture(false);
             board.randomize(seed);
             board.load();
 
@@ -262,23 +283,6 @@ var Game = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        menu: function () {
-            var top = {x: 0, y: 0 };
-            menuButton.state = chs.Button.idle;
-            top = menuButton.clientToScreen(top);
-            this.addChild(new chs.PopupMenu(menuButton.x, top.y - 4, consolas,
-                [
-                    "Quit",
-                    "Shuffle!"
-                ], [
-                    this.closeIt,
-                    this.shuffle
-                ],
-                this).setPivot(0.5, 1));
-        },
-
-        //////////////////////////////////////////////////////////////////////
-
         undo: function () {
             board.undo();
         },
@@ -307,8 +311,8 @@ var Game = (function () {
             win = new chs.Window({
                 x: chs.desktop.width / 2,
                 y: chs.desktop.height / 2,
-                width: 640,
-                height: 480,
+                width: chs.desktop.width * 0.85,
+                height: chs.desktop.height * 0.95,
                 caption: w.str.toUpperCase(),
                 captionScale: 0.5,
                 font: arial,
@@ -341,7 +345,7 @@ var Game = (function () {
             };
 
             scoreLabel = new chs.Label(w.score.toString() + " points", consolasItalic);
-            textBox = new chs.TextBox(16, 16, 640 - 32, 480 - 32, "...", consolasItalic, '\r    ', function (link) {
+            textBox = new chs.TextBox(16, 16, win.client.width - 32, win.client.height - 32, "...", consolasItalic, '\r    ', function (link) {
                 win.text = link.toUpperCase();
                 scoreLabel.text = mtw.Letters.getWordScore(link).toString() + " points";
                 getDef(link);
@@ -358,14 +362,14 @@ var Game = (function () {
 
         updateWordList: function () {
             var y = 0;
-            words.removeChildren();
+            words.wordList.removeChildren();
             board.wordList().forEach(function (w) {
-                var button = new chs.PanelButton(0, y, 120, 26, "darkslategrey", undefined, 4, 0, function () {
+                var button = new chs.PanelButton(ui.client.width / 2, y, ui.client.width - 8, consolas.height + 8, "darkslategrey", undefined, 4, 0, function () {
                     button.state = chs.Button.idle;
                     this.showDefinition(w);
-                }, this);
+                }, this).setPivot(0.5, 0);
                 button.addChild(new chs.Label(w.str, consolas).setPosition(5, button.height / 2).setPivot(0, consolas.midPivot));
-                button.addChild(new chs.Label(w.score.toString(), consolas).setPosition(114, button.height / 2).setPivot(1, consolas.midPivot));
+                button.addChild(new chs.Label(w.score.toString(), consolas).setPosition(button.width - 8, button.height / 2).setPivot(1, consolas.midPivot));
                 button.onIdle = function () {
                     this.fillColour = "darkslategrey";
                     deHighlightWords.push(this.word);
@@ -377,7 +381,7 @@ var Game = (function () {
                 };
                 button.word = w;
                 y += button.height + 1;
-                words.addChild(button);
+                words.wordList.addChild(button);
             }, this);
             board.changed = false;
             scoreButton.setScore(board.score);

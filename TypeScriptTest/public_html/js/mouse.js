@@ -5,7 +5,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    function relMouseCoords(elem, event) {
+    function relMouseCoords(elem, x, y) {
 
         var totalOffsetX = 0,
             totalOffsetY = 0,
@@ -15,7 +15,7 @@
             totalOffsetY += currentElement.offsetTop - currentElement.scrollTop;
             currentElement = currentElement.offsetParent;
         } while (currentElement !== null);
-        return { x: event.x - totalOffsetX, y: event.y - totalOffsetY };
+        return { x: x - totalOffsetX, y: y - totalOffsetY };
     }
 
     //////////////////////////////////////////////////////////////////////
@@ -74,13 +74,40 @@
             }
         });
 
+        // fire a mouse down
+        addListener(element, "touchstart", function () {
+            if(event.targetTouches.length === 1) {
+                var touch = event.targetTouches[0],
+                    pos = relMouseCoords(canvas, touch.clientX, touch.clientY);
+
+            }
+            event.preventDefault();
+        });
+
+        addListener(element, "touchmove", function () {
+            if(event.targetTouches.length === 1) {
+                var touch = event.targetTouches[0],
+                    pos = relMouseCoords(canvas, touch.clientX, touch.clientY);
+            }
+            event.preventDefault();
+        });
+
+        // fire a mouse up
+        addListener(element, "touchend", function () {
+            if(event.targetTouches.length === 1) {
+                var touch = event.targetTouches[0];
+                console.log("TouchEnd!");
+            }
+            event.preventDefault();
+        });
+
         addListener(element, "mousedown", function (event) {
             var p;
             if (element.setCapture) {
                 element.setCapture();
             }
             event = fixupMouseEvent(event);
-            p = relMouseCoords(canvas, event);
+            p = relMouseCoords(canvas, event.x, event.y);
             switch (event.which) {
             case 1:
                 mouse.left.held = true;
@@ -97,7 +124,7 @@
         addListener(element, "mouseup", function (event) {
             var p;
             event = fixupMouseEvent(event);
-            p = relMouseCoords(canvas, event);
+            p = relMouseCoords(canvas, event.x, event.y);
             switch (event.which) {
             case 1:
                 mouse.left.held = false;
@@ -119,7 +146,7 @@
                 event.preventDefault();
             }
             e = fixupMouseEvent(event);
-            p = relMouseCoords(canvas, e);
+            p = relMouseCoords(canvas, e.x, e.y);
             mouse.position.x = p.x;
             mouse.position.y = p.y;
             if (e.y < 0 || e.y > view.height || e.x < 0 || e.x > view.width) {
@@ -165,9 +192,9 @@
 
         static$: {
 
-            init: function (canvasElement, screenElement) {
+            init: function (canvasElement) {
                 canvas = canvasElement;
-                screen = screenElement;
+                screen = document.body;
                 setMouseCapture(screen, canvas, active, events);
             },
 

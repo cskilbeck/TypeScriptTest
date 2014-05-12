@@ -3,6 +3,9 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=852, height=480, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Make The Words</title>
     <link rel="stylesheet" href="app.css" type="text/css" />
     <!--[if gte IE 9]><!-->
@@ -38,6 +41,7 @@
     <script src="js/debug.js"></script>
     <script src="js/dictionary.js"></script>
     <script src="js/letters.js"></script>
+    <script src="js/desktop.js"></script>
     <script src="js/word.js"></script>
     <script src="js/tile.js"></script>
     <script src="js/board.js"></script>
@@ -53,7 +57,7 @@
     <!--<![endif]-->
 </head>
 
-<body id="screen">
+<body>
 
     <!--[if lt IE 9]>
     <div id="message">
@@ -78,10 +82,6 @@
         </div>
     </div>
     <![endif]-->
-
-    <!--[if gte IE 9]><!-->
-    <canvas id="myCanvas" width="852" height="480"></canvas>
-    <!--<![endif]-->
 
 </body>
 </html>

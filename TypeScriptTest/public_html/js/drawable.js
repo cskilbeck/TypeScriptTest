@@ -27,6 +27,7 @@
                 pickMatrix: chs.Matrix.identity(),
                 globalMatrix: chs.Matrix.identity(),
                 mouseCapture: false,
+                touchCapture: false,
                 parent: null,
                 enabled: true,
                 closed: false,
@@ -110,7 +111,7 @@
 
         //////////////////////////////////////////////////////////////////////
 
-        processMessage: function (e, capture) {
+        processMessage: function (e, mouseCapture, touchCapture) {
             var self = this.drawableData,
                 c,
                 p,
@@ -118,17 +119,24 @@
                 bp;
             // kids get first dibs
             if (this.enabled) {
-                capture = capture || self.mouseCapture;
-                for (c = self.children.tailNode() ; c !== self.children.end() ; c = c.prev) {
-                    if (c.item.processMessage(e, capture) || c.item.modal) {
+                mouseCapture = mouseCapture || self.mouseCapture;
+                touchCapture = touchCapture || self.touchCapture;
+                for (c = self.children.tailNode(); c !== self.children.end(); c = c.prev) {
+                    if (c.item.processMessage(e, mouseCapture, touchCapture) || c.item.modal) {
                         return true;
                     }
                 }
-                if (this.visible) {
-                    p = this.pick(e.position, 0);
-                    mp = self.mouseCapture || p;
+                if (this.visible && this.enabled) {
+                    p = this.pick(e.position, 0);                           // message over the drawable?
+                    mp = self.mouseCapture || self.touchCapture || p;
                     if (mp) {
                         switch (e.type) {
+                        case chs.Message.touchStart:
+                            this.dispatchEvent('touchStart');
+                            return this.onTouchStart(e);
+                        case chs.Message.touchEnd:
+                            this.dispatchEvent('touchEnd');
+                            return this.onTouchEnd(e);
                         case chs.Message.leftMouseDown:
                             this.dispatchEvent('leftMouseDown');
                             return this.onLeftMouseDown(e);
@@ -142,19 +150,37 @@
                             this.dispatchEvent('rightMouseUp');
                             return this.onRightMouseUp(e);
                         }
-                        if (!self.mouseIsOver) {
+                        if (!self.mouseIsOver && e.isMouseMessage) {
                             self.mouseIsOver = true;
                             this.onMouseEnter(e);
                             this.dispatchEvent('mouseEnter', e);
                         }
-                    } else if (!p && self.mouseIsOver) {
-                        this.onMouseLeave(e);
-                        self.mouseIsOver = false;
-                        this.dispatchEvent('mouseLeave', e);
+                        if (!self.isTouched && e.isTouchMessage) {
+                            self.isTouched = true;
+                            this.onTouchEnter();
+                            this.dispatchEvent('touchEnter', e);
+                        }
+                    } else if (!p) {
+                        if (e.isMouseMessage && self.mouseIsOver) {
+                            this.onMouseLeave(e);
+                            self.mouseIsOver = false;
+                            this.dispatchEvent('mouseLeave', e);
+                        }
+                        if (e.isTouchMessage && self.isTouched) {
+                            this.onTouchExit(e);
+                            self.isTouched = false;
+                            this.dispatchEvent('touchLeave', e);
+                        }
                     }
-                    if (mp && e.type === chs.Message.mouseMove) {
-                        this.dispatchEvent('mouseMove', e);
-                        return this.onMouseMove(e);
+                    if (mp) {
+                        if(e.isMouseMessage) {
+                            this.dispatchEvent('mouseMove', e);
+                            return this.onMouseMove(e);
+                        }
+                        if(e.isTouchMessage) {
+                            this.dispatchEvent('touchMove', e);
+                            return this.onTouchMove(e);
+                        }
                     }
                 }
             }

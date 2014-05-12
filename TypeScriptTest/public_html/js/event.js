@@ -1,6 +1,8 @@
 (function () {
     "use strict";
 
+    //////////////////////////////////////////////////////////////////////
+
     chs.Message = chs.Class({
 
         static$: {
@@ -8,13 +10,30 @@
             leftMouseUp: 2,
             rightMouseDown: 3,
             rightMouseUp: 4,
-            mouseMove: 5
+            mouseMove: 5,
+            touchStart: 6,
+            touchEnd: 7,
+            touchMove: 8,
         },
 
         $: function (type) {
             this.type = type;
-        }
+        },
+
+        isMouseMessage: chs.Property({
+            get: function () {
+                return this instanceof chs.MouseMessage;
+            }
+        }),
+
+        isTouchMessage: chs.Property({
+            get: function () {
+                return this instanceof chs.TouchMessage;
+            }
+        })
     });
+
+    //////////////////////////////////////////////////////////////////////
 
     chs.MouseMessage = chs.Class({
         inherit$: [chs.Message],
@@ -37,6 +56,32 @@
         })
     });
 
+    //////////////////////////////////////////////////////////////////////
+
+    chs.TouchMessage = chs.Class({
+        inherit$: [chs.Message],
+
+        $: function (type, pos) {
+            chs.Message.call(this, type);
+            this.position = pos;
+        },
+
+        x: chs.Property({
+            get: function () {
+                return this.position.x;
+            }
+        }),
+
+        y: chs.Property({
+            get: function () {
+                return this.position.y;
+            }
+        }),
+
+    });
+
+    //////////////////////////////////////////////////////////////////////
+
     chs.EventHandler = chs.Class({
 
         $: function (target, context, oneOff) {
@@ -45,6 +90,8 @@
             this.oneOff = oneOff;
         }
     });
+
+    //////////////////////////////////////////////////////////////////////
 
     chs.EventSource = chs.Class({
 

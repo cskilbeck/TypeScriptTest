@@ -28,6 +28,32 @@
         onPressed: function () {
         },
 
+        onTouchStart: function () {
+            this.state = chs.Button.pressed;
+            return true;
+        },
+
+        onTouchEnd: function () {
+            if(this.state === chs.Button.pressed) {
+                this.state = chs.Button.idle;
+                this.dispatchEvent("clicked");
+                if (this.callback) {
+                    this.callback.call(this.context || this);
+                }
+            }
+            return true;
+        },
+
+        onTouchLeave: function () {
+            this.state = chs.Button.idle;
+            return true;
+        },
+
+        onTouchEnter: function () {
+            this.state = chs.Button.pressed;
+            return true;
+        },
+
         onMouseEnter: function () {
             this.state = chs.Button.hover;
             return true;
@@ -63,7 +89,7 @@
                 switch (s) {
                 case chs.Button.idle:
                     this.onIdle();
-                    this.drawableData.mouseIsOver = false;
+                    //this.drawableData.mouseIsOver = false;
                     break;
                 case chs.Button.hover:
                     this.onHover();

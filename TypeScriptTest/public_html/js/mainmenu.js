@@ -103,6 +103,8 @@ var MainMenu = (function () {
                 chs.WebService.get('session', { session_id: session_id }, function (data) {
                     var logoutButton;
                     if (data.error !== undefined) {
+                        chs.Cookies.remove('session_id');
+                        chs.Cookies.remove('login_error');
                         if(provider_id !== 0) {
                             window.location.reload();
                         }

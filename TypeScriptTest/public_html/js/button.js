@@ -44,7 +44,7 @@
             return true;
         },
 
-        onTouchLeave: function () {
+        onTouchExit: function () {
             this.state = chs.Button.idle;
             return true;
         },

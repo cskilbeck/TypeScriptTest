@@ -13,7 +13,7 @@
             mouseMove: 5,
             touchStart: 6,
             touchEnd: 7,
-            touchMove: 8,
+            touchMove: 8
         },
 
         $: function (type) {

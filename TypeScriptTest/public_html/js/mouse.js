@@ -74,31 +74,28 @@
             }
         });
 
-        // fire a mouse down
-        addListener(element, "touchstart", function () {
-            if(event.targetTouches.length === 1) {
-                var touch = event.targetTouches[0],
-                    pos = relMouseCoords(canvas, touch.clientX, touch.clientY);
-
-            }
+        addListener(element, "touchstart", function (event) {
+            var touch = event.targetTouches[0],
+                pos = relMouseCoords(canvas, touch.clientX, touch.clientY);
+            events.push(new chs.TouchMessage(chs.Message.touchStart, pos));
             event.preventDefault();
+            return false;
         });
 
-        addListener(element, "touchmove", function () {
-            if(event.targetTouches.length === 1) {
-                var touch = event.targetTouches[0],
-                    pos = relMouseCoords(canvas, touch.clientX, touch.clientY);
-            }
+        addListener(element, "touchmove", function (event) {
+            var touch = event.targetTouches[0],
+                pos = relMouseCoords(canvas, touch.clientX, touch.clientY);
+            events.push(new chs.TouchMessage(chs.Message.touchMove, pos));
             event.preventDefault();
+            return false;
         });
 
-        // fire a mouse up
-        addListener(element, "touchend", function () {
-            if(event.targetTouches.length === 1) {
-                var touch = event.targetTouches[0];
-                console.log("TouchEnd!");
-            }
+        addListener(element, "touchend", function (event) {
+            var touch = event.targetTouches[0],
+                pos = relMouseCoords(canvas, touch.clientX, touch.clientY);
+            events.push(new chs.TouchMessage(chs.Message.touchEnd, pos));
             event.preventDefault();
+            return false;
         });
 
         addListener(element, "mousedown", function (event) {
@@ -207,8 +204,13 @@
                 old.x = active.position.x;
                 old.y = active.position.y;
 
+                chs.Debug.print("EVENTS:");
+                chs.Debug.print("   There are " + events.length.toString());
+                chs.Debug.print("    ...");
+
                 while (events.length > 0) {
                     e = events.shift();
+                    chs.Debug.print("    : ", e.type, e.x, e.y);
                     root.processMessage(e);
                 }
 

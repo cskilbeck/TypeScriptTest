@@ -25,8 +25,12 @@
                 aspectRatio = windowWidth / windowHeight;
             if(windowWidth > 852) {
                 windowWidth = 852;
+                windowHeight = windowWidth / aspectRatio;
             }
-            windowHeight = windowWidth / aspectRatio;
+            if(windowHeight < 480) {
+                windowHeight = 480;
+                windowWidth = windowHeight * aspectRatio;
+            }
             chs.Panel.call(this, 0, 0, windowWidth, windowHeight, "rgb(32, 128, 48)");
             canvas = document.createElement("canvas");
             canvas.width = this.width;

@@ -51,6 +51,36 @@
 
         //////////////////////////////////////////////////////////////////////
 
+        onTouchEnter: function (e) {
+            return false;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        onTouchExit: function (e) {
+            return false;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        onTouchStart: function (e) {
+            return false;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        onTouchEnd: function (e) {
+            return false;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        onTouchMove: function (e) {
+            return false;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
         onMouseLeave: function (e) {
             return false;
         },
@@ -132,6 +162,7 @@
                     if (mp) {
                         switch (e.type) {
                         case chs.Message.touchStart:
+                            self.isTouched = true;
                             this.dispatchEvent('touchStart');
                             return this.onTouchStart(e);
                         case chs.Message.touchEnd:

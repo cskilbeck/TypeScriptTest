@@ -12,7 +12,7 @@
         inherit$: [chs.Window],
 
         $: function (text, textFont, buttons, callback, context, buttonFont) {
-            var dw = chs.desktop.width / 1.25,
+            var dw = chs.desktop.width / 1.6666,
                 dh = chs.desktop.height / 2,
                 btnFont = (buttonFont === undefined) ? textFont : buttonFont,
                 wrapped = textFont.wrapText(text, dw - 20, '\r'),
@@ -35,7 +35,7 @@
                 modal: true
             });
             this.setPivot(0.5, 0.5);
-            this.buttonHolder = new chs.Drawable(),
+            this.buttonHolder = new chs.Drawable();
             this.textBox = new chs.TextBox(20, 10, this.width - 50, dim.height, text, textFont);
             this.client.addChild(this.textBox);
             w = 0;
@@ -82,9 +82,9 @@
             this.age += deltaTime;
             t = Math.min(1, this.age / 125);    // half a second to face in
             t = chs.Util.ease(t);
-            this.msgBox.panel.transparency = t * 240;
+            this.msgBox.panel.transparency = t * 224;
             this.panel.transparency = t * 96;
-            this.msgBox.client.transparency = t * 240;
+            this.msgBox.client.transparency = t * 224;
         },
 
         text: chs.Property({

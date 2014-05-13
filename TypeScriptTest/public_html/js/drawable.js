@@ -182,9 +182,10 @@
                     case chs.Message.touchStart:
                         if(pick) {
                             self.isTouched = true;
+                            this.dispatchEvent('touchStart');
+                            return this.onTouchStart(e);
                         }
-                        this.dispatchEvent('touchStart');
-                        return this.onTouchStart(e);
+                        break;
 
                     case chs.Message.touchEnd:
                         this.dispatchEvent('touchEnd');
@@ -241,13 +242,13 @@
                             if(!self.isTouched) {
                                 this.dispatchEvent('touchEnter', e);
                             }
-                            this.dispatchEvent('touchMove', e);
                             self.isTouched = true;
-                            return this.onTouchMove();
+                            this.dispatchEvent('touchMove', e);
+                            return this.onTouchMove(e);
                         } else if(self.isTouched) {
-                            this.dispatchEvent('touchLeave', e);
                             self.isTouched = false;
-                            return this.onTouchLeave();
+                            this.dispatchEvent('touchLeave', e);
+                            return this.onTouchLeave(e);
                         }
                         break;
                     }

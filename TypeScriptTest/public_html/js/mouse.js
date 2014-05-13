@@ -198,14 +198,8 @@
                 old.x = active.position.x;
                 old.y = active.position.y;
 
-                chs.Debug.print("EVENTS:");
-                chs.Debug.print("   There are " + events.length.toString());
-                chs.Debug.print("    ...2");
-
                 while (events.length > 0) {
-                    e = events.shift();
-                    chs.Debug.print("    : ", e.type, e.x, e.y);
-                    root.processMessage(e);
+                    root.processMessage(events.shift());
                 }
 
             },

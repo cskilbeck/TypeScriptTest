@@ -162,7 +162,7 @@
 
         //////////////////////////////////////////////////////////////////////
 
-        onLeftMouseDown: function (e) {
+        doClick: function(e) {
             if (this.mainBoard) {
                 var pos = this.screenToClient(e.position);
                 clickedTile = this.tileFrom(pos);
@@ -186,7 +186,7 @@
 
         //////////////////////////////////////////////////////////////////////
 
-        onLeftMouseUp: function () {
+        doUnclick: function (e) {
             if (this.mainBoard) {
                 if (this.activeTile !== null) {
                     this.activeTile.reset();
@@ -206,9 +206,8 @@
         },
 
         //////////////////////////////////////////////////////////////////////
-        // this is fucked
 
-        onMouseMove: function (e) {
+        doMove: function (e) {
             var pos,
                 tw = mtw.BoardTile.width,
                 th = mtw.BoardTile.height;
@@ -246,7 +245,46 @@
                     this.activeTile.setPosition(tileX, tileY);
                 }
             }
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        onLeftMouseDown: function (e) {
+            this.doClick(e);
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        onLeftMouseUp: function (e) {
+            this.doUnclick(e);
+        },
+
+        //////////////////////////////////////////////////////////////////////
+        // this is fucked
+
+        onMouseMove: function (e) {
+            this.doMove(e);
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        onTouchStart: function (e) {
+            this.doClick(e);
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        onTouchEnd: function (e) {
+            this.doUnclick(e);
+        },
+
+        //////////////////////////////////////////////////////////////////////
+        // this is fucked
+
+        onTouchMove: function (e) {
+            this.doMove(e);
         }
+
     });
 
 }());

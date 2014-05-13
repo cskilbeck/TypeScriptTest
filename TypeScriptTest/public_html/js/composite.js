@@ -14,10 +14,10 @@
             var context;
             this.compositeData.canvas = document.createElement("canvas");
             context = canvas.getContext("2d");
-            this.compositeData.canvas.width = this.width;
+            this.compositeData.canvas.width = this.width;   // need to take padding into account here
             this.compositeData.canvas.height = this.height;
             this.onDraw = this.compositeData.oldOnDraw;
-            this.draw(context, chs.Matrix.identity(), 255);
+            this.draw(context, chs.Matrix.identity(), 255); // need to add padding offset to this matrix
             this.onDraw = this.composite_draw;
         },
 

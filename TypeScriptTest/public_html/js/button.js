@@ -88,7 +88,6 @@
                 switch (s) {
                 case chs.Button.idle:
                     this.onIdle();
-                    //this.drawableData.mouseIsOver = false;
                     break;
                 case chs.Button.hover:
                     this.onHover();

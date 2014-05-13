@@ -35,11 +35,7 @@
     //////////////////////////////////////////////////////////////////////
 
     function addListener(element, name, func) {
-        if (element.addEventListener) {
-            element.addEventListener(name, func, true);
-        } else if (element.attachEvent) {
-            element.attachEvent(name, func);
-        }
+        element.addEventListener(name, func, false);
     }
 
     //////////////////////////////////////////////////////////////////////
@@ -91,9 +87,7 @@
         });
 
         addListener(element, "touchend", function (event) {
-            var touch = event.targetTouches[0],
-                pos = relMouseCoords(canvas, touch.clientX, touch.clientY);
-            events.push(new chs.TouchMessage(chs.Message.touchEnd, pos));
+            events.push(new chs.TouchMessage(chs.Message.touchEnd, { x: 0, y: 0 }));
             event.preventDefault();
             return false;
         });
@@ -206,7 +200,7 @@
 
                 chs.Debug.print("EVENTS:");
                 chs.Debug.print("   There are " + events.length.toString());
-                chs.Debug.print("    ...");
+                chs.Debug.print("    ...2");
 
                 while (events.length > 0) {
                     e = events.shift();

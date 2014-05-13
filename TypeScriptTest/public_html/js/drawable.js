@@ -144,9 +144,7 @@
         processMessage: function (e, mouseCapture, touchCapture) {
             var self = this.drawableData,
                 c,
-                p,
-                mp,
-                bp;
+                pick;
             // kids get first dibs
             if (this.enabled) {
                 mouseCapture = mouseCapture || self.mouseCapture;
@@ -157,9 +155,8 @@
                     }
                 }
                 if (this.visible && this.enabled) {
-                    p = this.pick(e.position, 0);                           // message over the drawable?
-                    mp = self.mouseCapture || self.touchCapture || p;
-                    if (mp) {
+                    pick = this.pick(e.position, 0);                           // message over the drawable?
+                    if (self.mouseCapture || self.touchCapture || pick || e.type == chs.Message.touchEnd) {
                         switch (e.type) {
                         case chs.Message.touchStart:
                             self.isTouched = true;
@@ -167,7 +164,8 @@
                             return this.onTouchStart(e);
                         case chs.Message.touchEnd:
                             this.dispatchEvent('touchEnd');
-                            return this.onTouchEnd(e);
+                            self.isTouched = false;
+                            return this.onTouchEnd(e) && false;
                         case chs.Message.leftMouseDown:
                             this.dispatchEvent('leftMouseDown');
                             return this.onLeftMouseDown(e);
@@ -180,37 +178,28 @@
                         case chs.Message.rightMouseUp:
                             this.dispatchEvent('rightMouseUp');
                             return this.onRightMouseUp(e);
-                        }
-                        if (!self.mouseIsOver && e.isMouseMessage) {
-                            self.mouseIsOver = true;
-                            this.onMouseEnter(e);
-                            this.dispatchEvent('mouseEnter', e);
-                        }
-                        if (!self.isTouched && e.isTouchMessage) {
-                            self.isTouched = true;
-                            this.onTouchEnter();
-                            this.dispatchEvent('touchEnter', e);
-                        }
-                    } else if (!p) {
-                        if (e.isMouseMessage && self.mouseIsOver) {
-                            this.onMouseLeave(e);
-                            self.mouseIsOver = false;
-                            this.dispatchEvent('mouseLeave', e);
-                        }
-                        if (e.isTouchMessage && self.isTouched) {
-                            this.onTouchExit(e);
-                            self.isTouched = false;
-                            this.dispatchEvent('touchLeave', e);
-                        }
-                    }
-                    if (mp) {
-                        if(e.isMouseMessage) {
+                        case chs.Message.mouseMove:
+                            if(!pick && self.isMouseOver) {
+                                this.onMouseLeave(e);
+                                self.mouseIsOver = false;
+                                this.dispatchEvent('mouseLeave', e);
+                            } else if(pick && !self.mouseIsOver) {
+                                self.mouseIsOver = true;
+                                this.onMouseEnter(e);
+                                this.dispatchEvent('mouseEnter', e);
+                            }
                             this.dispatchEvent('mouseMove', e);
                             return this.onMouseMove(e);
-                        }
-                        if(e.isTouchMessage) {
-                            this.dispatchEvent('touchMove', e);
-                            return this.onTouchMove(e);
+                        case chs.Message.touchMove:
+                            if (!pick && self.isTouched) {
+                                self.isTouched = false;
+                                this.onTouchExit();
+                                this.dispatchEvent('touchLeave', e);
+                            } else if (pick && !self.isTouched) {
+                                self.isTouched = true;
+                                this.onTouchEnter();
+                                this.dispatchEvent('touchEnter', e);
+                            }
                         }
                     }
                 }

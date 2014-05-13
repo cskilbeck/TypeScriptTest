@@ -50,7 +50,6 @@
         },
 
         onTouchEnter: function () {
-            this.state = chs.Button.pressed;
             return true;
         },
 
@@ -61,11 +60,13 @@
 
         onMouseLeave: function () {
             this.state = chs.Button.idle;
+            this.drawableData.touchCapture = false;
             return true;
         },
 
         onLeftMouseDown: function () {
             this.state = chs.Button.pressed;
+            this.drawableData.touchCapture = true;
             return true;
         },
 

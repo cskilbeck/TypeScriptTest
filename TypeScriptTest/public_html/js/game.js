@@ -1,4 +1,9 @@
 //////////////////////////////////////////////////////////////////////
+// make all drawables compositable?
+//      - create offscreen canvas
+//      - clear it
+//      - call draw on self into that (with identity matrix)
+//      - cache that and
 // local linux host...
 // make login robust
 // fix font util (combine channels plugin)

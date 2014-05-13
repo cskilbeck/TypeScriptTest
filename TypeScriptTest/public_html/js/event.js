@@ -16,8 +16,9 @@
             touchMove: 8
         },
 
-        $: function (type) {
+        $: function (type, global) {
             this.type = type;
+            this.global = global;
         },
 
         isMouseMessage: chs.Property({
@@ -38,7 +39,7 @@
     chs.MouseMessage = chs.Class({
         inherit$: [chs.Message],
 
-        $: function (type, pos) {
+        $: function (type, pos, global) {
             chs.Message.call(this, type);
             this.position = pos;
         },
@@ -61,8 +62,8 @@
     chs.TouchMessage = chs.Class({
         inherit$: [chs.Message],
 
-        $: function (type, pos) {
-            chs.Message.call(this, type);
+        $: function (type, pos, global) {
+            chs.Message.call(this, type, global);
             this.position = pos;
         },
 

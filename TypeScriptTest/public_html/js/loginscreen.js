@@ -18,7 +18,7 @@ var LoginScreen = (function () {
                 var fh = pfont.height,
                     params,
                     logo = new chs.Image();
-                chs.PanelButton.call(this, x, y, 320, fh + 24, "rgb(255, 255, 255)", "white", 4, 2, function () {
+                chs.PanelButton.call(this, x, y, 320, fh + 24, "rgb(96, 128, 128)", "white", 4, 2, function () {
                     chs.Cookies.set('provider_id', provider.oauth_provider, 30);
                     params = {
                         'client_id': provider.client_id,
@@ -28,7 +28,6 @@ var LoginScreen = (function () {
                     };
                     window.location.replace(provider.url + "?" + chs.Util.objectToQueryString(params));
                 });
-                this.transparency = 160;
                 this.addChild(new chs.Label(provider.oauth_name, pfont).setPosition(8, this.height / 2).setPivot(0, pfont.midPivot));
                 logo.addEventHandler("loaded", function () {
                     this.setScale(32 / this.height);
@@ -37,9 +36,9 @@ var LoginScreen = (function () {
                 logo.setPivot(1, 0.5);
                 logo.src = provider.oauth_icon;
                 this.addChild(logo);
-                this.onIdle = function () { this.transparency = 160; };
-                this.onHover = function () { this.transparency = 192; };
-                this.onPressed = function () { this.transparency = 224; };
+                this.onIdle = function () { this.fillColour = "rgb(96, 128, 128)"; };
+                this.onHover = function () { this.fillColour = "rgb(128, 192, 192)"; };
+                this.onPressed = function () { this.fillColour = "rgb(64, 64, 64)"; };
             }
         });
 

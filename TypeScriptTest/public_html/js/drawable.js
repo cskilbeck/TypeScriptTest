@@ -57,7 +57,7 @@
 
         //////////////////////////////////////////////////////////////////////
 
-        onTouchExit: function (e) {
+        onTouchLeave: function (e) {
             return false;
         },
 
@@ -144,7 +144,10 @@
         processMessage: function (e, mouseCapture, touchCapture) {
             var self = this.drawableData,
                 c,
-                pick;
+                pick = false,
+                tl,
+                br,
+                colour;
             // kids get first dibs
             if (this.enabled) {
                 mouseCapture = mouseCapture || self.mouseCapture;
@@ -155,52 +158,98 @@
                     }
                 }
                 if (this.visible && this.enabled) {
-                    pick = this.pick(e.position, 0);                           // message over the drawable?
-                    if (self.mouseCapture || self.touchCapture || pick || e.type == chs.Message.touchEnd) {
-                        switch (e.type) {
-                        case chs.Message.touchStart:
+
+                    // tl = self.globalMatrix.apply({ x: 0, y: 0 });
+                    // br = self.globalMatrix.apply({ x: this.width, y: this.height });
+                    if (e.position !== undefined) {
+                        pick = this.pick(e.position, 0);                           // message over the drawable?
+                        // if (pick) {
+                        //     var color = "black";
+                        //     if (Math.random() > 0.333) {
+                        //         color = "red";
+                        //     } else if(Math.random() > 0.666) {
+                        //         color = "white";
+                        //     }
+                        //     chs.Debug.line(tl.x, tl.y, br.x, tl.y, color);
+                        //     chs.Debug.line(tl.x, br.y, br.x, br.y, color);
+                        //     chs.Debug.line(tl.x, tl.y, tl.x, br.y, color);
+                        //     chs.Debug.line(br.x, tl.y, br.x, br.y, color);
+                        // }
+                    }
+
+                    switch (e.type) {
+
+                    case chs.Message.touchStart:
+                        if(pick) {
                             self.isTouched = true;
-                            this.dispatchEvent('touchStart');
-                            return this.onTouchStart(e);
-                        case chs.Message.touchEnd:
-                            this.dispatchEvent('touchEnd');
-                            self.isTouched = false;
-                            return this.onTouchEnd(e) && false;
-                        case chs.Message.leftMouseDown:
+                        }
+                        this.dispatchEvent('touchStart');
+                        return this.onTouchStart(e);
+
+                    case chs.Message.touchEnd:
+                        this.dispatchEvent('touchEnd');
+                        self.isTouched = false;
+                        return this.onTouchEnd(e) && false;
+
+                    case chs.Message.leftMouseDown:
+                        if(pick) {
                             this.dispatchEvent('leftMouseDown');
                             return this.onLeftMouseDown(e);
-                        case chs.Message.rightMouseDown:
+                        }
+                        break;
+
+                    case chs.Message.rightMouseDown:
+                        if(pick) {
                             this.dispatchEvent('rightMouseDown');
                             return this.onRightMouseDown(e);
-                        case chs.Message.leftMouseUp:
+                        }
+                        break;
+
+                    case chs.Message.leftMouseUp:
+                        if(pick) {
                             this.dispatchEvent('leftMouseUp');
                             return this.onLeftMouseUp(e);
-                        case chs.Message.rightMouseUp:
+                        }
+                        break;
+
+                    case chs.Message.rightMouseUp:
+                        if(pick) {
                             this.dispatchEvent('rightMouseUp');
                             return this.onRightMouseUp(e);
-                        case chs.Message.mouseMove:
-                            if(!pick && self.isMouseOver) {
-                                this.onMouseLeave(e);
-                                self.mouseIsOver = false;
-                                this.dispatchEvent('mouseLeave', e);
-                            } else if(pick && !self.mouseIsOver) {
-                                self.mouseIsOver = true;
+                        }
+                        break;
+
+                    case chs.Message.mouseMove:
+                        if(pick) {
+                            if(!self.mouseIsOver) {
                                 this.onMouseEnter(e);
                                 this.dispatchEvent('mouseEnter', e);
                             }
                             this.dispatchEvent('mouseMove', e);
+                            self.mouseIsOver = true;
                             return this.onMouseMove(e);
-                        case chs.Message.touchMove:
-                            if (!pick && self.isTouched) {
-                                self.isTouched = false;
-                                this.onTouchExit();
-                                this.dispatchEvent('touchLeave', e);
-                            } else if (pick && !self.isTouched) {
-                                self.isTouched = true;
-                                this.onTouchEnter();
+                        } else if(self.mouseIsOver) {
+                            this.dispatchEvent('mouseLeave', e);
+                            // chs.Debug.poly([tl, {x: br.x, y: tl.y}, br, {x: tl.x, y: br.y}], "cyan");
+                            self.mouseIsOver = false;
+                            return this.onMouseLeave(e);
+                        }
+                        break;
+
+                    case chs.Message.touchMove:
+                        if(pick) {
+                            if(!self.isTouched) {
                                 this.dispatchEvent('touchEnter', e);
                             }
+                            this.dispatchEvent('touchMove', e);
+                            self.isTouched = true;
+                            return this.onTouchMove();
+                        } else if(self.isTouched) {
+                            this.dispatchEvent('touchLeave', e);
+                            self.isTouched = false;
+                            return this.onTouchLeave();
                         }
+                        break;
                     }
                 }
             }
@@ -257,11 +306,7 @@
 
         draw: function (context, matrix, transparency) {
             var self = this.drawableData,
-                m,
-                t,
-                d,
                 c,
-                p,
                 tr;
             if (self.visible) {
                 if (self.reorder) {

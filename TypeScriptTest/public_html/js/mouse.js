@@ -87,7 +87,7 @@
         });
 
         addListener(element, "touchend", function (event) {
-            events.push(new chs.TouchMessage(chs.Message.touchEnd, { x: 0, y: 0 }));
+            events.push(new chs.TouchMessage(chs.Message.touchEnd, { x: 0, y: 0 }, true));
             event.preventDefault();
             return false;
         });

@@ -111,7 +111,6 @@
                                 glyph = this.font.glyphs[c];
                                 if (l < glyph.imageCount) {
                                     s = glyph.images[l];
-//                                    ctx.drawImage(this.page, s.x, s.y, s.w, s.h, xc + s.offsetX, yc + s.offsetY, s.w, s.h);
                                     ctx.drawImage(this.page, s.x, s.y, s.w, s.h, xc + s.offsetX, yc + s.offsetY, s.w, s.h);
                                 }
                                 xc += glyph.advance;

@@ -13,7 +13,8 @@ var MainMenu = (function () {
                 chs.Button.call(this);
                 chs.Drawable.call(this);
                 this.loader = new chs.Loader("");
-                this.dimensions = { width: width, height: height };
+                this.width = width;
+                this.height = height;
                 this.org = { x: x, y: y };
                 this.setPosition(x, y);
                 this.clipRect = new chs.ClipRect(0, 0, this.width, this.height, 14);
@@ -42,7 +43,7 @@ var MainMenu = (function () {
             chs.User.id = 0;
             this.enabled = false;
             this.visible = false;
-            this.dimensions = { width: chs.desktop.width, height: chs.desktop.height };
+            this.size = chs.desktop.size;
             loader = new chs.Loader('img/');
             chs.desktop.addChild(loader);
             consolasItalic = chs.Font.load("Consolas_Italic", loader);

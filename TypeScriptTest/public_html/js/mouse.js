@@ -197,7 +197,6 @@
                 active.delta.y = active.position.y - old.y;
                 old.x = active.position.x;
                 old.y = active.position.y;
-
                 while (events.length > 0) {
                     root.processMessage(events.shift());
                 }

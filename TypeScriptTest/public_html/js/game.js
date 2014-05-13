@@ -4,12 +4,10 @@
 // fix font util (combine channels plugin)
 // Mobile:
 //      viewport/scaling
-//      touch input
 //      wordlist/highscores
 //      dynamic layout
 //      deflate/gzip js and json
 //      orientation
-// Drawable: fix width,height
 // Fix tile grabbing/moving/swapping/lerping
 // Flying scores/fizz/particles
 //////////////////////////////////////////////////////////////////////
@@ -56,7 +54,7 @@ var Game = (function () {
 
         $: function (mainMenu, loader) {
             chs.Drawable.call(this);
-            this.dimensions = { width: chs.desktop.width, height: chs.desktop.height };
+            this.size = { width: chs.desktop.width, height: chs.desktop.height };
             this.mainMenu = mainMenu;
             consolas = chs.Font.load("Consolas", loader);
             arial = chs.Font.load("Arial", loader);
@@ -83,7 +81,8 @@ var Game = (function () {
             ui.addEventHandler("redo", this.redo, this);
 
             words = new chs.Drawable();
-            words.dimensions = { width: ui.client.width, height: ui.client.height };
+            words.width = ui.client.width;
+            words.height = ui.client.height;
 
             scoreButton = new chs.PanelButton(ui.client.width / 2, 0, ui.client.width, consolas.height + 8, 'black', undefined, 3, 0, null, null).setPivot(0.5, 0);
             scoreButton.scoreLabel = new chs.Label("0", consolas).setPosition(scoreButton.width - 4, 4).setPivot(1, 0);

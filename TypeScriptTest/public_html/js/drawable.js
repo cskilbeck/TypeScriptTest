@@ -13,6 +13,7 @@
             this.drawableListNode = chs.List.Node(this);
             this.drawableData = {
                 position: { x: 0, y: 0 },
+                dimensions: { width: 0, height: 0 },
                 rotation: 0,
                 scale: { x: 1, y: 1 },
                 drawScale: { x: 1, y: 1 },
@@ -38,12 +39,6 @@
 
         //////////////////////////////////////////////////////////////////////
         // override these...
-
-        size: function () {
-            return this.dimensions || { width: 0, height: 0 };
-        },
-
-        //////////////////////////////////////////////////////////////////////
 
         onMouseEnter: function (e) {
             return false;
@@ -221,13 +216,13 @@
                         break;
 
                     case chs.Message.mouseMove:
-                        if(pick) {
-                            if(!self.mouseIsOver) {
+                        if(pick || self.mouseCapture) {
+                            if(!self.mouseIsOver && pick) {
                                 this.onMouseEnter(e);
                                 this.dispatchEvent('mouseEnter', e);
                             }
                             this.dispatchEvent('mouseMove', e);
-                            self.mouseIsOver = true;
+                            self.mouseIsOver = pick;
                             return this.onMouseMove(e);
                         } else if(self.mouseIsOver) {
                             this.dispatchEvent('mouseLeave', e);
@@ -238,8 +233,8 @@
                         break;
 
                     case chs.Message.touchMove:
-                        if(pick) {
-                            if(!self.isTouched) {
+                        if(pick || self.touchCapture) {
+                            if(!self.isTouched && pick) {
                                 this.dispatchEvent('touchEnter', e);
                             }
                             self.isTouched = true;
@@ -410,6 +405,7 @@
 
         setCapture: function (f) {
             this.drawableData.mouseCapture = f;
+            this.drawableData.touchCapture = f;
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -520,10 +516,27 @@
 
         //////////////////////////////////////////////////////////////////////
 
+        size: chs.Property({
+            get: function () {
+                return this.drawableData.dimensions;
+            },
+            set: function (s) {
+                this.drawableData.dimensions.width = s.width;
+                this.drawableData.dimensions.height = s.height;
+                this.drawableData.dirty = true;
+            }
+        }),
+
+        //////////////////////////////////////////////////////////////////////
+
         width: chs.Property({
             configurable: true,
             get: function () {
-                return this.size().width;
+                return this.drawableData.dimensions.width;
+            },
+            set: function (w) {
+                this.drawableData.dimensions.width = w;
+                this.drawableData.dirty = true;
             }
         }),
 
@@ -532,7 +545,11 @@
         height: chs.Property({
             configurable: true,
             get: function () {
-                return this.size().height;
+                return this.drawableData.dimensions.height;
+            },
+            set: function (h) {
+                this.drawableData.dimensions.height = h;
+                this.drawableData.dirty = true;
             }
         }),
 

@@ -24,7 +24,7 @@
                 this.pressedLineColour = 'darkSlateGrey';
             }
 
-            this.dimensions = { width: w, height: h };
+            this.size = { width: w, height: h };
             this.setPosition(x, y);
             this.panel = new chs.Panel(0, 0, w, h, "darkSlateGrey", this.idleLineColour, radius === undefined ? h / 3 : radius, 3);
             this.addChild(this.panel);

@@ -50,13 +50,13 @@ var LoginScreen = (function () {
                 err = chs.Cookies.get('login_error'),
                 y;
             chs.Drawable.call(this);
-            this.dimensions = chs.desktop.dimensions;
+            this.size = chs.desktop.size;
             this.mainMenu = mainMenu;
             this.menu = new chs.Drawable();
             this.addChild(this.menu);
             this.banner = new chs.Label("Log in with one of these accounts:", consolasItalic).setPosition(chs.desktop.width / 2, 100).setPivot(0.5, 0);
             this.addChild(this.banner);
-            this.menu.dimensions = { width: 320, y: 0 };
+            this.menu.size = { width: 320, height: 0 };
             ProviderButton.init(consolasItalic, loader);
             chs.WebService.get('oauthlist', {}, function (result) {
                 var p,
@@ -68,7 +68,7 @@ var LoginScreen = (function () {
                     y += b.height + 10;
                     b.addEventHandler("clicked", this.hideMenu, this);
                 }
-                this.menu.dimensions = { width: b.width, height: y };
+                this.menu.size = { width: b.width, height: y };
                 this.menu.setDirty();
             }, this);
             this.menu.setPivot(0.5, 0.5);

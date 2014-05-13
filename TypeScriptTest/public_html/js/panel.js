@@ -11,30 +11,9 @@
         $: function (x, y, w, h, radius) {
             chs.Drawable.call(this);
             this.setPosition(x, y);
-            this.dimensions = { width: w, height: h };
-            this.radius = 0;
-            if(radius !== undefined) {
-                this.radius = radius;
-            }
+            this.size = { width: w, height: h };
+            this.radius = (radius !== undefined) ? radius : 0;
         },
-
-        width: chs.Property({
-            set: function (w) {
-                this.dimensions.width = w;
-            },
-            get: function () {
-                return this.dimensions.width;
-            }
-        }),
-
-        height: chs.Property({
-            set: function (h) {
-                this.dimensions.height = h;
-            },
-            get: function () {
-                return this.dimensions.height;
-            }
-        }),
 
         onDraw: function (context) {
             if(this.radius > 0) {
@@ -185,7 +164,7 @@
             this.link = link;
             this.linkClicked = click;
             this.setPosition(l, t);
-            this.dimensions = { width: w, height: h };
+            this.size = { width: w, height: h };
         },
         onIdle: function () { this.colour = "skyblue"; },
         onHover: function () { this.colour = "red"; },

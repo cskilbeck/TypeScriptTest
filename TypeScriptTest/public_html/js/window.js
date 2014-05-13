@@ -19,7 +19,7 @@
                 titleBarWidth = desc.width;
 
             chs.Drawable.call(this);
-            this.dimensions = { width: desc.width, height: desc.height };
+            this.size = { width: desc.width, height: desc.height };
             this.setPosition(desc.x, desc.y);
 
             this.panel = new chs.Panel(0, 0, desc.width, desc.height, bgcol, undefined, radius, 0);
@@ -100,10 +100,10 @@
 
         height: chs.Property({
             get: function () {
-                return this.dimensions.height;
+                return this.drawableData.dimensions.height;
             },
             set: function (h) {
-                this.dimensions.height = h;
+                this.drawableData.dimensions.height = h;
                 this.panel.height = h;
                 this.clip.height = h;
                 this.client.height = h - this.clientOffset;
@@ -116,10 +116,10 @@
 
         width: chs.Property({
             get: function () {
-                return this.dimensions.width;
+                return this.drawableData.dimensions.width;
             },
             set: function (w) {
-                this.dimensions.width = w;
+                this.drawableData.dimensions.width = w;
                 this.panel.width = w;
                 this.clip.width = w;
                 this.client.width = w;

@@ -48,7 +48,7 @@
                 this.buttonHolder.addChild(button);
                 w += tw + 20;
             }
-            this.buttonHolder.dimensions = { width: 0, height: btnFont.height + 8 };
+            this.buttonHolder.size = { width: 0, height: btnFont.height + 8 };
             this.buttonHolder.setPosition(this.width - w, this.height - 16);
             this.buttonHolder.setPivot(0, 1);
             this.clip.addChild(this.buttonHolder);
@@ -95,6 +95,7 @@
                 this.msgBox.text = t;
             }
         }),
+
         window: chs.Property({
             get: function () {
                 return this.msgBox;

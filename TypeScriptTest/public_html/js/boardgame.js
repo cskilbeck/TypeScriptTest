@@ -26,6 +26,10 @@
 
             mtw.Board.call(this, 'BoardTile', mainBoard);
             chs.Drawable.call(this);
+            this.size = {
+                width: this.tileWidth * mtw.BoardTile.width,
+                height: this.tileHeight * mtw.BoardTile.height
+            };
             this.setPosition(x, y);
             this.bestScore = 0;
             this.bestBoard = "";
@@ -45,12 +49,6 @@
             for (i = 0; i < this.tiles.length; ++i) {
                 this.addChild(this.tiles[i], mainBoard);
             }
-        },
-
-        //////////////////////////////////////////////////////////////////////
-
-        size: function () {
-            return { width: this.tileWidth * mtw.BoardTile.width, height: this.tileHeight * mtw.BoardTile.height };
         },
 
         //////////////////////////////////////////////////////////////////////

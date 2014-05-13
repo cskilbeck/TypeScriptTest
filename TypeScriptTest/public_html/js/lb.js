@@ -14,7 +14,7 @@
             scoreWidth = font.measureText("999.").width;
 
             chs.Drawable.call(this);
-            this.dimensions = { width: width, height: height };
+            this.size = { width: width, height: height };
 
             this.game = game;
             this.font = font;

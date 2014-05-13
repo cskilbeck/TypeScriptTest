@@ -27,7 +27,7 @@
             h = (font.height + 16) * items.length;
             chs.Drawable.call(this);
             this.setPosition(x, y);
-            this.dimensions = { width: w, height: h };
+            this.size = { width: w, height: h };
             this.clip = new chs.ClipRect(0, 0, w, h, 6);
             this.addChild(this.clip);
             this.transparency = 224;

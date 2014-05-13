@@ -18,7 +18,7 @@
 
         $: function () {
             chs.Drawable.call(this);
-            this.dimensions = { width: 180, height: chs.desktop.height };
+            this.size = { width: 180, height: chs.desktop.height };
             this.setPosition(chs.desktop.width, 0);
             this.setPivot(1, 0);
             this.button = new chs.TextButton("", font, 0, 0, this.width, font.height + 12, function () {

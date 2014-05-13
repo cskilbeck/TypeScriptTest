@@ -2,6 +2,10 @@
 (function () {
     "use strict";
 
+    var measureText = function () {
+        this.size = this.labelData.font.measureText(this.labelData.text);
+    };
+
     chs.Label = chs.Class({
         inherit$: [chs.Drawable],
 
@@ -9,9 +13,9 @@
             chs.Drawable.call(this);
             this.labelData = {
                 text: text,
-                font: font,
-                dimensions: null
+                font: font
             };
+            measureText.call(this);
         },
 
         text: chs.Property({
@@ -21,8 +25,7 @@
             },
             set: function (s) {
                 this.labelData.text = s;
-                this.labelData.dimensions = null;
-                this.drawableData.dirty = true;
+                measureText.call(this);
             }
         }),
 
@@ -32,18 +35,9 @@
             },
             set: function (f) {
                 this.labelData.font = f;
-                this.labelData.dimensions = null;
-                this.drawableData.dirty = true;
+                measureText.call(this);
             }
         }),
-
-        size: function () {
-            var self = this.labelData;
-            if (self.dimensions === null) {
-                self.dimensions = self.font.measureText(self.text);
-            }
-            return self.dimensions;
-        },
 
         onDraw: function (context) {
             var self = this.labelData;

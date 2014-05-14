@@ -14,7 +14,7 @@
     //////////////////////////////////////////////////////////////////////
 
     mtw.BoardTile = chs.Class({
-        inherit$: [mtw.Tile, chs.Sprite],
+        inherit$: [mtw.Tile, chs.Sprite, chs.Composite],
 
         static$: {
 
@@ -31,6 +31,7 @@
         $: function (letter, x, y, showDigits) {
             mtw.Tile.call(this, letter);
             chs.Sprite.call(this, tileImage);
+            chs.Composite.call(this);
             this.font = font;
             this.framesWide = 5;
             this.framesHigh = 5;
@@ -54,6 +55,9 @@
                 this.digits = null;
             }
             this.addChild(this.label);
+            this.oldUVX = this.UV.x;
+            this.oldUVY = this.UV.y;
+            this.compose();
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -68,6 +72,7 @@
                 if (this.digits) {
                     this.digits.text = mtw.Letters.letterScore(s).toString();
                 }
+                this.compose();
             }
         }),
 
@@ -130,6 +135,11 @@
                 this.label.setScale(Math.sin(time / 25) * 0.025 + 1.1);
             }
             this.setFrameXY(sx, sy);
+            if(this.oldUVX !== this.UV.x || this.oldUVY !== this.UV.y) {
+                this.oldUVX = this.UV.x;
+                this.oldUVY = this.UV.y;
+                this.compose();
+            }
         }
     });
 

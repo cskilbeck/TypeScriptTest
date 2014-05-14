@@ -317,9 +317,10 @@
                 self.globalMatrix.setContextTransform(context);
                 tr = (transparency * self.transparency) / 255;
                 context.globalAlpha = tr / 255;
-                this.onDraw(context);
-                for (c = self.children.begin() ; c !== self.children.end() ; c = c.next) {
-                    c.item.draw(context, self.globalMatrix, tr);
+                if(this.onDraw(context) !== false) {
+                    for (c = self.children.begin() ; c !== self.children.end() ; c = c.next) {
+                        c.item.draw(context, self.globalMatrix, tr);
+                    }
                 }
                 context.restore();
             }

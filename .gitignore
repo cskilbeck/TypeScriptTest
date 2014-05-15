@@ -157,12 +157,3 @@ $RECYCLE.BIN/
 # Mac desktop service store files
 .DS_Store
 TypeScriptTest/OneDrive.lnk
-*.sublime-workspace
-<<<<<<< HEAD
-mtw.sublime-project
-=======
-TypeScriptTest/web_service/dbaselogin.py
-*.sublime-workspace
->>>>>>> b0bcf6a1647f8c08528d3d8c05367e1ddc9f4d05
-mtw.sublime-workspace
-*.sublime-workspace

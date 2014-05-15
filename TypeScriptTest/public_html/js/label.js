@@ -7,10 +7,11 @@
     };
 
     chs.Label = chs.Class({
-        inherit$: [chs.Drawable],
+        inherit$: [chs.Drawable, chs.Composite],
 
         $: function (text, font) {
             chs.Drawable.call(this);
+            chs.Composite.call(this);
             this.labelData = {
                 text: text,
                 font: font
@@ -26,6 +27,7 @@
             set: function (s) {
                 this.labelData.text = s;
                 measureText.call(this);
+//                this.compose();
             }
         }),
 
@@ -36,6 +38,7 @@
             set: function (f) {
                 this.labelData.font = f;
                 measureText.call(this);
+//                this.compose();
             }
         }),
 

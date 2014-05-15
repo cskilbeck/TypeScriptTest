@@ -18,7 +18,8 @@ import pprint
 
 sys.path.append('/usr/local/www/wsgi-scripts')
 os.chdir('/usr/local/www/wsgi-scripts')
-from dbaselogin import *
+#from dbaselogin import *
+from dbaselocal import *
 
 #----------------------------------------------------------------------
 
@@ -91,11 +92,14 @@ def check_parameters(pq, strings):
 # check http origin is in the valid list
 
 def origin_is_valid(db, environ):
-    if 'HTTP_ORIGIN' in environ:
+    if db_host() == 'localhost':
+        return 'http://10.164.90.82'
+    elif 'HTTP_ORIGIN' in environ:
         with closing(db.cursor()) as cur:
             cur.execute("SELECT COUNT(*) AS count FROM sites WHERE site_url = %(HTTP_ORIGIN)s", environ)
-            return cur.fetchone()['count'] > 0
-    return false
+            if cur.fetchone()['count'] > 0:
+                return environ['HTTP_ORIGIN']
+    return None
 
 #----------------------------------------------------------------------
 # Handler - base for all request handlers
@@ -385,9 +389,10 @@ def application(environ, start_response):
     status = '200 OK'
     try:
         with closing(opendb()) as db:
-            if not origin_is_valid(db, environ):
+            org = origin_is_valid(db, environ);
+            if org is None:
                 raise(Error(e_badorigin))
-            headers.append(('Access-Control-Allow-Origin', environ['HTTP_ORIGIN']))
+            headers.append(('Access-Control-Allow-Origin', org))
             method = environ['REQUEST_METHOD']
             query = query_to_dict(environ.get('QUERY_STRING', ""))
             post = dict()
@@ -404,6 +409,7 @@ def application(environ, start_response):
                 raise(Error(e_badaction))
             status = globals()[func](query, post, output).processRequest(db)
     except Error as e:
+        print >> sys.stderr, "Error!"
         print >> sys.stderr, pprint.pformat(e.args)
         d = e.args[0]
         output = d;

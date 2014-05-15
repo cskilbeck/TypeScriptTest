@@ -1,7 +1,10 @@
 (function () {
     "use strict";
 
-    var serviceURL = "http://ec2-75-101-200-254.compute-1.amazonaws.com/mtw";
+    // need a way to automatically use the right one...
+
+    //var serviceURL = "http://ec2-75-101-200-254.compute-1.amazonaws.com/mtw";
+    var serviceURL = "http://10.164.90.82/mtw";
 
     function handleResult(url, xr, callback, context) {
         var d;

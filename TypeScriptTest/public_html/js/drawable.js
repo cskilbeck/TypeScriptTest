@@ -14,6 +14,7 @@
             this.drawableData = {
                 position: { x: 0, y: 0 },
                 dimensions: { width: 0, height: 0 },
+                extent: { left: 0, top: 0, right: 0, bottom: 0}, // this is used by chs.Composite
                 rotation: 0,
                 scale: { x: 1, y: 1 },
                 drawScale: { x: 1, y: 1 },
@@ -202,14 +203,14 @@
                         break;
 
                     case chs.Message.leftMouseUp:
-                        if(pick) {
+                        if(pick || self.mouseCapture) {
                             this.dispatchEvent('leftMouseUp');
                             return this.onLeftMouseUp(e);
                         }
                         break;
 
                     case chs.Message.rightMouseUp:
-                        if(pick) {
+                        if(pick || self.mouseCapture) {
                             this.dispatchEvent('rightMouseUp');
                             return this.onRightMouseUp(e);
                         }
@@ -477,6 +478,31 @@
         close: function () {
             this.dispatchEvent("closing");
             this.drawableData.closed = true;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        getScreenExtent: function () {
+            var i,
+                min,
+                max,
+                e = this.drawableData.extent,
+                points = [
+                        { x: e.left, y: e.top },
+                        { x: e.right, y: e.top },
+                        { x: e.right, y: e.bottom },
+                        { x: e.left, y: e.bottom }
+                    ];
+            this.drawableData.globalMatrix.transform(points);
+            min = { x: points[0].x, y: point[0].y };
+            max = { x: points[0].x, y: point[0].y };
+            for (i = 1; i < 4; ++i) {
+                min.x = Math.min(min.x, points[i].x);
+                min.y = Math.min(min.y, points[i].y);
+                max.x = Math.max(max.x, points[i].x);
+                max.y = Math.max(max.y, points[i].y);
+            }
+            return { left: min.x, top: min.y, right: max.x, bottom: max.y };
         },
 
         //////////////////////////////////////////////////////////////////////

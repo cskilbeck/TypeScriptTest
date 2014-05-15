@@ -17,7 +17,7 @@ mtw.Dictionary.init(dictionary);
 
 var net = require('net');
 
-// Board server: 1338
+// daemon: 1338
 
 // actions: getscore(board, seed): action=getscore&seed=5&board=lsdkjfklsdjflksdjflksdjflksdjflskdj
 //                                  result: { 'score': 5, 'valid': true }

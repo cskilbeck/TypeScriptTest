@@ -199,7 +199,7 @@
                     }
                 }
             }
-            return { width: maxWidth, height: yc + this.font.height };
+            return { width: maxWidth, height: yc + this.font.height, x: 0, y: 0 };
         },
 
         //////////////////////////////////////////////////////////////////////

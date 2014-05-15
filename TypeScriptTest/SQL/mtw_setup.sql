@@ -107,7 +107,8 @@ source sql/oauth.sql;
 
 SELECT '*** Insert sites' as '';
 INSERT INTO sites(site_url) VALUES
-	('http://make-the-words.com');
+	('http://make-the-words.com'),
+	('http://localhost');
 
 -- ----------------------------------------------------------------------
 -- procedures

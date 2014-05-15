@@ -17,6 +17,7 @@
                         if (data && !data.error) {
                             chs.Cookies.set('session_id', data.session_id);
                             chs.Cookies.set('anon_user_id', data.user_id);
+                            chs.User.id = data.user_id;
                         } else {
                             alert("Error getting anon user id");
                         }

@@ -21,11 +21,11 @@
             this.compositeData.canvas.width = this.width;   // need to take padding into account here
             this.compositeData.canvas.height = this.height;
             context = this.compositeData.canvas.getContext("2d");
-            oldPos = { x: this.drawableData.position.x, y: this.drawableData.position.y };
-            oldScale = { x: this.drawableData.scale.x, y: this.drawableData.scale.y };
+            oldPos = chs.Util.clone(this.drawableData.position);
+            oldScale = chs.Util.clone(this.drawableData.scale);
+            oldPivot = chs.Util.clone(this.drawableData.pivot);
             oldRot = this.drawableData.rotation;
             oldTransparency = this.drawableData.transparency;
-            oldPivot = { x: this.drawableData.pivot.x, y: this.drawableData.pivot.y };
             this.rotation = 0;
             this.setPosition(0, 0);
             this.setScale(1);

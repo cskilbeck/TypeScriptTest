@@ -1,0 +1,2 @@
+#!/bin/bash
+mysql -u charlie --password="henry1" mtwdb

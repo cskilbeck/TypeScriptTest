@@ -18,8 +18,7 @@ import pprint
 
 sys.path.append('/usr/local/www/wsgi-scripts')
 os.chdir('/usr/local/www/wsgi-scripts')
-#from dbaselogin import *
-from dbaselocal import *
+from dbaseconfig import *
 
 #----------------------------------------------------------------------
 
@@ -50,9 +49,12 @@ def log(x, y = ""):
 
 def service(dict):
     with closing(socket.socket()) as s:
-        s.connect(("127.0.0.1", 1338))
-        s.send(urllib.urlencode(dict))
-        return json.loads(s.recv(8192))
+        try:
+            s.connect(("127.0.0.1", 1338))
+            s.send(urllib.urlencode(dict))
+            return json.loads(s.recv(8192))
+        except:
+            return None
 
 # turn a urlencoded string into a dictionary, duplicate assignments are discarded
 
@@ -93,7 +95,8 @@ def check_parameters(pq, strings):
 
 def origin_is_valid(db, environ):
     if db_host() == 'localhost':
-        return 'http://10.164.90.82'
+        #return 'http://10.164.90.82'
+        return 'http://192.168.0.213'
     elif 'HTTP_ORIGIN' in environ:
         with closing(db.cursor()) as cur:
             cur.execute("SELECT COUNT(*) AS count FROM sites WHERE site_url = %(HTTP_ORIGIN)s", environ)

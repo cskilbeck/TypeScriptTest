@@ -278,13 +278,13 @@ chs.List = (function () {
         removeIf: function (callback, context) {
             var node = this.root.next,
                 next,
-                safe = 0,
+                // safe = 0,
                 removed = 0;
             while (node !== this.root) {
-                if (safe > 1000) {
-                    debugger;
-                }
-                safe += 1;
+                // if (safe > 1000) {
+                //     debugger;
+                // }
+                // safe += 1;
                 next = node.next;
                 if (callback.call(context, node.item) === true) {
                     node.prev.next = next;

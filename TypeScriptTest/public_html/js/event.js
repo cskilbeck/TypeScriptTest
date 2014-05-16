@@ -111,6 +111,11 @@
             self.handlers[name].push(new chs.EventHandler(target, ctx, oneShot));
         },
 
+        clearEventHandlers: function ()
+        {
+            this.eventSourceData.handlers.length = 0;
+        },
+
         removeEventHandler: function (name, target) {
             var self = this.eventSourceData,
                 f,
@@ -132,7 +137,7 @@
                 i,
                 rc;
             if (hl) {
-                for (i = 0; i < hl.length; ++i) {
+                for (i = 0; i < hl.length; ++i) {  // call these in reverse so children are initialized before parents
                     rc = hl[i].target.apply(hl[i].context, Array.prototype.slice.call(arguments, 1));
                     if (hl[i].oneOff) {
                         hl.splice(i, 1);

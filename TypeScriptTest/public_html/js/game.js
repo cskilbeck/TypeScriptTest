@@ -1,11 +1,13 @@
 //////////////////////////////////////////////////////////////////////
+// tap to swap
+// munger: piece ({{term}})
 // make all drawables compositable?
 //      - create offscreen canvas
 //      - clear it
 //      - call draw on self into that (with identity matrix)
 //      - cache that and
-// local linux host...
 // make login robust
+// loader outputs manifest with file sizes for proper progress bar
 // fix font util (combine channels plugin)
 // Mobile:
 //      viewport/scaling
@@ -17,7 +19,7 @@
 // Flying scores/fizz/particles
 //////////////////////////////////////////////////////////////////////
 
-var Game = (function () {
+mtw.Game = (function () {
     "use strict";
 
     //////////////////////////////////////////////////////////////////////
@@ -46,9 +48,11 @@ var Game = (function () {
     //////////////////////////////////////////////////////////////////////
 
     function setWordHightlight(word, h) {
-        var i;
+        var i,
+            t;
         for (i = 0; i < word.str.length; i++) {
-            board.getWordTile(word, i).pulse = h;
+            t = board.getWordTile(word, i);
+            t.pulse = h;
         }
     }
 
@@ -66,20 +70,18 @@ var Game = (function () {
             consolasItalic = chs.Font.load("Consolas_Italic", loader);
             consolasItalicBold = chs.Font.load("Consolas_Italic", loader);
             calibri = chs.Font.load("Calibri", loader);
-            undoImage = loader.load("undo.png");
-            redoImage = loader.load("redo.png");
             this.board_id = 0;
-            mtw.UI.load(loader);
+            ui = new mtw.UI(loader);
         },
 
-        loadComplete: function () {
+        loadComplete: function() {
+
             consolasItalic.lineSpacing = 10;
             consolasItalic.softLineSpacing = 4;
             consolasItalic.mask = 2;
-
             consolasItalicBold.softLineSpacing = 4;
 
-            ui = new mtw.UI();
+            ui.loadComplete();
             this.addChild(ui);
 
             ui.addEventHandler("undo", this.undo, this);
@@ -365,25 +367,25 @@ var Game = (function () {
         //////////////////////////////////////////////////////////////////////
 
         updateWordList: function () {
-            var y = 0;
+            var y = 0,
+                w;
+            words.wordList.drawableData.children.forEach(function(wb) {
+                mtw.WordButton.dispose(wb);
+            });
             words.wordList.removeChildren();
             board.wordList().forEach(function (w) {
-                var button = new chs.PanelButton(ui.client.width / 2, y, ui.client.width - 8, consolas.height + 8, "darkslategrey", undefined, 4, 0, function () {
-                    button.state = chs.Button.idle;
+                var button = new mtw.WordButton.create(w, ui.client.width / 2, y, ui.client.width - 8, consolas.height + 6, consolas, function () {
                     this.showDefinition(w);
                 }, this).setPivot(0.5, 0);
-                button.addChild(new chs.Label(w.str, consolas).setPosition(5, button.height / 2).setPivot(0, consolas.midPivot));
-                button.addChild(new chs.Label(w.score.toString(), consolas).setPosition(button.width - 8, button.height / 2).setPivot(1, consolas.midPivot));
-                button.onIdle = function () {
-                    this.fillColour = "darkslategrey";
+                button.addEventHandler("idle", function () {
                     deHighlightWords.push(this.word);
-                };
-                button.onPressed = function () { this.fillColour = "aquamarine"; };
-                button.onHover = function () {
-                    this.fillColour = "lightslategrey";
+                });
+                button.addEventHandler("hover", function() {
                     highlightWords.push(this.word);
-                };
-                button.word = w;
+                });
+                button.addEventHandler("pressed", function() {
+                    highlightWords.push(this.word);
+                });
                 y += button.height + 1;
                 words.wordList.addChild(button);
             }, this);
@@ -415,6 +417,8 @@ var Game = (function () {
             if (board.changed) {
                 this.updateWordList();
             }
+
+            mtw.WordButton.showCache();
 
             // remove any from true which are also in false...
 

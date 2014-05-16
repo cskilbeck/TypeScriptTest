@@ -20,6 +20,7 @@
     <script src="js/random.js"></script>
     <script src="js/cookies.js"></script>
     <script src="js/ajax.js"></script>
+    <script src="js/webserviceurl.js"></script>
     <script src="js/webservice.js"></script>
     <script src="js/list.js"></script>
     <script src="js/timer.js"></script>
@@ -50,6 +51,7 @@
     <script src="js/boardgame.js"></script>
     <script src="js/lb.js"></script>
     <script src="js/ui.js"></script>
+    <script src="js/wordbutton.js"></script>
     <script src="js/game.js"></script>
     <script src="js/loginscreen.js"></script>
     <script src="js/mainmenu.js"></script>

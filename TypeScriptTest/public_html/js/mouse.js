@@ -59,11 +59,11 @@
             element.setCapture();
         }
 
-        document.oncontextmenu = function (e) {
+/*        document.oncontextmenu = function (e) {
             e.cancelBubble = true;
             return false;
         };
-
+*/
         addListener(element, "losecapture", function () {
             if (element.setCapture) {
                 element.setCapture();
@@ -165,14 +165,12 @@
     //////////////////////////////////////////////////////////////////////
 
     var IMouse = function () {
-        this.position = { x: 0, y: 0 };
+        this.position = { x: -1, y: -1 };
         this.delta = { x: 0, y: 0 };
         this.left = { held: false, pressed: false, released: false, prev: false };
         this.right = { held: false, pressed: false, released: false, prev: false };
     },
 
-        canvas = null,
-        screen = null,
         old = { x: 0, y: 0 },
         frozen = new IMouse(),
         active = new IMouse(),
@@ -184,9 +182,7 @@
         static$: {
 
             init: function (canvasElement) {
-                canvas = canvasElement;
-                screen = document.body;
-                setMouseCapture(screen, canvas, active, events);
+                setMouseCapture(document.body, canvasElement, active, events);
             },
 
             update: function (root) {
@@ -200,7 +196,6 @@
                 while (events.length > 0) {
                     root.processMessage(events.shift());
                 }
-
             },
 
             freeze: function () {

@@ -119,19 +119,21 @@
         //////////////////////////////////////////////////////////////////////
 
         pushUndo: function () {
-            if (this.undoStack.length > undoMax) {
-                this.undoStack.shift();
+            if(this.beforeDrag.length > 0) {
+                if (this.undoStack.length > undoMax) {
+                    this.undoStack.shift();
+                }
+                this.undoPointer = Math.min(this.undoPointer, this.undoStack.length - 1);
+                if (this.undoPointer < this.undoStack.length - 1) {
+                    this.undoStack = this.undoStack.slice(0, this.undoPointer);
+                } else {
+                    this.undoStack.pop();
+                }
+                this.undoStack.push(this.beforeDrag);
+                this.undoStack.push(this.getAsString());
+                this.undoPointer = this.undoStack.length - 1;
+                this.save();
             }
-            this.undoPointer = Math.min(this.undoPointer, this.undoStack.length - 1);
-            if (this.undoPointer < this.undoStack.length - 1) {
-                this.undoStack = this.undoStack.slice(0, this.undoPointer);
-            } else {
-                this.undoStack.pop();
-            }
-            this.undoStack.push(this.beforeDrag);
-            this.undoStack.push(this.getAsString());
-            this.undoPointer = this.undoStack.length - 1;
-            this.save();
         },
 
         //////////////////////////////////////////////////////////////////////

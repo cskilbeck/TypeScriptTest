@@ -219,6 +219,7 @@
                     case chs.Message.mouseMove:
                         if(pick || self.mouseCapture) {
                             if(!self.mouseIsOver && pick) {
+                                // chs.Debug.poly([tl, {x: br.x, y: tl.y}, br, {x: tl.x, y: br.y}], "magenta");
                                 this.onMouseEnter(e);
                                 this.dispatchEvent('mouseEnter', e);
                             }

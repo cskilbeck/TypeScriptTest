@@ -8,16 +8,14 @@
     mtw.UI = chs.Class({
         inherit$: [chs.Drawable],
 
-        static$: {
-            load: function (loader) {
-                font = chs.Font.load("Calibri", loader);
-                undoImage = loader.load("undo.png");
-                redoImage = loader.load("redo.png");
-            }
+        $: function (loader) {
+            chs.Drawable.call(this);
+            font = chs.Font.load("Calibri", loader);
+            undoImage = loader.load("undo.png");
+            redoImage = loader.load("redo.png");
         },
 
-        $: function () {
-            chs.Drawable.call(this);
+        loadComplete: function() {
             this.size = { width: 180, height: chs.desktop.height };
             this.setPosition(chs.desktop.width, 0);
             this.setPivot(1, 0);

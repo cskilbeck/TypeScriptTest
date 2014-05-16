@@ -50,7 +50,7 @@ var MainMenu = (function () {
             consolas = chs.Font.load("Consolas", loader);
             mtw.BoardTile.load(loader);
             mtw.Dictionary.init(loader.load("words.json"));
-            this.game = new Game(this, loader);
+            this.game = new mtw.Game(this, loader);
             this.game.addEventHandler("closed", this.activate, this);
             loader.addEventHandler("complete", this.loadComplete, this);
             loader.start();
@@ -84,9 +84,9 @@ var MainMenu = (function () {
                 pw = w / 1.25,
                 ph = h / 1.25;
 
+            this.game.loadComplete();
             provider_id = provider_id ? parseInt(provider_id, 10) : 0;
             chs.desktop.removeChild(loader);
-            this.game.loadComplete();
             this.panel = new chs.Panel(w / 2, h / 2, pw, ph, "darkgreen", "white", 25, 4, 255).setPivot(0.5, 0.5);
             this.button = new chs.TextButton("PLAY!", consolasItalic, pw / 2, ph / 2, 200, 50, this.playClicked, this).setPivot(0.5, 0.5);
             this.panel.addChild(this.button);

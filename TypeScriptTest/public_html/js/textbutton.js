@@ -23,15 +23,14 @@
                 this.pressedLineColour = 'darkSlateGrey';
             }
 
-            this.size = { width: w, height: h };
-            this.setPosition(x, y);
-            this.panel = new chs.Panel(0, 0, w, h, "darkSlateGrey", this.idleLineColour, radius === undefined ? h / 3 : radius, 3);
-            this.addChild(this.panel);
             this.label = new chs.Label(text, font);
+            this.size = { width: Math.max(w, this.label.width + 16), height: h };
+            this.setPosition(x, y);
+            this.panel = new chs.Panel(0, 0, this.width, h, "darkSlateGrey", this.idleLineColour, radius === undefined ? h / 3 : radius, 3);
+            this.addChild(this.panel);
             this.label.setPivot(0.5, font.midPivot);
             this.label.setPosition(this.width / 2, this.height / 2);
             this.addChild(this.label);
-            this.panel.width = Math.max(this.panel.width, this.label.width + 16);
 
         },
 

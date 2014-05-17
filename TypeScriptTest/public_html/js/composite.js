@@ -40,9 +40,9 @@
         composite_draw: function (context) {
             if(this.compositeData.canvas === null) {              // or dirty in terms of content, as opposed to transform (ie children sorted, added, removed, dirty etc)
                 this.composite_compose();
-                var tl = this.drawableData.globalMatrix.apply({ x: 0, y: 0 });
-                var br = this.drawableData.globalMatrix.apply({ x: this.width, y: this.height });
-                chs.Debug.fillRect(tl.x, tl.y, br.x - tl.x, br.y - tl.y, "white");
+                // var tl = this.drawableData.globalMatrix.apply({ x: 0, y: 0 });
+                // var br = this.drawableData.globalMatrix.apply({ x: this.width, y: this.height });
+                // chs.Debug.fillRect(tl.x, tl.y, br.x - tl.x, br.y - tl.y, "white");
             }
             context.drawImage(this.compositeData.canvas, 0, 0);
             return false;   // don't draw the children...

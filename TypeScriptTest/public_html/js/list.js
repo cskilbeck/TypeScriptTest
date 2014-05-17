@@ -4,12 +4,12 @@ chs.List = (function () {
     "use strict";
 
     var List = function (nodeName) {
-        this.nodeName = nodeName;
-        this.root = { item: null, next: null, prev: null };
-        this.root.next = this.root;
-        this.root.prev = this.root;
-        this.size = 0;
-    },
+            this.nodeName = nodeName;
+            this.root = { item: null, next: null, prev: null };
+            this.root.next = this.root;
+            this.root.prev = this.root;
+            this.size = 0;
+        },
         sortCallback,
         sortContext;
 

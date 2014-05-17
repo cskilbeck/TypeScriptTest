@@ -5,8 +5,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.Menu = chs.Class({
-        inherit$: [chs.Drawable],
+    chs.Menu = chs.Class({ inherit$: [chs.Drawable],
 
         // callback can be a function or an array of functions
         $: function (x, y, font, items, callback, context) {
@@ -85,8 +84,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.PopupMenu = chs.Class({
-        inherit$: [chs.Menu],
+    chs.PopupMenu = chs.Class({ inherit$: [chs.Menu],
 
         $: function (x, y, font, items, callback, context) {
             chs.Menu.call(this, x, y, font, items, callback, context);

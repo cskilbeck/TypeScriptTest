@@ -6,8 +6,7 @@
         this.size = this.labelData.font.measureText(this.labelData.text);
     };
 
-    chs.Label = chs.Class({
-        inherit$: [chs.Drawable, chs.Composite],
+    chs.Label = chs.Class({ inherit$: [chs.Drawable, chs.Composite],
 
         $: function (text, font) {
             chs.Drawable.call(this);
@@ -55,8 +54,7 @@
         }
     };
 
-    chs.TextBox = chs.Class({
-        inherit$: [chs.ClipRect],
+    chs.TextBox = chs.Class({ inherit$: [chs.ClipRect],
 
         $: function (x, y, w, h, text, font, lineBreak, linkClicked, context) {
             chs.ClipRect.call(this, x, y, w, h, 0);

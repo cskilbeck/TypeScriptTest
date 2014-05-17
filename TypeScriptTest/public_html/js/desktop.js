@@ -15,8 +15,7 @@
         canvas.style.left = (document.body.clientWidth - canvas.width) / 2 + "px";
     }
 
-    chs.Desktop = chs.Class({
-        inherit$: [chs.Panel],
+    chs.Desktop = chs.Class({ inherit$: [chs.Panel],
 
         $: function ()
         {

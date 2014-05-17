@@ -13,8 +13,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    mtw.BoardTile = chs.Class({
-        inherit$: [mtw.Tile, chs.Drawable, chs.Composite],
+    mtw.BoardTile = chs.Class({ inherit$: [mtw.Tile, chs.Drawable, chs.Composite],
 
         static$: {
 
@@ -109,7 +108,7 @@
 
         swap: function (b) {
             var t = b.letter;
-            b.myLetter = this.letter;
+            b.letter = this.letter;
             this.letter = t;
         },
 

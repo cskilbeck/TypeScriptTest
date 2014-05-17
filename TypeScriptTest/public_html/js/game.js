@@ -19,7 +19,7 @@
 // Flying scores/fizz/particles
 //////////////////////////////////////////////////////////////////////
 
-mtw.Game = (function () {
+(function () {
     "use strict";
 
     //////////////////////////////////////////////////////////////////////
@@ -58,8 +58,7 @@ mtw.Game = (function () {
 
     //////////////////////////////////////////////////////////////////////
 
-    return chs.Class({
-        inherit$: [chs.Drawable],
+    mtw.Game = chs.Class({ inherit$: [chs.Drawable],
 
         $: function (mainMenu, loader) {
             chs.Drawable.call(this);

@@ -35,29 +35,17 @@
 
         copy: function (t) {
             return new chs.Matrix(
-                this.m[0],
-                this.m[1],
-                this.m[2],
-                this.m[3],
-                this.m[4],
-                this.m[5],
-                this.m[6],
-                this.m[7],
-                this.m[8]
+                this.m[0], this.m[1], this.m[2],
+                this.m[3], this.m[4], this.m[5],
+                this.m[6], this.m[7], this.m[8]
             );
         },
 
         transpose: function () {
             return new chs.Matrix(
-                this.m[0],
-                this.m[3],
-                this.m[6],
-                this.m[1],
-                this.m[4],
-                this.m[7],
-                this.m[2],
-                this.m[5],
-                this.m[8]
+                this.m[0], this.m[3], this.m[6],
+                this.m[1], this.m[4], this.m[7],
+                this.m[2], this.m[5], this.m[8]
                 );
         },
 
@@ -95,15 +83,9 @@
 
         multiplyBy: function (num) {
             return new chs.Matrix(
-                this.m[0] * num,
-                this.m[1] * num,
-                this.m[2] * num,
-                this.m[3] * num,
-                this.m[4] * num,
-                this.m[5] * num,
-                this.m[6] * num,
-                this.m[7] * num,
-                this.m[8] * num
+                this.m[0] * num, this.m[1] * num, this.m[2] * num,
+                this.m[3] * num, this.m[4] * num, this.m[5] * num,
+                this.m[6] * num, this.m[7] * num, this.m[8] * num
             );
         },
 

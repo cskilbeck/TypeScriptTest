@@ -2,8 +2,7 @@
 (function () {
     "use strict";
 
-    chs.TextButton = chs.Class({
-        inherit$: [chs.Button, chs.Drawable],
+    chs.TextButton = chs.Class({ inherit$: [chs.Button, chs.Drawable],
 
         $: function (text, font, x, y, w, h, click, context, radius, outline) {
             var ol = outline === undefined ? true : false;

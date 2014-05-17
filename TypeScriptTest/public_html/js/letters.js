@@ -33,7 +33,6 @@
         asciiA = "a".charCodeAt(0),
         distribution = [];
 
-
     (function () {
         var i,
             j;

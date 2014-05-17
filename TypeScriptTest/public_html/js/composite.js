@@ -12,44 +12,39 @@
 
         composite_compose: function () {
             var context,
-                oldPos,
-                oldScale,
-                oldRot,
                 oldTransparency,
-                oldPivot;
-            this.compositeData.canvas = document.createElement("canvas");
-            this.compositeData.canvas.width = this.width;   // need to take padding into account here
-            this.compositeData.canvas.height = this.height;
-            context = this.compositeData.canvas.getContext("2d");
-            oldPos = chs.Util.clone(this.drawableData.position);
-            oldScale = chs.Util.clone(this.drawableData.scale);
-            oldPivot = chs.Util.clone(this.drawableData.pivot);
-            oldRot = this.drawableData.rotation;
-            oldTransparency = this.drawableData.transparency;
-            this.rotation = 0;
-            this.setPosition(0, 0);
-            this.setScale(1);
+                oldDraw,
+                oldPick,
+                oldGlobal,
+                dd = this.drawableData,
+                self = this.compositeData;
+            self.canvas = document.createElement("canvas");
+            self.canvas.width = this.width;   // need to take padding into account here
+            self.canvas.height = this.height;
+            context = self.canvas.getContext("2d");
+            oldTransparency = dd.transparency;
+            oldDraw = this.drawMatrix().copy();
+            oldPick = dd.pickMatrix.copy();
+            oldGlobal = dd.globalMatrix.copy();
+            dd.matrix = chs.Matrix.identity();
             this.transparency = 255;
-            this.setPivot(0, 0);
-            this.onDraw = this.compositeData.oldOnDraw;
+            this.onDraw = self.oldOnDraw;
             this.draw(context, chs.Matrix.identity(), 255); // need to add padding offset to this matrix
             this.onDraw = this.composite_draw;
-            this.drawableData.position = oldPos;
-            this.drawableData.scale = oldScale;
-            this.drawableData.rotation = oldRot;
-            this.drawableData.transparency = oldTransparency;
-            this.drawableData.pivot = oldPivot;
-            this.refreshMatrix();
+            dd.transparency = oldTransparency;
+            dd.matrix = oldDraw;
+            dd.pickMatrix = oldPick;
+            dd.globalMatrix = oldGlobal;
         },
 
         composite_draw: function (context) {
-            var p;
             if(this.compositeData.canvas === null) {              // or dirty in terms of content, as opposed to transform (ie children sorted, added, removed, dirty etc)
                 this.composite_compose();
+                var tl = this.drawableData.globalMatrix.apply({ x: 0, y: 0 });
+                var br = this.drawableData.globalMatrix.apply({ x: this.width, y: this.height });
+                chs.Debug.fillRect(tl.x, tl.y, br.x - tl.x, br.y - tl.y, "white");
             }
             context.drawImage(this.compositeData.canvas, 0, 0);
-            // p = this.drawableData.globalMatrix.apply({ x: 0, y: 0 });
-            // chs.Debug.text(p.x, p.y, "*");
             return false;   // don't draw the children...
         },
 

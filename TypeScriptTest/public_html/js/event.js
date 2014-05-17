@@ -36,8 +36,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.MouseMessage = chs.Class({
-        inherit$: [chs.Message],
+    chs.MouseMessage = chs.Class({ inherit$: [chs.Message],
 
         $: function (type, pos, global) {
             chs.Message.call(this, type);
@@ -59,8 +58,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.TouchMessage = chs.Class({
-        inherit$: [chs.Message],
+    chs.TouchMessage = chs.Class({ inherit$: [chs.Message],
 
         $: function (type, pos, global) {
             chs.Message.call(this, type, global);

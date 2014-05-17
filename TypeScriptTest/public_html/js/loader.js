@@ -41,9 +41,8 @@
                             "AOAKLrc7kOYSau9NuLNp+5g9YXhSHbmuaVG4L4wfLEBCBSzZNXdnV88ji+jqwQ3Q1GREiQQJs5" +
                             "JkkKrOKNSHBFowWZ/O+uVMvUsJ82nAVs2VHtaJRcONtri1HPrXmcC/oCBf3hmFwWHiImJfSoYL" +
                             "I1ykCt6koWVjJduA5ucnZ6foAkAOw==",
-        Item = chs.Class({
 
-            inherit$: [chs.EventSource],
+        Item = chs.Class({ inherit$: [chs.EventSource],
 
             $: function (url, data, loader, forceFileType) {
                 var extension;
@@ -207,8 +206,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.Loader = chs.Class({
-        inherit$: [chs.Drawable, chs.EventSource],
+    chs.Loader = chs.Class({ inherit$: [chs.Drawable, chs.EventSource],
 
         //////////////////////////////////////////////////////////////////////
 

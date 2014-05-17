@@ -1,8 +1,7 @@
 (function () {
     "use strict";
 
-    chs.Window = chs.Class({
-        inherit$: [chs.Drawable],
+    chs.Window = chs.Class({ inherit$: [chs.Drawable, chs.Composite],
 
         $: function (desc) {
             var hasCloseButton = (desc.closeButton === undefined) ? false : desc.closeButton,
@@ -19,6 +18,7 @@
                 titleBarWidth = desc.width;
 
             chs.Drawable.call(this);
+            chs.Composite.call(this);
             this.size = { width: desc.width, height: desc.height };
             this.setPosition(desc.x, desc.y);
 

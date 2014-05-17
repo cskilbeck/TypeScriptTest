@@ -3,8 +3,7 @@
 (function () {
     "use strict";
 
-    chs.SpriteButton = chs.Class({
-        inherit$: [chs.Button, chs.Sprite],
+    chs.SpriteButton = chs.Class({ inherit$: [chs.Button, chs.Sprite],
 
         $: function (image, type, x, y, click, context) {
             chs.Button.call(this, click, context);

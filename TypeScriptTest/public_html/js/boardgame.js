@@ -18,8 +18,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    mtw.BoardGame = chs.Class({
-        inherit$: [mtw.Board, chs.Drawable],
+    mtw.BoardGame = chs.Class({ inherit$: [mtw.Board, chs.Drawable],
 
         $: function (x, y, game, mainBoard) {
             var i;

@@ -5,8 +5,7 @@
         undoImage,
         redoImage;
 
-    mtw.UI = chs.Class({
-        inherit$: [chs.Drawable],
+    mtw.UI = chs.Class({ inherit$: [chs.Drawable],
 
         $: function (loader) {
             chs.Drawable.call(this);

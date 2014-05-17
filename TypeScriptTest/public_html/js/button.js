@@ -88,20 +88,22 @@
                 return this.currentState;
             },
             set: function (s) {
-                this.currentState = s;
-                switch (s) {
-                case chs.Button.idle:
-                    this.dispatchEvent("idle");
-                    this.onIdle();
-                    break;
-                case chs.Button.hover:
-                    this.dispatchEvent("hover");
-                    this.onHover();
-                    break;
-                case chs.Button.pressed:
-                    this.dispatchEvent("pressed");
-                    this.onPressed();
-                    break;
+                if(this.currentState != s) {
+                    this.currentState = s;
+                    switch (s) {
+                    case chs.Button.idle:
+                        this.dispatchEvent("idle");
+                        this.onIdle();
+                        break;
+                    case chs.Button.hover:
+                        this.dispatchEvent("hover");
+                        this.onHover();
+                        break;
+                    case chs.Button.pressed:
+                        this.dispatchEvent("pressed");
+                        this.onPressed();
+                        break;
+                    }
                 }
             }
         })

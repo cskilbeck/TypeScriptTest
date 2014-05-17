@@ -5,8 +5,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.Image = chs.Class({
-        inherit$: [chs.Drawable],
+    chs.Image = chs.Class({ inherit$: [chs.Drawable],
 
         $: function (url) {
             var that = this;
@@ -47,8 +46,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.Sprite = chs.Class({
-        inherit$: [chs.Drawable],
+    chs.Sprite = chs.Class({ inherit$: [chs.Drawable],
 
         $: function (image) {
 

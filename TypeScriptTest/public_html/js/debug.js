@@ -47,6 +47,10 @@ chs.Debug = (function () {
             d.push("rect", x, y, w, h, colour);
         },
 
+        fillRect: function (x, y, w, h, colour) {
+            d.push("fillrect", x, y, w, h, colour);
+        },
+
         poly: function (points, colour) {
             var i;
             d.push("poly", points.length, colour);
@@ -73,6 +77,11 @@ chs.Debug = (function () {
                     chs.Util.rect(context, d.shift(), d.shift(), d.shift(), d.shift());
                     context.strokeStyle = d.shift();
                     context.stroke();
+                    break;
+                case 'fillrect':    // x, y, w, h, colour
+                    chs.Util.rect(context, d.shift(), d.shift(), d.shift(), d.shift());
+                    context.fillStyle = d.shift();
+                    context.fill();
                     break;
                 case 'line':    // x1, y1, x1, y1, colour
                     context.beginPath();

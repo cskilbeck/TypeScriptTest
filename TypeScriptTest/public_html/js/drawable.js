@@ -5,8 +5,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.Drawable = chs.Class({
-        inherit$: [chs.EventSource],
+    chs.Drawable = chs.Class({ inherit$: [chs.EventSource],
 
         $: function () {
             chs.EventSource.call(this);
@@ -226,7 +225,7 @@
                             this.dispatchEvent('mouseMove', e);
                             self.mouseIsOver = pick;
                             return this.onMouseMove(e);
-                        } else if(self.mouseIsOver) {
+                        } else if(self.mouseIsOver && !pick) {
                             this.dispatchEvent('mouseLeave', e);
                             // chs.Debug.poly([tl, {x: br.x, y: tl.y}, br, {x: tl.x, y: br.y}], "cyan");
                             self.mouseIsOver = false;
@@ -242,7 +241,7 @@
                             self.isTouched = true;
                             this.dispatchEvent('touchMove', e);
                             return this.onTouchMove(e);
-                        } else if(self.isTouched) {
+                        } else if(self.isTouched && !pick) {
                             self.isTouched = false;
                             this.dispatchEvent('touchLeave', e);
                             return this.onTouchLeave(e);

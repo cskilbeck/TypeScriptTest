@@ -1,11 +1,10 @@
-var LoginScreen = (function () {
+(function () {
     "use strict";
 
     var pfont,
         ploader,
 
-        ProviderButton = chs.Class({
-            inherit$: [chs.PanelButton],
+        ProviderButton = chs.Class({ inherit$: [chs.PanelButton],
 
             static$: {
                 init: function (font, loader) {
@@ -42,8 +41,7 @@ var LoginScreen = (function () {
             }
         });
 
-    return chs.Class({
-        inherit$: [chs.Drawable],
+    mtw.LoginScreen = chs.Class({ inherit$: [chs.Drawable],
 
         $: function (loader, mainMenu) {
             var consolasItalic = chs.Font.load("Consolas_Italic", loader),

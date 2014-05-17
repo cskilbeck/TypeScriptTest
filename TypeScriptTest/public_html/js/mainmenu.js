@@ -1,4 +1,4 @@
-var MainMenu = (function () {
+(function () {
     "use strict";
 
     var loader,
@@ -6,8 +6,7 @@ var MainMenu = (function () {
         consolas,
         consolasItalic,
 
-        UserImage = chs.Class({
-            inherit$: [chs.Button, chs.Drawable],
+        UserImage = chs.Class({ inherit$: [chs.Button, chs.Drawable],
 
             $: function (x, y, width, height, url) {
                 chs.Button.call(this);
@@ -35,8 +34,7 @@ var MainMenu = (function () {
             }
         });
 
-    return chs.Class({
-        inherit$: [chs.Drawable],
+    mtw.MainMenu = chs.Class({ inherit$: [chs.Drawable],
 
         $: function () {
             chs.Drawable.call(this);
@@ -145,7 +143,7 @@ var MainMenu = (function () {
         },
 
         showLogin: function () {
-            var loginScreen = new LoginScreen(loader, this);
+            var loginScreen = new mtw.LoginScreen(loader, this);
             loginScreen.addEventHandler("closed", this.activate, this);
             this.activate(false);
             this.addSibling(loginScreen);

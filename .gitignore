@@ -157,3 +157,4 @@ $RECYCLE.BIN/
 .DS_Store
 TypeScriptTest/OneDrive.lnk
 TypeScriptTest/config/
+*.dmp

@@ -3,7 +3,7 @@
 
     var buttons = new chs.List("listNode");
 
-    mtw.WordButton = chs.Class({ inherit$: [chs.PanelButton, chs.Composite],
+    mtw.WordButton = chs.Class({ inherit$: [chs.Composite, chs.PanelButton],
 
         static$: {
             reset: function () {
@@ -49,8 +49,8 @@
         },
 
         $: function (wrd, x, y, w, h, font, callback, context) {
-            chs.PanelButton.call(this, x, y, w, h, "darkslategrey", undefined, 4, 0, callback, context);
             chs.Composite.call(this);
+            chs.PanelButton.call(this, x, y, w, h, "darkslategrey", undefined, 4, 0, callback, context);
             this.listNode = new chs.List.Node(this);
             this.used = 0;
             this.word = wrd;

@@ -127,10 +127,11 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.PanelButton = chs.Class({ inherit$: [chs.Button, chs.Panel],
+    chs.PanelButton = chs.Class({ inherit$: [chs.Button, chs.Composite, chs.Panel],
 
         $: function (x, y, w, h, fillColour, lineColour, radius, lineWidth, click, context) {
             chs.Button.call(this, click, context);
+            chs.Composite.call(this);
             chs.Panel.call(this, x, y, w, h, fillColour, lineColour, radius, lineWidth);
         }
     });

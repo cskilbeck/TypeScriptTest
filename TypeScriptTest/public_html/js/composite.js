@@ -8,6 +8,7 @@
                 canvas: null,
                 oldOnDraw: this.onDraw
             };
+            this.composable = true;
         },
 
         composite_compose: function () {
@@ -44,13 +45,21 @@
                 // var br = this.drawableData.globalMatrix.apply({ x: this.width, y: this.height });
                 // chs.Debug.fillRect(tl.x, tl.y, br.x - tl.x, br.y - tl.y, "white");
             }
-            context.drawImage(this.compositeData.canvas, 0, 0);
+            context.drawImage(this.compositeData.canvas, 0, 0); // draw at -extent.left, -extent.top
             return false;   // don't draw the children...
         },
 
         compose: function () {
-            this.compositeData.canvas = null;
-            this.onDraw = this.composite_draw;
+            var p = this.parent,
+                c = this;
+            while(p !== null) {
+                if(p.composable) {
+                    c = p;
+                }
+                p = p.parent;
+            }
+            c.compositeData.canvas = null;
+            c.onDraw = c.composite_draw;
         },
 
         decompose: function () {

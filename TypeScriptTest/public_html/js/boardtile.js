@@ -13,7 +13,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    mtw.BoardTile = chs.Class({ inherit$: [mtw.Tile, chs.Drawable, chs.Composite],
+    mtw.BoardTile = chs.Class({ inherit$: [mtw.Tile, chs.Composite, chs.Drawable],
 
         static$: {
 
@@ -29,9 +29,8 @@
 
         $: function (letter, x, y, showDigits) {
             mtw.Tile.call(this, letter);
-            chs.Drawable.call(this);
             chs.Composite.call(this);
-            this.myPulse = false;
+            chs.Drawable.call(this);
             this.font = font;
             this.selected = false;
             this.swapped = false;
@@ -51,6 +50,7 @@
             this.addChild(this.sprite);
             this.label = new chs.Label(letter, font).setPivot(0.5, font.midPivot);
             this.label.setPosition(this.width / 2 - 1, this.height / 2);
+            this.label.transparency = 224;
             if (showDigits) {
                 this.digits = new chs.Label(mtw.Letters.letterScore(letter).toString(), digits).setPivot(1, 1).setPosition(this.width - 12, this.height - 8);
                 this.digits.transparency = 96;
@@ -114,21 +114,6 @@
 
         //////////////////////////////////////////////////////////////////////
 
-        pulse: chs.Property({
-            get: function() {
-                return this.myPulse;
-            },
-            set: function (p) {
-                this.myPulse = p;
-                if(!p) {
-                    this.label.setScale(1);
-                    this.compose();
-                }
-            }
-        }),
-
-        //////////////////////////////////////////////////////////////////////
-
         onUpdate: function (time, deltaTime) {
             var hi = this.wordIndices[mtw.Word.horizontal],
                 vi = this.wordIndices[mtw.Word.vertical],
@@ -148,10 +133,6 @@
                 sy = 0;
             } else {
                 this.setScale(1);
-            }
-            if (this.pulse) {
-                this.label.setScale(Math.sin(time / 25) * 0.025 + 1.1);
-                this.compose();
             }
             if(this.oldfX !== sx || this.oldfY !== sy) {
                 this.sprite.setFrameXY(sx, sy);

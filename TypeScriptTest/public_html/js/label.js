@@ -6,7 +6,7 @@
         this.size = this.labelData.font.measureText(this.labelData.text);
     };
 
-    chs.Label = chs.Class({ inherit$: [chs.Drawable, chs.Composite],
+    chs.Label = chs.Class({ inherit$: [chs.Composite, chs.Drawable],
 
         $: function (text, font) {
             chs.Drawable.call(this);
@@ -26,7 +26,7 @@
             set: function (s) {
                 this.labelData.text = s;
                 measureText.call(this);
-//                this.compose();
+                this.compose();
             }
         }),
 
@@ -37,7 +37,7 @@
             set: function (f) {
                 this.labelData.font = f;
                 measureText.call(this);
-//                this.compose();
+                this.compose();
             }
         }),
 

@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////
 // tap to swap
-// munger: piece ({{term}})
+// font: layermask, extents
+// munger: piece ({{term}}) / body <span id='group'>
 // make all drawables compositable?
 //      - create offscreen canvas
 //      - clear it
@@ -49,10 +50,14 @@
 
     function setWordHightlight(word, h) {
         var i,
-            t;
+            t,
+            s = h ? 1.125 : 1,
+            tr = h ? 255 : 224;
         for (i = 0; i < word.str.length; i++) {
             t = board.getWordTile(word, i);
-            t.pulse = h;
+            t.label.setScale(s);
+            t.label.transparency = tr;
+            t.compose();
         }
     }
 
@@ -96,10 +101,12 @@
             scoreButton.addChild(new chs.Label("Score:", consolas).setPosition(4, 4));
             words.addChild(scoreButton);
             scoreButton.highlight = 0;
+            scoreButton.compose();
 
             scoreButton.flash = function (color) {
                 this.fillColour = color;
                 this.highlight = 500;
+                this.compose();
             };
 
             scoreButton.setScore = function (score) {
@@ -109,6 +116,7 @@
                 } else if(score < currentScore) {
                     this.flash("rgb(255,0,0)");
                 }
+                this.compose();
             };
 
             scoreButton.onUpdate = function (time, deltaTime) {
@@ -116,6 +124,7 @@
                     this.highlight -= deltaTime;
                     if(this.highlight <= 0) {
                         this.fillColour = "black";
+                        this.compose();
                     }
                 }
             };
@@ -127,9 +136,9 @@
             bestButton.highlight = 0;
             bestButton.flash = 0;
 
-            bestButton.onIdle = function () { this.fillColour = 'black'; };
-            bestButton.onHover = function () { this.fillColour = 'black'; };
-            bestButton.onPressed = function () { this.fillColour = 'red'; };
+            bestButton.onIdle = function () { this.fillColour = 'black'; this.compose(); };
+            bestButton.onHover = function () { this.fillColour = 'black'; this.compose(); };
+            bestButton.onPressed = function () { this.fillColour = 'red'; this.compose(); };
             bestButton.onUpdate = function (time, deltaTime) {
                 if (this.highlight > 0) {
                     this.highlight -= deltaTime;
@@ -137,12 +146,15 @@
                         this.flash += 1;
                         if ((this.flash % 4) !== 0) {
                             this.fillColour = "rgb(0,255,0)";
+                            this.compose();
                         } else {
                             this.fillColour = "black";
+                            this.compose();
                         }
                     } else {
                         this.flash = 0;
                         this.fillColour = "black";
+                        this.compose();
                     }
                 }
             };
@@ -198,6 +210,7 @@
                             board.bestSeed = seed;
                             bestScore = board.bestScore;
                             bestLabel.text = board.bestScore.toString();    // if board.bestScore has gone up, flash this!
+                            bestButton.compose();
                             bestButton.highlight = 1000;
                             leaderBoard.delay = 1;  // poke a leaderboard update
                         } else {

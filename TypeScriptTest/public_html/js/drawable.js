@@ -329,6 +329,15 @@
 
         //////////////////////////////////////////////////////////////////////
 
+        compose: function () {
+            var p = this.parent;
+            if(p !== null && p.compose !== undefined) {
+                p.compose();
+            }
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
         debug: function () {
             var self = this.drawableData,
                 c;

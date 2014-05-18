@@ -1,4 +1,5 @@
 //////////////////////////////////////////////////////////////////////
+// change the client_secrets!
 // new words each day...
 // Fix tile grabbing/moving/swapping/lerping/tap to swap
 // menu button repositioned working on phone

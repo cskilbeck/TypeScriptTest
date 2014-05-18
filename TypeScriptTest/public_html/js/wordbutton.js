@@ -21,7 +21,7 @@
             create: function(wrd, board, x, y, w, h, font, callback, context) {
                 var b = mtw.WordButton.findButton(wrd);
                 if(b !== null) {
-                    // console.log("Reusing! " + b.word.str);
+                    console.log("Reusing! " + b.word.str);
                     buttons.remove(b);
                     b.x = x;
                     b.y = y;
@@ -30,7 +30,7 @@
                     b.state = chs.Button.idle;
                 } else {
                     b = new mtw.WordButton(wrd, board, x, y, w, h, font, callback, context);
-                    // console.log("New word! " + wrd.str);
+                    console.log("New word! " + wrd.str);
                 }
                 return b;
             },
@@ -43,9 +43,9 @@
             },
 
             showCache: function () {
-                // buttons.forEach(function(w) {
-                //     chs.Debug.print("     ", w.word.str);
-                // });
+                buttons.forEach(function(w) {
+                    chs.Debug.print("     ", w.word.str);
+                });
             }
         },
 

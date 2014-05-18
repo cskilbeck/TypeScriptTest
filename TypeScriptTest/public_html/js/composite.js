@@ -20,8 +20,8 @@
                 dd = this.drawableData,
                 self = this.compositeData;
             self.canvas = document.createElement("canvas");
-            self.canvas.width = this.width;   // need to take padding into account here
-            self.canvas.height = this.height;
+            self.canvas.width = this.width + 1;   // need to take padding into account here
+            self.canvas.height = this.height + 1;
             context = self.canvas.getContext("2d");
             oldTransparency = dd.transparency;
             oldDraw = this.drawMatrix().copy();
@@ -30,7 +30,7 @@
             dd.matrix = chs.Matrix.identity();
             this.transparency = 255;
             this.onDraw = self.oldOnDraw;
-            this.draw(context, chs.Matrix.identity(), 255); // need to add padding offset to this matrix
+            this.draw(context, chs.Matrix.identity().translate({x: 0.5, y: 0.5}), 255); // need to add padding offset to this matrix
             this.onDraw = this.composite_draw;
             dd.transparency = oldTransparency;
             dd.matrix = oldDraw;

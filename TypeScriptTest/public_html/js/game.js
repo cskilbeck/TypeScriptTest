@@ -167,7 +167,7 @@
             this.addChild(board);
             bestScore = 0;
 
-            board.addEventHandler("changed", this.updateWordList);
+            board.addEventHandler("changed", this.updateWordList, this);
 
             board.addEventHandler("movecomplete", function () {
                 currentScore = board.score;
@@ -409,6 +409,9 @@
                 }
             }
         },
+        onUpdate: function() {
+            mtw.WordButton.showCache();
+        }
     });
 
 }());

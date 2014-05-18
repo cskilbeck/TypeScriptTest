@@ -17,9 +17,10 @@ build/
 [Bb]in/
 [Oo]bj/
 
-php/cb1.php
-php/cb2.php
-php/cb4.php
+TypeScriptTest/public_html/php/cb1.php
+TypeScriptTest/public_html/php/cb2.php
+TypeScriptTest/public_html/php/cb3.php
+TypeScriptTest/public_html/php/cb4.php
 
 # Enable "build/" folder in the NuGet Packages folder since NuGet packages use it for MSBuild targets
 !packages/*/build/

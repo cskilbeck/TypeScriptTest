@@ -237,6 +237,7 @@
                         this.saveBest();
                         this.activeTile.selected = true;
                         this.activeTile.zIndex = 1;
+                        this.dispatchEvent("changed");
                     } else {
                         this.activeTile.setPosition(snapX, snapY);
                     }

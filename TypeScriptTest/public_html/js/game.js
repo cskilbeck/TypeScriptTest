@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////
-// tap to swap
+// new words each day...
+// Fix tile grabbing/moving/swapping/lerping/tap to swap
 // font: layermask, extents
 // munger: piece ({{term}}) / body <span id='group'>
 // make all drawables compositable?
@@ -16,7 +17,6 @@
 //      dynamic layout
 //      deflate/gzip js and json
 //      orientation
-// Fix tile grabbing/moving/swapping/lerping
 // Flying scores/fizz/particles
 //////////////////////////////////////////////////////////////////////
 
@@ -42,24 +42,7 @@
         bestLabel,
         board,
         undoImage,
-        redoImage,
-        highlightWords = [],
-        deHighlightWords = [];
-
-    //////////////////////////////////////////////////////////////////////
-
-    function setWordHightlight(word, h) {
-        var i,
-            t,
-            s = h ? 1.125 : 1,
-            tr = h ? 255 : 224;
-        for (i = 0; i < word.str.length; i++) {
-            t = board.getWordTile(word, i);
-            t.label.setScale(s);
-            t.label.transparency = tr;
-            t.compose();
-        }
-    }
+        redoImage;
 
     //////////////////////////////////////////////////////////////////////
 
@@ -184,9 +167,10 @@
             this.addChild(board);
             bestScore = 0;
 
+            board.addEventHandler("changed", this.updateWordList);
+
             board.addEventHandler("movecomplete", function () {
                 currentScore = board.score;
-                console.log("New current score " + currentScore.toString());
             });
         },
 
@@ -196,6 +180,7 @@
         init: function (seed) {
             board.randomize(seed);
             board.load();
+            this.updateWordList();
 
             // right, if there's a user logged in, try and get their board for this game
             // but only splat into the board if this is the first time they've played this session...
@@ -241,6 +226,7 @@
                 goBack = function (idx) {
                     if (idx === 0) {
                         board.setFromString(board.bestBoard);
+                        this.updateWordList();
                         board.pushUndo();
                     }
                 };
@@ -282,6 +268,7 @@
                         board.tiles[i].swap(board.tiles[n]);
                     }
                     board.markAllWords();
+                    this.updateWordList();
                     board.saveBest();
                     board.pushUndo();
                     this.setDirty();
@@ -386,17 +373,17 @@
             });
             words.wordList.removeChildren();
             board.wordList().forEach(function (w) {
-                var button = new mtw.WordButton.create(w, ui.client.width / 2, y, ui.client.width - 8, consolas.height + 6, consolas, function () {
+                var button = mtw.WordButton.create(w, board, ui.client.width / 2, y, ui.client.width - 8, consolas.height + 6, consolas, function () {
                     this.showDefinition(w);
                 }, this).setPivot(0.5, 0);
                 button.addEventHandler("idle", function () {
-                    deHighlightWords.push(this.word);
+                    this.clearWordHighlight();
                 });
                 button.addEventHandler("hover", function() {
-                    highlightWords.push(this.word);
+                    this.setWordHighlight();
                 });
                 button.addEventHandler("pressed", function() {
-                    highlightWords.push(this.word);
+                    this.setWordHighlight();
                 });
                 y += button.height + 1;
                 words.wordList.addChild(button);
@@ -422,34 +409,6 @@
                 }
             }
         },
-
-        onUpdate: function (time, deltaTime) {
-            var i,
-                j;
-            if (board.changed) {
-                this.updateWordList();
-            }
-
-            mtw.WordButton.showCache();
-
-            // remove any from true which are also in false...
-
-            for (i = 0; i < highlightWords.length; ++i) {
-                for (j = 0; j < deHighlightWords.length; ++j) {
-                    if(highlightWords[i] === deHighlightWords[j]) {
-                        highlightWords.splice(i, 1);
-                    }
-                }
-            }
-
-            while(deHighlightWords.length > 0) {
-                setWordHightlight(deHighlightWords.shift(), false);
-            }
-            while(highlightWords.length > 0) {
-                setWordHightlight(highlightWords.shift(), true);
-            }
-        }
-
     });
 
 }());

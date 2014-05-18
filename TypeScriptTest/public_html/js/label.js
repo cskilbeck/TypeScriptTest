@@ -3,7 +3,14 @@
     "use strict";
 
     var measureText = function () {
-        this.size = this.labelData.font.measureText(this.labelData.text);
+        var self = this.labelData,
+            p = this.drawableData.padding;
+        self.extent = this.labelData.font.measureText(this.labelData.text);
+        this.size = { width: self.extent.width, height: self.extent.height };
+        p.left = -self.extent.left;
+        p.top = -self.extent.top;
+        p.right = self.extent.right - self.extent.width;
+        p.bottom = self.extent.bottom - self.extent.height;
     };
 
     chs.Label = chs.Class({ inherit$: [chs.Composite, chs.Drawable],
@@ -13,9 +20,11 @@
             chs.Composite.call(this);
             this.labelData = {
                 text: text,
-                font: font
+                font: font,
+                extent: null
             };
             measureText.call(this);
+            this.compose();
         },
 
         text: chs.Property({

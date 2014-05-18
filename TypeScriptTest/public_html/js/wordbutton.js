@@ -96,7 +96,8 @@
                 x,
                 y,
                 w,
-                h;
+                h,
+                i = 20;
             if(this.wordHighlight === null) {
                 b = this.board.getWordTile(this.word, 0);
                 e = this.board.getWordTile(this.word, this.word.str.length - 1);
@@ -106,16 +107,17 @@
                 y = tl.y - mtw.BoardTile.height / 2;
                 w = br.x + mtw.BoardTile.width / 2 - x;
                 h = br.y + mtw.BoardTile.height / 2 - y;
-                x += 6;
-                y += 6;
-                w -= 12;
-                h -= 12;
-                this.wordHighlight = new chs.OutlineRectangle(x, y, w, h, 10, "yellow", 5);
+                x += i - 1;
+                y += i - 4;
+                w -= i * 2;
+                h -= i * 2 - 6;
+                this.wordHighlight = new chs.Panel(x, y, w, h, "white", "black", 10, 2);
+                this.wordHighlight.transparency = 64;
                 this.board.addChild(this.wordHighlight);
                 this.wordHighlight.zIndex = 2;
                 this.wordHighlight.onUpdate = function(time, deltaTime) {
-                    this.transparency = Math.sin(time / 40) * 48 + 207;
-                }
+                    this.transparency = Math.sin(time / 80) * 16 + 64;
+                };
             }
         },
 

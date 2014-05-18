@@ -1,8 +1,9 @@
 //////////////////////////////////////////////////////////////////////
 // new words each day...
 // Fix tile grabbing/moving/swapping/lerping/tap to swap
+// menu button repositioned working on phone
 // font: layermask, extents
-// munger: piece ({{term}}) / body <span id='group'>
+// munger: piece ({{term}}) / body <span id='group'> / meal (senseid, en, food)
 // make all drawables compositable?
 //      - create offscreen canvas
 //      - clear it
@@ -172,6 +173,12 @@
             board.addEventHandler("movecomplete", function () {
                 currentScore = board.score;
             });
+        },
+
+        onDraw: function (context) {
+            // var ext = arial.measureText("W");
+            // arial.renderString(context, "W", 688, 350);
+            // chs.Debug.rect(688 + ext.left, 350 + ext.top, (ext.right - ext.left), (ext.bottom - ext.top));
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -408,9 +415,6 @@
                     }, this);
                 }
             }
-        },
-        onUpdate: function() {
-            mtw.WordButton.showCache();
         }
     });
 

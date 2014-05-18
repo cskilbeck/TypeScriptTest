@@ -13,7 +13,7 @@
             this.drawableData = {
                 position: { x: 0, y: 0 },
                 dimensions: { width: 0, height: 0 },
-                extent: { left: 0, top: 0, right: 0, bottom: 0}, // this is used by chs.Composite
+                padding: { left: 0, top: 0, right: 0, bottom: 0},    // how much (or -ive) padding required on the sides
                 rotation: 0,
                 scale: { x: 1, y: 1 },
                 drawScale: { x: 1, y: 1 },

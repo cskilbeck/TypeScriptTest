@@ -20,8 +20,8 @@
                 dd = this.drawableData,
                 self = this.compositeData;
             self.canvas = document.createElement("canvas");
-            self.canvas.width = this.width + 1;   // need to take padding into account here
-            self.canvas.height = this.height + 1;
+            self.canvas.width = this.width + dd.padding.left + dd.padding.right + 1;   // need to take padding into account here
+            self.canvas.height = this.height + dd.padding.top + dd.padding.bottom + 1;
             context = self.canvas.getContext("2d");
             oldTransparency = dd.transparency;
             oldDraw = this.drawMatrix().copy();
@@ -30,7 +30,7 @@
             dd.matrix = chs.Matrix.identity();
             this.transparency = 255;
             this.onDraw = self.oldOnDraw;
-            this.draw(context, chs.Matrix.identity().translate({x: 0.5, y: 0.5}), 255); // need to add padding offset to this matrix
+            this.draw(context, chs.Matrix.identity().translate({ x: dd.padding.left, y: dd.padding.top }), 255); // need to add padding offset to this matrix
             this.onDraw = this.composite_draw;
             dd.transparency = oldTransparency;
             dd.matrix = oldDraw;
@@ -39,25 +39,17 @@
         },
 
         composite_draw: function (context) {
-            if(this.compositeData.canvas === null) {              // or dirty in terms of content, as opposed to transform (ie children sorted, added, removed, dirty etc)
+            var cd = this.compositeData,
+                dd = this.drawableData;
+            if(cd.canvas === null) {              // or dirty in terms of content, as opposed to transform (ie children sorted, added, removed, dirty etc)
                 this.composite_compose();
-                // var tl = this.drawableData.globalMatrix.apply({ x: 0, y: 0 });
-                // var br = this.drawableData.globalMatrix.apply({ x: this.width, y: this.height });
-                // chs.Debug.fillRect(tl.x, tl.y, br.x - tl.x, br.y - tl.y, "white");
             }
-            context.drawImage(this.compositeData.canvas, 0, 0); // draw at -extent.left, -extent.top
+            context.drawImage(cd.canvas, Math.floor(-dd.padding.left), Math.floor(-dd.padding.top)); // draw at -extent.left, -extent.top
             return false;   // don't draw the children...
         },
 
         compose: function () {
-            var p = this.parent,
-                c = this;
-            while(p !== null) {
-                if(p.composable) {
-                    c = p;
-                }
-                p = p.parent;
-            }
+            var c = this;
             c.compositeData.canvas = null;
             c.onDraw = c.composite_draw;
         },

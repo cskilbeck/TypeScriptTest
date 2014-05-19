@@ -42,9 +42,7 @@
         currentScore,
         leaderBoard,
         bestLabel,
-        board,
-        undoImage,
-        redoImage;
+        board;
 
     //////////////////////////////////////////////////////////////////////
 
@@ -71,10 +69,9 @@
             consolasItalicBold.softLineSpacing = 4;
 
             ui.loadComplete();
-            this.addChild(ui);
-
             ui.addEventHandler("undo", this.undo, this);
             ui.addEventHandler("redo", this.redo, this);
+            this.addChild(ui);
 
             words = new chs.Drawable();
             words.width = ui.client.width;
@@ -298,12 +295,14 @@
 
         undo: function () {
             board.undo();
+            this.updateWordList();
         },
 
         //////////////////////////////////////////////////////////////////////
 
         redo: function () {
             board.redo();
+            this.updateWordList();
         },
 
         //////////////////////////////////////////////////////////////////////

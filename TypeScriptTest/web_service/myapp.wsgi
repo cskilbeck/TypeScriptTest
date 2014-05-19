@@ -94,10 +94,7 @@ def check_parameters(pq, strings):
 # check http origin is in the valid list
 
 def origin_is_valid(db, environ):
-    if db_host() == 'localhost':
-        #return 'http://10.164.90.82'
-        return 'http://192.168.0.213'
-    elif 'HTTP_ORIGIN' in environ:
+    if 'HTTP_ORIGIN' in environ:
         with closing(db.cursor()) as cur:
             cur.execute("SELECT COUNT(*) AS count FROM sites WHERE site_url = %(HTTP_ORIGIN)s", environ)
             if cur.fetchone()['count'] > 0:

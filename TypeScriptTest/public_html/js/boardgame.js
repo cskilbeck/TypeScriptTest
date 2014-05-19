@@ -208,6 +208,8 @@
 
         doMove: function (e) {
             var pos,
+                oldx,
+                oldy,
                 tw = mtw.BoardTile.width,
                 th = mtw.BoardTile.height;
             if (this.activeTile !== null) {
@@ -226,23 +228,25 @@
                             this.swapTile.swapped = true;
                         }
                         newSwapTile.swap(this.activeTile);
+                        newSwapTile.x = this.activeTile.x;
+                        newSwapTile.y = this.activeTile.y;
                         this.activeTile.reset();
                         if (this.swapTile !== newSwapTile) {
                             this.activeTile.swap(this.swapTile);
                             this.swapTile.swapped = true;
                         }
                         this.activeTile = newSwapTile;
-                        this.activeTile.setPosition(snapX, snapY);
+                        this.activeTile.setTarget(snapX, snapY, 50);
                         this.markAllWords();
                         this.saveBest();
                         this.activeTile.selected = true;
                         this.activeTile.zIndex = 1;
                         this.dispatchEvent("changed");
                     } else {
-                        this.activeTile.setPosition(snapX, snapY);
+                        this.activeTile.setTarget(snapX, snapY);
                     }
                 } else {
-                    this.activeTile.setPosition(tileX, tileY);
+                    this.activeTile.setTarget(tileX, tileY);
                 }
             }
         },

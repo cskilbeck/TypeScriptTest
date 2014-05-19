@@ -42,6 +42,16 @@
                 x: this.position.x,
                 y: this.position.y
             };
+            this.target = {
+                x: this.position.x,
+                y: this.position.y
+            };
+            this.source = {
+                x: this.position.x,
+                y: this.position.y
+            };
+            this.lerpTime = 100;
+            this.moveTime = 0;
             this.sprite = new chs.Sprite(tileImage);
             this.sprite.framesWide = 5;
             this.sprite.framesHigh = 5;
@@ -88,10 +98,25 @@
         },
 
         //////////////////////////////////////////////////////////////////////
+
+        setTarget: function (x, y, lerpTime) {
+            this.source.x = this.position.x;
+            this.source.y = this.position.y;
+            this.target.x = x;
+            this.target.y = y;
+            this.lerpTime = lerpTime;
+            this.moveTime = lerpTime;
+            if(!lerpTime) {
+                this.setPosition(x, y);
+            }
+        },
+
+        //////////////////////////////////////////////////////////////////////
         // put it back to its origin
 
         resetPosition: function () {
-            this.setPosition(this.org.x, this.org.y);
+            this.setTarget(this.org.x, this.org.y, 50);
+//            this.setPosition(this.org.x, this.org.y);
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -115,7 +140,10 @@
         //////////////////////////////////////////////////////////////////////
 
         onUpdate: function (time, deltaTime) {
-            var hi = this.wordIndices[mtw.Word.horizontal],
+            var t,
+                x,
+                y,
+                hi = this.wordIndices[mtw.Word.horizontal],
                 vi = this.wordIndices[mtw.Word.vertical],
                 sx = hi.position,
                 sy = vi.position;
@@ -139,6 +167,19 @@
                 this.oldfX = sx;
                 this.oldfY = sy;
                 this.compose();
+            }
+            // move towards target
+            if(this.moveTime > 0) {
+                this.moveTime -= deltaTime;
+                if(this.moveTime < 0) {
+                    this.moveTime = 0;
+                }
+                // 0 : at target
+                // N : at position
+                t = chs.Util.ease(chs.Util.ease(this.moveTime / this.lerpTime));
+                x = (this.source.x - this.target.x) * t + this.target.x;
+                y = (this.source.y - this.target.y) * t + this.target.y;
+                this.setPosition(x, y);
             }
         }
     });

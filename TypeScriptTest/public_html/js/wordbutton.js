@@ -57,6 +57,7 @@
             this.used = 0;
             this.word = wrd;
             this.wordHighlight = null;
+            this.shader = null;
             this.addChild(new chs.Label(wrd.str, font).setPosition(5, this.height / 2).setPivot(0, font.midPivot));
             this.addChild(new chs.Label(wrd.score.toString(), font).setPosition(this.width - 8, this.height / 2).setPivot(1, font.midPivot));
             this.compose();
@@ -111,11 +112,15 @@
                 y += i - 4;
                 w -= i * 2;
                 h -= i * 2 - 6;
-                this.wordHighlight = new chs.Panel(x, y, w, h, "white", "black", 10, 2);
-                this.wordHighlight.transparency = 64;
+                this.wordHighlight = new chs.Drawable();
+                this.wordHighlight.setPosition(x, y);
+                this.shader = new chs.SolidRectangle(0, 0, w, h, 10, "white");
+                this.wordHighlight.addChild(this.shader);
+                this.wordHighlight.addChild(new chs.OutlineRectangle(0, 0, w, h, 10, "darkred", 4));
+                this.shader.transparency = 64;
                 this.board.addChild(this.wordHighlight);
                 this.wordHighlight.zIndex = 2;
-                this.wordHighlight.onUpdate = function(time, deltaTime) {
+                this.shader.onUpdate = function(time, deltaTime) {
                     this.transparency = Math.sin(time / 80) * 16 + 64;
                 };
             }

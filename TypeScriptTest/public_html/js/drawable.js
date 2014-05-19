@@ -528,6 +528,19 @@
 
         //////////////////////////////////////////////////////////////////////
 
+        position: chs.Property({
+            get: function () {
+                return this.drawableData.position;
+            },
+            set: function (s) {
+                this.drawableData.position.x = s.x;
+                this.drawableData.position.y = s.y;
+                this.drawableData.dirty = true;
+            }
+        }),
+
+        //////////////////////////////////////////////////////////////////////
+
         x: chs.Property({
             get: function () {
                 return this.drawableData.position.x;
@@ -585,19 +598,6 @@
             },
             set: function (h) {
                 this.drawableData.dimensions.height = h;
-                this.drawableData.dirty = true;
-            }
-        }),
-
-        //////////////////////////////////////////////////////////////////////
-
-        position: chs.Property({
-            get: function () {
-                return this.drawableData.position;
-            },
-            set: function (s) {
-                this.drawableData.position.x = s.x;
-                this.drawableData.position.y = s.y;
                 this.drawableData.dirty = true;
             }
         }),

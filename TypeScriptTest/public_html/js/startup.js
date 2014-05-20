@@ -9,7 +9,6 @@ window.onload = function () {
 
             init: function () {
                 var loader;
-                chs.OAuth.login();
                 chs.desktop = new chs.Desktop();
                 loader = new chs.Loader('img/');
                 chs.Debug.init(chs.desktop.context, chs.Font.load("Fixedsys", loader));

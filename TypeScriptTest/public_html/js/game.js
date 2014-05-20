@@ -4,12 +4,8 @@
 // Fix tile grabbing/moving/swapping/lerping/tap to swap
 // menu button repositioned working on phone
 // font: layermask
-// munger: piece ({{term}}) / body <span id='group'> / meal (senseid, en, food) / field (senseid)
+// munger: piece ({{term}}) / body <span id='group'> / meal (senseid, en, food) / field (senseid) / coastal (cx, geography) / daub (cx) / source (,)
 // make all drawables compositable?
-//      - create offscreen canvas
-//      - clear it
-//      - call draw on self into that (with identity matrix)
-//      - cache that and
 // make login robust
 // loader outputs manifest with file sizes for proper progress bar
 // fix font util (combine channels plugin)
@@ -20,6 +16,8 @@
 //      deflate/gzip js and json
 //      orientation
 // Flying scores/fizz/particles
+// scrollable leaderboards
+// scrollable textbox
 //////////////////////////////////////////////////////////////////////
 
 (function () {
@@ -312,8 +310,14 @@
                 win,
                 scoreLabel,
                 textBox,
+                netWorkIndicator,
+                networkInprogress = false,
                 getDef = function(word) {
+                    netWorkIndicator.age = 0;
+                    networkInprogress = true;
                     chs.WebService.get("definition", { word: word }, function (data) {
+                        netWorkIndicator.rotation = 0;
+                        networkInprogress = false;
                         if (data && !data.error) {
                             textBox.text = data.definition;
                         }
@@ -354,7 +358,16 @@
                     this.setScale(a);
                     this.transparency = (this.age - 0.5) * 510;
                 }
+                if(networkInprogress) {
+                    netWorkIndicator.age += deltaTime / 150;
+                    netWorkIndicator.rotation = netWorkIndicator.age + Math.sin(netWorkIndicator.age * 2) * 0.5 + Math.PI / 2;
+                }
             };
+
+            netWorkIndicator = new chs.OutlineRectangle(0, 0, 16, 16, 3, "white", 1.5).setPivot(0.5, 0.5).setPosition(22, 22);
+            netWorkIndicator.age = 0;
+            netWorkIndicator.addChild(new chs.SolidRectangle(4, 4, 8, 8, 2, "white"));
+            win.addChild(netWorkIndicator);
 
             scoreLabel = new chs.Label(w.score.toString() + " points", consolasItalic);
             textBox = new chs.TextBox(16, 16, win.client.width - 32, win.client.height - 32, "...", consolasItalic, '\r    ', function (link) {
@@ -367,6 +380,7 @@
             scoreLabel.setPivot(1, consolasItalic.midPivot);
             win.titleBar.addChild(scoreLabel);
             win.client.addChild(textBox);
+            win.caption.move(17, 0);
             this.addChild(win);
         },
 

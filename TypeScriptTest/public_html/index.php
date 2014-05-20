@@ -23,11 +23,13 @@
     <script src="js/webserviceurl.js"></script>
     <script src="js/webservice.js"></script>
     <script src="js/list.js"></script>
+    <script src="js/canvas.js"></script>
     <script src="js/timer.js"></script>
     <script src="js/matrix.js"></script>
     <script src="js/drawable.js"></script>
     <script src="js/composite.js"></script>
     <script src="js/loader.js"></script>
+    <script src="js/image.js"></script>
     <script src="js/sprite.js"></script>
     <script src="js/button.js"></script>
     <script src="js/panel.js"></script>

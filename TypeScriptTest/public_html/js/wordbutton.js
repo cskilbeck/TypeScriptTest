@@ -34,6 +34,7 @@
                 if(buttons.size > 50) {
                     buttons.popBack();
                 }
+                button.reset();
                 buttons.pushFront(button);
             },
 
@@ -60,7 +61,7 @@
 
         reset: function () {
             this.clearEventHandlers();
-            this.wordHighlight = null;
+            this.clearWordHighlight();
             this.shader = null;
             this.state = chs.Button.idle;
         },

@@ -15,6 +15,7 @@ import urlparse
 import urllib
 import urllib2
 import pprint
+from time import sleep
 
 sys.path.append('/usr/local/www/wsgi-scripts')
 os.chdir('/usr/local/www/wsgi-scripts')
@@ -308,6 +309,9 @@ class boardHandler(Handler):
         cur.execute("SELECT COUNT(*) AS count FROM users WHERE user_id=%(user_id)s", self.post);
         if cur.fetchone()['count'] == 0:
             self.err(e_unknownuser)
+
+        # check if this game has ended
+        # if so, tough luck
 
         board = self.post['board']
         user_id = self.post['user_id']

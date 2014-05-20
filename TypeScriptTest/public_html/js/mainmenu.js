@@ -63,6 +63,63 @@
             this.panel.addChild(new chs.Label("Logging out...", consolasItalic).setPosition(this.panel.width / 2, this.panel.height / 2).setPivot(0.5, 0.5));
         },
 
+        getSession: function () {
+            var session_id = chs.Cookies.get('session_id'),
+                provider_id = chs.Cookies.get('provider_id'),   // this will be null if nothing chosen or 0 if Anon or valid provider ID
+                login_error = chs.Cookies.get('login_error');
+            provider_id = provider_id ? parseInt(provider_id, 10) : 0;
+            if (provider_id === 0) {
+                if (login_error !== null) {
+                    this.panel.addChild(new chs.Label("Login error: " + login_error, consolas).setPosition(this.panel.width - 24, 16).setPivot(1, 0));
+                    alert(login_error);
+                    chs.Cookies.remove("login_error");
+                }
+            }
+            if (session_id !== null) {
+                chs.WebService.get('session', { session_id: session_id }, function (data) {
+                    var logoutButton;
+                    if (data.error !== undefined) {
+                        chs.Cookies.remove('session_id');
+                        chs.Cookies.remove('login_error');
+                        // session probably expired...
+                        if(provider_id !== 0) {
+                            window.location.reload();
+                        } else {
+                            // weird:
+                        }
+                    } else {
+                        chs.User.id = data.user_id;
+                        chs.User.name = data.name;
+                        chs.User.picture = data.picture;
+                        chs.User.providerName = data.providerName;
+                        if(chs.User.picture) {
+                            logoutButton = new UserImage(12, 12, 64, 64, chs.User.picture);
+                        } else {
+                            logoutButton = new chs.TextButton(chs.User.name, consolasItalic, 12, 12, 20, 35);
+                        }
+                        this.panel.addChild(logoutButton);
+                        this.panel.addChild(new chs.Label(provider_id === 0 ? "Log in" : "Log out", consolas).setPosition(44, 84).setPivot(0.5, 0));
+                        logoutButton.addEventHandler("clicked", function () {
+                            if(provider_id === 0) {
+                                this.showLogin();
+                            } else {
+                                this.addChild(
+                                    new chs.MessageBox(
+                                        "You are logged in as " + chs.User.name + " with " + chs.User.providerName + ", would you like to log out?",
+                                        consolasItalic,
+                                        ['Yes, log me out', 'No'],
+                                        function (button) {
+                                            if(button === 0) {
+                                                this.logout();
+                                            }
+                                        }, this, consolas));
+                            }
+                        }, this);
+                    }
+                }, this);
+            }
+        },
+
         loadComplete: function () {
             var session_id = chs.Cookies.get('session_id'),
                 provider_id = chs.Cookies.get('provider_id'),   // this will be null if nothing chosen or 0 if Anon or valid provider ID
@@ -89,57 +146,10 @@
             this.button = new chs.TextButton("PLAY!", consolasItalic, pw / 2, ph / 2, 200, 50, this.playClicked, this).setPivot(0.5, 0.5);
             this.panel.addChild(this.button);
             this.addChild(this.panel);
-            if (provider_id === 0) {
-                buttons.push('Login');
-                callbacks.push(this.showLogin);
-                if (login_error !== null) {
-                    this.panel.addChild(new chs.Label("Login error: " + login_error, consolas).setPosition(this.panel.width - 24, 16).setPivot(1, 0));
-                    alert(login_error);
-                    chs.Cookies.remove("login_error");
-                }
-            }
-            if (session_id !== null) {
-                chs.WebService.get('session', { session_id: session_id }, function (data) {
-                    var logoutButton;
-                    if (data.error !== undefined) {
-                        chs.Cookies.remove('session_id');
-                        chs.Cookies.remove('login_error');
-                        if(provider_id !== 0) {
-                            window.location.reload();
-                        }
-                    } else {
-                        chs.User.id = data.user_id;
-                        chs.User.name = data.name;
-                        chs.User.picture = data.picture;
-                        chs.User.providerName = data.providerName;
-                        if(chs.User.picture) {
-                            logoutButton = new UserImage(12, 12, 64, 64, chs.User.picture);
-                        } else {
-                            logoutButton = new chs.TextButton(chs.User.name, consolasItalic, 12, 12, 20, 35);
-                        }
-                        this.panel.addChild(logoutButton);
-                        logoutButton.addEventHandler("clicked", function () {
-                            if(provider_id === 0) {
-                                this.showLogin();
-                            } else {
-                                this.addChild(
-                                    new chs.MessageBox(
-                                        "You are logged in as " + chs.User.name + " with " + chs.User.providerName + ", would you like to log out?",
-                                        consolasItalic,
-                                        ['Yes, log me out', 'No'],
-                                        function (button) {
-                                            if(button === 0) {
-                                                this.logout();
-                                            }
-                                        }, this, consolas));
-                            }
-                        }, this);
-                    }
-                }, this);
-            }
             this.panel.addChild(new chs.Menu(20, this.panel.height - 20, consolasItalic, buttons, callbacks, this).setPivot(0, 1));
             this.enabled = true;
             this.visible = true;
+            chs.OAuth.login(this.getSession, this);
         },
 
         showLogin: function () {

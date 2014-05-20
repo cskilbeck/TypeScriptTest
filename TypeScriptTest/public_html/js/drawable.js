@@ -177,7 +177,7 @@
                     case chs.Message.touchStart:
                         if(pick) {
                             self.isTouched = true;
-                            this.dispatchEvent('touchStart');
+                            this.dispatchEvent('touchStart', e);
                             return this.onTouchStart(e);
                         }
                         break;
@@ -189,28 +189,28 @@
 
                     case chs.Message.leftMouseDown:
                         if(pick) {
-                            this.dispatchEvent('leftMouseDown');
+                            this.dispatchEvent('leftMouseDown', e);
                             return this.onLeftMouseDown(e);
                         }
                         break;
 
                     case chs.Message.rightMouseDown:
                         if(pick) {
-                            this.dispatchEvent('rightMouseDown');
+                            this.dispatchEvent('rightMouseDown', e);
                             return this.onRightMouseDown(e);
                         }
                         break;
 
                     case chs.Message.leftMouseUp:
                         if(pick || self.mouseCapture) {
-                            this.dispatchEvent('leftMouseUp');
+                            this.dispatchEvent('leftMouseUp', e);
                             return this.onLeftMouseUp(e);
                         }
                         break;
 
                     case chs.Message.rightMouseUp:
                         if(pick || self.mouseCapture) {
-                            this.dispatchEvent('rightMouseUp');
+                            this.dispatchEvent('rightMouseUp', e);
                             return this.onRightMouseUp(e);
                         }
                         break;

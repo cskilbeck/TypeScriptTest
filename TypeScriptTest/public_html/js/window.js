@@ -65,27 +65,36 @@
             this.client.window = this;
             this.drag = false;
             this.dragOffset = { x: 0, y: 0 };
+            this.dragStart = { x: 0, y: 0 };
 
             if (hasTitleBar && isDraggable) {
-                this.titleBar.onLeftMouseDown = function (e) {
+
+                this.titleBar.addEventHandler("leftMouseDown", function (e) {
                     this.drag = true;
-                    this.setCapture(true);
-                    this.dragOffset = { x: this.window.position.x - e.position.x, y: this.window.position.y - e.position.y };   // screen coordinate!
-                    return true;
-                };
-                this.titleBar.onLeftMouseUp = function (e) {
-                    this.setCapture(false);
+                    this.titleBar.setCapture(true);
+                    this.dragStart = e.position;
+                    this.dragOffset = { x: this.position.x - e.position.x, y: this.position.y - e.position.y };   // screen coordinate!
+                }, this);
+
+                this.titleBar.addEventHandler("leftMouseUp", function (e) {
+                    this.titleBar.setCapture(false);
                     this.drag = false;
-                    return true;
-                };
-                this.titleBar.onMouseMove = function (e) {
-                    var w,
+                }, this);
+
+                this.titleBar.addEventHandler("mouseMove", function (e) {
+                    var pos,
+                        x,
+                        y,
+                        w,
                         h;
                     if (this.drag) {
-                        this.window.setPosition(e.position.x + this.dragOffset.x, e.position.y + this.dragOffset.y);
+                        x = e.position.x + this.dragOffset.x;   // WINDOW DRAG CONTRAINT BROKEN IF TRANSFORM IS MORE THAN SIMPLE TRANSLATION!!!
+                        y = e.position.y + this.dragOffset.y;
+                        x = chs.Util.constrain(x, -this.width / 4, chs.desktop.width + this.width / 4);
+                        y = chs.Util.constrain(y, this.height / 2, chs.desktop.height + this.height / 2 - this.clientOffset);
+                        this.setPosition(x, y);
                     }
-                    return true;
-                };
+                }, this);
             }
 
             if(desc.backgroundTransparency !== undefined) {

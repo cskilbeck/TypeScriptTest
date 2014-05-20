@@ -4,7 +4,7 @@
     chs.OAuth = chs.Class({
 
         static$: {
-            login: function () {
+            login: function (callback, context) {
                 var session_id,
                     provider_id,
                     anon,
@@ -18,10 +18,13 @@
                             chs.Cookies.set('session_id', data.session_id);
                             chs.Cookies.set('anon_user_id', data.user_id);
                             chs.User.id = data.user_id;
+                            callback.call(context);
                         } else {
-                            alert("Error getting anon user id");
+                            console.log("Error getting anon user id");
                         }
                     });
+                } else {
+                    callback.call(context);
                 }
             }
         }

@@ -222,11 +222,14 @@ chs.List = (function () {
             return null;
         },
 
-        remove: function (obj) {
-            var node = obj[this.nodeName];
+        removeNode: function (node) {
             node.prev.next = node.next;
             node.next.prev = node.prev;
             this.size -= 1;
+        },
+
+        remove: function (obj) {
+            this.removeNode(obj[this.nodeName]);
         },
 
         moveToFront: function (item) {

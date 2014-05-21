@@ -4,6 +4,34 @@
 		"selected_items":
 		[
 			[
+				"Pro",
+				"PropertyDescriptor"
+			],
+			[
+				"pos",
+				"position"
+			],
+			[
+				"load",
+				"loader"
+			],
+			[
+				"proc",
+				"processText"
+			],
+			[
+				"processJ",
+				"processJPEG"
+			],
+			[
+				"proce",
+				"processImage"
+			],
+			[
+				"call",
+				"callback"
+			],
+			[
 				"de",
 				"deltaTime"
 			],
@@ -184,10 +212,6 @@
 				"query"
 			],
 			[
-				"proc",
-				"processRequest"
-			],
-			[
 				"req",
 				"request_body_size"
 			],
@@ -308,10 +332,18 @@
 	"buffers":
 	[
 		{
-			"file": "TypeScriptTest/public_html/js/loader.js",
+			"file": "TypeScriptTest/public_html/js/class.js",
 			"settings":
 			{
-				"buffer_size": 7880,
+				"buffer_size": 2363,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "TypeScriptTest/public_html/js/button.js",
+			"settings":
+			{
+				"buffer_size": 1965,
 				"line_ending": "Windows"
 			}
 		}
@@ -524,43 +556,58 @@
 	},
 	"file_history":
 	[
+		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/loader.js",
+		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/boardgame.js",
+		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/board.js",
+		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/label.js",
+		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/event.js",
+		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/cookies.js",
+		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/button.js",
+		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/boardtile.js",
+		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/browser.js",
+		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/tile.js",
+		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/word.js",
+		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/drawable.js",
+		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/game.js",
+		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/oauth2callback/index.php",
+		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/ajax.js",
+		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/mainmenu.js",
+		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/font.js",
+		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/nodejs/client.js",
+		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/chs.js",
+		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/window.js",
+		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/textbutton.js",
+		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/startup.js",
+		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/img/Arial.bitmapfont",
+		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/img/Consolas_Italic.bitmapfont",
+		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/obj/Debug/TypeScriptTest.csproj.FileListAbsolute.txt",
+		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache",
+		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/loginscreen.js",
+		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/lb.js",
+		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/messagebox.js",
 		"/C/Bin/startpageant.bat",
 		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/panel.js",
 		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/util.js",
-		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/mainmenu.js",
 		"/C/Users/chs/AppData/Roaming/Sublime Text 3/Packages/User/GitGutter.sublime-settings",
-		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/startup.js",
 		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/oauth.js",
-		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/textbutton.js",
 		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/index.php",
 		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/menu.js",
 		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/list.js",
-		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/drawable.js",
-		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/oauth2callback/index.php",
-		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/loader.js",
 		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/SQL/mtw_procs.sql",
-		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/ajax.js",
 		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/php/HttpPost.class.php",
-		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/game.js",
-		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/messagebox.js",
-		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/loginscreen.js",
 		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/php/cb1.php",
 		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/php/cb4.php",
-		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/window.js",
 		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/web_service/myapp.wsgi",
 		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/user.js",
 		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/logingoogle.php",
-		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/lb.js",
 		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/loginscreen.js",
 		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/web_service/dbaselogin.py",
-		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache",
 		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/HttpPost.class.php",
 		"/C/Users/chs/AppData/Roaming/Sublime Text 3/Packages/User/SublimeGit.sublime-settings",
 		"/C/Users/chs/AppData/Roaming/Sublime Text 3/Packages/GitGutter/GitGutter.sublime-settings",
 		"/C/Users/chs/AppData/Roaming/Sublime Text 3/Packages/User/SublimeLinter.sublime-settings",
 		"/C/Users/chs/AppData/Roaming/Sublime Text 3/Packages/SublimeLinter/SublimeLinter.sublime-settings",
 		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/mirror.bat",
-		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/event.js",
 		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/SQL/create_bots.sql",
 		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/TypeScriptTest.csproj",
 		"/C/Users/chs/Projects/TypeScriptTest/TypeScriptTest/public_html/js/sprite.js",
@@ -636,26 +683,11 @@
 		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/img/Consolas_Italic.bitmapfont",
 		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/img/Consolas.json",
 		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/img/Arial.json",
-		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/img/Arial.bitmapfont",
-		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/app.css",
-		"/d/Users/charlie/AppData/Roaming/Sublime Text 3/Packages/SublimeGit/SublimeGit.sublime-settings",
-		"/d/Users/charlie/AppData/Roaming/Sublime Text 3/Packages/User/Github Tools.sublime-settings",
-		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/php/login.php",
-		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/webservice.js",
-		"/d/Users/charlie/AppData/Roaming/Sublime Text 3/Packages/User/Preferences.sublime-settings",
-		"/d/Users/charlie/AppData/Roaming/Sublime Text 3/Packages/Default/Preferences.sublime-settings",
-		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/js/textbutton.js",
-		"/d/Users/charlie/AppData/Roaming/npm-cache/jshint/2.5.0/package/src/jshint.js",
-		"/d/Users/charlie/AppData/Roaming/Sublime Text 3/Packages/User/SublimeLinter.sublime-settings",
-		"/D/Users/charlie/AppData/Roaming/Sublime Text 3/Packages/User/jshint.sublime-build",
-		"/d/Users/charlie/AppData/Roaming/Sublime Text 3/Packages/SideBarEnhancements/Side Bar.sublime-settings",
-		"/d/Users/charlie/AppData/Roaming/Sublime Text 3/Packages/User/jshint.sublime-build",
-		"/d/Users/charlie/AppData/Roaming/Sublime Text 3/Packages/SublimeLinter/SublimeLinter.sublime-settings",
-		"/d/Users/charlie/Desktop/JavaScript.tmLanguage"
+		"/D/Users/charlie/Projects/TypeScriptTest/TypeScriptTest/public_html/img/Arial.bitmapfont"
 	],
 	"find":
 	{
-		"height": 27.0
+		"height": 35.0
 	},
 	"find_in_files":
 	{
@@ -671,6 +703,12 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"child",
+			"get: function (",
+			"chs.Pro ",
+			"get: function (",
+			"get: function",
+			"undoImage",
 			"OutlineRectangle",
 			"removeif",
 			"addchild",
@@ -777,24 +815,24 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 1,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "TypeScriptTest/public_html/js/loader.js",
+					"file": "TypeScriptTest/public_html/js/class.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 7880,
+						"buffer_size": 2363,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								527,
-								527
+								1121,
+								1121
 							]
 						],
 						"settings":
@@ -804,7 +842,37 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1.0,
+						"translation.y": 329.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "TypeScriptTest/public_html/js/button.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1965,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1006,
+								1006
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 719.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
@@ -888,6 +956,30 @@
 		"selected_items":
 		[
 			[
+				"clas",
+				"public_html\\js\\class.js"
+			],
+			[
+				"word",
+				"public_html\\js\\word.js"
+			],
+			[
+				"tile",
+				"public_html\\js\\tile.js"
+			],
+			[
+				"load",
+				"public_html\\js\\loader.js"
+			],
+			[
+				"game",
+				"public_html\\js\\game.js"
+			],
+			[
+				"mainm",
+				"public_html\\js\\mainmenu.js"
+			],
+			[
 				"windo",
 				"public_html\\js\\window.js"
 			],
@@ -898,10 +990,6 @@
 			[
 				"window",
 				"public_html\\js\\window.js"
-			],
-			[
-				"game",
-				"public_html\\js\\game.js"
 			],
 			[
 				"util",
@@ -1000,10 +1088,6 @@
 				"SQL\\mtw_setup.sql"
 			],
 			[
-				"load",
-				"public_html\\js\\loader.js"
-			],
-			[
 				"aja",
 				"public_html\\js\\ajax.js"
 			],
@@ -1020,10 +1104,6 @@
 				"public_html\\js\\boardgame.js"
 			],
 			[
-				"mainm",
-				"public_html\\js\\mainmenu.js"
-			],
-			[
 				"textb",
 				"public_html\\js\\textbutton.js"
 			],
@@ -1036,10 +1116,6 @@
 				"TypeScriptTest\\public_html\\js\\boardtile.js"
 			],
 			[
-				"tile",
-				"TypeScriptTest\\public_html\\js\\tile.js"
-			],
-			[
 				"draw",
 				"TypeScriptTest\\public_html\\js\\drawable.js"
 			],
@@ -1050,10 +1126,6 @@
 			[
 				"drawa",
 				"TypeScriptTest\\public_html\\js\\drawable.js"
-			],
-			[
-				"word",
-				"TypeScriptTest\\public_html\\js\\word.js"
 			]
 		],
 		"width": 0.0

@@ -12,7 +12,7 @@
                 items: {},
 
                 get: function(name) {
-                    console.log("Got " + name + "? " + (Cache.items[name] === undefined ? "no" : "yes"));
+                    // console.log("Got " + name + "? " + (Cache.items[name] === undefined ? "no" : "yes"));
                     if (Cache.items[name] !== undefined) {
                         return Cache.items[name].object;
                     }
@@ -20,7 +20,7 @@
                 },
 
                 put: function(name, object, size) {
-                    console.log("Adding " + name);
+                    // console.log("Adding " + name);
                     Cache.items[name] = { object: object, size: size };
                 },
 

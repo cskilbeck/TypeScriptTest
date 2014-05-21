@@ -19,8 +19,6 @@
                     xd,
                     yd;
 
-                // delete largest canvas until total cache size is < ?? pixels
-
                 for (n = canvasCache.headNode(); n != canvasCache.end(); n = n.next) {
                     c = n.item;
                     xd = c.width - w;
@@ -37,15 +35,20 @@
                     }
                 }
                 if (r) {
-                    console.log("Reusing canvas!");
+                    // console.log("Reusing canvas!");
                     canvasCache.remove(r);
                     r.clear();
                 } else {
-                    console.log("Creating canvas!");
+                    // console.log("Creating canvas!");
                     r = new chs.Canvas(w, h);
                 }
                 return r;
             },
+            showCache: function () {
+                // canvasCache.forEach(function(c) {
+                //     chs.Debug.print(c.width, c.height);
+                // });
+            }
         },
 
         $: function(w, h) {

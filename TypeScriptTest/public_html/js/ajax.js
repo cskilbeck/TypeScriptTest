@@ -29,7 +29,7 @@
                 var contentType;
                 if (xr.readyState === XMLHttpRequest.DONE) {
                     contentType = xr.getResponseHeader("Content-Type");
-                    console.log("[" + xr.status + "] " + contentType + " from " + url);
+                    // console.log("[" + xr.status + "] " + contentType + " from " + url);
                     callback.call(context, url, xr);
                 }
             };

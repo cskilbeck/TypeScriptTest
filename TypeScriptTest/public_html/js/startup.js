@@ -3,67 +3,41 @@
 window.onload = function () {
     "use strict";
 
-    (function () {
-        var screen,
-            canvas,
-            context,
-            loader,
-            Startup = {
+    var startup = chs.Class({
 
-                init: function () {
-                    var pw,
-                        ph,
-                        oauth2_client_id,
-                        oauth2_redirect,
-                        oauth2_server_url,
-                        oauth2_scope,
-                        oauth2_response_type,
-                        provider_id,
-                        params = {},
-                        url = null;
+        static$: {
 
-                    window.onresize = function () {
-                        pw = screen.clientWidth;
-                        ph = screen.clientHeight;
-                        canvas.style.top = (ph - canvas.height) / 2 + "px";
-                        canvas.style.left = (pw - canvas.width) / 2 + "px";
-                    };
+            init: function () {
+                var loader;
+                chs.desktop = new chs.Desktop();
+                loader = new chs.Loader('img/');
+                chs.Debug.init(chs.desktop.context, chs.Font.load("Fixedsys", loader));
+                loader.addEventHandler("complete", startup.start);
+                loader.start();
+            },
 
-                    if(chs.OAuth.login()) {
-                        screen = document.getElementById("screen");
-                        canvas = document.getElementById("myCanvas");
-                        window.onresize();
-                        context = canvas.getContext('2d');
-                        loader = new chs.Loader('img/');
-                        chs.Debug.init(context, chs.Font.load("Fixedsys", loader));
-                        loader.addEventHandler("complete", Startup.start);
-                        loader.start();
-                    }
-                },
-
-                start: function () {
-                    chs.Mouse.init(canvas, screen);
-                    chs.Keyboard.init();
-                    chs.Timer.init();
-                    chs.desktop = new chs.Panel(0, 0, canvas.width, canvas.height, "rgb(32, 128, 48)");
-                    if (typeof window.main === "function") {
-                        window.main(chs.desktop);
-                    }
-                    Startup.run();
-                },
-
-                run: function () {
-                    chs.Timer.update();
-                    chs.Keyboard.update();
-                    chs.Mouse.update(chs.desktop);
-                    chs.desktop.update(chs.Timer.time, chs.Timer.delta);
-                    chs.desktop.draw(context, chs.Matrix.identity(), 255);
-                    chs.Debug.draw();
-                    requestAnimFrame(Startup.run);
+            start: function () {
+                chs.Mouse.init(chs.desktop.canvas);
+                chs.Keyboard.init();
+                chs.Timer.init();
+                if (typeof window.main === "function") {
+                    window.main(chs.desktop);
                 }
-            };
+                startup.run();
+            },
 
-        return Startup;
+            run: function () {
+                chs.Timer.update();
+                chs.Keyboard.update();
+                chs.Mouse.update(chs.desktop);
+                chs.desktop.update(chs.Timer.time, chs.Timer.delta);
+                chs.desktop.draw(chs.desktop.context, chs.Matrix.identity(), 255);
+                chs.Canvas.showCache();
+                chs.Debug.draw();
+                requestAnimationFrame(startup.run);
+            }
+        }
+    });
 
-    }()).init();
+    startup.init();
 };

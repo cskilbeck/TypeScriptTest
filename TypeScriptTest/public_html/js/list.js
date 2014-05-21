@@ -4,12 +4,12 @@ chs.List = (function () {
     "use strict";
 
     var List = function (nodeName) {
-        this.nodeName = nodeName;
-        this.root = { item: null, next: null, prev: null };
-        this.root.next = this.root;
-        this.root.prev = this.root;
-        this.size = 0;
-    },
+            this.nodeName = nodeName;
+            this.root = { item: null, next: null, prev: null };
+            this.root.next = this.root;
+            this.root.prev = this.root;
+            this.size = 0;
+        },
         sortCallback,
         sortContext;
 
@@ -222,11 +222,14 @@ chs.List = (function () {
             return null;
         },
 
-        remove: function (obj) {
-            var node = obj[this.nodeName];
+        removeNode: function (node) {
             node.prev.next = node.next;
             node.next.prev = node.prev;
             this.size -= 1;
+        },
+
+        remove: function (obj) {
+            this.removeNode(obj[this.nodeName]);
         },
 
         moveToFront: function (item) {
@@ -278,13 +281,13 @@ chs.List = (function () {
         removeIf: function (callback, context) {
             var node = this.root.next,
                 next,
-                safe = 0,
+                // safe = 0,
                 removed = 0;
             while (node !== this.root) {
-                if (safe > 1000) {
-                    debugger;
-                }
-                safe += 1;
+                // if (safe > 1000) {
+                //     debugger;
+                // }
+                // safe += 1;
                 next = node.next;
                 if (callback.call(context, node.item) === true) {
                     node.prev.next = next;

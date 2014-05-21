@@ -1,12 +1,10 @@
-var LoginScreen = (function () {
+(function () {
     "use strict";
 
     var pfont,
         ploader,
 
-        ProviderButton = chs.Class({
-
-            inherit$: [chs.PanelButton],
+        ProviderButton = chs.Class({ inherit$: [chs.PanelButton],
 
             static$: {
                 init: function (font, loader) {
@@ -17,12 +15,18 @@ var LoginScreen = (function () {
 
             $: function (x, y, provider) {    // oauth_id, oauth_name, oauth_icon
                 var fh = pfont.height,
+                    params,
                     logo = new chs.Image();
-                chs.PanelButton.call(this, x, y, 320, fh + 24, "rgb(255, 255, 255)", "white", 4, 2, function () {
+                chs.PanelButton.call(this, x, y, 320, fh + 24, "rgb(96, 128, 128)", "white", 4, 2, function () {
                     chs.Cookies.set('provider_id', provider.oauth_provider, 30);
-                    location.reload();
+                    params = {
+                        'client_id': provider.client_id,
+                        'scope': provider.scope,
+                        'redirect_uri': "http://make-the-words.com/oauth2callback",
+                        'response_type': "code"
+                    };
+                    window.location.replace(provider.url + "?" + chs.Util.objectToQueryString(params));
                 });
-                this.transparency = 160;
                 this.addChild(new chs.Label(provider.oauth_name, pfont).setPosition(8, this.height / 2).setPivot(0, pfont.midPivot));
                 logo.addEventHandler("loaded", function () {
                     this.setScale(32 / this.height);
@@ -31,27 +35,26 @@ var LoginScreen = (function () {
                 logo.setPivot(1, 0.5);
                 logo.src = provider.oauth_icon;
                 this.addChild(logo);
-                this.onIdle = function () { this.transparency = 160; };
-                this.onHover = function () { this.transparency = 192; };
-                this.onPressed = function () { this.transparency = 224; };
+                this.onIdle = function () { this.fillColour = "rgb(96, 128, 128)"; };
+                this.onHover = function () { this.fillColour = "rgb(128, 192, 192)"; };
+                this.onPressed = function () { this.fillColour = "rgb(64, 64, 64)"; };
             }
         });
 
-    return chs.Class({
-        inherit$: [chs.Drawable],
+    mtw.LoginScreen = chs.Class({ inherit$: [chs.Drawable],
 
         $: function (loader, mainMenu) {
             var consolasItalic = chs.Font.load("Consolas_Italic", loader),
                 err = chs.Cookies.get('login_error'),
                 y;
             chs.Drawable.call(this);
-            this.dimensions = chs.desktop.dimensions;
+            this.size = chs.desktop.size;
             this.mainMenu = mainMenu;
             this.menu = new chs.Drawable();
             this.addChild(this.menu);
             this.banner = new chs.Label("Log in with one of these accounts:", consolasItalic).setPosition(chs.desktop.width / 2, 100).setPivot(0.5, 0);
             this.addChild(this.banner);
-            this.menu.dimensions = { width: 320, y: 0 };
+            this.menu.size = { width: 320, height: 0 };
             ProviderButton.init(consolasItalic, loader);
             chs.WebService.get('oauthlist', {}, function (result) {
                 var p,
@@ -63,7 +66,7 @@ var LoginScreen = (function () {
                     y += b.height + 10;
                     b.addEventHandler("clicked", this.hideMenu, this);
                 }
-                this.menu.dimensions = { width: b.width, height: y };
+                this.menu.size = { width: b.width, height: y };
                 this.menu.setDirty();
             }, this);
             this.menu.setPivot(0.5, 0.5);

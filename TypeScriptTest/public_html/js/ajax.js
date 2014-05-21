@@ -29,12 +29,8 @@
                 var contentType;
                 if (xr.readyState === XMLHttpRequest.DONE) {
                     contentType = xr.getResponseHeader("Content-Type");
-                    console.log("[" + xr.status + "] " + contentType + " from " + url);
-                    if (xr.status === 200) {
-                        callback.call(context, url, xr);
-                    } else {
-                        //debugger;
-                    }
+                    // console.log("[" + xr.status + "] " + contentType + " from " + url);
+                    callback.call(context, url, xr);
                 }
             };
             xr.onprogress = function (e) {
@@ -46,8 +42,15 @@
                 xr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
             }
         } else {
+            xr.onerror = function () {};
+            xr.ontimeout = function () {};
+            xr.onprogress = function () {};
+            xr.timeout = 5000;
             xr.onload = function () {
-                callback.call(context, url, xr.responseText);
+                if(xr.responseText) {
+                    xr.status = 200;    // feck
+                }
+                callback.call(context, url, xr);
             };
         }
         xr.send(data);

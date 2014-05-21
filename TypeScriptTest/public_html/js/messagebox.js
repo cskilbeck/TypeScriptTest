@@ -8,11 +8,10 @@
         this.window.close();
     };
 
-    chs.MessageWindow = chs.Class({
-        inherit$: [chs.Window],
+    chs.MessageWindow = chs.Class({ inherit$: [chs.Window],
 
         $: function (text, textFont, buttons, callback, context, buttonFont) {
-            var dw = chs.desktop.width / 2,
+            var dw = chs.desktop.width / 1.6666,
                 dh = chs.desktop.height / 2,
                 btnFont = (buttonFont === undefined) ? textFont : buttonFont,
                 wrapped = textFont.wrapText(text, dw - 20, '\r'),
@@ -35,7 +34,7 @@
                 modal: true
             });
             this.setPivot(0.5, 0.5);
-            this.buttonHolder = new chs.Drawable(),
+            this.buttonHolder = new chs.Drawable();
             this.textBox = new chs.TextBox(20, 10, this.width - 50, dim.height, text, textFont);
             this.client.addChild(this.textBox);
             w = 0;
@@ -48,7 +47,7 @@
                 this.buttonHolder.addChild(button);
                 w += tw + 20;
             }
-            this.buttonHolder.dimensions = { width: 0, height: btnFont.height + 8 };
+            this.buttonHolder.size = { width: 0, height: btnFont.height + 8 };
             this.buttonHolder.setPosition(this.width - w, this.height - 16);
             this.buttonHolder.setPivot(0, 1);
             this.clip.addChild(this.buttonHolder);
@@ -60,8 +59,7 @@
         }
     });
 
-    chs.MessageBox = chs.Class({
-        inherit$: [chs.Drawable],
+    chs.MessageBox = chs.Class({ inherit$: [chs.Drawable],
 
         $: function (text, textFont, buttons, callback, context, buttonFont) {
             chs.Drawable.call(this);
@@ -82,24 +80,25 @@
             this.age += deltaTime;
             t = Math.min(1, this.age / 125);    // half a second to face in
             t = chs.Util.ease(t);
-            this.msgBox.panel.transparency = t * 240;
+            this.msgBox.panel.transparency = t * 224;
             this.panel.transparency = t * 96;
-            this.msgBox.client.transparency = t * 240;
+            this.msgBox.client.transparency = t * 224;
         },
 
-        text: {
+        text: chs.Property({
             get: function () {
                 return this.msgBox.text;
             },
             set: function (t) {
                 this.msgBox.text = t;
             }
-        },
-        window: {
+        }),
+
+        window: chs.Property({
             get: function () {
                 return this.msgBox;
             }
-        }
+        })
     });
 
 }());

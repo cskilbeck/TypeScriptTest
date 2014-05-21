@@ -3,6 +3,8 @@ session_start();
 
 require('../php/HttpPost.class.php');
 
+setcookie("t0", "N", time() + 999999, '/');
+
 if(isset($_GET['code']) && isset($_COOKIE['provider_id'])) {
 
     $provider = $_COOKIE['provider_id'];
@@ -12,29 +14,36 @@ if(isset($_GET['code']) && isset($_COOKIE['provider_id'])) {
         require($var_file);
 
         // get an access token
-        $r = call($oauth2_tokenurl, array(
-            "code" => $_GET['code'],
+        $p = array(
             "client_id" => $oauth2_client_id,
             "client_secret" => $oauth2_secret,
-            "redirect_uri" => $oauth2_redirect,
-            "grant_type" => "authorization_code"
-        ));
+            "code" => $_GET['code'],
+            "grant_type" => $oauth2_grant_type,
+            "redirect_uri" => $oauth2_redirect2
+        );
 
-        if(!isset($r->error)) {
+        $t = post($oauth2_tokenurl, $p);
+
+        setcookie("t1", "N", time() + 999999, '/');
+
+        if(!isset($t->access_token)) {
+            var_dump($t);
+            setcookie('provider_id', null, time() - 3600, '/');
+            setcookie('login_error', "Couldn't get access token", 0, '/');
+        } else {
+
+            setcookie("t2", "N", time() + 999999, '/');
+
             // get the userinfo
-            $r = call(str_replace("{ACCESS_TOKEN}", $r->access_token, $oauth2_user_id_url), null);
+            $r = get(str_replace("{ACCESS_TOKEN}", $t->access_token, $oauth2_user_id_url), null);
 
             if(!isset($r->error)) {
 
+                setcookie("t3", "N", time() + 999999, '/');
+
                 $id = $r->id;
                 $name = $r->name;
-                $token = $r->access_token;
-
-                if(isset($r->picture)) {
-                    $pic = $r->picture;
-                } else {
-                    $pic = "https://apis.live.net/v5.0/". $id . "/picture";
-                }
+                $pic = get_picture_url($r);
 
                 // got userinfo, register a session with the web service
                 $params = array(
@@ -51,11 +60,12 @@ if(isset($_GET['code']) && isset($_COOKIE['provider_id'])) {
                     unset($_COOKIE['anon_user_id']);
                 }
 
-                $u = servicecall('login', $params);
+                setcookie("t4", "N", time() + 999999, '/');
+
+                $u = servicepost('login', $params);
 
                 // set the session cookie and go back to the app
                 if(!isset($u->error)) {
-                    setcookie('provider_id', $oauth2_provider_id, time() + 60 * 60 * 24 * 365, '/');
                     setcookie('session_id', $u->session_id, time() + 60 * 60 * 24 * 30, '/');
                 } else {
                     setcookie('login_error', urldecode($u->error), 0, '/');
@@ -63,8 +73,6 @@ if(isset($_GET['code']) && isset($_COOKIE['provider_id'])) {
             } else {
                 setcookie('login_error', urldecode($r->message), 0, '/');
             }
-        } else {
-                setcookie('login_error', "Couldn't get access token", 0, '/');
         }
     } else {
         setcookie('login_error', 'Bad provider_id', 0, '/');

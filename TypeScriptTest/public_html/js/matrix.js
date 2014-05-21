@@ -30,35 +30,20 @@
             transRotScale: function (translation, rotation, scale) {
                 return chs.Matrix.identity().translate(translation).rotate(rotation).scale(scale);
             }
-
         },
 
         copy: function (t) {
             return new chs.Matrix(
-                this.m[0],
-                this.m[1],
-                this.m[2],
-                this.m[3],
-                this.m[4],
-                this.m[5],
-                this.m[6],
-                this.m[7],
-                this.m[8]
-            );
+                this.m[0], this.m[1], this.m[2],
+                this.m[3], this.m[4], this.m[5],
+                this.m[6], this.m[7], this.m[8]);
         },
 
         transpose: function () {
             return new chs.Matrix(
-                this.m[0],
-                this.m[3],
-                this.m[6],
-                this.m[1],
-                this.m[4],
-                this.m[7],
-                this.m[2],
-                this.m[5],
-                this.m[8]
-                );
+                this.m[0], this.m[3], this.m[6],
+                this.m[1], this.m[4], this.m[7],
+                this.m[2], this.m[5], this.m[8]);
         },
 
         multiply: function (b) {
@@ -93,22 +78,16 @@
             return this.multiply(new chs.Matrix(cos, -sin, 0, sin, cos, 0, 0, 0, 1));
         },
 
-        multiplyBy: function (num) {
+        multiplyByScalar: function (num) {
             return new chs.Matrix(
-                this.m[0] * num,
-                this.m[1] * num,
-                this.m[2] * num,
-                this.m[3] * num,
-                this.m[4] * num,
-                this.m[5] * num,
-                this.m[6] * num,
-                this.m[7] * num,
-                this.m[8] * num
+                this.m[0] * num, this.m[1] * num, this.m[2] * num,
+                this.m[3] * num, this.m[4] * num, this.m[5] * num,
+                this.m[6] * num, this.m[7] * num, this.m[8] * num
             );
         },
 
-        divideBy: function (num) {
-            return this.multiplyBy(1 / num);
+        divideByScalar: function (num) {
+            return this.multiplyByScalar(1 / num);
         },
 
         M: function (x, y) {
@@ -157,7 +136,7 @@
                     }
                 }
             }
-            return m.multiplyBy(1 / det);
+            return m.multiplyByScalar(1 / det);
         },
 
         apply: function (p) {

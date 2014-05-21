@@ -22,17 +22,17 @@
                 currentTime = now;
             },
 
-            time: {
+            time: chs.Property({
                 get: function () {
                     return currentTime;
                 }
-            },
+            }),
 
-            delta: {
+            delta: chs.Property({
                 get: function () {
                     return deltaTime;
                 }
-            }
+            })
         }
     });
 

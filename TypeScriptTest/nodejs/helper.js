@@ -1,6 +1,8 @@
+GLOBAL.chs = {};
+GLOBAL.mtw = {};
+
 var dictionary = require('./dictionary.json');
 
-require('./js/chs.js');
 require('./js/util.js');
 require('./js/class.js');
 require('./js/list.js');
@@ -15,7 +17,7 @@ mtw.Dictionary.init(dictionary);
 
 var net = require('net');
 
-// Board server: 1338
+// daemon: 1338
 
 // actions: getscore(board, seed): action=getscore&seed=5&board=lsdkjfklsdjflksdjflksdjflksdjflskdj
 //                                  result: { 'score': 5, 'valid': true }
@@ -50,12 +52,20 @@ handlers = {
             board = new mtw.Board();
             board.randomize(parseInt(params.seed, 10));
             this.board = board.getAsString();
+        } else {
+            this.error = "missing parameter: seed";
         }
     },
 
-    getdefinition: function(params) {
+    definition: function(params) {
         if (params.word !== undefined) {
-            this.definition = mtw.Dictionary.getDefinition(params.word);
+            if(mtw.Dictionary.isWord(params.word)) {
+                this.definition = mtw.Dictionary.getDefinition(params.word);
+            } else {
+                this.error = "not a word: " + params.word;
+            }
+        } else {
+            this.error = "missing parameter: word";
         }
     }
 };
@@ -72,10 +82,12 @@ net.createServer(function (socket) {
         if (typeof params.action === 'string') {
             action = params.action.toLowerCase();
             if(action in handlers) {
-                handlers[action].call(output);
+                handlers[action].call(output, params);
+            } else {
+                output.error = "unknown action: " + action;
             }
         } else {
-            output.error = "bad action";
+            output.error = "missing parameter: action";
         }
         socket.write(JSON.stringify(output));
     });

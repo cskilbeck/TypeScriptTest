@@ -18,6 +18,21 @@
 
         //////////////////////////////////////////////////////////////////////
 
+        clone: function (obj) {
+            var temp,
+                key;
+            if(obj === null || typeof(obj) != 'object') {
+                return obj;
+            }
+            temp = obj.constructor();
+            for(key in obj){
+                temp[key] = chs.Util.clone(obj[key]);
+            }
+            return temp;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
         ease: function (x) {
 
             var x2 = x * x,

@@ -5,14 +5,15 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.Drawable = chs.Class({
-        inherit$: [chs.EventSource],
+    chs.Drawable = chs.Class({ inherit$: [chs.EventSource],
 
         $: function () {
             chs.EventSource.call(this);
             this.drawableListNode = chs.List.Node(this);
             this.drawableData = {
                 position: { x: 0, y: 0 },
+                dimensions: { width: 0, height: 0 },
+                padding: { left: 0, top: 0, right: 0, bottom: 0},    // how much (or -ive) padding required on the sides
                 rotation: 0,
                 scale: { x: 1, y: 1 },
                 drawScale: { x: 1, y: 1 },
@@ -27,6 +28,7 @@
                 pickMatrix: chs.Matrix.identity(),
                 globalMatrix: chs.Matrix.identity(),
                 mouseCapture: false,
+                touchCapture: false,
                 parent: null,
                 enabled: true,
                 closed: false,
@@ -38,13 +40,37 @@
         //////////////////////////////////////////////////////////////////////
         // override these...
 
-        size: function () {
-            return this.dimensions || { width: 0, height: 0 };
+        onMouseEnter: function (e) {
+            return false;
         },
 
         //////////////////////////////////////////////////////////////////////
 
-        onMouseEnter: function (e) {
+        onTouchEnter: function (e) {
+            return false;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        onTouchLeave: function (e) {
+            return false;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        onTouchStart: function (e) {
+            return false;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        onTouchEnd: function (e) {
+            return false;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        onTouchMove: function (e) {
             return false;
         },
 
@@ -110,51 +136,117 @@
 
         //////////////////////////////////////////////////////////////////////
 
-        processMessage: function (e, capture) {
+        processMessage: function (e, mouseCapture, touchCapture) {
             var self = this.drawableData,
                 c,
-                p,
-                mp,
-                bp;
+                pick = false,
+                tl,
+                br,
+                colour;
             // kids get first dibs
             if (this.enabled) {
-                capture = capture || self.mouseCapture;
-                for (c = self.children.tailNode() ; c !== self.children.end() ; c = c.prev) {
-                    if (c.item.processMessage(e, capture) || c.item.modal) {
+                mouseCapture = mouseCapture || self.mouseCapture;
+                touchCapture = touchCapture || self.touchCapture;
+                for (c = self.children.tailNode(); c !== self.children.end(); c = c.prev) {
+                    if (c.item.processMessage(e, mouseCapture, touchCapture) || c.item.modal) {
                         return true;
                     }
                 }
-                if (this.visible) {
-                    p = this.pick(e.position, 0);
-                    mp = self.mouseCapture || p;
-                    if (mp) {
-                        switch (e.type) {
-                        case chs.Message.leftMouseDown:
-                            this.dispatchEvent('leftMouseDown');
+                if (this.visible && this.enabled) {
+
+                    // tl = self.globalMatrix.apply({ x: 0, y: 0 });
+                    // br = self.globalMatrix.apply({ x: this.width, y: this.height });
+                    if (e.position !== undefined) {
+                        pick = this.pick(e.position, 0);                           // message over the drawable?
+                        // if (pick) {
+                        //     var color = "black";
+                        //     if (Math.random() > 0.333) {
+                        //         color = "red";
+                        //     } else if(Math.random() > 0.666) {
+                        //         color = "white";
+                        //     }
+                        //     chs.Debug.line(tl.x, tl.y, br.x, tl.y, color);
+                        //     chs.Debug.line(tl.x, br.y, br.x, br.y, color);
+                        //     chs.Debug.line(tl.x, tl.y, tl.x, br.y, color);
+                        //     chs.Debug.line(br.x, tl.y, br.x, br.y, color);
+                        // }
+                    }
+
+                    switch (e.type) {
+
+                    case chs.Message.touchStart:
+                        if(pick) {
+                            self.isTouched = true;
+                            this.dispatchEvent('touchStart', e);
+                            return this.onTouchStart(e);
+                        }
+                        break;
+
+                    case chs.Message.touchEnd:
+                        this.dispatchEvent('touchEnd');
+                        self.isTouched = false;
+                        return this.onTouchEnd(e) && false;
+
+                    case chs.Message.leftMouseDown:
+                        if(pick) {
+                            this.dispatchEvent('leftMouseDown', e);
                             return this.onLeftMouseDown(e);
-                        case chs.Message.rightMouseDown:
-                            this.dispatchEvent('rightMouseDown');
+                        }
+                        break;
+
+                    case chs.Message.rightMouseDown:
+                        if(pick) {
+                            this.dispatchEvent('rightMouseDown', e);
                             return this.onRightMouseDown(e);
-                        case chs.Message.leftMouseUp:
-                            this.dispatchEvent('leftMouseUp');
+                        }
+                        break;
+
+                    case chs.Message.leftMouseUp:
+                        if(pick || self.mouseCapture) {
+                            this.dispatchEvent('leftMouseUp', e);
                             return this.onLeftMouseUp(e);
-                        case chs.Message.rightMouseUp:
-                            this.dispatchEvent('rightMouseUp');
+                        }
+                        break;
+
+                    case chs.Message.rightMouseUp:
+                        if(pick || self.mouseCapture) {
+                            this.dispatchEvent('rightMouseUp', e);
                             return this.onRightMouseUp(e);
                         }
-                        if (!self.mouseIsOver) {
-                            self.mouseIsOver = true;
-                            this.onMouseEnter(e);
-                            this.dispatchEvent('mouseEnter', e);
+                        break;
+
+                    case chs.Message.mouseMove:
+                        if(pick || self.mouseCapture) {
+                            if(!self.mouseIsOver && pick) {
+                                // chs.Debug.poly([tl, {x: br.x, y: tl.y}, br, {x: tl.x, y: br.y}], "magenta");
+                                this.onMouseEnter(e);
+                                this.dispatchEvent('mouseEnter', e);
+                            }
+                            this.dispatchEvent('mouseMove', e);
+                            self.mouseIsOver = pick;
+                            return this.onMouseMove(e);
+                        } else if(self.mouseIsOver && !pick) {
+                            this.dispatchEvent('mouseLeave', e);
+                            // chs.Debug.poly([tl, {x: br.x, y: tl.y}, br, {x: tl.x, y: br.y}], "cyan");
+                            self.mouseIsOver = false;
+                            return this.onMouseLeave(e);
                         }
-                    } else if (!p && self.mouseIsOver) {
-                        this.onMouseLeave(e);
-                        self.mouseIsOver = false;
-                        this.dispatchEvent('mouseLeave', e);
-                    }
-                    if (mp && e.type === chs.Message.mouseMove) {
-                        this.dispatchEvent('mouseMove', e);
-                        return this.onMouseMove(e);
+                        break;
+
+                    case chs.Message.touchMove:
+                        if(pick || self.touchCapture) {
+                            if(!self.isTouched && pick) {
+                                this.dispatchEvent('touchEnter', e);
+                            }
+                            self.isTouched = true;
+                            this.dispatchEvent('touchMove', e);
+                            return this.onTouchMove(e);
+                        } else if(self.isTouched && !pick) {
+                            self.isTouched = false;
+                            this.dispatchEvent('touchLeave', e);
+                            return this.onTouchLeave(e);
+                        }
+                        break;
                     }
                 }
             }
@@ -211,11 +303,7 @@
 
         draw: function (context, matrix, transparency) {
             var self = this.drawableData,
-                m,
-                t,
-                d,
                 c,
-                p,
                 tr;
             if (self.visible) {
                 if (self.reorder) {
@@ -230,11 +318,21 @@
                 self.globalMatrix.setContextTransform(context);
                 tr = (transparency * self.transparency) / 255;
                 context.globalAlpha = tr / 255;
-                this.onDraw(context);
-                for (c = self.children.begin() ; c !== self.children.end() ; c = c.next) {
-                    c.item.draw(context, self.globalMatrix, tr);
+                if(this.onDraw(context) !== false) {
+                    for (c = self.children.begin() ; c !== self.children.end() ; c = c.next) {
+                        c.item.draw(context, self.globalMatrix, tr);
+                    }
                 }
                 context.restore();
+            }
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        compose: function () {
+            var p = this.parent;
+            if(p !== null && p.compose !== undefined) {
+                p.compose();
             }
         },
 
@@ -318,6 +416,7 @@
 
         setCapture: function (f) {
             this.drawableData.mouseCapture = f;
+            this.drawableData.touchCapture = f;
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -392,12 +491,50 @@
 
         //////////////////////////////////////////////////////////////////////
 
+        getScreenExtent: function () {
+            var i,
+                min,
+                max,
+                e = this.drawableData.extent,
+                points = [
+                        { x: e.left, y: e.top },
+                        { x: e.right, y: e.top },
+                        { x: e.right, y: e.bottom },
+                        { x: e.left, y: e.bottom }
+                    ];
+            this.drawableData.globalMatrix.transform(points);
+            min = { x: points[0].x, y: point[0].y };
+            max = { x: points[0].x, y: point[0].y };
+            for (i = 1; i < 4; ++i) {
+                min.x = Math.min(min.x, points[i].x);
+                min.y = Math.min(min.y, points[i].y);
+                max.x = Math.max(max.x, points[i].x);
+                max.y = Math.max(max.y, points[i].y);
+            }
+            return { left: min.x, top: min.y, right: max.x, bottom: max.y };
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
         rotation: chs.Property({
             get: function () {
                 return this.drawableData.rotation;
             },
             set: function (r) {
                 this.drawableData.rotation = r;
+                this.drawableData.dirty = true;
+            }
+        }),
+
+        //////////////////////////////////////////////////////////////////////
+
+        position: chs.Property({
+            get: function () {
+                return this.drawableData.position;
+            },
+            set: function (s) {
+                this.drawableData.position.x = s.x;
+                this.drawableData.position.y = s.y;
                 this.drawableData.dirty = true;
             }
         }),
@@ -428,10 +565,27 @@
 
         //////////////////////////////////////////////////////////////////////
 
+        size: chs.Property({
+            get: function () {
+                return this.drawableData.dimensions;
+            },
+            set: function (s) {
+                this.drawableData.dimensions.width = s.width;
+                this.drawableData.dimensions.height = s.height;
+                this.drawableData.dirty = true;
+            }
+        }),
+
+        //////////////////////////////////////////////////////////////////////
+
         width: chs.Property({
             configurable: true,
             get: function () {
-                return this.size().width;
+                return this.drawableData.dimensions.width;
+            },
+            set: function (w) {
+                this.drawableData.dimensions.width = w;
+                this.drawableData.dirty = true;
             }
         }),
 
@@ -440,19 +594,10 @@
         height: chs.Property({
             configurable: true,
             get: function () {
-                return this.size().height;
-            }
-        }),
-
-        //////////////////////////////////////////////////////////////////////
-
-        position: chs.Property({
-            get: function () {
-                return this.drawableData.position;
+                return this.drawableData.dimensions.height;
             },
-            set: function (s) {
-                this.drawableData.position.x = s.x;
-                this.drawableData.position.y = s.y;
+            set: function (h) {
+                this.drawableData.dimensions.height = h;
                 this.drawableData.dirty = true;
             }
         }),
@@ -473,8 +618,6 @@
         //////////////////////////////////////////////////////////////////////
 
         zIndex: chs.Property({
-            configurable: false,
-            enumerable: true,
             set: function (z) {
                 var self = this.drawableData;
                 self.myZindex = z;
@@ -490,8 +633,6 @@
         //////////////////////////////////////////////////////////////////////
 
         parent: chs.Property({
-            configurable: false,
-            enumerable: true,
             get: function () {
                 return this.drawableData.parent;
             }
@@ -500,8 +641,6 @@
         //////////////////////////////////////////////////////////////////////
 
         enabled: chs.Property({
-            configurable: false,
-            enumerable: true,
             get: function () {
                 return this.drawableData.enabled;
             },
@@ -513,8 +652,6 @@
         //////////////////////////////////////////////////////////////////////
 
         visible: chs.Property({
-            configurable: false,
-            enumerable: true,
             set: function (v) {
                 this.drawableData.visible = v;
             },
@@ -526,8 +663,6 @@
         //////////////////////////////////////////////////////////////////////
 
         transparency: chs.Property({
-            configurable: false,
-            enumerable: true,
             set: function (t) {
                 this.drawableData.transparency = t;
             },
@@ -539,8 +674,6 @@
         //////////////////////////////////////////////////////////////////////
 
         modal: chs.Property({
-            configurable: false,
-            enumerable: true,
             set: function (m) {
                 this.drawableData.modal = m;
             },

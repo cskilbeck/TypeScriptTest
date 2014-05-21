@@ -5,7 +5,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    function relMouseCoords(elem, event) {
+    function relMouseCoords(elem, x, y) {
 
         var totalOffsetX = 0,
             totalOffsetY = 0,
@@ -15,7 +15,7 @@
             totalOffsetY += currentElement.offsetTop - currentElement.scrollTop;
             currentElement = currentElement.offsetParent;
         } while (currentElement !== null);
-        return { x: event.x - totalOffsetX, y: event.y - totalOffsetY };
+        return { x: x - totalOffsetX, y: y - totalOffsetY };
     }
 
     //////////////////////////////////////////////////////////////////////
@@ -35,11 +35,7 @@
     //////////////////////////////////////////////////////////////////////
 
     function addListener(element, name, func) {
-        if (element.addEventListener) {
-            element.addEventListener(name, func, true);
-        } else if (element.attachEvent) {
-            element.attachEvent(name, func);
-        }
+        element.addEventListener(name, func, false);
     }
 
     //////////////////////////////////////////////////////////////////////
@@ -63,15 +59,37 @@
             element.setCapture();
         }
 
-        document.oncontextmenu = function (e) {
+/*        document.oncontextmenu = function (e) {
             e.cancelBubble = true;
             return false;
         };
-
+*/
         addListener(element, "losecapture", function () {
             if (element.setCapture) {
                 element.setCapture();
             }
+        });
+
+        addListener(element, "touchstart", function (event) {
+            var touch = event.targetTouches[0],
+                pos = relMouseCoords(canvas, touch.clientX, touch.clientY);
+            events.push(new chs.TouchMessage(chs.Message.touchStart, pos));
+            event.preventDefault();
+            return false;
+        });
+
+        addListener(element, "touchmove", function (event) {
+            var touch = event.targetTouches[0],
+                pos = relMouseCoords(canvas, touch.clientX, touch.clientY);
+            events.push(new chs.TouchMessage(chs.Message.touchMove, pos));
+            event.preventDefault();
+            return false;
+        });
+
+        addListener(element, "touchend", function (event) {
+            events.push(new chs.TouchMessage(chs.Message.touchEnd, { x: 0, y: 0 }, true));
+            event.preventDefault();
+            return false;
         });
 
         addListener(element, "mousedown", function (event) {
@@ -80,7 +98,7 @@
                 element.setCapture();
             }
             event = fixupMouseEvent(event);
-            p = relMouseCoords(canvas, event);
+            p = relMouseCoords(canvas, event.x, event.y);
             switch (event.which) {
             case 1:
                 mouse.left.held = true;
@@ -97,7 +115,7 @@
         addListener(element, "mouseup", function (event) {
             var p;
             event = fixupMouseEvent(event);
-            p = relMouseCoords(canvas, event);
+            p = relMouseCoords(canvas, event.x, event.y);
             switch (event.which) {
             case 1:
                 mouse.left.held = false;
@@ -119,7 +137,7 @@
                 event.preventDefault();
             }
             e = fixupMouseEvent(event);
-            p = relMouseCoords(canvas, e);
+            p = relMouseCoords(canvas, e.x, e.y);
             mouse.position.x = p.x;
             mouse.position.y = p.y;
             if (e.y < 0 || e.y > view.height || e.x < 0 || e.x > view.width) {
@@ -147,14 +165,12 @@
     //////////////////////////////////////////////////////////////////////
 
     var IMouse = function () {
-        this.position = { x: 0, y: 0 };
+        this.position = { x: -1, y: -1 };
         this.delta = { x: 0, y: 0 };
         this.left = { held: false, pressed: false, released: false, prev: false };
         this.right = { held: false, pressed: false, released: false, prev: false };
     },
 
-        canvas = null,
-        screen = null,
         old = { x: 0, y: 0 },
         frozen = new IMouse(),
         active = new IMouse(),
@@ -165,10 +181,8 @@
 
         static$: {
 
-            init: function (canvasElement, screenElement) {
-                canvas = canvasElement;
-                screen = screenElement;
-                setMouseCapture(screen, canvas, active, events);
+            init: function (canvasElement) {
+                setMouseCapture(document.body, canvasElement, active, events);
             },
 
             update: function (root) {
@@ -179,12 +193,9 @@
                 active.delta.y = active.position.y - old.y;
                 old.x = active.position.x;
                 old.y = active.position.y;
-
                 while (events.length > 0) {
-                    e = events.shift();
-                    root.processMessage(e);
+                    root.processMessage(events.shift());
                 }
-
             },
 
             freeze: function () {
@@ -195,29 +206,29 @@
                 cur = active;
             },
 
-            position: {
+            position: chs.Property({
                 get: function () {
                     return cur.position;
                 }
-            },
+            }),
 
-            delta: {
+            delta: chs.Property({
                 get: function () {
                     return cur.delta;
                 }
-            },
+            }),
 
-            left: {
+            left: chs.Property({
                 get: function () {
                     return cur.left;
                 }
-            },
+            }),
 
-            right: {
+            right: chs.Property({
                 get: function () {
                     return cur.right;
                 }
-            }
+            })
         }
     });
 

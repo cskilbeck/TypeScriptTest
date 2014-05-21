@@ -2,16 +2,29 @@
 (function () {
     "use strict";
 
-    chs.Label = chs.Class({
-        inherit$: [chs.Drawable],
+    var measureText = function () {
+        var self = this.labelData,
+            p = this.drawableData.padding;
+        self.extent = this.labelData.font.measureText(this.labelData.text);
+        this.size = { width: self.extent.width, height: self.extent.height };
+        p.left = -self.extent.left;
+        p.top = -self.extent.top;
+        p.right = self.extent.right - self.extent.width;
+        p.bottom = self.extent.bottom - self.extent.height;
+    };
+
+    chs.Label = chs.Class({ inherit$: [chs.Composite, chs.Drawable],
 
         $: function (text, font) {
             chs.Drawable.call(this);
+            chs.Composite.call(this);
             this.labelData = {
                 text: text,
                 font: font,
-                dimensions: null
+                extent: null
             };
+            measureText.call(this);
+            this.compose();
         },
 
         text: chs.Property({
@@ -21,8 +34,8 @@
             },
             set: function (s) {
                 this.labelData.text = s;
-                this.labelData.dimensions = null;
-                this.drawableData.dirty = true;
+                measureText.call(this);
+                this.compose();
             }
         }),
 
@@ -32,18 +45,10 @@
             },
             set: function (f) {
                 this.labelData.font = f;
-                this.labelData.dimensions = null;
-                this.drawableData.dirty = true;
+                measureText.call(this);
+                this.compose();
             }
         }),
-
-        size: function () {
-            var self = this.labelData;
-            if (self.dimensions === null) {
-                self.dimensions = self.font.measureText(self.text);
-            }
-            return self.dimensions;
-        },
 
         onDraw: function (context) {
             var self = this.labelData;
@@ -58,8 +63,7 @@
         }
     };
 
-    chs.TextBox = chs.Class({
-        inherit$: [chs.ClipRect],
+    chs.TextBox = chs.Class({ inherit$: [chs.ClipRect],
 
         $: function (x, y, w, h, text, font, lineBreak, linkClicked, context) {
             chs.ClipRect.call(this, x, y, w, h, 0);
@@ -76,7 +80,7 @@
             this.text = text;
         },
 
-        text: {
+        text: chs.Property({
             set: function (s) {
                 var links = [],
                     link;
@@ -100,7 +104,7 @@
             get: function (s) {
                 return this.label.text;
             }
-        }
+        })
     });
 
 }());

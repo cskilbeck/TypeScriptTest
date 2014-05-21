@@ -5,41 +5,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.Image = chs.Class({
-        inherit$: [chs.Drawable],
-
-        $: function () {
-            var that = this;
-            chs.Drawable.call(this);
-            this.image = new Image();
-            this.dimensions = { width: 0, height: 0 };
-            this.image.onload = function () {
-                that.dimensions = { width: that.image.width, height: that.image.height };
-                that.dispatchEvent("loaded");
-                that.onDraw = that.realOnDraw;
-            };
-        },
-
-        src: {
-            set: function (s) {
-                this.image.src = s;
-            }
-        },
-
-        onDraw: function (context) {
-        },
-
-        realOnDraw: function (context) {
-            var w = this.width,
-                h = this.height;
-            context.drawImage(this.image, 0, 0, w, h, 0, 0, w, h);
-        }
-    });
-
-    //////////////////////////////////////////////////////////////////////
-
-    chs.Sprite = chs.Class({
-        inherit$: [chs.Drawable],
+    chs.Sprite = chs.Class({ inherit$: [chs.Drawable],
 
         $: function (image) {
 
@@ -69,12 +35,23 @@
             this.setFrameXY((frame % this.framesWide) >>> 0, (frame / this.framesWide) >>> 0);
         },
 
-        size: function () {
-            return {
-                width: this.frameWidth || this.image.width,
-                height: this.frameHeight || this.image.height
-            };
-        },
+        width: chs.Property({
+            get: function () {
+                return this.frameWidth || this.image.width;
+            }
+        }),
+
+        height: chs.Property({
+            get: function () {
+                return this.frameHeight || this.image.height;
+            }
+        }),
+
+        size: chs.Property({
+            get: function () {
+                return { width: this.width, height: this.height };
+            }
+        }),
 
         scaleTo: function (x, y) {
             this.setScale(x / this.width, y / this.height);

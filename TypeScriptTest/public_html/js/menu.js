@@ -5,8 +5,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.Menu = chs.Class({
-        inherit$: [chs.Drawable],
+    chs.Menu = chs.Class({ inherit$: [chs.Drawable],
 
         // callback can be a function or an array of functions
         $: function (x, y, font, items, callback, context) {
@@ -27,7 +26,7 @@
             h = (font.height + 16) * items.length;
             chs.Drawable.call(this);
             this.setPosition(x, y);
-            this.dimensions = { width: w, height: h };
+            this.size = { width: w, height: h };
             this.clip = new chs.ClipRect(0, 0, w, h, 6);
             this.addChild(this.clip);
             this.transparency = 224;
@@ -85,8 +84,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.PopupMenu = chs.Class({
-        inherit$: [chs.Menu],
+    chs.PopupMenu = chs.Class({ inherit$: [chs.Menu],
 
         $: function (x, y, font, items, callback, context) {
             chs.Menu.call(this, x, y, font, items, callback, context);

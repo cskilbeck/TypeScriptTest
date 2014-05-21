@@ -18,14 +18,17 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    mtw.BoardGame = chs.Class({
-        inherit$: [mtw.Board, chs.Drawable],
+    mtw.BoardGame = chs.Class({ inherit$: [mtw.Board, chs.Drawable],
 
         $: function (x, y, game, mainBoard) {
             var i;
 
             mtw.Board.call(this, 'BoardTile', mainBoard);
             chs.Drawable.call(this);
+            this.size = {
+                width: this.tileWidth * mtw.BoardTile.width,
+                height: this.tileHeight * mtw.BoardTile.height
+            };
             this.setPosition(x, y);
             this.bestScore = 0;
             this.bestBoard = "";
@@ -45,12 +48,6 @@
             for (i = 0; i < this.tiles.length; ++i) {
                 this.addChild(this.tiles[i], mainBoard);
             }
-        },
-
-        //////////////////////////////////////////////////////////////////////
-
-        size: function () {
-            return { width: this.tileWidth * mtw.BoardTile.width, height: this.tileHeight * mtw.BoardTile.height };
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -121,19 +118,21 @@
         //////////////////////////////////////////////////////////////////////
 
         pushUndo: function () {
-            if (this.undoStack.length > undoMax) {
-                this.undoStack.shift();
+            if(this.beforeDrag.length > 0) {
+                if (this.undoStack.length > undoMax) {
+                    this.undoStack.shift();
+                }
+                this.undoPointer = Math.min(this.undoPointer, this.undoStack.length - 1);
+                if (this.undoPointer < this.undoStack.length - 1) {
+                    this.undoStack = this.undoStack.slice(0, this.undoPointer);
+                } else {
+                    this.undoStack.pop();
+                }
+                this.undoStack.push(this.beforeDrag);
+                this.undoStack.push(this.getAsString());
+                this.undoPointer = this.undoStack.length - 1;
+                this.save();
             }
-            this.undoPointer = Math.min(this.undoPointer, this.undoStack.length - 1);
-            if (this.undoPointer < this.undoStack.length - 1) {
-                this.undoStack = this.undoStack.slice(0, this.undoPointer);
-            } else {
-                this.undoStack.pop();
-            }
-            this.undoStack.push(this.beforeDrag);
-            this.undoStack.push(this.getAsString());
-            this.undoPointer = this.undoStack.length - 1;
-            this.save();
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -162,7 +161,7 @@
 
         //////////////////////////////////////////////////////////////////////
 
-        onLeftMouseDown: function (e) {
+        doClick: function(e) {
             if (this.mainBoard) {
                 var pos = this.screenToClient(e.position);
                 clickedTile = this.tileFrom(pos);
@@ -186,7 +185,7 @@
 
         //////////////////////////////////////////////////////////////////////
 
-        onLeftMouseUp: function () {
+        doUnclick: function (e) {
             if (this.mainBoard) {
                 if (this.activeTile !== null) {
                     this.activeTile.reset();
@@ -206,10 +205,11 @@
         },
 
         //////////////////////////////////////////////////////////////////////
-        // this is fucked
 
-        onMouseMove: function (e) {
+        doMove: function (e) {
             var pos,
+                oldx,
+                oldy,
                 tw = mtw.BoardTile.width,
                 th = mtw.BoardTile.height;
             if (this.activeTile !== null) {
@@ -228,25 +228,67 @@
                             this.swapTile.swapped = true;
                         }
                         newSwapTile.swap(this.activeTile);
+                        newSwapTile.x = this.activeTile.x;
+                        newSwapTile.y = this.activeTile.y;
                         this.activeTile.reset();
                         if (this.swapTile !== newSwapTile) {
                             this.activeTile.swap(this.swapTile);
                             this.swapTile.swapped = true;
                         }
                         this.activeTile = newSwapTile;
-                        this.activeTile.setPosition(snapX, snapY);
+                        this.activeTile.setTarget(snapX, snapY, 50);
                         this.markAllWords();
                         this.saveBest();
                         this.activeTile.selected = true;
                         this.activeTile.zIndex = 1;
+                        this.dispatchEvent("changed");
                     } else {
-                        this.activeTile.setPosition(snapX, snapY);
+                        this.activeTile.setTarget(snapX, snapY);
                     }
                 } else {
-                    this.activeTile.setPosition(tileX, tileY);
+                    this.activeTile.setTarget(tileX, tileY);
                 }
             }
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        onLeftMouseDown: function (e) {
+            this.doClick(e);
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        onLeftMouseUp: function (e) {
+            this.doUnclick(e);
+        },
+
+        //////////////////////////////////////////////////////////////////////
+        // this is fucked
+
+        onMouseMove: function (e) {
+            this.doMove(e);
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        onTouchStart: function (e) {
+            this.doClick(e);
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        onTouchEnd: function (e) {
+            this.doUnclick(e);
+        },
+
+        //////////////////////////////////////////////////////////////////////
+        // this is fucked
+
+        onTouchMove: function (e) {
+            this.doMove(e);
         }
+
     });
 
 }());

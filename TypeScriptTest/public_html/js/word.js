@@ -1,10 +1,8 @@
-//////////////////////////////////////////////////////////////////////
-
 (function () {
     "use strict";
 
     mtw.Word = chs.Class({
-        
+
         static$: {
             horizontal: 0,
             vertical: 1
@@ -18,6 +16,9 @@
             this.score = mtw.Letters.getWordScore(str);
             this.index = 0;
             this.listNode = chs.List.Node(this);
+            this.highlightListNode = chs.List.Node(this);
+            this.isHighlighted = false;
+            this.highlightIndex = 0;
         },
 
         toString: function () {
@@ -26,6 +27,3 @@
     });
 
 }());
-
-//////////////////////////////////////////////////////////////////////
-

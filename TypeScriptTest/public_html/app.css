@@ -1,16 +1,3 @@
-#screen {
-    position: absolute;
-    margin: 0;
-    padding: 0;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    cursor: default;
-    text-align: center;
-    background-color: white;
-}
-
 .logo
 {
     border: 0;
@@ -20,8 +7,4 @@
 .smalllogo
 {
     border: 0;
-}
-
-canvas {
-    position: absolute;
 }

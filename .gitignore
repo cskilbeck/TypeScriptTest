@@ -5,6 +5,8 @@
 *.suo
 *.user
 *.sln.docstates
+*.sublime-workspace
+*.sublime-project
 
 # Build results
 
@@ -14,6 +16,12 @@ x64/
 build/
 [Bb]in/
 [Oo]bj/
+
+TypeScriptTest/public_html/php/cb1.php
+TypeScriptTest/public_html/php/cb2.php
+TypeScriptTest/public_html/php/cb3.php
+TypeScriptTest/public_html/php/cb4.php
+TypeScriptText/config/
 
 # Enable "build/" folder in the NuGet Packages folder since NuGet packages use it for MSBuild targets
 !packages/*/build/
@@ -107,7 +115,6 @@ csx
 AppPackages/
 
 # Others
-sql/
 *.Cache
 ClientBin/
 [Ss]tyle[Cc]op.*
@@ -155,11 +162,5 @@ $RECYCLE.BIN/
 # Mac desktop service store files
 .DS_Store
 TypeScriptTest/OneDrive.lnk
-*.sublime-workspace
-<<<<<<< HEAD
-mtw.sublime-project
-=======
-TypeScriptTest/web_service/dbaselogin.py
-*.sublime-workspace
->>>>>>> b0bcf6a1647f8c08528d3d8c05367e1ddc9f4d05
-mtw.sublime-workspace
+TypeScriptTest/config/
+*.dmp

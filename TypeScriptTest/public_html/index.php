@@ -2,6 +2,10 @@
 <html>
 <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=1024, height=768, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Make The Words</title>
     <link rel="stylesheet" href="app.css" type="text/css" />
     <!--[if gte IE 9]><!-->
@@ -16,12 +20,16 @@
     <script src="js/random.js"></script>
     <script src="js/cookies.js"></script>
     <script src="js/ajax.js"></script>
+    <script src="js/webserviceurl.js"></script>
     <script src="js/webservice.js"></script>
     <script src="js/list.js"></script>
+    <script src="js/canvas.js"></script>
     <script src="js/timer.js"></script>
     <script src="js/matrix.js"></script>
     <script src="js/drawable.js"></script>
+    <script src="js/composite.js"></script>
     <script src="js/loader.js"></script>
+    <script src="js/image.js"></script>
     <script src="js/sprite.js"></script>
     <script src="js/button.js"></script>
     <script src="js/panel.js"></script>
@@ -37,12 +45,15 @@
     <script src="js/debug.js"></script>
     <script src="js/dictionary.js"></script>
     <script src="js/letters.js"></script>
+    <script src="js/desktop.js"></script>
     <script src="js/word.js"></script>
     <script src="js/tile.js"></script>
     <script src="js/board.js"></script>
     <script src="js/boardtile.js"></script>
     <script src="js/boardgame.js"></script>
     <script src="js/lb.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/wordbutton.js"></script>
     <script src="js/game.js"></script>
     <script src="js/loginscreen.js"></script>
     <script src="js/mainmenu.js"></script>
@@ -51,7 +62,7 @@
     <!--<![endif]-->
 </head>
 
-<body id="screen">
+<body>
 
     <!--[if lt IE 9]>
     <div id="message">
@@ -76,10 +87,6 @@
         </div>
     </div>
     <![endif]-->
-
-    <!--[if gte IE 9]><!-->
-    <canvas id="myCanvas" width="1280" height="720"></canvas>
-    <!--<![endif]-->
 
 </body>
 </html>

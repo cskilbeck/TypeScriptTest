@@ -5,35 +5,13 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.Rectangle = chs.Class({
-        inherit$: [chs.Drawable],
+    chs.Rectangle = chs.Class({ inherit$: [chs.Drawable],
 
         $: function (x, y, w, h, radius) {
             chs.Drawable.call(this);
             this.setPosition(x, y);
-            this.dimensions = { width: w, height: h };
-            this.radius = 0;
-            if(radius !== undefined) {
-                this.radius = radius;
-            }
-        },
-
-        width: {
-            set: function (w) {
-                this.dimensions.width = w;
-            },
-            get: function () {
-                return this.dimensions.width;
-            }
-        },
-
-        height: {
-            set: function (h) {
-                this.dimensions.height = h;
-            },
-            get: function () {
-                return this.dimensions.height;
-            }
+            this.size = { width: w, height: h };
+            this.radius = (radius !== undefined) ? radius : 0;
         },
 
         onDraw: function (context) {
@@ -47,8 +25,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.ClipRect = chs.Class({
-        inherit$: [chs.Rectangle],
+    chs.ClipRect = chs.Class({ inherit$: [chs.Rectangle],
 
         $: function (x, y, w, h, radius) {
             chs.Rectangle.call(this, x, y, w, h, radius);
@@ -62,8 +39,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.SolidRectangle = chs.Class({
-        inherit$: [chs.Rectangle],
+    chs.SolidRectangle = chs.Class({ inherit$: [chs.Rectangle],
 
         $: function (x, y, w, h, radius, fillColour) {
             chs.Rectangle.call(this, x, y, w, h, radius);
@@ -83,8 +59,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.OutlineRectangle = chs.Class({
-        inherit$: [chs.Rectangle],
+    chs.OutlineRectangle = chs.Class({ inherit$: [chs.Rectangle],
 
         $: function (x, y, w, h, radius, lineColour, lineWidth) {
             chs.Rectangle.call(this, x, y, w, h, radius);
@@ -106,8 +81,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.Panel = chs.Class({
-        inherit$: [chs.Rectangle],
+    chs.Panel = chs.Class({ inherit$: [chs.Rectangle],
 
         $: function (x, y, w, h, fillColour, lineColour, radius, lineWidth) {
             chs.Rectangle.call(this, x, y, w, h, radius);
@@ -129,8 +103,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.Line = chs.Class({
-        inherit$: [chs.Drawable],
+    chs.Line = chs.Class({ inherit$: [chs.Drawable],
 
         $: function (x1, y1, x2, y2, colour, width) {
             chs.Drawable.call(this);
@@ -154,19 +127,18 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.PanelButton = chs.Class({
-        inherit$: [chs.Button, chs.Panel],
+    chs.PanelButton = chs.Class({ inherit$: [chs.Button, chs.Composite, chs.Panel],
 
         $: function (x, y, w, h, fillColour, lineColour, radius, lineWidth, click, context) {
             chs.Button.call(this, click, context);
+            chs.Composite.call(this);
             chs.Panel.call(this, x, y, w, h, fillColour, lineColour, radius, lineWidth);
         }
     });
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.LinkButton = chs.Class({
-        inherit$: [chs.Button, chs.Line],
+    chs.LinkButton = chs.Class({ inherit$: [chs.Button, chs.Line],
 
         $: function (x1, y1, x2, y2, link, click, context) {
             var l = Math.floor(x1) + 0.5,
@@ -185,7 +157,7 @@
             this.link = link;
             this.linkClicked = click;
             this.setPosition(l, t);
-            this.dimensions = { width: w, height: h };
+            this.size = { width: w, height: h };
         },
         onIdle: function () { this.colour = "skyblue"; },
         onHover: function () { this.colour = "red"; },

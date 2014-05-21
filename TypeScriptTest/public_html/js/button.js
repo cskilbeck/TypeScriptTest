@@ -28,6 +28,34 @@
         onPressed: function () {
         },
 
+        onClicked: function () {
+        },
+
+        onTouchStart: function () {
+            this.state = chs.Button.pressed;
+            return true;
+        },
+
+        onTouchEnd: function () {
+            if(this.state === chs.Button.pressed) {
+                this.state = chs.Button.idle;
+                this.dispatchEvent("clicked");
+                if (this.callback) {
+                    this.callback.call(this.context || this);
+                }
+            }
+            return true;
+        },
+
+        onTouchEnter: function () {
+            return true;
+        },
+
+        onTouchLeave: function () {
+            this.state = chs.Button.idle;
+            return true;
+        },
+
         onMouseEnter: function () {
             this.state = chs.Button.hover;
             return true;
@@ -46,6 +74,7 @@
         onLeftMouseUp: function () {
             if (this.state === chs.Button.pressed) {
                 this.state = chs.Button.hover;
+                this.onClicked();
                 this.dispatchEvent("clicked");
                 if (this.callback) {
                     this.callback.call(this.context || this);
@@ -59,18 +88,22 @@
                 return this.currentState;
             },
             set: function (s) {
-                this.currentState = s;
-                switch (s) {
-                case chs.Button.idle:
-                    this.onIdle();
-                    this.drawableData.mouseIsOver = false;
-                    break;
-                case chs.Button.hover:
-                    this.onHover();
-                    break;
-                case chs.Button.pressed:
-                    this.onPressed();
-                    break;
+                if(this.currentState != s) {
+                    this.currentState = s;
+                    switch (s) {
+                    case chs.Button.idle:
+                        this.dispatchEvent("idle");
+                        this.onIdle();
+                        break;
+                    case chs.Button.hover:
+                        this.dispatchEvent("hover");
+                        this.onHover();
+                        break;
+                    case chs.Button.pressed:
+                        this.dispatchEvent("pressed");
+                        this.onPressed();
+                        break;
+                    }
                 }
             }
         })

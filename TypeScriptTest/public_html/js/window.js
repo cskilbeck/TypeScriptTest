@@ -1,8 +1,7 @@
 (function () {
     "use strict";
 
-    chs.Window = chs.Class({
-        inherit$: [chs.Drawable],
+    chs.Window = chs.Class({ inherit$: [chs.Drawable],
 
         $: function (desc) {
             var hasCloseButton = (desc.closeButton === undefined) ? false : desc.closeButton,
@@ -19,7 +18,7 @@
                 titleBarWidth = desc.width;
 
             chs.Drawable.call(this);
-            this.dimensions = { width: desc.width, height: desc.height };
+            this.size = { width: desc.width, height: desc.height };
             this.setPosition(desc.x, desc.y);
 
             this.panel = new chs.Panel(0, 0, desc.width, desc.height, bgcol, undefined, radius, 0);
@@ -66,27 +65,36 @@
             this.client.window = this;
             this.drag = false;
             this.dragOffset = { x: 0, y: 0 };
+            this.dragStart = { x: 0, y: 0 };
 
             if (hasTitleBar && isDraggable) {
-                this.titleBar.onLeftMouseDown = function (e) {
+
+                this.titleBar.addEventHandler("leftMouseDown", function (e) {
                     this.drag = true;
-                    this.setCapture(true);
-                    this.dragOffset = { x: this.window.position.x - e.position.x, y: this.window.position.y - e.position.y };   // screen coordinate!
-                    return true;
-                };
-                this.titleBar.onLeftMouseUp = function (e) {
-                    this.setCapture(false);
+                    this.titleBar.setCapture(true);
+                    this.dragStart = e.position;
+                    this.dragOffset = { x: this.position.x - e.position.x, y: this.position.y - e.position.y };   // screen coordinate!
+                }, this);
+
+                this.titleBar.addEventHandler("leftMouseUp", function (e) {
+                    this.titleBar.setCapture(false);
                     this.drag = false;
-                    return true;
-                };
-                this.titleBar.onMouseMove = function (e) {
-                    var w,
+                }, this);
+
+                this.titleBar.addEventHandler("mouseMove", function (e) {
+                    var pos,
+                        x,
+                        y,
+                        w,
                         h;
                     if (this.drag) {
-                        this.window.setPosition(e.position.x + this.dragOffset.x, e.position.y + this.dragOffset.y);
+                        x = e.position.x + this.dragOffset.x;   // WINDOW DRAG CONTRAINT BROKEN IF TRANSFORM IS MORE THAN SIMPLE TRANSLATION!!!
+                        y = e.position.y + this.dragOffset.y;
+                        x = chs.Util.constrain(x, -this.width / 4, chs.desktop.width + this.width / 4);
+                        y = chs.Util.constrain(y, this.height / 2, chs.desktop.height + this.height / 2 - this.clientOffset);
+                        this.setPosition(x, y);
                     }
-                    return true;
-                };
+                }, this);
             }
 
             if(desc.backgroundTransparency !== undefined) {
@@ -98,12 +106,12 @@
             }
         },
 
-        height: {
+        height: chs.Property({
             get: function () {
-                return this.dimensions.height;
+                return this.drawableData.dimensions.height;
             },
             set: function (h) {
-                this.dimensions.height = h;
+                this.drawableData.dimensions.height = h;
                 this.panel.height = h;
                 this.clip.height = h;
                 this.client.height = h - this.clientOffset;
@@ -112,14 +120,14 @@
                 }
                 this.dispatchEvent('resize');
             }
-        },
+        }),
 
-        width: {
+        width: chs.Property({
             get: function () {
-                return this.dimensions.width;
+                return this.drawableData.dimensions.width;
             },
             set: function (w) {
-                this.dimensions.width = w;
+                this.drawableData.dimensions.width = w;
                 this.panel.width = w;
                 this.clip.width = w;
                 this.client.width = w;
@@ -128,16 +136,16 @@
                 }
                 this.dispatchEvent('resize');
             }
-        },
+        }),
 
-        text: {
+        text: chs.Property({
             get: function () {
                 return this.caption.text;
             },
             set: function (s) {
                 this.caption.text = s;
             }
-        }
+        })
     });
 
 }());

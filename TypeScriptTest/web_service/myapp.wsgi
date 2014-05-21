@@ -15,10 +15,11 @@ import urlparse
 import urllib
 import urllib2
 import pprint
+from time import sleep
 
 sys.path.append('/usr/local/www/wsgi-scripts')
 os.chdir('/usr/local/www/wsgi-scripts')
-from dbaselogin import *
+from dbaseconfig import *
 
 #----------------------------------------------------------------------
 
@@ -49,9 +50,12 @@ def log(x, y = ""):
 
 def service(dict):
     with closing(socket.socket()) as s:
-        s.connect(("127.0.0.1", 1338))
-        s.send(urllib.urlencode(dict))
-        return json.loads(s.recv(8192))
+        try:
+            s.connect(("127.0.0.1", 1338))
+            s.send(urllib.urlencode(dict))
+            return json.loads(s.recv(8192))
+        except:
+            return None
 
 # turn a urlencoded string into a dictionary, duplicate assignments are discarded
 
@@ -94,8 +98,9 @@ def origin_is_valid(db, environ):
     if 'HTTP_ORIGIN' in environ:
         with closing(db.cursor()) as cur:
             cur.execute("SELECT COUNT(*) AS count FROM sites WHERE site_url = %(HTTP_ORIGIN)s", environ)
-            return cur.fetchone()['count'] > 0
-    return false
+            if cur.fetchone()['count'] > 0:
+                return environ['HTTP_ORIGIN']
+    return None
 
 #----------------------------------------------------------------------
 # Handler - base for all request handlers
@@ -305,6 +310,9 @@ class boardHandler(Handler):
         if cur.fetchone()['count'] == 0:
             self.err(e_unknownuser)
 
+        # check if this game has ended
+        # if so, tough luck
+
         board = self.post['board']
         user_id = self.post['user_id']
         seed = self.post['seed']
@@ -328,6 +336,21 @@ class boardHandler(Handler):
                 cur.execute("""UPDATE boards SET board=%(board)s, score=%(score)s
                                 WHERE user_id=%(user_id)s AND seed=%(seed)s""", locals())
         self.add({ "score": score, "board_id": board_id })
+
+#----------------------------------------------------------------------
+# GET:definition - get a word definition
+#
+# parameters:   word: string
+#
+# response:     { "definition": "the definition of the word" }
+#               { "error": "not a word" }
+#----------------------------------------------------------------------
+
+class definitionHandler(Handler):
+
+    def handle(self, cur, db):
+        check_parameters(self.query, ['word'])
+        self.add(service(self.query))
 
 #----------------------------------------------------------------------
 # GET:leaderboard - get leaderboard
@@ -364,15 +387,16 @@ class leaderboardHandler(Handler):
 
 def application(environ, start_response):
 
+    print >> sys.stderr, "--------------------------------------------------------------------------------"
     headers = [('Content-type', 'application/json')]
     output = dict()
     status = '200 OK'
-    print >> sys.stderr, "--------------------------------------------------------------------------------"
     try:
         with closing(opendb()) as db:
-            if not origin_is_valid(db, environ):
+            org = origin_is_valid(db, environ);
+            if org is None:
                 raise(Error(e_badorigin))
-            headers.append(('Access-Control-Allow-Origin', environ['HTTP_ORIGIN']))
+            headers.append(('Access-Control-Allow-Origin', org))
             method = environ['REQUEST_METHOD']
             query = query_to_dict(environ.get('QUERY_STRING', ""))
             post = dict()
@@ -389,6 +413,7 @@ def application(environ, start_response):
                 raise(Error(e_badaction))
             status = globals()[func](query, post, output).processRequest(db)
     except Error as e:
+        print >> sys.stderr, "Error!"
         print >> sys.stderr, pprint.pformat(e.args)
         d = e.args[0]
         output = d;

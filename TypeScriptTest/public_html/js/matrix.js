@@ -5,9 +5,13 @@
 
     chs.Matrix = chs.Class({
 
+        // constructor
+
         $: function () {
             this.m = [1, 0, 0, 1, 0, 0];
         },
+
+        // replace contents
 
         set: function (a, b, c, d, e, f) {
             this.m[0] = a;
@@ -19,6 +23,8 @@
             return this;
         },
 
+        // copy into another matrix
+
         copyTo: function (m) {
             m.m[0] = this.m[0];
             m.m[1] = this.m[1];
@@ -27,6 +33,8 @@
             m.m[4] = this.m[4];
             m.m[5] = this.m[5];
         },
+
+        // copy from another matrix
 
         copyFrom: function (m) {
             this.m[0] = m.m[0];
@@ -37,10 +45,14 @@
             this.m[5] = m.m[5];
         },
 
+        // set it to the identity matrix
+
         setIdentity: function () {
             this.set(1, 0, 0, 1, 0, 0);
             return this;
         },
+
+        // dest = this * b
 
         multiplyInto: function(b, dest) {
             var x = this.m,
@@ -60,9 +72,13 @@
             return dest;
         },
 
+        // this = this * b
+
         multiply: function (b) {
             return this.multiplyInto(b, this);
         },
+
+        // translate by t.x, t.y
 
         translate: function (t) {
             var x = this.m;
@@ -70,6 +86,8 @@
             x[5] += x[1] * t.x + x[3] * t.y;
             return this;
         },
+
+        // don't use this...
 
         translation: chs.Property({
             get: function () {
@@ -81,6 +99,8 @@
             }
         }),
 
+        // scale it by s.x, s.y
+
         scale: function (s) {
             var x = this.m;
             x[0] *= s.x;
@@ -89,6 +109,8 @@
             x[3] *= s.y;
             return this;
         },
+
+        // rotate by radians
 
         rotate: function (radians) {
             var m = this.m,
@@ -104,6 +126,8 @@
                 m[3] = r11;
             return this;
         },
+
+        // dest = inverse(this) - good for picking
 
         invert: function (dest) {
             var m = this.m,
@@ -121,12 +145,16 @@
             return dest;
         },
 
+        // apply to point p
+
         apply: function (p) {
             return {
                 x: p.x * this.m[0] + p.y * this.m[2] + this.m[4],
                 y: p.x * this.m[1] + p.y * this.m[3] + this.m[5]
             };
         },
+
+        // transform array of points in place
 
         transform: function (p) {
             var i;
@@ -135,6 +163,8 @@
             }
             return p;
         },
+
+        // stuff it into a context
 
         setContextTransform: function (context) {
             context.setTransform(this.m[0], this.m[1], this.m[2], this.m[3], this.m[4], this.m[5]);

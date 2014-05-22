@@ -141,8 +141,6 @@
 
         onUpdate: function (time, deltaTime) {
             var t,
-                x,
-                y,
                 hi = this.wordIndices[mtw.Word.horizontal],
                 vi = this.wordIndices[mtw.Word.vertical],
                 sx = hi.position,
@@ -174,12 +172,8 @@
                 if(this.moveTime < 0) {
                     this.moveTime = 0;
                 }
-                // 0 : at target
-                // N : at position
-                t = chs.Util.ease(chs.Util.ease(this.moveTime / this.lerpTime));
-                x = (this.source.x - this.target.x) * t + this.target.x;
-                y = (this.source.y - this.target.y) * t + this.target.y;
-                this.setPosition(x, y);
+                t = chs.Util.lerp(this.target, this.source, this.moveTime / this.lerpTime);
+                this.setPosition(t.x, t.y);
             }
         }
     });

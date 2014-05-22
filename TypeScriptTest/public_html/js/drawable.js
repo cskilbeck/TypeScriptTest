@@ -24,9 +24,9 @@
                 transparency: 255,
                 pivot: { x: 0, y: 0 },
                 mouseIsOver: false,
-                matrix: chs.Matrix.identity(),
-                pickMatrix: chs.Matrix.identity(),
-                globalMatrix: chs.Matrix.identity(),
+                matrix: new chs.Matrix(),
+                pickMatrix: new chs.Matrix(),
+                globalMatrix: new chs.Matrix(),
                 mouseCapture: false,
                 touchCapture: false,
                 parent: null,
@@ -312,8 +312,8 @@
                     });
                     self.reorder = false;
                 }
-                self.globalMatrix = matrix.multiply(this.drawMatrix());
-                self.pickMatrix = self.globalMatrix.inverse();
+                matrix.multiplyInto(this.drawMatrix(), self.globalMatrix);
+                self.globalMatrix.invert(self.pickMatrix);
                 context.save();
                 self.globalMatrix.setContextTransform(context);
                 tr = (transparency * self.transparency) / 255;
@@ -408,7 +408,7 @@
                 s;
             p = { x: -self.pivot.x * this.width, y: -self.pivot.y * this.height };
             s = { x: self.scale.x * self.drawScale.x, y: self.scale.y * self.drawScale.y };
-            self.matrix = chs.Matrix.identity().translate(self.position).rotate(self.rotation).scale(s).translate(p);
+            self.matrix.setIdentity().translate(self.position).rotate(self.rotation).scale(s).translate(p);
             self.dirty = false;
         },
 

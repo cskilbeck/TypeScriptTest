@@ -5,11 +5,19 @@
 
     chs.Composite = chs.Class({
 
+        static$: {
+            identityMatrix: new chs.Matrix()
+        },
+
         $: function () {
             this.compositeData = {
                 canvas: null,
                 dirty: false,
-                oldOnDraw: this.onDraw
+                oldOnDraw: this.onDraw,
+                oldDraw: new chs.Matrix(),
+                oldPick: new chs.Matrix(),
+                oldGlobal: new chs.Matrix(),
+                oldTransparency: 0
             };
             this.composable = true;
         },
@@ -18,10 +26,6 @@
             var context,
                 w,
                 h,
-                oldTransparency,
-                oldDraw,
-                oldPick,
-                oldGlobal,
                 dd = this.drawableData,
                 self = this.compositeData;
             w = this.width + dd.padding.left + dd.padding.right + 1;
@@ -35,19 +39,20 @@
                 // console.log("Canvas size didn't change...");
                 self.canvas.clear();
             }
-            oldTransparency = dd.transparency;
-            oldDraw = this.drawMatrix().copy();
-            oldPick = dd.pickMatrix.copy();
-            oldGlobal = dd.globalMatrix.copy();
-            dd.matrix = chs.Matrix.identity();
+            this.oldTransparency = dd.transparency;
+            this.drawMatrix().copyTo(self.oldDraw);
+            dd.pickMatrix.copyTo(self.oldPick);
+            dd.globalMatrix.copyTo(self.oldGlobal);
+            dd.matrix.setIdentity();
             this.transparency = 255;
             this.onDraw = self.oldOnDraw;
-            this.draw(self.canvas.context, chs.Matrix.identity().translate({ x: dd.padding.left, y: dd.padding.top }), 255);
+            chs.Composite.identityMatrix.translation = { x: dd.padding.left, y: dd.padding.top };
+            this.draw(self.canvas.context, chs.Composite.identityMatrix, 255);
             this.onDraw = this.composite_draw;
-            dd.transparency = oldTransparency;
-            dd.matrix = oldDraw;
-            dd.pickMatrix = oldPick;
-            dd.globalMatrix = oldGlobal;
+            dd.transparency = this.oldTransparency;
+            this.drawMatrix().copyFrom(self.oldDraw);
+            dd.pickMatrix.copyFrom(self.oldPick);
+            dd.globalMatrix.copyFrom(self.oldGlobal);
             self.dirty = false;
         },
 
@@ -64,7 +69,9 @@
         compose: function () {
             var cd = this.compositeData;
             cd.dirty = true;
-            this.onDraw = this.composite_draw;
+            if(this.composable) {
+                this.onDraw = this.composite_draw;
+            }
         },
 
         decompose: function () {

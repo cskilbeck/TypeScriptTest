@@ -35,19 +35,19 @@
                     }
                 }
                 if (r) {
-                    // console.log("Reusing canvas!");
+//                    console.log("Reusing canvas: " + r.width.toString() + "," + r.height.toString());
                     canvasCache.remove(r);
                     r.clear();
                 } else {
-                    // console.log("Creating canvas!");
+//                    console.log("Creating canvas: " + w.toString() + "," + w.toString());
                     r = new chs.Canvas(w, h);
                 }
                 return r;
             },
             showCache: function () {
-                // canvasCache.forEach(function(c) {
-                //     chs.Debug.print(c.width, c.height);
-                // });
+                canvasCache.forEach(function(c) {
+                    chs.Debug.print(c.width, c.height);
+                });
             }
         },
 

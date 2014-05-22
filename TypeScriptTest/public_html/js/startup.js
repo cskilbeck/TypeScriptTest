@@ -26,13 +26,15 @@ window.onload = function () {
                 startup.run();
             },
 
+            identityMatrix: new chs.Matrix(),
+
             run: function () {
                 chs.Timer.update();
                 chs.Keyboard.update();
                 chs.Mouse.update(chs.desktop);
                 chs.desktop.update(chs.Timer.time, chs.Timer.delta);
-                chs.desktop.draw(chs.desktop.context, chs.Matrix.identity(), 255);
-                chs.Canvas.showCache();
+                chs.desktop.draw(chs.desktop.context, startup.identityMatrix, 255);
+                // chs.Canvas.showCache();
                 chs.Debug.draw();
                 requestAnimationFrame(startup.run);
             }

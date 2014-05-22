@@ -61,9 +61,11 @@
             this.label = new chs.Label(letter, font).setPivot(0.5, font.midPivot);
             this.label.setPosition(this.width / 2 - 1, this.height / 2);
             this.label.transparency = 224;
+            this.label.composable = false;  // because the tile is composed...
             if (showDigits) {
                 this.digits = new chs.Label(mtw.Letters.letterScore(letter).toString(), digits).setPivot(1, 1).setPosition(this.width - 12, this.height - 8);
                 this.digits.transparency = 96;
+                this.digits.composable = false;
                 this.sprite.addChild(this.digits);
             } else {
                 this.digits = null;

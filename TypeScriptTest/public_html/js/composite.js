@@ -42,7 +42,7 @@
             dd.matrix = chs.Matrix.identity();
             this.transparency = 255;
             this.onDraw = self.oldOnDraw;
-            this.draw(self.canvas.context, chs.Matrix.identity().translate({ x: dd.padding.left - 0.5, y: dd.padding.top - 0.5 }), 255);
+            this.draw(self.canvas.context, chs.Matrix.identity().translate({ x: dd.padding.left, y: dd.padding.top }), 255);
             this.onDraw = this.composite_draw;
             dd.transparency = oldTransparency;
             dd.matrix = oldDraw;

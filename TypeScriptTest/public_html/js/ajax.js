@@ -8,20 +8,24 @@
     function send(url, callback, progressCallback, context, method, data, binary, crossDomain) {
 
         var cd = crossDomain === undefined ? false : crossDomain,
-            ie9,
             xr;
 
         if (chs.Browser.type === 'MSIE' && chs.Browser.version <= 10 && crossDomain) {
             xr = new XDomainRequest();
-            ie9 = true;
+            xr.open(method, url);
+            xr.onerror = function () {};
+            xr.ontimeout = function () {};
+            xr.onprogress = function () {};
+            xr.timeout = 5000;
+            xr.onload = function () {
+                if(xr.responseText) {
+                    xr.status = 200;    // feck
+                }
+                callback.call(context, url, xr);
+            };
         } else {
             xr = new XMLHttpRequest();
-            ie9 = false;
-        }
-
-        xr.open(method, url);
-
-        if (!ie9) {
+            xr.open(method, url);
             if (binary) {
                 xr.responseType = 'arraybuffer';
             }
@@ -29,7 +33,6 @@
                 var contentType;
                 if (xr.readyState === XMLHttpRequest.DONE) {
                     contentType = xr.getResponseHeader("Content-Type");
-                    // console.log("[" + xr.status + "] " + contentType + " from " + url);
                     callback.call(context, url, xr);
                 }
             };
@@ -41,17 +44,6 @@
             if (method === 'POST') {
                 xr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
             }
-        } else {
-            xr.onerror = function () {};
-            xr.ontimeout = function () {};
-            xr.onprogress = function () {};
-            xr.timeout = 5000;
-            xr.onload = function () {
-                if(xr.responseText) {
-                    xr.status = 200;    // feck
-                }
-                callback.call(context, url, xr);
-            };
         }
         xr.send(data);
         return xr;

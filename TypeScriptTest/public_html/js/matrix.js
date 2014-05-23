@@ -14,35 +14,40 @@
         // replace contents
 
         set: function (a, b, c, d, e, f) {
-            this.m[0] = a;
-            this.m[1] = b;
-            this.m[2] = c;
-            this.m[3] = d;
-            this.m[4] = e;
-            this.m[5] = f;
+            var m = this.m;
+            m[0] = a;
+            m[1] = b;
+            m[2] = c;
+            m[3] = d;
+            m[4] = e;
+            m[5] = f;
             return this;
         },
 
         // copy into another matrix
 
-        copyTo: function (m) {
-            m.m[0] = this.m[0];
-            m.m[1] = this.m[1];
-            m.m[2] = this.m[2];
-            m.m[3] = this.m[3];
-            m.m[4] = this.m[4];
-            m.m[5] = this.m[5];
+        copyTo: function (o) {
+            var m = o.m,
+                n = this.m;
+            m[0] = n[0];
+            m[1] = n[1];
+            m[2] = n[2];
+            m[3] = n[3];
+            m[4] = n[4];
+            m[5] = n[5];
         },
 
         // copy from another matrix
 
-        copyFrom: function (m) {
-            this.m[0] = m.m[0];
-            this.m[1] = m.m[1];
-            this.m[2] = m.m[2];
-            this.m[3] = m.m[3];
-            this.m[4] = m.m[4];
-            this.m[5] = m.m[5];
+        copyFrom: function (o) {
+            var m = this.m,
+                n = o.m;
+            m[0] = n[0];
+            m[1] = n[1];
+            m[2] = n[2];
+            m[3] = n[3];
+            m[4] = n[4];
+            m[5] = n[5];
         },
 
         // set it to the identity matrix
@@ -55,20 +60,21 @@
         // dest = this * b
 
         multiplyInto: function(b, dest) {
-            var x = this.m,
+            var m = this.m,
                 y = b.m,
-                r00 = x[0] * y[0] + x[2] * y[1],
-                r01 = x[1] * y[0] + x[3] * y[1],
-                r10 = x[0] * y[2] + x[2] * y[3],
-                r11 = x[1] * y[2] + x[3] * y[3],
-                r20 = x[0] * y[4] + x[2] * y[5] + x[4],
-                r21 = x[1] * y[4] + x[3] * y[5] + x[5];
-            dest.m[0] = r00;
-            dest.m[1] = r01;
-            dest.m[2] = r10;
-            dest.m[3] = r11;
-            dest.m[4] = r20;
-            dest.m[5] = r21;
+                d = dest.m,
+                r00 = m[0] * y[0] + m[2] * y[1],
+                r01 = m[1] * y[0] + m[3] * y[1],
+                r10 = m[0] * y[2] + m[2] * y[3],
+                r11 = m[1] * y[2] + m[3] * y[3],
+                r20 = m[0] * y[4] + m[2] * y[5] + m[4],
+                r21 = m[1] * y[4] + m[3] * y[5] + m[5];
+            d[0] = r00;
+            d[1] = r01;
+            d[2] = r10;
+            d[3] = r11;
+            d[4] = r20;
+            d[5] = r21;
             return dest;
         },
 
@@ -81,9 +87,9 @@
         // translate by t.x, t.y
 
         translate: function (t) {
-            var x = this.m;
-            x[4] += x[0] * t.x + x[2] * t.y;
-            x[5] += x[1] * t.x + x[3] * t.y;
+            var m = this.m;
+            m[4] += m[0] * t.x + m[2] * t.y;
+            m[5] += m[1] * t.x + m[3] * t.y;
             return this;
         },
 
@@ -148,9 +154,10 @@
         // apply to point p
 
         apply: function (p) {
+            var m = this.m;
             return {
-                x: p.x * this.m[0] + p.y * this.m[2] + this.m[4],
-                y: p.x * this.m[1] + p.y * this.m[3] + this.m[5]
+                x: p.x * m[0] + p.y * m[2] + m[4],
+                y: p.x * m[1] + p.y * m[3] + m[5]
             };
         },
 
@@ -167,7 +174,8 @@
         // stuff it into a context
 
         setContextTransform: function (context) {
-            context.setTransform(this.m[0], this.m[1], this.m[2], this.m[3], this.m[4], this.m[5]);
+            var m = this.m;
+            context.setTransform(m[0], m[1], m[2], m[3], m[4], m[5]);
         }
 
     });

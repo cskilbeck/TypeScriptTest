@@ -1,27 +1,30 @@
 (function () {
     "use strict";
 
-    var buttons = new chs.List("listNode");
+    var buttons = [];
 
     mtw.WordButton = chs.Class({ inherit$: [chs.Composite, chs.PanelButton],
 
         static$: {
             reset: function () {
-                buttons = new chs.List("listNode");
+                buttons = [];
             },
 
             findButton: function (wrd) {
-                return buttons.findFirstOf(function(w) {
-                    if(w.word.str == wrd.str) {
-                        return true;
+                var i,
+                    l;
+                for (i = 0, l = buttons.length; i < l; ++i) {
+                    if (buttons[i].word.str === wrd.str) {
+                        return buttons[i];
                     }
-                });
+                }
+                return null;
             },
 
             create: function(wrd, board, x, y, w, h, font, callback, context) {
                 var b = mtw.WordButton.findButton(wrd);
                 if(b !== null) {
-                    buttons.remove(b);
+                    chs.Util.remove(buttons, b);
                     b.reset();
                     b.setPosition(x, y);
                 } else {
@@ -31,26 +34,26 @@
             },
 
             dispose: function(button) {
-                if(buttons.size > 50) {
-                    buttons.popBack();
+                if(buttons.size > 50) { // 50? I dunno, maybe...
+                    buttons.shift();
                 }
                 button.reset();
-                buttons.pushFront(button);
+                buttons.push(button);
             },
 
             showCache: function () {
-                buttons.forEach(function(w) {
-                    chs.Debug.print("     ", w.word.str);
-                });
+                var i,
+                    l;
+                for (i = 0, l = buttons.length; i < l; ++i) {
+                    chs.Debug.print("     ", buttons[i].word.str);
+                }
             }
         },
 
         $: function (wrd, board, x, y, w, h, font, callback, context) {
             chs.Composite.call(this);
             chs.PanelButton.call(this, x, y, w, h, "darkslategrey", undefined, 4, 0, callback, context);
-            this.listNode = new chs.List.Node(this);
             this.board = board;
-            this.used = 0;
             this.word = wrd;
             this.wordHighlight = null;
             this.shader = null;

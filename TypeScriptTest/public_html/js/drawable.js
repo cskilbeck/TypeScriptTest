@@ -9,7 +9,6 @@
 
         $: function () {
             chs.EventSource.call(this);
-            this.drawableListNode = chs.List.Node(this);
             this.drawableData = {
                 position: { x: 0, y: 0 },
                 dimensions: { width: 0, height: 0 },
@@ -20,6 +19,7 @@
                 dirty: true,
                 visible: true,
                 myZindex: 0,
+                baseZindex: 0,
                 reorder: false,
                 transparency: 255,
                 pivot: { x: 0, y: 0 },
@@ -33,7 +33,7 @@
                 enabled: true,
                 closed: false,
                 modal: false,
-                children: new chs.List("drawableListNode")
+                children: []
             };
         },
 
@@ -139,16 +139,19 @@
         processMessage: function (e, mouseCapture, touchCapture) {
             var self = this.drawableData,
                 c,
+                i,
+                l,
                 pick = false,
                 tl,
                 br,
                 colour;
-            // kids get first dibs
+            // kids get first dibs, and are processed front to back
             if (this.enabled) {
                 mouseCapture = mouseCapture || self.mouseCapture;
                 touchCapture = touchCapture || self.touchCapture;
-                for (c = self.children.tailNode(); c !== self.children.end(); c = c.prev) {
-                    if (c.item.processMessage(e, mouseCapture, touchCapture) || c.item.modal) {
+                for (i = 0, l = self.children.length; i < l; ++i) {
+                    c = self.children[i];
+                    if (c.processMessage(e, mouseCapture, touchCapture) || c.modal) {
                         return true;
                     }
                 }
@@ -257,11 +260,14 @@
 
         loaded: function (loader) {
             var self = this.drawableData,
-                c;
+                c,
+                i,
+                l;
             this.dispatchEvent('loaded');
             this.onLoaded(loader);
-            for (c = self.children.begin() ; c !== self.children.end() ; c = c.next) {
-                c.item.loaded(loader);
+            for (i = 0, l = self.children.length; i < l; ++i) {
+                c = self.children[i];
+                c.loaded(loader);
             }
         },
 
@@ -270,22 +276,25 @@
         update: function (time, deltaTime) {
             var self = this.drawableData,
                 c,
+                i,
+                l,
                 n,
                 r,
                 frozen = false;
-            self.children.removeIf(function (c) {
+            for (i = 0; i < self.children.length; ++i) {
+                c = self.children[i];
                 if (c.drawableData.closed) {
                     c.dispatchEvent('closed');
                     c.onClosed();
                     c.drawableData.closed = false;
-                    return true;
+                    self.children.splice(i, 1);
                 }
-                return false;
-            });
+            }
             if (self.enabled) {
-                for (c = self.children.tailNode() ; c !== self.children.end() ; c = c.prev) {
-                    c.item.update(time, deltaTime);
-                    if (c.item.drawableData.modal && !frozen) {
+                for (i = self.children.length - 1; i >= 0; --i) {
+                    c = self.children[i];
+                    c.update(time, deltaTime);
+                    if (c.drawableData.modal && !frozen) {
                         chs.Mouse.freeze();
                         chs.Keyboard.freeze();
                         frozen = true;
@@ -304,11 +313,20 @@
         draw: function (context, matrix, transparency) {
             var self = this.drawableData,
                 c,
+                i,
+                l,
                 tr;
             if (self.visible) {
                 if (self.reorder) {
+                    for (i = 0, l = self.children.length; i < l; ++i) {
+                        self.children[i].drawableData.baseZindex = i;
+                    }
                     self.children.sort(function (a, b) {
-                        return b.drawableData.myZindex - a.drawableData.myZindex;
+                        var d = a.drawableData.myZindex - b.drawableData.myZindex;
+                        if (d !== 0) {
+                            return d;
+                        }
+                        return a.drawableData.baseZindex - b.drawableData.baseZindex;
                     });
                     self.reorder = false;
                 }
@@ -319,8 +337,8 @@
                 tr = (transparency * self.transparency) / 255;
                 context.globalAlpha = tr / 255;
                 if(this.onDraw(context) !== false) {
-                    for (c = self.children.begin() ; c !== self.children.end() ; c = c.next) {
-                        c.item.draw(context, self.globalMatrix, tr);
+                    for (i = 0, l = self.children.length; i < l; ++i) {
+                        self.children[i].draw(context, self.globalMatrix, tr);
                     }
                 }
                 context.restore();
@@ -340,9 +358,12 @@
 
         debug: function () {
             var self = this.drawableData,
-                c;
-            chs.Debug.text(self.matrix.m[6], self.matrix.m[7], self.dirty);
-            for (c = self.children.begin() ; c !== self.children.end() ; c = c.next) {
+                c,
+                i,
+                l;
+            chs.Debug.text(self.matrix.m[4], self.matrix.m[5], self.dirty);
+            for (i = 0, l = self.children.length; i < l; ++i) {
+                c = self.children[i];
                 c.item.debug();
             }
         },
@@ -454,16 +475,21 @@
         //////////////////////////////////////////////////////////////////////
 
         removeChild: function (c) {
-            c.drawableData.parent = null;
-            this.drawableData.children.remove(c);
+            var i = this.drawableData.children.indexOf(c);
+            if (i !== -1) {
+                c.drawableData.parent = null;
+                this.drawableData.children.splice(i, 1);
+            }
         },
 
         //////////////////////////////////////////////////////////////////////
 
         removeChildren: function () {
-            var self = this.drawableData;
-            while (!self.children.empty()) {
-                this.removeChild(self.children.head());
+            var self = this.drawableData,
+                child;
+            while (self.children.length > 0) {
+                child = self.children.shift();
+                child.drawableData.parent = null;
             }
         },
 
@@ -472,7 +498,7 @@
         addChild: function (c) {
             var self = this.drawableData;
             c.drawableData.parent = this;
-            self.children.add(c);
+            self.children.push(c);
             self.reorder = true;
         },
 

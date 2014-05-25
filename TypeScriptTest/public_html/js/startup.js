@@ -35,6 +35,7 @@ window.onload = function () {
                 chs.desktop.update(chs.Timer.time, chs.Timer.delta);
                 chs.desktop.draw(chs.desktop.context, startup.identityMatrix, 255);
                 // chs.Canvas.showCache();
+                // mtw.WordButton.showCache();
                 chs.Debug.draw();
                 requestAnimationFrame(startup.run);
             }

@@ -1,7 +1,14 @@
-//////////////////////////////////////////////////////////////////////
-
 (function () {
     "use strict";
+
+    function copy(m, n) {
+        m[0] = n[0];
+        m[1] = n[1];
+        m[2] = n[2];
+        m[3] = n[3];
+        m[4] = n[4];
+        m[5] = n[5];
+    }
 
     chs.Matrix = chs.Class({
 
@@ -27,27 +34,13 @@
         // copy into another matrix
 
         copyTo: function (o) {
-            var m = o.m,
-                n = this.m;
-            m[0] = n[0];
-            m[1] = n[1];
-            m[2] = n[2];
-            m[3] = n[3];
-            m[4] = n[4];
-            m[5] = n[5];
+            copy(o.m, this.m);
         },
 
         // copy from another matrix
 
         copyFrom: function (o) {
-            var m = this.m,
-                n = o.m;
-            m[0] = n[0];
-            m[1] = n[1];
-            m[2] = n[2];
-            m[3] = n[3];
-            m[4] = n[4];
-            m[5] = n[5];
+            copy(this.m, o.m);
         },
 
         // set it to the identity matrix
@@ -137,17 +130,25 @@
 
         invert: function (dest) {
             var m = this.m,
+                n = dest.m,
+                a, b, c, d, e, f,
                 det = m[0] * m[3] - m[1] * m[2];
             if (det < 1.0e-6) {
                 return this.copyTo(dest);
             }
             det = 1 / det;
-            dest.m[0] = m[3] * det;
-            dest.m[1] = m[1] * -det;
-            dest.m[2] = m[2] * -det;
-            dest.m[3] = m[0] * det;
-            dest.m[4] = (m[2] * m[5] - m[3] * m[4]) * det;
-            dest.m[5] = (m[0] * m[5] - m[1] * m[4]) * -det;
+            a = m[3] * det;
+            b = m[1] * -det;
+            c = m[2] * -det;
+            d = m[0] * det;
+            e = (m[2] * m[5] - m[3] * m[4]) * det;
+            f = (m[0] * m[5] - m[1] * m[4]) * -det;
+            n[0] = a;
+            n[1] = b;
+            n[2] = c;
+            n[3] = d;
+            n[4] = e;
+            n[5] = f;
             return dest;
         },
 
@@ -164,9 +165,15 @@
         // transform array of points in place
 
         transform: function (p) {
-            var i;
+            var m = this.m,
+                i,
+                x,
+                y;
             for (i = 0; i < p.length; ++i) {
-                p[i] = this.apply(p[i]);
+                x = p[i].x;
+                y = p[i].y;
+                p[i].x = x * m[0] + y * m[2] + m[4];
+                p[i].y = x * m[1] + y * m[3] + m[5];
             }
             return p;
         },

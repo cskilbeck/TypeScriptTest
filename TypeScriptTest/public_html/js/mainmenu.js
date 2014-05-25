@@ -166,7 +166,14 @@
         playClicked: function () {
             this.activate(false);
             this.addSibling(this.game);
-            this.game.init(1);
+            // chs.WebService.get("currentgame", function (data) {
+            //     this.game.game_id = ;
+            //     this.game.init(data.game_id, data.seed);
+            // }, this);
+            // this.button.enabled = false;
+            // this.button.visible = false;
+            // this.loadingLabel.visible = true;
+            this.game.init(1);              // ask the web service for the right game to play, then init with the seed...
         },
 
         activate: function (activate) {

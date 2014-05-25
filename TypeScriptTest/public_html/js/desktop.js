@@ -11,8 +11,8 @@
         document.body.style.top = "0px";
         document.body.style.width = window.innerWidth + "px";
         document.body.style.height = window.innerHeight + "px";
-        canvas.style.top = (document.body.clientHeight - canvas.height) / 2 + "px";
-        canvas.style.left = (document.body.clientWidth - canvas.width) / 2 + "px";
+        canvas.style.top = Math.floor((document.body.clientHeight - canvas.height) / 2) + "px";
+        canvas.style.left = Math.floor((document.body.clientWidth - canvas.width) / 2) + "px";
     }
 
     chs.Desktop = chs.Class({ inherit$: [chs.Panel],

@@ -18,6 +18,11 @@
 // Flying scores/fizz/particles
 // scrollable leaderboards
 // scrollable textbox
+// track word usage in the database
+//   you and ## other people found this word
+//   you were the Nth person to find this word
+//   this word is the Nth most common word today
+//   etc
 //////////////////////////////////////////////////////////////////////
 
 (function () {
@@ -388,10 +393,14 @@
 
         updateWordList: function () {
             var y = 0,
-                w;
-            words.wordList.drawableData.children.forEach(function(wb) {
-                mtw.WordButton.dispose(wb);
-            });
+                w,
+                c,
+                i,
+                l;
+            for (i = 0, l = words.wordList.drawableData.children.length; i < l; ++i) {
+                c = words.wordList.drawableData.children[i];
+                mtw.WordButton.dispose(c);
+            }
             words.wordList.removeChildren();
             board.wordList().forEach(function (w) {
                 var button = mtw.WordButton.create(w, board, ui.client.width / 2, y, ui.client.width - 8, consolas.height + 6, consolas, function () {

@@ -51,7 +51,7 @@ chs.List = (function () {
                 midPoint = midPoint.next;
             }
 
-            left = makeListNode(list.next, midPoint.prev);
+            left = makeListNode(list.next, midPoint.prev);  // THIS IS KILLING THE GC - MAKE IT NOT DO THAT!
             right = makeListNode(midPoint, list.prev);
 
             merge_sort(leftSize, left);

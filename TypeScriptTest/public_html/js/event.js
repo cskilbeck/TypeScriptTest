@@ -111,7 +111,13 @@
 
         clearEventHandlers: function ()
         {
-            this.eventSourceData.handlers.length = 0;
+            var self = this.eventSourceData,
+                i,
+                l;
+            for (i in self.handlers) {
+                self.handlers[i].length = 0;
+            }
+            self.handlers = {};
         },
 
         removeEventHandler: function (name, target) {
@@ -135,7 +141,7 @@
                 i,
                 rc;
             if (hl) {
-                for (i = 0; i < hl.length; ++i) {  // call these in reverse so children are initialized before parents
+                for (i = 0; i < hl.length; ++i) {
                     rc = hl[i].target.apply(hl[i].context, Array.prototype.slice.call(arguments, 1));
                     if (hl[i].oneOff) {
                         hl.splice(i, 1);

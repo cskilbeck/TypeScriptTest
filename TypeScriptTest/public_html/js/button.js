@@ -5,7 +5,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.Button = chs.Class({
+    chs.Button = chs.Class({ inherit$: [chs.EventSource],
 
         static$: {
             idle: 0,
@@ -36,7 +36,7 @@
             return true;
         },
 
-        onTouchEnd: function () {
+        onTouchEnd: function (e) {
             if(this.state === chs.Button.pressed) {
                 this.state = chs.Button.idle;
                 this.dispatchEvent("clicked");

@@ -45,7 +45,7 @@
                 performance.oNow ||
                 performance.webkitNow ||
             function () {
-                return new Date().getTime();
+                return Date().now();
             };
     }());
 

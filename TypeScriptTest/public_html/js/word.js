@@ -15,8 +15,6 @@
             this.orientation = orientation;
             this.score = mtw.Letters.getWordScore(str);
             this.index = 0;
-            this.listNode = chs.List.Node(this);
-            this.highlightListNode = chs.List.Node(this);
             this.isHighlighted = false;
             this.highlightIndex = 0;
         },

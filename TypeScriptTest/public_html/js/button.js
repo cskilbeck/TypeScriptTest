@@ -39,7 +39,7 @@
         onTouchEnd: function (e) {
             if(this.state === chs.Button.pressed) {
                 this.state = chs.Button.idle;
-                this.dispatchEvent("clicked");
+                this.dispatchEvent("clicked", this);
                 if (this.callback) {
                     this.callback.call(this.context || this);
                 }

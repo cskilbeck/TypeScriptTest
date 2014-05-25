@@ -15,7 +15,7 @@
             this.tileHeight = 5;
             this.score = 0;
             this.seed = 0;
-            this.words = new chs.List("listNode");
+            this.words = [];
             this.random = new chs.Random();
             this.tiles = [];
             this.tiles.length = this.tileWidth * this.tileHeight;
@@ -39,7 +39,7 @@
 
             // nobble it until there are no words on it
             while (this.markAllWords() !== 0) {
-                this.getWordTile(this.words.head(), 0).letter = mtw.Letters.random(this.random);
+                this.getWordTile(this.words[0], 0).letter = mtw.Letters.random(this.random);
             }
         },
 
@@ -70,12 +70,6 @@
 
         tile: function (x, y) {
             return this.tiles[x + y * this.tileWidth];
-        },
-
-        //////////////////////////////////////////////////////////////////////
-
-        wordList: function () {
-            return this.words;
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -117,7 +111,7 @@
                             m += offset;
                         }
                         if (mtw.Dictionary.isWord(str)) {
-                            list.pushBack(new mtw.Word(str, x, y, orientation));
+                            list.push(new mtw.Word(str, x, y, orientation));
                         }
                     }
                 }
@@ -130,10 +124,10 @@
                 i,
                 t,
                 j,
-                foundWords = new chs.List("listNode");
+                foundWords = [];
 
             this.changed = true;
-            this.words.clear();
+            this.words = [];
             this.score = 0;
 
             // clear the words from the tiles
@@ -147,16 +141,16 @@
 
             // sort by score, length, alphabet
             foundWords.sort(function (a, b) {
-                return a.score > b.score ? 1 :
-                        a.score < b.score ? -1 :
-                        a.str.length > b.str.length ? 1 :
-                        a.str.length < b.str.length ? -1 :
-                        b.str.localeCompare(a.str);
+                return a.score > b.score ? -1 :
+                        a.score < b.score ? 1 :
+                        a.str.length > b.str.length ? -1 :
+                        a.str.length < b.str.length ? 1 :
+                        -b.str.localeCompare(a.str);
             });
 
             // find the best, non-overlapping ones, discard the others
-            while (!foundWords.empty()) {
-                w = foundWords.popFront();
+            while (foundWords.length > 0) {
+                w = foundWords.shift();
                 for (i = 0; i < w.str.length; ++i) {
                     t = this.getWordTile(w, i);
                     if (t.hasVerticalWord && w.orientation === mtw.Word.vertical) {
@@ -167,7 +161,7 @@
                     }
                 }
                 if (i === w.str.length) {
-                    this.words.pushBack(w);
+                    this.words.push(w);
                     this.score += w.score;
                     for (j = 0; j < w.str.length; ++j) {
                         this.getWordTile(w, j).setWord(w, j);

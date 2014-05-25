@@ -149,7 +149,7 @@
             if (this.enabled) {
                 mouseCapture = mouseCapture || self.mouseCapture;
                 touchCapture = touchCapture || self.touchCapture;
-                for (i = 0, l = self.children.length; i < l; ++i) {
+                for (i = self.children.length - 1; i >= 0; --i) {
                     c = self.children[i];
                     if (c.processMessage(e, mouseCapture, touchCapture) || c.modal) {
                         return true;
@@ -342,15 +342,6 @@
                     }
                 }
                 context.restore();
-            }
-        },
-
-        //////////////////////////////////////////////////////////////////////
-
-        compose: function () {
-            var p = this.parent;
-            if(p !== null && p.compose !== undefined) {
-                p.compose();
             }
         },
 

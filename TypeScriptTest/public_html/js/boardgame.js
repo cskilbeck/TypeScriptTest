@@ -7,7 +7,6 @@
     // private static
 
     var undoMax = 1000,
-        foundWords = new chs.List("listNode"),
         clickedTile,
         snapX,
         snapY,

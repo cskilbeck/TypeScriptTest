@@ -396,28 +396,19 @@
                 w,
                 c,
                 i,
+                button,
                 l;
             for (i = 0, l = words.wordList.drawableData.children.length; i < l; ++i) {
                 c = words.wordList.drawableData.children[i];
                 mtw.WordButton.dispose(c);
             }
             words.wordList.removeChildren();
-            board.wordList().forEach(function (w) {
-                var button = mtw.WordButton.create(w, board, ui.client.width / 2, y, ui.client.width - 8, consolas.height + 6, consolas, function () {
-                    this.showDefinition(w);
-                }, this).setPivot(0.5, 0);
-                button.addEventHandler("idle", function () {
-                    this.clearWordHighlight();
-                });
-                button.addEventHandler("hover", function() {
-                    this.setWordHighlight();
-                });
-                button.addEventHandler("pressed", function() {
-                    this.setWordHighlight();
-                });
+            for (i = 0, l = board.words.length; i < l; ++i) {
+                w = board.words[i];
+                button = mtw.WordButton.create(w, board, this, ui.client.width / 2, y, ui.client.width - 8, consolas.height + 6, consolas).setPivot(0.5, 0);
                 y += button.height + 1;
                 words.wordList.addChild(button);
-            }, this);
+            }
             board.changed = false;
             scoreButton.setScore(board.score);
             bestLabel.text = board.bestScore.toString();    // if board.bestScore has gone up, flash this!

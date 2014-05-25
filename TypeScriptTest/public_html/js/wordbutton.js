@@ -21,14 +21,14 @@
                 return null;
             },
 
-            create: function(wrd, board, x, y, w, h, font, callback, context) {
+            create: function(wrd, board, game, x, y, w, h, font, callback, context) {
                 var b = mtw.WordButton.findButton(wrd);
                 if(b !== null) {
                     chs.Util.remove(buttons, b);
                     b.reset();
                     b.setPosition(x, y);
                 } else {
-                    b = new mtw.WordButton(wrd, board, x, y, w, h, font, callback, context);
+                    b = new mtw.WordButton(wrd, board, game, x, y, w, h, font, callback, context);
                 }
                 return b;
             },
@@ -50,20 +50,32 @@
             }
         },
 
-        $: function (wrd, board, x, y, w, h, font, callback, context) {
+        $: function (wrd, board, game, x, y, w, h, font, callback, context) {
             chs.Composite.call(this);
             chs.PanelButton.call(this, x, y, w, h, "darkslategrey", undefined, 4, 0, callback, context);
             this.board = board;
+            this.game = game;
             this.word = wrd;
             this.wordHighlight = null;
             this.shader = null;
             this.addChild(new chs.Label(wrd.str, font).setPosition(5, this.height / 2).setPivot(0, font.midPivot));
             this.addChild(new chs.Label(wrd.score.toString(), font).setPosition(this.width - 8, this.height / 2).setPivot(1, font.midPivot));
+            this.addEventHandler("clicked", function () {
+                game.showDefinition(this.word);
+            }, this);
+            this.addEventHandler("idle", function () {
+                this.clearWordHighlight();
+            }, this);
+            this.addEventHandler("hover", function () {
+                this.setWordHighlight();
+            }, this);
+            this.addEventHandler("pressed", function () {
+                this.setWordHighlight();
+            }, this);
             this.compose();
         },
 
         reset: function () {
-            this.clearEventHandlers();
             this.clearWordHighlight();
             this.shader = null;
             this.state = chs.Button.idle;

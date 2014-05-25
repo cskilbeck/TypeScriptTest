@@ -68,7 +68,7 @@
                             this.ranks.addChild(new chs.Label(row.rank.toString(), this.font).setPosition(2, y));
                             this.names.addChild(new chs.Label(row.name, this.font).setPosition(2, y));
                             this.scores.addChild(new chs.Label(row.score.toString(), this.font).setPosition(2, y));
-                            y += this.font.height + 6;
+                            y += this.font.height + 2;
                             if (y > this.names.height) {
                                 break;
                             }

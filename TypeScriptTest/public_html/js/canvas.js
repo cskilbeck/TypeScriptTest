@@ -6,40 +6,42 @@
     //////////////////////////////////////////////////////////////////////
     // limit cache size...
 
-    var canvasCache = new chs.List("listNode");
+    var canvasCache = [];
 
     chs.Canvas = chs.Class({
 
         static$: {
             create: function (w, h) {
                 var n,
+                    l,
                     c,
                     r,
                     s,
+                    i,
                     xd,
                     yd;
 
-                for (n = canvasCache.headNode(); n != canvasCache.end(); n = n.next) {
-                    c = n.item;
+                for (n = canvasCache.length - 1; n >= 0; --n) {
+                    c = canvasCache[n];
                     xd = c.width - w;
                     yd = c.height - h;
                     if (xd >= 0 && yd >= 0) {
                         if (xd + yd === 0) {
                             r = c;
+                            i = n;
                             break;
                         }
                         if (s === undefined || (xd + yd) < s) {
                             r = c;
+                            i = n;
                             s = xd + yd;
                         }
                     }
                 }
                 if (r) {
-//                    console.log("Reusing canvas: " + r.width.toString() + "," + r.height.toString());
-                    canvasCache.remove(r);
+                    canvasCache.splice(i, 1);
                     r.clear();
                 } else {
-//                    console.log("Creating canvas: " + w.toString() + "," + w.toString());
                     r = new chs.Canvas(w, h);
                 }
                 return r;
@@ -58,7 +60,6 @@
             this.canvas.width = this.width;
             this.canvas.height = this.height;
             this.context = this.canvas.getContext("2d");
-            this.listNode = new chs.List.Node(this);
         },
 
         clear: function () {
@@ -67,7 +68,7 @@
         },
 
         destroy: function() {
-            canvasCache.pushFront(this);
+            canvasCache.push(this);
         }
 
     });

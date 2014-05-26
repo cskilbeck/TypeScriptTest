@@ -143,7 +143,7 @@
                     timeLabel = new chs.Label("", consolas).setPosition(this.panel.width - 24, 50).setPivot(1, 0);
                     this.panel.addChild(gameLabel);
                     last_snapshot_time = chs.Timer.time;
-                    timeLabel.addChild(new chs.Alarm(0, 1000, true, function() {
+                    this.addChild(new chs.Timer(0, 1000, function() {
                         var elapsed = chs.Timer.time - last_snapshot_time,
                             remain = new Date(remaining_time - elapsed),
                             hours = remain.getHours();
@@ -157,7 +157,7 @@
                     }, timeLabel));
                     this.panel.addChild(timeLabel);
                 } else {
-                    this.addChild(new chs.Alarm(2000, 2000, false, this.updateGame, this));
+                    this.addChild(new chs.Timer(2000, 0, this.updateGame, this));
                 }
             }, this);
         },

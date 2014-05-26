@@ -25,6 +25,7 @@
                 var b = mtw.WordButton.findButton(wrd);
                 if(b !== null) {
                     chs.Util.remove(buttons, b);
+                    b.word = wrd;
                     b.reset();
                     b.setPosition(x, y);
                 } else {

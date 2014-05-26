@@ -8,7 +8,7 @@
     var currentTime,
         deltaTime;
 
-    chs.Timer = chs.Class({
+    chs.Timer = chs.Class({ inherit$: chs.Drawable,
 
         static$: {
 
@@ -33,7 +33,28 @@
                     return deltaTime;
                 }
             })
+        },
+
+        $: function(initialDelay, repeatDelay, callback, context) {
+            chs.Drawable.call(this);
+            this.timeout = repeatDelay;
+            this.age = initialDelay;
+            this.callback = callback;
+            this.context = context;
+        },
+
+        onUpdate: function(time, deltaTime) {
+            this.age -= deltaTime;
+            if(this.age <= 0) {
+                if(this.timeout) {
+                    this.age = this.timeout;
+                } else if (this.parent) {
+                    this.parent.removeChild(this);
+                }
+                this.callback.call(this.context);
+            }
         }
+
     });
 
 }());

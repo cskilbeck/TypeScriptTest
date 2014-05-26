@@ -38,8 +38,7 @@
             this.delay = 0;
             this.requestInProgress = false;
 
-            this.addChild(new chs.Alarm(0, 30000, true, this.updateLB, this));
-            this.updateLB();
+            this.addChild(new chs.Timer(0, 30000, this.updateLB, this));
         },
 
         updateLB: function() {

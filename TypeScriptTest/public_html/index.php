@@ -24,10 +24,9 @@
     <script src="js/webservice.js"></script>
     <script src="js/list.js"></script>
     <script src="js/canvas.js"></script>
-    <script src="js/timer.js"></script>
     <script src="js/matrix.js"></script>
     <script src="js/drawable.js"></script>
-    <script src="js/alarm.js"></script>
+    <script src="js/timer.js"></script>
     <script src="js/composite.js"></script>
     <script src="js/loader.js"></script>
     <script src="js/image.js"></script>
@@ -44,9 +43,10 @@
     <script src="js/keyboard.js"></script>
     <script src="js/mouse.js"></script>
     <script src="js/debug.js"></script>
+    <script src="js/desktop.js"></script>
+
     <script src="js/dictionary.js"></script>
     <script src="js/letters.js"></script>
-    <script src="js/desktop.js"></script>
     <script src="js/word.js"></script>
     <script src="js/tile.js"></script>
     <script src="js/board.js"></script>

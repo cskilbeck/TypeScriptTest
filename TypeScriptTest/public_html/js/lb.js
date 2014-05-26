@@ -37,6 +37,9 @@
 
             this.delay = 0;
             this.requestInProgress = false;
+
+            this.addChild(new chs.Alarm(0, 30000, true, this.updateLB, this));
+            this.updateLB();
         },
 
         updateLB: function() {
@@ -75,17 +78,6 @@
                         }
                     }
                 }, this);
-            }
-
-        },
-
-        onUpdate: function (time, deltaTime) {
-            // call webservice, get LB, update names and scores
-            this.delay -= deltaTime;
-
-            if(this.delay <= 0) {
-                this.delay = 30000; // update every 30 seconds if idle
-                this.updateLB();
             }
         }
 

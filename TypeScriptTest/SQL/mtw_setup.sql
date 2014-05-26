@@ -70,8 +70,8 @@ CREATE TABLE games
 	game_id			INT NOT NULL auto_increment,
 					PRIMARY KEY(game_id),
 	seed			INT NOT NULL,
-	start_time		DATETIME,
-	end_time		DATETIME
+    start_time      DATETIME NOT NULL,  -- not used, just for reporting
+	end_time		DATETIME NOT NULL
 );
 
 -- all the boards for the leaderboards
@@ -81,6 +81,7 @@ CREATE TABLE boards
 (
 	board_id		INT NOT NULL auto_increment,
 					PRIMARY KEY(board_id),
+    game_id         INT NOT NULL,
 	seed			INT NOT NULL,
 	board			CHAR(35) NOT NULL,
 	score			INT NOT NULL,

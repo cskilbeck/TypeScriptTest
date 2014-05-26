@@ -40,6 +40,9 @@ class Error(Exception):
 # utils
 #----------------------------------------------------------------------
 
+def date_handler(obj):
+    return obj.isoformat() if hasattr(obj, 'isoformat') else obj
+
 # switch offable log
 
 def log(x, y = ""):
@@ -133,7 +136,7 @@ class Handler(object):
             db.commit()
             if self.showOutput:
                 print >> sys.stderr, "Output:"
-                print >> sys.stderr, json.dumps(self.output, indent = 4, separators=(',',': '))
+                print >> sys.stderr, json.dumps(self.output, indent = 4, separators=(',',': '), default = date_handler)
             return self.status
 
 #----------------------------------------------------------------------
@@ -291,6 +294,30 @@ class loginHandler(Handler):
         createSession(self, cur, db, self.post)
 
 #----------------------------------------------------------------------
+# GET:game - get current game
+#
+# parameters:
+#
+#               user_id: uint32
+#
+# response:     game_id: int
+#               seed: int
+#               start_time: datetime
+#               end_time: datetime
+#----------------------------------------------------------------------
+
+class gameHandler(Handler):
+
+    def handle(self, cur, db):
+        cur.execute("SELECT * FROM games ORDER BY end_time DESC LIMIT 1")
+        row = cur.fetchone()
+        if row is not None:
+            self.add(row)   # "[<= 2014-05-17 13:50:06 =>]"
+            self.add({ 'now': datetime.datetime.now() })
+        else:
+            self.err(e_dbaseerror)
+
+#----------------------------------------------------------------------
 # POST:board - post a new best board for a user
 #
 # parameters:
@@ -306,7 +333,7 @@ class boardHandler(Handler):
     def handle(self, cur, db):
         check_parameters(self.post, ['board', 'user_id', 'seed'])
 
-        cur.execute("SELECT COUNT(*) AS count FROM users WHERE user_id=%(user_id)s", self.post);
+        cur.execute("SELECT COUNT(*) AS count FROM users WHERE user_id=%(user_id)s", self.post)
         if cur.fetchone()['count'] == 0:
             self.err(e_unknownuser)
 
@@ -441,7 +468,7 @@ def application(environ, start_response):
         status = "500 Internal Server Error"
         raise
 
-    outputStr = json.dumps(output, indent = 0, separators=(',',': '))
+    outputStr = json.dumps(output, indent = 0, separators=(',',': '), default = date_handler)
     headers.append(('Content-Length', str(len(outputStr))))
     start_response(status, headers)
     return outputStr

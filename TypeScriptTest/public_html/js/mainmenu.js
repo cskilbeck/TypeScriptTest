@@ -120,6 +120,48 @@
             }
         },
 
+        updateGame: function () {
+            console.log("Get game...");
+            chs.WebService.get('game', {}, function (data) {
+                var gameLabel,
+                    remaining_time,
+                    last_snapshot_time,
+                    hours,
+                    minutes,
+                    seconds,
+                    timeLabel;
+                if (data && !data.error) {
+                    this.seed = data.seed;
+                    this.game_id = data.game_id;
+                    this.now = Date.parse(data.now);
+                    this.game_ends = Date.parse(data.end_time);
+                    remaining_time = new Date(this.game_ends - this.now);
+                    hours = remaining_time.getHours();
+                    minutes = remaining_time.getMinutes();
+                    seconds = remaining_time.getSeconds();
+                    gameLabel = new chs.Label("Game: " + this.game_id.toString(), consolas).setPosition(this.panel.width - 24, 20).setPivot(1, 0);
+                    timeLabel = new chs.Label("", consolas).setPosition(this.panel.width - 24, 50).setPivot(1, 0);
+                    this.panel.addChild(gameLabel);
+                    last_snapshot_time = chs.Timer.time;
+                    timeLabel.addChild(new chs.Alarm(0, 1000, true, function() {
+                        var elapsed = chs.Timer.time - last_snapshot_time,
+                            remain = new Date(remaining_time - elapsed),
+                            hours = remain.getHours();
+                            minutes = remain.getMinutes();
+                            seconds = remain.getSeconds();
+                        this.age = 0;
+                        this.text = chs.Util.format("{0}:{1}:{2} remaining",
+                                            chs.Util.pad(hours, 2),
+                                            chs.Util.pad(minutes, 2),
+                                            chs.Util.pad(seconds, 2));
+                    }, timeLabel));
+                    this.panel.addChild(timeLabel);
+                } else {
+                    this.addChild(new chs.Alarm(2000, 2000, false, this.updateGame, this));
+                }
+            }, this);
+        },
+
         loadComplete: function () {
             var session_id = chs.Cookies.get('session_id'),
                 provider_id = chs.Cookies.get('provider_id'),   // this will be null if nothing chosen or 0 if Anon or valid provider ID
@@ -150,6 +192,7 @@
             this.enabled = true;
             this.visible = true;
             chs.OAuth.login(this.getSession, this);
+            this.updateGame();
         },
 
         showLogin: function () {

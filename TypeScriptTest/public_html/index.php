@@ -27,6 +27,7 @@
     <script src="js/timer.js"></script>
     <script src="js/matrix.js"></script>
     <script src="js/drawable.js"></script>
+    <script src="js/alarm.js"></script>
     <script src="js/composite.js"></script>
     <script src="js/loader.js"></script>
     <script src="js/image.js"></script>

@@ -211,6 +211,27 @@
 
         //////////////////////////////////////////////////////////////////////
 
+        format: function (format) {
+            var args = Array.prototype.slice.call(arguments, 1);
+            return format.replace(/{(\d+)}/g, function(match, number) {
+                return typeof args[number] !== 'undefined' ? args[number] : match;
+            });
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        pad: function(num, numZeros) {
+            var n = Math.abs(num),
+                zeros = Math.max(0, numZeros - Math.floor(n).toString().length ),
+                zeroString = Math.pow(10, zeros).toString().substr(1);
+            if (num < 0) {
+                zeroString = '-' + zeroString;
+            }
+            return zeroString + n;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
         getExtension: function (url) {
             return url.match(/(?:(?:[\w\W]+)\.)([\w\W]+?)(\?|$)/)[1].toLowerCase();
         },

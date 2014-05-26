@@ -5,7 +5,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.Button = chs.Class({ inherit$: [chs.EventSource],
+    chs.Button = chs.Class({ inherit$: chs.EventSource,
 
         static$: {
             idle: 0,

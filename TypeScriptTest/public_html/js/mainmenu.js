@@ -34,7 +34,7 @@
             }
         });
 
-    mtw.MainMenu = chs.Class({ inherit$: [chs.Drawable],
+    mtw.MainMenu = chs.Class({ inherit$: chs.Drawable,
 
         $: function () {
             chs.Drawable.call(this);

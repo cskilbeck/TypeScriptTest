@@ -5,7 +5,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.Drawable = chs.Class({ inherit$: [chs.EventSource],
+    chs.Drawable = chs.Class({ inherit$: chs.EventSource,
 
         $: function () {
             chs.EventSource.call(this);

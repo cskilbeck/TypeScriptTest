@@ -58,7 +58,8 @@
         // inheritance
         if (desc.hasOwnProperty('inherit$')) {
             if (Object.prototype.toString.call(desc.inherit$) !== '[object Array]') {
-                throw new TypeError('Inheritance chain must be an array');
+                extend(newClass, desc.inherit$, false);
+                extend(newClass.prototype, desc.inherit$.prototype, false);
             } else {
                 for (i = 0; i < desc.inherit$.length; ++i) {
                     if (!desc.inherit$[i]) {

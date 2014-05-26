@@ -122,8 +122,10 @@
 
             var w,
                 i,
+                l,
                 t,
                 j,
+                k,
                 foundWords = [];
 
             this.changed = true;
@@ -149,8 +151,8 @@
             });
 
             // find the best, non-overlapping ones, discard the others
-            while (foundWords.length > 0) {
-                w = foundWords.shift();
+            for (k = 0, l = foundWords.length; k < l; ++k) {
+                w = foundWords[k];
                 for (i = 0; i < w.str.length; ++i) {
                     t = this.getWordTile(w, i);
                     if (t.hasVerticalWord && w.orientation === mtw.Word.vertical) {

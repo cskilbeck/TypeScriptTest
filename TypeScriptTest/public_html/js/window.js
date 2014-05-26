@@ -1,7 +1,7 @@
 (function () {
     "use strict";
 
-    chs.Window = chs.Class({ inherit$: [chs.Drawable],
+    chs.Window = chs.Class({ inherit$: chs.Drawable,
 
         $: function (desc) {
             var hasCloseButton = (desc.closeButton === undefined) ? false : desc.closeButton,

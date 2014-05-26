@@ -14,9 +14,13 @@
             xr = new XDomainRequest();
             xr.open(method, url);
             xr.onerror = function () {};
-            xr.ontimeout = function () {};
             xr.onprogress = function () {};
             xr.timeout = 5000;
+            xr.ontimeout = function () {
+                xr.status = 408;
+                xr.responseText = "";
+                callback.call(context, url, xr);
+            };
             xr.onload = function () {
                 if(xr.responseText) {
                     xr.status = 200;    // feck
@@ -35,6 +39,9 @@
                     contentType = xr.getResponseHeader("Content-Type");
                     callback.call(context, url, xr);
                 }
+            };
+            xr.ontimeout = function () {
+                callback.call(context, url, xr);
             };
             xr.onprogress = function (e) {
                 if (progressCallback) {

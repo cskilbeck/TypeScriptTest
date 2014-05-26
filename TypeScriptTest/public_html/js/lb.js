@@ -1,7 +1,7 @@
 (function () {
     "use strict";
 
-    mtw.LeaderBoard = chs.Class({ inherit$: [chs.Drawable],
+    mtw.LeaderBoard = chs.Class({ inherit$: chs.Drawable,
 
         $: function (font, game, width, height) {
             var rankWidth,

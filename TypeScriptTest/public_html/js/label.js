@@ -63,7 +63,7 @@
         }
     };
 
-    chs.TextBox = chs.Class({ inherit$: [chs.ClipRect],
+    chs.TextBox = chs.Class({ inherit$: chs.ClipRect,
 
         $: function (x, y, w, h, text, font, lineBreak, linkClicked, context) {
             chs.ClipRect.call(this, x, y, w, h, 0);

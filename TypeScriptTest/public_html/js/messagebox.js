@@ -8,7 +8,7 @@
         this.window.close();
     };
 
-    chs.MessageWindow = chs.Class({ inherit$: [chs.Window],
+    chs.MessageWindow = chs.Class({ inherit$: chs.Window,
 
         $: function (text, textFont, buttons, callback, context, buttonFont) {
             var dw = chs.desktop.width / 1.6666,
@@ -59,7 +59,7 @@
         }
     });
 
-    chs.MessageBox = chs.Class({ inherit$: [chs.Drawable],
+    chs.MessageBox = chs.Class({ inherit$: chs.Drawable,
 
         $: function (text, textFont, buttons, callback, context, buttonFont) {
             chs.Drawable.call(this);

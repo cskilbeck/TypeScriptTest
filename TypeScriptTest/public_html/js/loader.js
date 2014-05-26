@@ -42,7 +42,7 @@
                             "JkkKrOKNSHBFowWZ/O+uVMvUsJ82nAVs2VHtaJRcONtri1HPrXmcC/oCBf3hmFwWHiImJfSoYL" +
                             "I1ykCt6koWVjJduA5ucnZ6foAkAOw==",
 
-        Item = chs.Class({ inherit$: [chs.EventSource],
+        Item = chs.Class({ inherit$: chs.EventSource,
 
             $: function (url, data, loader, forceFileType) {
                 var extension;

@@ -19,24 +19,12 @@
         $: function (type, global) {
             this.type = type;
             this.global = global;
-        },
-
-        isMouseMessage: chs.Property({
-            get: function () {
-                return this instanceof chs.MouseMessage;
-            }
-        }),
-
-        isTouchMessage: chs.Property({
-            get: function () {
-                return this instanceof chs.TouchMessage;
-            }
-        })
+        }
     });
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.MouseMessage = chs.Class({ inherit$: [chs.Message],
+    chs.MouseMessage = chs.Class({ inherit$: chs.Message,
 
         $: function (type, pos, global) {
             chs.Message.call(this, type);
@@ -58,7 +46,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.TouchMessage = chs.Class({ inherit$: [chs.Message],
+    chs.TouchMessage = chs.Class({ inherit$: chs.Message,
 
         $: function (type, pos, global) {
             chs.Message.call(this, type, global);

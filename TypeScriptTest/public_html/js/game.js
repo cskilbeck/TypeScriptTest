@@ -1,9 +1,10 @@
 //////////////////////////////////////////////////////////////////////
 // change the client_secrets!
+// fix the dbaseconfig problem
 // new words each day...
 // Fix tile grabbing/moving/swapping/lerping/tap to swap
 // menu button repositioned working on phone
-// font: layermask
+// font: layermask, composited labels all wonky
 // munger: piece ({{term}}) / body <span id='group'> / meal (senseid, en, food) / field (senseid) / coastal (cx, geography) / daub (cx) / source (,)
 // make all drawables compositable?
 // make login robust
@@ -49,7 +50,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    mtw.Game = chs.Class({ inherit$: [chs.Drawable],
+    mtw.Game = chs.Class({ inherit$: chs.Drawable,
 
         $: function (mainMenu, loader) {
             chs.Drawable.call(this);

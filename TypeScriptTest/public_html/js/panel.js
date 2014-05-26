@@ -5,7 +5,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.Rectangle = chs.Class({ inherit$: [chs.Drawable],
+    chs.Rectangle = chs.Class({ inherit$: chs.Drawable,
 
         $: function (x, y, w, h, radius) {
             chs.Drawable.call(this);
@@ -25,7 +25,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.ClipRect = chs.Class({ inherit$: [chs.Rectangle],
+    chs.ClipRect = chs.Class({ inherit$: chs.Rectangle,
 
         $: function (x, y, w, h, radius) {
             chs.Rectangle.call(this, x, y, w, h, radius);
@@ -39,7 +39,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.SolidRectangle = chs.Class({ inherit$: [chs.Rectangle],
+    chs.SolidRectangle = chs.Class({ inherit$: chs.Rectangle,
 
         $: function (x, y, w, h, radius, fillColour) {
             chs.Rectangle.call(this, x, y, w, h, radius);
@@ -59,7 +59,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.OutlineRectangle = chs.Class({ inherit$: [chs.Rectangle],
+    chs.OutlineRectangle = chs.Class({ inherit$: chs.Rectangle,
 
         $: function (x, y, w, h, radius, lineColour, lineWidth) {
             chs.Rectangle.call(this, x, y, w, h, radius);
@@ -81,7 +81,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.Panel = chs.Class({ inherit$: [chs.Rectangle],
+    chs.Panel = chs.Class({ inherit$: chs.Rectangle,
 
         $: function (x, y, w, h, fillColour, lineColour, radius, lineWidth) {
             chs.Rectangle.call(this, x, y, w, h, radius);
@@ -103,7 +103,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.Line = chs.Class({ inherit$: [chs.Drawable],
+    chs.Line = chs.Class({ inherit$: chs.Drawable,
 
         $: function (x1, y1, x2, y2, colour, width) {
             chs.Drawable.call(this);

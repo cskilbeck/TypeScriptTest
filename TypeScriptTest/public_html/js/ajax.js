@@ -35,6 +35,7 @@
             }
             xr.onreadystatechange = function () {
                 var contentType;
+                console.log(url + " : " + xr.status.toString());
                 if (xr.readyState === XMLHttpRequest.DONE) {
                     contentType = xr.getResponseHeader("Content-Type");
                     callback.call(context, url, xr);
@@ -43,6 +44,9 @@
             xr.ontimeout = function () {
                 callback.call(context, url, xr);
             };
+            chs.addEventListener(xr, "error", function () {
+                console.log("Error!");
+            });
             xr.onprogress = function (e) {
                 if (progressCallback) {
                     progressCallback.call(context, url, e);

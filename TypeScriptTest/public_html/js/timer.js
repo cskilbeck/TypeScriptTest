@@ -51,7 +51,9 @@
                 } else if (this.parent) {
                     this.parent.removeChild(this);
                 }
-                this.callback.call(this.context);
+                if (this.callback.call(this.context) === false) {
+                    this.parent.removeChild(this);
+                }
             }
         }
 

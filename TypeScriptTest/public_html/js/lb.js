@@ -48,7 +48,7 @@
             // highlight your score
             if (!this.requestInProgress && this.game.board_id) {
                 this.requestInProgress = true;
-                chs.WebService.get("leaderboard", { board_id: this.game.board_id, buffer: 10 }, function (data) {
+                chs.WebService.get("leaderboard", { board_id: this.game.board_id, buffer: 10, game_id: this.game.game_id }, function (data) {
                     var i,
                         y,
                         row;

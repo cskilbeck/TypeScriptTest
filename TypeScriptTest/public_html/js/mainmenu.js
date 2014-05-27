@@ -5,6 +5,8 @@
         globalLoader,
         consolas,
         consolasItalic,
+        gameLabel,
+        timeLabel,
 
         UserImage = chs.Class({ inherit$: [chs.Button, chs.Drawable],
 
@@ -78,7 +80,7 @@
             if (session_id !== null) {
                 chs.WebService.get('session', { session_id: session_id }, function (data) {
                     var logoutButton;
-                    if (data.error !== undefined) {
+                    if (!data || data.error !== undefined) {
                         chs.Cookies.remove('session_id');
                         chs.Cookies.remove('login_error');
                         // session probably expired...
@@ -120,44 +122,52 @@
             }
         },
 
+        scheduleGameUpdate: function () {
+            this.addChild(new chs.Timer(2000, 0, this.updateGame, this));
+        },
+
         updateGame: function () {
-            console.log("Get game...");
             chs.WebService.get('game', {}, function (data) {
-                var gameLabel,
-                    remaining_time,
+                var remaining_time,
                     last_snapshot_time,
+                    remainder,
                     hours,
                     minutes,
-                    seconds,
-                    timeLabel;
+                    seconds;
                 if (data && !data.error) {
                     this.seed = data.seed;
                     this.game_id = data.game_id;
                     this.now = Date.parse(data.now);
                     this.game_ends = Date.parse(data.end_time);
-                    remaining_time = new Date(this.game_ends - this.now);
-                    hours = remaining_time.getHours();
-                    minutes = remaining_time.getMinutes();
-                    seconds = remaining_time.getSeconds();
-                    gameLabel = new chs.Label("Game: " + this.game_id.toString(), consolas).setPosition(this.panel.width - 24, 20).setPivot(1, 0);
-                    timeLabel = new chs.Label("", consolas).setPosition(this.panel.width - 24, 50).setPivot(1, 0);
-                    this.panel.addChild(gameLabel);
-                    last_snapshot_time = chs.Timer.time;
-                    this.addChild(new chs.Timer(0, 1000, function() {
-                        var elapsed = chs.Timer.time - last_snapshot_time,
-                            remain = new Date(remaining_time - elapsed),
-                            hours = remain.getHours();
-                            minutes = remain.getMinutes();
-                            seconds = remain.getSeconds();
-                        this.age = 0;
-                        this.text = chs.Util.format("{0}:{1}:{2} remaining",
-                                            chs.Util.pad(hours, 2),
-                                            chs.Util.pad(minutes, 2),
-                                            chs.Util.pad(seconds, 2));
-                    }, timeLabel));
-                    this.panel.addChild(timeLabel);
+                    remainder = this.game_ends - this.now;          // how much time left in this game
+                    if (remainder > 0) {
+                        last_snapshot_time = chs.Timer.time;
+                        gameLabel.text = "Game " + this.game_id.toString();
+                        this.addChild(new chs.Timer(0, 1000, function() {
+                            var elapsed = chs.Timer.time - last_snapshot_time,
+                                remain = new Date(remainder - elapsed),
+                                hours = remain.getHours();
+                                minutes = remain.getMinutes();
+                                seconds = remain.getSeconds();
+                            if (elapsed < remainder) {
+                                timeLabel.text = chs.Util.format("{0}:{1}:{2} remaining",
+                                                    chs.Util.pad(hours, 2),
+                                                    chs.Util.pad(minutes, 2),
+                                                    chs.Util.pad(seconds, 2));
+                            } else {
+                                console.log("elapsed: " + elapsed.toString() + ", remainder: " + remainder.toString());
+                                gameLabel.text = "Game ended..." + remain.toString();
+                                this.scheduleGameUpdate();
+                                return false;
+                            }
+                        }, this));
+                    } else {
+                        gameLabel.text = "Game ended..." + remainder.toString();
+                        this.scheduleGameUpdate();
+                    }
                 } else {
-                    this.addChild(new chs.Timer(2000, 0, this.updateGame, this));
+                    gameLabel.text = "Error getting game, retrying...";
+                    this.scheduleGameUpdate();
                 }
             }, this);
         },
@@ -192,6 +202,10 @@
             this.enabled = true;
             this.visible = true;
             chs.OAuth.login(this.getSession, this);
+            gameLabel = new chs.Label("", consolas).setPosition(this.panel.width - 24, 20).setPivot(1, 0);
+            timeLabel = new chs.Label("", consolas).setPosition(this.panel.width - 24, 50).setPivot(1, 0);
+            this.panel.addChild(gameLabel);
+            this.panel.addChild(timeLabel);
             this.updateGame();
         },
 
@@ -209,14 +223,7 @@
         playClicked: function () {
             this.activate(false);
             this.addSibling(this.game);
-            // chs.WebService.get("currentgame", function (data) {
-            //     this.game.game_id = ;
-            //     this.game.init(data.game_id, data.seed);
-            // }, this);
-            // this.button.enabled = false;
-            // this.button.visible = false;
-            // this.loadingLabel.visible = true;
-            this.game.init(1);              // ask the web service for the right game to play, then init with the seed...
+            this.game.init(this.game_id, this.seed);              // ask the web service for the right game to play, then init with the seed...
         },
 
         activate: function (activate) {

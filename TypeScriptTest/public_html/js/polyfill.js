@@ -51,6 +51,16 @@
 
     //////////////////////////////////////////////////////////////////////
 
+    chs.addEventListener = function(el, name, callback) {
+        if (el.addEventListener) {
+            el.addEventListener(name, callback, false);
+        } else if (el.attachEvent) {
+            el.attachEvent(name, callback);
+        } // else tough shit
+    };
+
+    //////////////////////////////////////////////////////////////////////
+
     if (!window.location.origin) {
         window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port : '');
     }

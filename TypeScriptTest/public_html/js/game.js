@@ -56,6 +56,7 @@
             chs.Drawable.call(this);
             this.size = { width: chs.desktop.width, height: chs.desktop.height };
             this.mainMenu = mainMenu;
+            this.game_id = 0;
             consolas = chs.Font.load("Consolas", loader);
             arial = chs.Font.load("Arial", loader);
             consolasItalic = chs.Font.load("Consolas_Italic", loader);
@@ -186,7 +187,8 @@
         //////////////////////////////////////////////////////////////////////
         // new game starting
 
-        init: function (seed) {
+        init: function (game_id, seed) {
+            this.game_id = game_id;
             board.randomize(seed);
             board.load();
             this.updateWordList();
@@ -210,6 +212,8 @@
                         } else {
 
                         }
+                    } else {
+                        // new game, probly
                     }
                 }, this);
             }
@@ -418,13 +422,17 @@
                 bestButton.highlight = 1000;
                 bestScore = board.bestScore;
                 if(chs.User.id) {
-                    chs.WebService.post("board", {}, { board: board.getAsString(), user_id: chs.User.id, seed: board.seed }, function (data) {
+                    chs.WebService.post("board", {}, { board: board.getAsString(), user_id: chs.User.id, game_id: this.game_id, seed: board.seed }, function (data) {
                         if (data && !data.error) {
                             leaderBoard.delay = 0;  // poke a leaderboard update
                             this.board_id = data.board_id;  // for LB tracking
                             retry = false;
                         } else {
-                            console.log("Error! " + data.error);
+                            if (data !== null) {
+                                console.log("Error! " + data.error.toString());
+                            } else {
+                                console.log("No data");
+                            }
                             retry = true;
                         }
                     }, this);

@@ -14,6 +14,8 @@
             if (d !== null && callback) {
                 callback.call(context, d);
             }
+        } else {
+            callback.call(context, null);
         }
     }
 

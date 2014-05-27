@@ -32,6 +32,7 @@ e_invalidboard          = { "error": 6, "msg": "invalid board",          "status
 e_missingparameter      = { "error": 7, "msg": "missing parameter",      "status": "400 bad request" }
 e_badmethod             = { "error": 8, "msg": "invalid method",         "status": "405 method not allowed" }
 e_badparameter          = { "error": 9, "msg": "bad parameter",          "status": "400 bad request" }
+e_gameended             = { "error":10, "msg": "game over",              "status": "200 OK" }
 
 class Error(Exception):
     pass
@@ -78,11 +79,6 @@ def opendb():
     conn.autocommit(True)
     return conn
 
-# get a time formatted for MySQL
-
-def formattedTime(t):
-    return datetime.datetime.strftime(t, "%Y-%m-%d %H:%M:%S.%f")
-
 # get the score (and if it's valid) for a board of a seed
 
 def get_board_score(board, seed):
@@ -105,6 +101,9 @@ def origin_is_valid(db, environ):
                 return environ['HTTP_ORIGIN']
     return None
 
+def getJSON(x):
+    return json.dumps(x, indent = 4, separators=(',',': '), default = date_handler)
+
 #----------------------------------------------------------------------
 # Handler - base for all request handlers
 #----------------------------------------------------------------------
@@ -125,7 +124,7 @@ class Handler(object):
 
     #----------------------------------------------------------------------
 
-    def err(e):
+    def err(self, e):
         raise(Error(e))
 
     #----------------------------------------------------------------------
@@ -136,7 +135,7 @@ class Handler(object):
             db.commit()
             if self.showOutput:
                 print >> sys.stderr, "Output:"
-                print >> sys.stderr, json.dumps(self.output, indent = 4, separators=(',',': '), default = date_handler)
+                print >> sys.stderr, getJSON(self.output)
             return self.status
 
 #----------------------------------------------------------------------
@@ -193,14 +192,14 @@ class sessionHandler(Handler):
     def handle(self, cur, db):
         check_parameters(self.query, ['session_id'])
         timestamp = datetime.datetime.now()
-        now = formattedTime(timestamp)
+        now = timestamp.isoformat()
         cur.execute("""SELECT users.user_id, users.name, users.picture, oauth_providers.oauth_name as providerName FROM sessions
                         INNER JOIN users ON users.user_id = sessions.user_id
                         INNER JOIN oauth_providers ON oauth_providers.oauth_provider = users.oauth_provider
                         WHERE sessions.session_id = %(session_id)s
                         AND sessions.expires > %(now)s""",
                         {   'session_id': self.query['session_id'],
-                            'now': formattedTime(datetime.datetime.now())
+                            'now': datetime.datetime.now().isoformat()
                         })
         row = cur.fetchone()
         if row is None:
@@ -218,8 +217,8 @@ class sessionHandler(Handler):
 
 def createSession(self, cur, db, d):
     timestamp = datetime.datetime.now()
-    now = formattedTime(timestamp)
-    then = formattedTime(timestamp + datetime.timedelta(days = 30))
+    now = timestamp.isoformat()
+    then = (timestamp + datetime.timedelta(days = 30)).isoformat()
     cur.execute("""SELECT * FROM users
                     WHERE oauth_sub=%(oauth_sub)s
                     AND oauth_provider=%(oauth_provider)s""", d)
@@ -252,7 +251,7 @@ class anonHandler(Handler):
 
     def handle(self, cur, db):
         timestamp = datetime.datetime.now()
-        now = formattedTime(timestamp)
+        now = timestamp.isoformat()
         cur.execute("""INSERT INTO anons (created) VALUES (%(now)s)""", locals())
         anon_id = db.insert_id()
         cur.execute("""INSERT INTO users (oauth_sub, oauth_provider, name, picture)
@@ -312,7 +311,7 @@ class gameHandler(Handler):
         cur.execute("SELECT * FROM games ORDER BY end_time DESC LIMIT 1")
         row = cur.fetchone()
         if row is not None:
-            self.add(row)   # "[<= 2014-05-17 13:50:06 =>]"
+            self.add(row)
             self.add({ 'now': datetime.datetime.now() })
         else:
             self.err(e_dbaseerror)
@@ -331,31 +330,43 @@ class gameHandler(Handler):
 class boardHandler(Handler):
 
     def handle(self, cur, db):
-        check_parameters(self.post, ['board', 'user_id', 'seed'])
+        check_parameters(self.post, ['board', 'user_id', 'seed', 'game_id'])
 
         cur.execute("SELECT COUNT(*) AS count FROM users WHERE user_id=%(user_id)s", self.post)
         if cur.fetchone()['count'] == 0:
             self.err(e_unknownuser)
 
-        # check if this game has ended
-        # if so, tough luck
-
+        game_id = self.post['game_id']
         board = self.post['board']
         user_id = self.post['user_id']
         seed = self.post['seed']
+
+        cur.execute("SELECT * from games where game_id = %(game_id)s", locals())
+        row = cur.fetchone()
+        if row is None:
+            self.err(e_badparameter)
+
+        # if row['seed'] != seed:
+        #     print >> sys.stderr, "Bad seed (dbase says " + str(row['seed']) + ", post says " + str(seed) + ")"
+        #     self.err(e_badparameter)
+
+        now = datetime.datetime.now()
+
+        if now > row['end_time']:
+            self.err(e_gameended)
+
         check = get_board_score(board, seed)
         if(not check.get('valid')):
             self.err(e_invalidboard)
 
         score = check.get('score')
-        now = datetime.datetime.now()
-        time_stamp = formattedTime(now)
+        time_stamp = now.isoformat()
 
         cur.execute("""SELECT * FROM boards WHERE user_id=%(user_id)s AND seed=%(seed)s""", locals())
         row = cur.fetchone()
         if row is None:
-            cur.execute("""INSERT INTO boards (seed, board, score, user_id, time_stamp)
-                            VALUES (%(seed)s, %(board)s, %(score)s, %(user_id)s, %(time_stamp)s)""", locals())
+            cur.execute("""INSERT INTO boards (seed, game_id, board, score, user_id, time_stamp)
+                            VALUES (%(seed)s, %(game_id)s, %(board)s, %(score)s, %(user_id)s, %(time_stamp)s)""", locals())
             board_id = db.insert_id()
         else:
             board_id = row['board_id']
@@ -391,7 +402,7 @@ class definitionHandler(Handler):
 class leaderboardHandler(Handler):
 
     def handle(self, cur, db):
-        check_parameters(self.query, ['board_id', 'buffer'])
+        check_parameters(self.query, ['board_id', 'buffer', 'game_id'])
         buffer = int(self.query['buffer'], 10)
         if (buffer > 30):
             self.err(e_badparameter)
@@ -400,7 +411,7 @@ class leaderboardHandler(Handler):
         if row is None:
             self.err(e_invalidboard)
         seed = row['seed']
-        cur.execute("SELECT COUNT(*) AS total FROM boards WHERE seed = %(seed)s", row)
+        cur.execute("SELECT COUNT(*) AS total FROM boards WHERE game_id = %(game_id)s", row)
         self.add({"total": cur.fetchone()['total']})
         cur.close()
         cur = db.cursor()
@@ -440,35 +451,28 @@ def application(environ, start_response):
                 raise(Error(e_badaction))
             status = globals()[func](query, post, output).processRequest(db)
     except Error as e:
-        print >> sys.stderr, "Error!"
-        print >> sys.stderr, pprint.pformat(e.args)
         d = e.args[0]
         output = d;
         status = d['status']
-        print >> sys.stderr, "Error!"
-        print >> sys.stderr, d['msg']
+        print >> sys.stderr, "Error: " + d['msg']
     except mdb.Error, e:
-        print >> sys.stderr, "Database error:"
-        print >> sys.stderr, pprint.pformat(e.args)
+        print >> sys.stderr, "Database error:" + pprint.pformat(e.args)
         status = "500 Internal Server Error"
         raise
     except TypeError, e:
-        print >> sys.stderr, "TypeError:"
-        print >> sys.stderr, pprint.pformat(e.args)
+        print >> sys.stderr, "TypeError: " + pprint.pformat(e.args)
         status = "500 Internal Server Error"
         raise
     except AttributeError, e:
-        print >> sys.stderr, "AttributeError:"
-        print >> sys.stderr, pprint.pformat(e.args)
+        print >> sys.stderr, "AttributeError: " + pprint.pformat(e.args)
         status = "500 Internal Server Error"
         raise
     except ImportError, e:
-        print >> sys.stderr, "ImportError:"
-        print >> sys.stderr, pprint.pformat(e.args)
+        print >> sys.stderr, "ImportError: " + pprint.pformat(e.args)
         status = "500 Internal Server Error"
         raise
 
-    outputStr = json.dumps(output, indent = 0, separators=(',',': '), default = date_handler)
+    outputStr = getJSON(output)
     headers.append(('Content-Length', str(len(outputStr))))
     start_response(status, headers)
     return outputStr

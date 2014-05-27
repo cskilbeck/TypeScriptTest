@@ -1,2 +1,2 @@
-var chs = {};
-var mtw = {};
+window.chs = {};
+window.mtw = {};

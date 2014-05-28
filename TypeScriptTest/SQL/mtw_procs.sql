@@ -1,40 +1,43 @@
 
-drop procedure if exists getLB;
+DROP PROCEDURE IF EXISTS GETLB;
+DROP PROCEDURE IF EXISTS GETLBPAGE;
 
-delimiter //
 
-create procedure getLB(in boardID int, in buffer int)
+DELIMITER //
+
+CREATE PROCEDURE getLBPage(IN game_id INT, IN offset INT, IN pageSize INT)
 begin
-	prepare stmt from "
-	select	name,
-			boards.user_id as user_id,
-			@rank := convert(@rank, unsigned) + 1 as rank,
-			score
-	from boards
-	inner join users on boards.user_id = users.user_id, (select @rank := ?) sel1
-	order by score desc, time_stamp asc
-	limit ?, ?;";
+	SET @ranking = offset;
+	SELECT	name, boards.user_id AS user_id, @ranking := CONVERT(@ranking, unsigned) + 1 AS rank, score
+		FROM boards
+		INNER JOIN users ON boards.user_id = users.user_id
+		WHERE boards.game_id = game_id
+		ORDER BY score DESC, time_stamp ASC
+		LIMIT offset, pageSize;
+END //
 
-	set	@gameScore = 0,
-		@boardTimeStamp = null,
-		@leaderboard_topsize = 0,
-		@pageSize = buffer + buffer + 1,
-		@bufferOffset = buffer;
+
+CREATE PROCEDURE getLB(IN boardid INT, IN offset INT, IN page_size INT)
+BEGIN
+	DECLARE placing INT;
+	DECLARE gameScore INT;
+	DECLARE boardTimeStamp DATETIME;
+	DECLARE gameID INT;
 
 	-- get the score/timestamp of the board
-	select `score`, `time_stamp` from `boards` where `board_id` = boardID into @gameScore, @boardTimeStamp;
+	SELECT score, time_stamp, game_id FROM boards WHERE board_id = boardid INTO gameScore, boardTimeStamp, gameID;
 
-	-- get how many entries are above mine (2 users will have same score and time_stamp sometimes, that's ok)
-	select count(*) from `boards` where (`score` > @gameScore) or (`score` = @gameScore and `time_stamp` < @boardTimeStamp) into @leaderboard_topsize;
+	-- get how many entries are above mine (2 users might have same score and time_stamp sometimes, that's ok)
+	SELECT COUNT(*) FROM boards WHERE boards.game_id = gameID AND ((score > gameScore) OR (score = gameScore AND time_stamp < boardTimeStamp)) INTO placing;
 
 	-- get the top of the expanded page (-10 to +10 instead of -5 to +5) (thanks Matt Picciocio)
-	set @leaderboard_topsize = @leaderboard_topsize - @bufferOffset;
-	set @leaderboard_topsize = if(@leaderboard_topsize < 0, 0, @leaderboard_topsize);
+	SET placing = placing + offset;
+	SET placing = if(placing < 0, 0, placing);
 
-	execute stmt using @leaderboard_topsize, @leaderboard_topsize, @pageSize;
+	-- get the page of results
+	CALL getLBPage(gameID, placing, page_size);
 
-	deallocate prepare stmt;
+END //
 
-end //
+DELIMITER ;
 
-delimiter ;

@@ -188,14 +188,18 @@
                 ],
                 w = this.width,
                 h = this.height,
-                pw = w / 1.25,
-                ph = h / 1.25;
+                pw = w / 1.05,
+                ph = h / 1.05;
 
+            chs.desktop.clear();
             this.game.loadComplete();
             provider_id = provider_id ? parseInt(provider_id, 10) : 0;
             chs.desktop.removeChild(loader);
-            this.panel = new chs.Panel(w / 2, h / 2, pw, ph, "darkgreen", "white", 25, 4, 255).setPivot(0.5, 0.5);
+            this.panel = new chs.OutlineRectangle(w / 2, h / 2, pw, ph, 25, "white", 4).setPivot(0.5, 0.5);
             this.button = new chs.TextButton("PLAY!", consolasItalic, pw / 2, ph / 2, 200, 50, this.playClicked, this).setPivot(0.5, 0.5);
+            this.button.onUpdate = function (time, deltaTime) {
+                this.rotation = Math.pow(Math.sin(time / 1000), 16) * Math.sin(time / 25) * 0.05;
+            };
             this.panel.addChild(this.button);
             this.addChild(this.panel);
             this.panel.addChild(new chs.Menu(20, this.panel.height - 20, consolasItalic, buttons, callbacks, this).setPivot(0, 1));
@@ -214,10 +218,6 @@
             loginScreen.addEventHandler("closed", this.activate, this);
             this.activate(false);
             this.addSibling(loginScreen);
-        },
-
-        onUpdate: function (time, deltaTime) {
-            this.button.rotation = Math.pow(Math.sin(time / 1000), 16) * Math.sin(time / 25) * 0.05;
         },
 
         playClicked: function () {

@@ -62,7 +62,7 @@
             if(cd.dirty) {
                 this.composite_compose();
             }
-            context.drawImage(cd.canvas.canvas, Math.floor(-dd.padding.left), Math.floor(-dd.padding.top)); // draw at -extent.left, -extent.top
+            context.drawImage(cd.canvas.canvas, -dd.padding.left, -dd.padding.top); // draw at -extent.left, -extent.top
             return false;   // don't draw the children...
         },
 

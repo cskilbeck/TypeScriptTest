@@ -21,6 +21,8 @@ sys.path.append('/usr/local/www/wsgi-scripts')
 os.chdir('/usr/local/www/wsgi-scripts')
 from dbaseconfig import *
 
+logString = ""
+
 #----------------------------------------------------------------------
 
 e_badaction             = { "error": 1, "msg": "bad action",             "status": "400 bad request" }
@@ -47,7 +49,11 @@ def date_handler(obj):
 # switch offable log
 
 def log(x, y = ""):
-    print >> sys.stderr, pprint.pformat(x + pprint.pformat(y, 0, 120))
+    x1 = str(x).replace("\\n", "\n")
+    if type(y) is not str:
+        y = pprint.pformat(y, 0, 120).replace("\\n", "\n")
+    globals()['logString'] += x1 + y + "\n"
+    # print >> sys.stderr, )
     # pass
 
 # get something from the local helper
@@ -134,8 +140,7 @@ class Handler(object):
             self.handle(cur, db)
             db.commit()
             if self.showOutput:
-                print >> sys.stderr, "Output:"
-                print >> sys.stderr, getJSON(self.output)
+                log("Output:", getJSON(self.output))
             return self.status
 
 #----------------------------------------------------------------------
@@ -168,8 +173,7 @@ class gameHandler(Handler):
 
     def handle(self, cur, db):
         check_parameters(self.query, ['user_id', 'seed'])
-
-        cur.execute("""SELECT board, score, board_id FROM boards WHERE user_id=%(user_id)s AND seed=%(seed)s""", self.query)
+        cur.execute("SELECT board, score, board_id FROM boards WHERE user_id=%(user_id)s AND seed=%(seed)s", self.query)
         row = cur.fetchone()
         if row is None:
             self.add({"error": "No such board for user,seed"})
@@ -219,9 +223,7 @@ def createSession(self, cur, db, d):
     timestamp = datetime.datetime.now()
     now = timestamp.isoformat()
     then = (timestamp + datetime.timedelta(days = 30)).isoformat()
-    cur.execute("""SELECT * FROM users
-                    WHERE oauth_sub=%(oauth_sub)s
-                    AND oauth_provider=%(oauth_provider)s""", d)
+    cur.execute("SELECT * FROM users WHERE oauth_sub=%(oauth_sub)s AND oauth_provider=%(oauth_provider)s", d)
     row = cur.fetchone()
     if row is None:
         self.err(e_dbaseerror)
@@ -229,21 +231,16 @@ def createSession(self, cur, db, d):
     user_id = row['user_id']
     user_name = row['name'];
     user_picture = row['picture'];
-    cur.execute("""SELECT * FROM sessions
-                    WHERE user_id = %(user_id)s AND expires > %(now)s
-                    ORDER BY created DESC LIMIT 1""", locals())
+    cur.execute("SELECT * FROM sessions WHERE user_id = %(user_id)s AND expires > %(now)s ORDER BY created DESC LIMIT 1", locals())
     row = cur.fetchone()
     if row is None:
         # session expired, or didn't exist, create a new one
-        cur.execute("""INSERT INTO sessions(user_id, created, expires)
-                        VALUES (%(user_id)s, %(now)s, %(then)s)""", locals())
+        cur.execute("INSERT INTO sessions(user_id, created, expires) VALUES (%(user_id)s, %(now)s, %(then)s)", locals())
         session_id = db.insert_id()
     else:
         # existing session, extend it
         session_id = row['session_id']
-        cur.execute("""UPDATE sessions
-                        SET expires = %(then)s
-                        WHERE session_id = %(session_id)s""", locals())
+        cur.execute("UPDATE sessions SET expires = %(then)s WHERE session_id = %(session_id)s", locals())
     self.add({"session_id": session_id})
     self.add({"user_id": user_id})
 
@@ -279,7 +276,7 @@ class loginHandler(Handler):
                             WHERE oauth_sub=%(oauth_sub)s
                             AND oauth_provider=%(oauth_provider)s""", self.post)
             if cur.fetchone()['count'] == 0:
-                print >> sys.stderr, "Migrating user " + str(self.post['anon_user_id'])
+                log("Migrating user " + str(self.post['anon_user_id']))
                 cur.execute("""UPDATE users SET
                                 oauth_sub = %(oauth_sub)s,
                                 oauth_provider=%(oauth_provider)s,
@@ -339,21 +336,24 @@ class boardHandler(Handler):
         game_id = self.post['game_id']
         board = self.post['board']
         user_id = self.post['user_id']
-        seed = self.post['seed']
+        seed = int(self.post['seed'])
+        game_over = False
 
         cur.execute("SELECT * from games where game_id = %(game_id)s", locals())
         row = cur.fetchone()
         if row is None:
             self.err(e_badparameter)
 
-        # if row['seed'] != seed:
-        #     print >> sys.stderr, "Bad seed (dbase says " + str(row['seed']) + ", post says " + str(seed) + ")"
-        #     self.err(e_badparameter)
+        end_time = row['end_time']
+        real_seed = row['seed']
+
+        if real_seed != seed:
+            log("Bad seed (dbase says " + str(row['seed']) + ", post says " + str(seed) + ")")
+            self.err(e_badparameter)
 
         now = datetime.datetime.now()
 
-        if now > row['end_time']:
-            self.err(e_gameended)
+        game_over = now > end_time;
 
         check = get_board_score(board, seed)
         if(not check.get('valid')):
@@ -374,6 +374,7 @@ class boardHandler(Handler):
                 cur.execute("""UPDATE boards SET board=%(board)s, score=%(score)s
                                 WHERE user_id=%(user_id)s AND seed=%(seed)s""", locals())
         self.add({ "score": score, "board_id": board_id })
+        self.add({ "game_over": game_over })
 
 #----------------------------------------------------------------------
 # GET:definition - get a word definition
@@ -393,8 +394,11 @@ class definitionHandler(Handler):
 #----------------------------------------------------------------------
 # GET:leaderboard - get leaderboard
 #
-# parameters:   board_id: uint32
-#               buffer: uint - how many above/below you want
+# parameters:   board_id: int
+#               game_id: int
+#               buffer: int - how many above/below you want
+#
+#               if board_id is 0, just get the LB at offset, page_size
 #
 # response:     a whole mess of json
 #----------------------------------------------------------------------
@@ -402,21 +406,20 @@ class definitionHandler(Handler):
 class leaderboardHandler(Handler):
 
     def handle(self, cur, db):
-        check_parameters(self.query, ['board_id', 'buffer', 'game_id'])
-        buffer = int(self.query['buffer'], 10)
-        if (buffer > 30):
+        check_parameters(self.query, ['board_id', 'offset', 'page_size', 'game_id'])
+        page_size = int(self.query['page_size'], 10)
+        board_id = int(self.query['board_id'], 10)
+        if (page_size > 30):
             self.err(e_badparameter)
-        cur.execute("SELECT * FROM boards WHERE board_id = %(board_id)s", self.query)
-        row = cur.fetchone()
-        if row is None:
-            self.err(e_invalidboard)
-        seed = row['seed']
-        cur.execute("SELECT COUNT(*) AS total FROM boards WHERE game_id = %(game_id)s", row)
-        self.add({"total": cur.fetchone()['total']})
+        cur.execute("SELECT COUNT(*) AS total FROM boards WHERE game_id = %(game_id)s", self.query)
+        self.add({ "total": cur.fetchone()['total'] })
         cur.close()
         cur = db.cursor()
-        cur.execute("CALL getLB(%(board_id)s, %(buffer)s)", self.query)
-        self.add({"leaderboard": cur.fetchall() })
+        if board_id != 0:
+            cur.execute("CALL getLB(%(board_id)s, %(offset)s, %(page_size)s)", self.query)  # should check that board_id and game_id are copacetic
+        else:
+            cur.execute("CALL getLBPage(%(game_id)s, %(offset)s, %(page_size)s)", self.query)
+        self.add({ "leaderboard": cur.fetchall() })
         self.showOutput = False
 
 #----------------------------------------------------------------------
@@ -425,7 +428,7 @@ class leaderboardHandler(Handler):
 
 def application(environ, start_response):
 
-    print >> sys.stderr, "--------------------------------------------------------------------------------"
+    log("--------------------------------------------------------------------------------")
     headers = [('Content-type', 'application/json')]
     output = dict()
     status = '200 OK'
@@ -442,7 +445,7 @@ def application(environ, start_response):
                 post = query_to_dict(environ['wsgi.input'].read(int(environ.get('CONTENT_LENGTH', 4096), 10)))  # 4096? should be enough...
             elif method != 'GET':
                 raise(Error(e_badmethod))
-            log("Action: ", query['action'])
+            log("Action:", query['action'])
             log("Method:", method)
             log("Query:", query)
             log("Post:", post)
@@ -454,23 +457,25 @@ def application(environ, start_response):
         d = e.args[0]
         output = d;
         status = d['status']
-        print >> sys.stderr, "Error: " + d['msg']
+        log("Error: " + d['msg'])
     except mdb.Error, e:
-        print >> sys.stderr, "Database error:" + pprint.pformat(e.args)
+        log("Database error:" + pprint.pformat(e.args))
         status = "500 Internal Server Error"
         raise
     except TypeError, e:
-        print >> sys.stderr, "TypeError: " + pprint.pformat(e.args)
+        log("TypeError: " + pprint.pformat(e.args))
         status = "500 Internal Server Error"
         raise
     except AttributeError, e:
-        print >> sys.stderr, "AttributeError: " + pprint.pformat(e.args)
+        log("AttributeError: " + pprint.pformat(e.args))
         status = "500 Internal Server Error"
         raise
     except ImportError, e:
-        print >> sys.stderr, "ImportError: " + pprint.pformat(e.args)
+        log("ImportError: " + pprint.pformat(e.args))
         status = "500 Internal Server Error"
         raise
+
+    print >> sys.stderr, logString
 
     outputStr = getJSON(output)
     headers.append(('Content-Length', str(len(outputStr))))

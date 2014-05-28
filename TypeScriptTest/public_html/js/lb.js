@@ -18,7 +18,7 @@
             this.game = game;
             this.font = font;
 
-            this.topLabel = new chs.Label("NN of NN", font).setPosition(this.width / 2, 8).setPivot(0.5, 0);
+            this.topLabel = new chs.Label("", font).setPosition(this.width / 2, 8).setPivot(0.5, 0);
             this.addChild(this.topLabel);
 
             this.highlight = new chs.Panel(0, 0, this.width, this.font.height + 6, "darkslategrey", undefined, 4);
@@ -48,12 +48,18 @@
             // highlight your score
             if (!this.requestInProgress && this.game.board_id) {
                 this.requestInProgress = true;
-                chs.WebService.get("leaderboard", { board_id: this.game.board_id, buffer: 10, game_id: this.game.game_id }, function (data) {
+                var params = {
+                    board_id: (this.game !== null && this.game.board_id !== 0) ? this.game.board_id : 0,
+                    offset: -10,
+                    page_size: 20,
+                    game_id: this.game.game_id
+                };
+                chs.WebService.get("leaderboard", params, function (data) {
                     var i,
                         y,
                         row;
                     this.requestInProgress = false;
-                    if (data.error === undefined) {
+                    if (data && data.error === undefined) {
                         // { leaderboard: [ {name: 'Charlie Skilbeck', score: 123L, rank: 32, user_id: 5 }, ...]}
                         this.highlight.visible = false;
                         this.ranks.removeChildren();

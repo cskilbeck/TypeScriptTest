@@ -151,7 +151,7 @@
             words.addChild(words.wordList);
             ui.addScreen(words);
 
-            leaderBoard = new mtw.LeaderBoard(calibri, this, ui.client.width, ui.client.height);
+            leaderBoard = new mtw.LeaderBoard(calibri, this.game_id, ui.client.width, ui.client.height);
             leaderBoard.title = "Leaderboard";
             ui.addScreen(leaderBoard);
 
@@ -208,7 +208,8 @@
                             bestLabel.text = board.bestScore.toString();    // if board.bestScore has gone up, flash this!
                             bestButton.compose();
                             bestButton.highlight = 1000;
-                            leaderBoard.delay = 1;  // poke a leaderboard update
+                            leaderboard.board_id = data.board_id;
+                            leaderBoard.doUpdate();
                         } else {
 
                         }
@@ -424,8 +425,9 @@
                 if(chs.User.id) {
                     chs.WebService.post("board", {}, { board: board.getAsString(), user_id: chs.User.id, game_id: this.game_id, seed: board.seed }, function (data) {
                         if (data && !data.error) {
-                            leaderBoard.delay = 0;  // poke a leaderboard update
+                            leaderBoard.board_id = data.board_id;
                             this.board_id = data.board_id;  // for LB tracking
+                            leaderBoard.doUpdate();
                             retry = false;
                         } else {
                             if (data !== null) {

@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////
 // Javascript OOP 101
 // instanceof not supported
+// everything is a mixin...
 
 (function () {
     "use strict";

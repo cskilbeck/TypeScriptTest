@@ -1,5 +1,5 @@
 #----------------------------------------------------------------------
-# !NOTE! this runs as (potentially) many simultaneous processes...
+# !NOTE! this runs as (potentially) many simultaneous threads/processes...
 #----------------------------------------------------------------------
 
 import os
@@ -7,6 +7,7 @@ import traceback
 import sys
 import datetime
 import socket
+import threading
 import json
 import MySQLdb as mdb
 import MySQLdb.cursors
@@ -43,20 +44,33 @@ class Error(Exception):
 # utils
 #----------------------------------------------------------------------
 
+#----------------------------------------------------------------------
+# for JSON dates
+
 def date_handler(obj):
     return obj.isoformat() if hasattr(obj, 'isoformat') else obj
 
+#----------------------------------------------------------------------
 # switch offable log
 
+logString = ""
+
+def resetLog():
+    global logString
+    logString = ""
+
 def log(x, y = ""):
-    x1 = str(x).replace("\\n", "\n")
+    x = str(x).replace("\\n", "\n")
     if type(y) is not str:
         y = pprint.pformat(y, 0, 120).replace("\\n", "\n")
-    globals()['logString'] += x1 + y + "\n"
-    # print >> sys.stderr, )
-    # pass
+    global logString
+    logString += x + y + "\n"
 
-# get something from the local helper
+def dumpLog():
+    print >> sys.stderr, logString,
+
+#----------------------------------------------------------------------
+# call the local helper service
 
 def service(dict):
     with closing(socket.socket()) as s:
@@ -67,11 +81,13 @@ def service(dict):
         except:
             return None
 
+#----------------------------------------------------------------------
 # turn a urlencoded string into a dictionary, duplicate assignments are discarded
 
 def query_to_dict(q):
     return dict((k, v[0]) for k, v in urlparse.parse_qs(q).iteritems())
 
+#----------------------------------------------------------------------
 # open the database
 
 def opendb():
@@ -85,11 +101,13 @@ def opendb():
     conn.autocommit(True)
     return conn
 
+#----------------------------------------------------------------------
 # get the score (and if it's valid) for a board of a seed
 
 def get_board_score(board, seed):
     return service({ 'action': 'getscore', 'board': board, 'seed': seed })
 
+#----------------------------------------------------------------------
 # check list of parameters in a query or post string
 
 def check_parameters(pq, strings):
@@ -97,6 +115,7 @@ def check_parameters(pq, strings):
         if not i in pq:
             raise(Error(e_missingparameter))
 
+#----------------------------------------------------------------------
 # check http origin is in the valid list
 
 def origin_is_valid(db, environ):
@@ -106,6 +125,9 @@ def origin_is_valid(db, environ):
             if cur.fetchone()['count'] > 0:
                 return environ['HTTP_ORIGIN']
     return None
+
+#----------------------------------------------------------------------
+# get an object as a JSON string
 
 def getJSON(x):
     return json.dumps(x, indent = 4, separators=(',',': '), default = date_handler)
@@ -202,9 +224,10 @@ class sessionHandler(Handler):
                         INNER JOIN oauth_providers ON oauth_providers.oauth_provider = users.oauth_provider
                         WHERE sessions.session_id = %(session_id)s
                         AND sessions.expires > %(now)s""",
-                        {   'session_id': self.query['session_id'],
-                            'now': datetime.datetime.now().isoformat()
-                        })
+                    {
+                        'session_id': self.query['session_id'],
+                        'now': datetime.datetime.now().isoformat()
+                    })
         row = cur.fetchone()
         if row is None:
             self.add({"error": "Session expired"})
@@ -272,9 +295,7 @@ class loginHandler(Handler):
     def handle(self, cur, db):
         check_parameters(self.post, ['oauth_sub', 'oauth_provider', 'name', 'picture'])
         if('anon_user_id' in self.post):
-            cur.execute("""SELECT COUNT(*) AS count FROM users
-                            WHERE oauth_sub=%(oauth_sub)s
-                            AND oauth_provider=%(oauth_provider)s""", self.post)
+            cur.execute("SELECT COUNT(*) AS count FROM users WHERE oauth_sub=%(oauth_sub)s AND oauth_provider=%(oauth_provider)s""", self.post)
             if cur.fetchone()['count'] == 0:
                 log("Migrating user " + str(self.post['anon_user_id']))
                 cur.execute("""UPDATE users SET
@@ -362,7 +383,7 @@ class boardHandler(Handler):
         score = check.get('score')
         time_stamp = now.isoformat()
 
-        cur.execute("""SELECT * FROM boards WHERE user_id=%(user_id)s AND seed=%(seed)s""", locals())
+        cur.execute("SELECT * FROM boards WHERE user_id=%(user_id)s AND seed=%(seed)s", locals())
         row = cur.fetchone()
         if row is None:
             cur.execute("""INSERT INTO boards (seed, game_id, board, score, user_id, time_stamp)
@@ -371,8 +392,7 @@ class boardHandler(Handler):
         else:
             board_id = row['board_id']
             if row['score'] < score:
-                cur.execute("""UPDATE boards SET board=%(board)s, score=%(score)s
-                                WHERE user_id=%(user_id)s AND seed=%(seed)s""", locals())
+                cur.execute("UPDATE boards SET board=%(board)s, score=%(score)s WHERE user_id=%(user_id)s AND seed=%(seed)s", locals())
         self.add({ "score": score, "board_id": board_id })
         self.add({ "game_over": game_over })
 
@@ -428,6 +448,8 @@ class leaderboardHandler(Handler):
 
 def application(environ, start_response):
 
+    resetLog()
+
     log("--------------------------------------------------------------------------------")
     headers = [('Content-type', 'application/json')]
     output = dict()
@@ -475,7 +497,7 @@ def application(environ, start_response):
         status = "500 Internal Server Error"
         raise
 
-    print >> sys.stderr, logString
+    dumpLog()
 
     outputStr = getJSON(output)
     headers.append(('Content-Length', str(len(outputStr))))

@@ -3,7 +3,7 @@
 
     mtw.LeaderBoard = chs.Class({ inherit$: chs.Drawable,
 
-        $: function (font, game, width, height) {
+        $: function (font, game_id, width, height) {
             var rankWidth,
                 nameWidth,
                 scoreWidth;
@@ -15,7 +15,8 @@
             chs.Drawable.call(this);
             this.size = { width: width, height: height };
 
-            this.game = game;
+            this.game_id = game_id;
+            this.board_id = 0;
             this.font = font;
 
             this.topLabel = new chs.Label("", font).setPosition(this.width / 2, 8).setPivot(0.5, 0);
@@ -37,22 +38,21 @@
 
             this.delay = 0;
             this.requestInProgress = false;
-
-            this.addChild(new chs.Timer(0, 30000, this.updateLB, this));
         },
 
-        updateLB: function() {
+        setUpdateFrequency: function (f) {
+            this.addChild(new chs.Timer(f, f, this.update, this));
+        },
 
-            // get the LB from the web service
-            // populate the names and scores...
-            // highlight your score
-            if (!this.requestInProgress && this.game.board_id) {
+        doUpdate: function() {
+
+            if (!this.requestInProgress) {
                 this.requestInProgress = true;
                 var params = {
-                    board_id: (this.game !== null && this.game.board_id !== 0) ? this.game.board_id : 0,
+                    board_id: this.board_id,
                     offset: -10,
                     page_size: 20,
-                    game_id: this.game.game_id
+                    game_id: this.game_id
                 };
                 chs.WebService.get("leaderboard", params, function (data) {
                     var i,

@@ -22,7 +22,7 @@
             this.topLabel = new chs.Label("", font).setPosition(this.width / 2, 8).setPivot(0.5, 0);
             this.addChild(this.topLabel);
 
-            this.highlight = new chs.Panel(0, 0, this.width, this.font.height + 6, "darkslategrey", undefined, 4);
+            this.highlight = new chs.Panel(0, 0, this.width, this.font.height + 6, "darkslategrey", none, 4);
             this.addChild(this.highlight);
             this.highlight.visible = false;
 

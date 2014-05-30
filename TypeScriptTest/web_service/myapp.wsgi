@@ -115,14 +115,18 @@ def check_parameters(pq, strings):
         if not i in pq:
             raise(Error(e_missingparameter))
 
+def get_count(cur, table, condition, params):
+    cur.execute("SELECT COUNT(*) FROM `" + mdb.escape_string(table) + "` WHERE " + condition, params)
+    return cur.fetchone().keys()[0]
+
 #----------------------------------------------------------------------
 # check http origin is in the valid list
 
 def origin_is_valid(db, environ):
     if 'HTTP_ORIGIN' in environ:
         with closing(db.cursor()) as cur:
-            cur.execute("SELECT COUNT(*) AS count FROM sites WHERE site_url = %(HTTP_ORIGIN)s", environ)
-            if cur.fetchone()['count'] > 0:
+            count = get_count(cur, "sites", "site_url = %(HTTP_ORIGIN)s", environ)
+            if count > 0:
                 return environ['HTTP_ORIGIN']
     return None
 
@@ -195,7 +199,7 @@ class gameHandler(Handler):
 
     def handle(self, cur, db):
         check_parameters(self.query, ['user_id', 'seed'])
-        cur.execute("SELECT board, score, board_id FROM boards WHERE user_id=%(user_id)s AND seed=%(seed)s", self.query)
+        cur.execute("SELECT * FROM boards WHERE user_id=%(user_id)s AND seed=%(seed)s", self.query)
         row = cur.fetchone()
         if row is None:
             self.add({"error": "No such board for user,seed"})

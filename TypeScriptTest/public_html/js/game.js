@@ -82,7 +82,7 @@
             words.width = ui.client.width;
             words.height = ui.client.height;
 
-            scoreButton = new chs.PanelButton(ui.client.width / 2, 0, ui.client.width, consolas.height + 8, 'black', undefined, 3, 0, null, null).setPivot(0.5, 0);
+            scoreButton = new chs.PanelButton(ui.client.width / 2, 0, ui.client.width, consolas.height + 8, 'black', none, 3, 0, null, null).setPivot(0.5, 0);
             scoreButton.scoreLabel = new chs.Label("0", consolas).setPosition(scoreButton.width - 4, 4).setPivot(1, 0);
             scoreButton.addChild(scoreButton.scoreLabel);
             scoreButton.addChild(new chs.Label("Score:", consolas).setPosition(4, 4));
@@ -116,7 +116,7 @@
                 }
             };
 
-            bestButton = new chs.PanelButton(ui.client.width / 2, scoreButton.height + 2, ui.client.width, consolas.height + 8, 'black', undefined, 3, 0, this.bestClicked, this).setPivot(0.5, 0);
+            bestButton = new chs.PanelButton(ui.client.width / 2, scoreButton.height + 2, ui.client.width, consolas.height + 8, 'black', none, 3, 0, this.bestClicked, this).setPivot(0.5, 0);
             bestLabel = new chs.Label("0", consolas).setPosition(bestButton.width - 4, 4).setPivot(1, 0);
             bestButton.addChild(bestLabel);
             bestButton.addChild(new chs.Label("Best:", consolas).setPosition(4, 4));

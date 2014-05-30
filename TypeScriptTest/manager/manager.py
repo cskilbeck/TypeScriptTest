@@ -27,7 +27,7 @@ sys.path.append('/usr/local/www/wsgi-scripts')
 os.chdir('/usr/local/www/wsgi-scripts')
 from dbaseconfig import *
 
-def opendb():
+def open_database():
     conn = mdb.connect( host        = db_host(),
                         user        = db_user(),
                         passwd      = db_password(),
@@ -38,22 +38,13 @@ def opendb():
     conn.autocommit(True)
     return conn
 
-def formattedTime(t):
-    return datetime.datetime.strftime(t, "%Y-%m-%d %H:%M:%S.%f")
-
 def main():
     print "@--"
-    print "Game Manager begins at " + formattedTime(datetime.datetime.now())
-
-    if len(sys.argv) > 1:
-        minutes = int(sys.argv[1])
-        print str(minutes) + " minutes game length specified"
-    else:
-        minutes = 1440
-        print "Using default game length: " + str(minutes)
-
+    print "Game Manager begins at " + str(datetime.datetime.now())
+    minutes = int(sys.argv[1]) if len(sys.argv) > 1 else 1440
+    print "Creating game of " + str(minutes) + " length"
     print "Opening database " + db_db() + " on " + db_host() + " with username " + db_user()
-    with closing(opendb()) as db:
+    with closing(open_database()) as db:
         print "Database is open"
         with closing(db.cursor()) as cur:
             print "Got cursor"
@@ -64,15 +55,10 @@ def main():
                 print "previous seed was " + str(row['seed'])
                 seed = row['seed'] + 1
             timestamp = datetime.datetime.now()
-            start_time = formattedTime(timestamp)
-            end_time = formattedTime(timestamp + datetime.timedelta(minutes = minutes))
+            start_time = timestamp.isoformat()
+            end_time = (timestamp + datetime.timedelta(minutes = minutes)).isoformat()
             print "New seed: " + str(seed) + ", start_time: " + start_time + ", end_time: " + end_time
-            cur.execute("INSERT INTO games (seed, start_time, end_time) VALUES (%(seed)s, %(start_time)s, %(end_time)s)",
-                {
-                    "seed": seed,
-                    "start_time": start_time,
-                    "end_time": end_time
-                })
+            cur.execute("INSERT INTO games (seed, start_time, end_time) VALUES (%(seed)s, %(start_time)s, %(end_time)s)", locals());
             print "Inserted, game_id: " + str(db.insert_id())
     print "--@"
 

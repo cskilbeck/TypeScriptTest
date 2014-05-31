@@ -8,3 +8,8 @@
 {
     border: 0;
 }
+
+canvas
+{
+    -webkit-transform: scale3d(1, 1, 0) translate3d(0px, 0px, 0);
+}

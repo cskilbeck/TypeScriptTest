@@ -166,3 +166,4 @@ TypeScriptTest/OneDrive.lnk
 TypeScriptTest/config/
 *.dmp
 *.lnk
+TypeScriptTest/manager/sftp-config.json

@@ -26,14 +26,13 @@
             desc;
         names = Object.getOwnPropertyNames(proto);
         for (i = 0; i < names.length; ++i) {
-            if (names[i].indexOf("$") !== -1 || (names[i] in child && !force)) {
-                continue;
-            }
-            desc = Object.getOwnPropertyDescriptor(proto, names[i]);
-            if (desc.value instanceof chs.PropertyDescriptor) {
-                Object.defineProperty(child, names[i], desc.value.desc);
-            } else {
-                Object.defineProperty(child, names[i], desc);
+            if (names[i].indexOf("$") === -1 && (!(names[i] in child) || force)) {
+                desc = Object.getOwnPropertyDescriptor(proto, names[i]);
+                if (desc.value instanceof chs.PropertyDescriptor) {
+                    Object.defineProperty(child, names[i], desc.value.desc);
+                } else {
+                    Object.defineProperty(child, names[i], desc);
+                }
             }
         }
     }

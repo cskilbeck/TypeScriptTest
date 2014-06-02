@@ -130,26 +130,14 @@
 
         invert: function (dest) {
             var m = this.m,
-                n = dest.m,
-                a, b, c, d, e, f,
                 det = m[0] * m[3] - m[1] * m[2];
             if (det < 1.0e-6) {
                 return this.copyTo(dest);
             }
             det = 1 / det;
-            a = m[3] * det;
-            b = m[1] * -det;
-            c = m[2] * -det;
-            d = m[0] * det;
-            e = (m[2] * m[5] - m[3] * m[4]) * det;
-            f = (m[0] * m[5] - m[1] * m[4]) * -det;
-            n[0] = a;
-            n[1] = b;
-            n[2] = c;
-            n[3] = d;
-            n[4] = e;
-            n[5] = f;
-            return dest;
+            return dest.set(m[3] * det, m[1] * -det, m[2] * -det, m[0] * det,
+                            (m[2] * m[5] - m[3] * m[4]) * det,
+                            (m[0] * m[5] - m[1] * m[4]) * -det);
         },
 
         // apply to point p

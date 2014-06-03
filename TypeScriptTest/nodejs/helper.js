@@ -1,8 +1,12 @@
-GLOBAL.chs = {};
-GLOBAL.mtw = {};
+#! /usr/bin/env node
+
+console.log("Helper started at " + Date().toString());
+
+GLOBAL.window = GLOBAL;
 
 var dictionary = require('./dictionary.json');
 
+require('./js/chs.js');
 require('./js/util.js');
 require('./js/class.js');
 require('./js/list.js');
@@ -27,25 +31,31 @@ var net = require('net');
 //                                  result: { 'definition': 'the definition' }
 //
 
+function checkBoard(letters, seed) {
+    var board = new mtw.Board(),
+        check = letters.split('').sort().join('');
+    board.randomize(parseInt(seed, 10));
+    return  (board.getAsString().split('').sort().join('').localeCompare(check) === 0) ? board : null;
+}
+
 handlers = {
 
+    // get the score for a board
+
     getscore: function(params) {
-        var board,
-            checkBoard,
-            trueBoard;
-        if (params.board !== undefined &&
-            params.seed !== undefined) {
-            board = new mtw.Board();
-            board.randomize(parseInt(params.seed, 10));
-            trueBoard = board.getAsString().split('').sort().join('');
-            checkBoard = params.board.split('').sort().join('');
-            this.valid = checkBoard.localeCompare(trueBoard) === 0;
+        var board;
+        if (params.board !== undefined && params.seed !== undefined) {
+            board = checkBoard(params.board, params.seed);
+            this.valid = board !== null;
             if (this.valid) {
                 board.setFromString(params.board);
                 this.score = board.markAllWords();
+                this.words = board.words;
             }
         }
     },
+
+    // get the board for a seed
 
     getboard: function(params) {
         if (params.seed !== undefined) {
@@ -56,6 +66,8 @@ handlers = {
             this.error = "missing parameter: seed";
         }
     },
+
+    // get the definition of a word
 
     definition: function(params) {
         if (params.word !== undefined) {
@@ -74,6 +86,8 @@ net.createServer(function (socket) {
     "use strict";
 
     socket.on('data', function (data) {
+
+        console.log(Date().toString() + ":" + data.toString());
 
         var params = chs.Util.queryStringToJSON(data.toString()),
             action,

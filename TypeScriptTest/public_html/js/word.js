@@ -14,7 +14,6 @@
             this.y = y;
             this.orientation = orientation;
             this.score = mtw.Letters.getWordScore(str);
-            this.index = 0;
             this.isHighlighted = false;
             this.highlightIndex = 0;
         },

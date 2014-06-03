@@ -13,6 +13,10 @@
 
         isWord: function (str) {
             return dictionary.words.hasOwnProperty(str);
+        },
+
+        getDefinition: function (str) {
+            return this.isWord(str) ? dictionary.words[str] : "?";
         }
     };
 

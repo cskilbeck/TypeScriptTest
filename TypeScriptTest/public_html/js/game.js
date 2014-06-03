@@ -5,7 +5,7 @@
 // Fix tile grabbing/moving/swapping/lerping/tap to swap
 // menu button repositioned working on phone
 // font: layermask, composited labels all wonky
-// munger: piece ({{term}}) / body <span id='group'> / meal (senseid, en, food) / field (senseid) / coastal (cx, geography) / daub (cx) / source (,)
+// munger: piece ({{term}}) / body <span id='group'> / meal (senseid, en, food) / field (senseid) / coastal (cx, geography) / daub (cx) / source (,) / eyen (Category)
 // make all drawables compositable?
 // make login robust
 // loader outputs manifest with file sizes for proper progress bar

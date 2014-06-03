@@ -1,7 +1,9 @@
-window.chs = {};
-window.mtw = {};
+(function(environ) {
+    environ.chs = {};
+    environ.mtw = {};
 
-Object.defineProperty(window, "none", {
-    value: undefined,
-    configurable: false
-});
+    Object.defineProperty(environ, "none", {
+        value: undefined,
+        configurable: false
+    });
+}(window));

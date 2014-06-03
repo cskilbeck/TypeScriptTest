@@ -339,6 +339,26 @@ class gameHandler(Handler):
             self.err(e_dbaseerror)
 
 #----------------------------------------------------------------------
+# GET:gameInfo - get some info about a game
+#
+# parameters:
+#               game_id: uint32
+#
+# response:
+#               [word, score...]
+#----------------------------------------------------------------------
+
+class gameInfoHandler(Handler):
+
+    def handle(self, cur, db):
+        check_parameters(self.query, ['game_id'])
+        cur.execute("SELECT DISTINCT word, score, name FROM words INNER JOIN users ON users.user_id = words.user_id WHERE game_id=%(game_id)s ORDER BY score DESC, time_stamp ASC LIMIT 3", self.query)
+        self.add({ 'topWords': cur.fetchall() })
+        # rarest word
+        # commonest word
+        # etc
+
+#----------------------------------------------------------------------
 # POST:board - post a new best board for a user
 #
 # parameters:
@@ -397,6 +417,17 @@ class boardHandler(Handler):
             board_id = row['board_id']
             if row['score'] < score:
                 cur.execute("UPDATE boards SET board=%(board)s, score=%(score)s WHERE user_id=%(user_id)s AND seed=%(seed)s", locals())
+
+        # add the words in the board to the words table
+        words = check.get('words')
+        if words is not None:
+            time_stamp = datetime.datetime.now().isoformat()
+            sql = "INSERT INTO words (word, user_id, game_id, score, time_stamp) VALUES "
+            vals = []
+            for w in words:
+                vals.append("('%s', %s, %s, %s, '%s')" % (w['str'], user_id, game_id, w['score'], time_stamp))
+            cur.execute(sql + ",".join(vals) + " ON DUPLICATE KEY UPDATE time_stamp = VALUES(time_stamp)")
+
         self.add({ "score": score, "board_id": board_id })
         self.add({ "game_over": game_over })
 

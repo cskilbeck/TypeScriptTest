@@ -160,6 +160,10 @@
                                 this.scheduleGameUpdate();
                                 return false;
                             }
+                            // now and again, get the top words list
+                            chs.WebService.get('gameInfo', { game_id: this.game_id }, function(data) {
+                                console.log(data.topWords.length);
+                            }, this);
                         }, this));
                     } else {
                         gameLabel.text = "Game ended..." + remainder.toString();

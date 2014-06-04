@@ -52,7 +52,7 @@
 
         onDraw: function (context) {
             var self = this.labelData;
-            self.font.renderString(context, self.text, 0, 0);
+            self.font.renderString(context, self.text, 0.5, 0.5);
         }
 
     });

@@ -36,6 +36,18 @@ CREATE TABLE anons (
 	created			DATETIME NOT NULL
 );
 
+source sql/create_words.sql;
+
+-- so...
+-- most common word in a game
+-- rarest word in a game
+-- most common word today
+-- rarest word today
+-- highest scoring word(s)
+-- etc
+
+-- when a board is submitted, add all the words to the words table
+
 -- users
 
 \! echo '*** Create users table'

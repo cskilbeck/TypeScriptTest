@@ -37,6 +37,12 @@
 
     window.performance = window.performance || {};
 
+    if (!Date.now) {
+        Date.now = function now() {
+            return new Date().getTime();
+        };
+    }
+
     performance.now = (function () {
 
         return performance.now ||
@@ -45,7 +51,7 @@
                 performance.oNow ||
                 performance.webkitNow ||
             function () {
-                return Date().now();
+                return Date.now();
             };
     }());
 

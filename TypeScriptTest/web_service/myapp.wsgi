@@ -352,7 +352,7 @@ class gameInfoHandler(Handler):
 
     def handle(self, cur, db):
         check_parameters(self.query, ['game_id'])
-        cur.execute("SELECT DISTINCT word, score, name FROM words INNER JOIN users ON users.user_id = words.user_id WHERE game_id=%(game_id)s ORDER BY score DESC, time_stamp ASC LIMIT 3", self.query)
+        cur.execute("SELECT DISTINCT word, score, name FROM words INNER JOIN users ON users.user_id = words.user_id WHERE game_id=%(game_id)s ORDER BY score DESC LIMIT 3", self.query)
         self.add({ 'topWords': cur.fetchall() })
         # rarest word
         # commonest word
@@ -421,12 +421,12 @@ class boardHandler(Handler):
         # add the words in the board to the words table
         words = check.get('words')
         if words is not None:
-            time_stamp = datetime.datetime.now().isoformat()
-            sql = "INSERT INTO words (word, user_id, game_id, score, time_stamp) VALUES "
-            vals = []
-            for w in words:
-                vals.append("('%s', %s, %s, %s, '%s')" % (w['str'], user_id, game_id, w['score'], time_stamp))
-            cur.execute(sql + ",".join(vals) + " ON DUPLICATE KEY UPDATE time_stamp = VALUES(time_stamp)")
+            sql = "INSERT IGNORE INTO words (word, user_id, game_id, score) VALUES {}"
+            sql = sql.format(','.join(["(%s, %s, %s, %s)" for _ in words]))
+            params = ()
+            for word in words:
+                params += (word['str'], user_id, game_id, word['score'],)
+            cur.execute(sql, params)
 
         self.add({ "score": score, "board_id": board_id })
         self.add({ "game_over": game_over })

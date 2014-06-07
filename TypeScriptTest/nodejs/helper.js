@@ -52,6 +52,9 @@ handlers = {
                 this.score = board.markAllWords();
                 this.words = board.words;
             }
+        } else {
+            this.valid = false;
+            this.error = "missing parameter";
         }
     },
 

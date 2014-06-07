@@ -79,6 +79,7 @@ def service(dict):
             s.send(urllib.urlencode(dict))
             return json.loads(s.recv(8192))
         except:
+            log("Error, can't connect to helper!")
             return None
 
 #----------------------------------------------------------------------
@@ -274,9 +275,7 @@ def createSession(self, cur, db, d):
 class anonHandler(Handler):
 
     def handle(self, cur, db):
-        timestamp = datetime.datetime.now()
-        now = timestamp.isoformat()
-        cur.execute("""INSERT INTO anons (created) VALUES (%(now)s)""", locals())
+        cur.execute("""INSERT INTO anons (created) VALUES (%s)""", datetime.datetime.now().isoformat())
         anon_id = db.insert_id()
         cur.execute("""INSERT INTO users (oauth_sub, oauth_provider, name, picture)
                         VALUES (%(anon_id)s, 0, 'Anon', 'http://make-the-words.com/img/anon.png')""", locals())
@@ -401,7 +400,7 @@ class boardHandler(Handler):
         game_over = now > end_time;
 
         check = get_board_score(board, seed)
-        if(not check.get('valid')):
+        if(check is None or not "valid" in check):
             self.err(e_invalidboard)
 
         score = check.get('score')
@@ -420,7 +419,8 @@ class boardHandler(Handler):
 
         # add the words in the board to the words table
         words = check.get('words')
-        if words is not None:
+        if words is not None and len(words) > 0:
+            log("Words: ", words)
             sql = "INSERT IGNORE INTO words (word, user_id, game_id, score) VALUES {}"
             sql = sql.format(','.join(["(%s, %s, %s, %s)" for _ in words]))
             params = ()

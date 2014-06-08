@@ -144,17 +144,17 @@
             }
 
             window.addEventListener('keydown', function (e) {
-                q.push({ key: e.which, action: true });
+                q.push(new chs.KeyDownMessage(keyNames[e.which], e.which));
             }, false);
 
             window.addEventListener('keyup', function (e) {
-                q.push({ key: e.which, action: false });
+                q.push(new chs.KeyUpMessage(keyNames[e.which], e.which));
             }, false);
         },
 
         //////////////////////////////////////////////////////////////////////
 
-        update: function () {
+        update: function (root) {
 
             var last = 0;
             while (clr.length > 0) {
@@ -167,13 +167,18 @@
             }
 
             while (q.length > 0) {
-                if (q[0].action) {
-                    pressed[q[0].key] = true;
-                    held[q[0].key] = true;
-                    last = q[0].key;
-                } else {
-                    released[q[0].key] = true;
-                    held[q[0].key] = false;
+                switch(q[0].type) {
+                    case chs.Message.keyDown:
+                        pressed[q[0].key] = true;
+                        held[q[0].key] = true;
+                        last = q[0].key;
+                        root.processMessage(q[0]);
+                        break;
+                    case chs.Message.keyUp:
+                        released[q[0].key] = true;
+                        held[q[0].key] = false;
+                        root.processMessage(q[0]);
+                        break;
                 }
                 clr.push(q.shift());
             }

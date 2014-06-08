@@ -13,7 +13,9 @@
             mouseMove: 5,
             touchStart: 6,
             touchEnd: 7,
-            touchMove: 8
+            touchMove: 8,
+            keyDown: 9,
+            keyUp: 10
         },
 
         $: function (type, global) {
@@ -65,6 +67,28 @@
             }
         }),
 
+    });
+
+    //////////////////////////////////////////////////////////////////////
+
+    chs.KeyDownMessage = chs.Class({ inherit$: chs.Message,
+
+        $: function(keyName, key) {
+            chs.Message.call(this, chs.Message.keyDown, true);
+            this.name = keyName;
+            this.key = key;
+        }
+    });
+
+    //////////////////////////////////////////////////////////////////////
+
+    chs.KeyUpMessage = chs.Class({ inherit$: chs.Message,
+
+        $: function(keyName, key) {
+            chs.Message.call(this, chs.Message.keyUp, true);
+            this.name = keyName;
+            this.key = key;
+        }
     });
 
     //////////////////////////////////////////////////////////////////////

@@ -45,6 +45,8 @@
     <script src="js/debug.js"></script>
     <script src="js/desktop.js"></script>
 
+    <script src="js/tripple.js"></script>
+
     <script src="js/dictionary.js"></script>
     <script src="js/letters.js"></script>
     <script src="js/word.js"></script>

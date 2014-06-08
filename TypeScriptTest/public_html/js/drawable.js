@@ -40,6 +40,14 @@
         //////////////////////////////////////////////////////////////////////
         // override these...
 
+        onKeyDown: function(keyEvent) {
+
+        },
+
+        onKeyUp: function(keyEvent) {
+
+        },
+
         onMouseEnter: function (e) {
             return false;
         },
@@ -249,6 +257,16 @@
                             this.dispatchEvent('touchLeave', e);
                             return this.onTouchLeave(e);
                         }
+                        break;
+
+                    case chs.Message.keyDown:
+                        this.dispatchEvent('keyDown', e);
+                        this.onKeyDown(e);
+                        break;
+
+                    case chs.Message.keyUp:
+                        this.dispatchEvent('keyUp', e);
+                        this.onKeyUp(e);
                         break;
                     }
                 }

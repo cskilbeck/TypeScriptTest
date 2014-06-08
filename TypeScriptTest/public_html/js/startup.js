@@ -30,7 +30,7 @@ window.onload = function () {
 
             run: function () {
                 chs.Timer.update();
-                chs.Keyboard.update();
+                chs.Keyboard.update(chs.desktop);
                 chs.Mouse.update(chs.desktop);
                 chs.desktop.update(chs.Timer.time, chs.Timer.delta);
                 chs.desktop.draw(chs.desktop.context, startup.identityMatrix, 255);

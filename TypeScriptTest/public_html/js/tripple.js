@@ -1,117 +1,169 @@
 (function (){
     "use strict";
 
-    var board_width = 8,
-        board_height = 8,
+    var board_width = 14,
+        board_height = 14,
         board_size = board_width * board_height,
         cell_width = 32,
         cell_height = 32,
-        flash = 0,
-        age,
         board_width_in_pixels = board_width * cell_width,
         board_height_in_pixels = board_height * cell_height,
+        gravity = 0.005,
         colours = [
             "white",
-            "rgb(255,0,0)",
-            "rgb(0,255,0)"
-//            "rgb(0,0,255)"
+            "rgb(0,112,0)",  // 1: green: platform
+            "rgb(255,0,0)",  // 2: red: deadly
+            "rgb(0,0,255)"   // 3: blue: collectible    // (and 4: start position)
         ],
-        board = [],
-        free_slots = [],
-        direction = null;
+        board,
+        // player
+        score = 0,
+        dead = false,
+        rotate,
+        angle = 0,
+        rotateTime,
+        currentRotation,
+        targetRotation,
+        standing = false,
+        space,
+        jump,
+        jumping,
+        lerpTime = 500,
+        trans = [
+            { x: "x", y: "y", xm: 1, ym: 1},        // 0
+            { x: "y", y: "x", xm: 1, ym: -1},       // 90
+            { x: "x", y: "y", xm: -1, ym: -1},      // 180
+            { x: "y", y: "x", xm: -1, ym: 1},       // 270
+        ];
 
-    function shunt (start_x, end_x, x_delta, start_y, end_y, y_delta, cell_offset) {
-        var x,
-            y,
-            bo,
-            shunted = false,
-            cell1,
-            cell2;
+    mtw.Player = chs.Class({inherit$: chs.Drawable,
 
-        for (x = start_x; x !== end_x; x += x_delta) {
-            for (y = start_y; y !== end_y; y += y_delta) {
-                bo = x + y * board_width;
-                cell1 = board[bo];
-                cell2 = board[bo + cell_offset];
-                if (cell1 === 0 && cell2 !== 0) {
-                    board[bo] = cell2;
-                    board[bo + cell_offset] = 0;
-                    shunted = true;
-                }
+        $: function() {
+            chs.Drawable.call(this);
+            this.width = cell_width;
+            this.height = cell_height;
+            this.setPosition(cell_width * 2 + 1, cell_height * 2);
+            this.xvel = 0;
+            this.yvel = 0;
+        },
+
+        onKeyDown: function(e) {
+            space = e.name === 'space';
+            jump = false;
+        },
+
+        onKeyUp: function(e) {
+            if (e.name === 'space') {
+                jump = space;
+                space = false;
             }
-        }
-        return shunted;
-    }
+        },
 
-    function span_scan(x, y) {
-        var cell = board[x + y * board_width],
-            right = x + 1;
-        if (cell !== 0) {
-            while (right < board_width && board[right + y * board_width] === cell) {
-                ++right;
-            }
-            return { width: right - x, colour: cell };
-        }
-        return { width: 0, colour: 0 };
-    }
-
-    function scanForRectangles() {
-        var found = 0,
-            x,
-            y,
-            scan,
-            scan2,
-            colour,
-            width = 0,
-            height,
-            w,
-            z,
-            p,
-            q;
-        for (y = 0; y < board_height; ++y) {
-            for (x = 0; x < board_width - 1; ++x) {
-                scan = span_scan(x, y);
-                if (scan.width > 1) {
-                    for (z = y + 1; z < board_height; ++z) {
-                        scan2 = span_scan(x, z);
-                        if (scan2.colour === scan.colour && scan2.width > 1) {
-                            width = Math.min(scan.width, scan2.width);
-                        } else {
-                            height = (z - y);
-                            break;
-                        }
+        check: function(x, y, contacts) {
+            var p,
+                q,
+                u,
+                v,
+                cell,
+                blocking = false;
+            for (q = 0; q < 2; ++q) {
+                for (p = 0; p < 2; ++p) {
+                    u = ((x + p * this.width) / cell_width) >>> 0;
+                    v = ((y + q * this.height) / cell_height) >>> 0;
+                    cell = board[u + v * board_width];
+                    if (cell === 1) {
+                        blocking = true;
                     }
-                    if (width > 1 && height > 1) {
-                        ++found;
-                        for (p = 0; p < width; ++p) {
-                            for (q = 0; q < height; ++q) {
-                                board[(x + p) + (y + q) * board_width] *= -1;
-                            }
-                        }
-                    }
+                    contacts.push({ x: u, y: v, cell: cell });
                 }
             }
-        }
-        return found;
-    }
+            return blocking;
+        },
 
-    function addRandomBlocks(n) {
-        var i,
-            j = 0;
-        while (n-- > 0) {
-            for (i = 0; i < board_size; ++i) {
-                if (board[i] === 0) {
-                    free_slots[j++] = i;
+        move: function(deltaTime) {
+            var x,
+                y,
+                u,
+                v,
+                cell,
+                mask = 0,
+                add = 1,
+                xvel,
+                yvel,
+                ho,
+                ve,
+                bo,
+                horiz = [],
+                vert = [],
+                both = [];
+
+            xvel = this.xvel;
+            yvel = this.yvel;
+
+            ho = this.check(this.x + xvel, this.y, horiz);
+            ve = this.check(this.x, this.y + yvel, vert);
+            bo = this.check(this.x + xvel, this.y + yvel, both);
+
+            if (ho && !ve) {
+                xvel = 0;
+                yvel = 0;
+                currentRotation = -angle / 2 * Math.PI;
+                angle += 1;
+                targetRotation =  -angle / 2 * Math.PI;
+                rotate = true;
+                rotateTime = chs.Timer.time + lerpTime;
+            } else if (ve && !ho) {
+                if (yvel > 0) {
+                    if (!standing) {
+                        xvel = 0;
+                    }
+                    standing = true;
+                    jumping = false;
                 }
+                yvel = 0;
+            } else if (ho && ve) {
+                xvel = 0;
+                yvel = 0;
+            } else if (bo) {
+                if (yvel > 0) {
+                    standing = true;
+                    jumping = false;
+                    xvel = 0;
+                }
+                yvel = 0;
             }
-            if(j > 0) {
-                i = (Math.random() * j) >>> 0;
-                board[free_slots[i]] = ((Math.random() * (colours.length - 1)) >>> 0) + 1;
-            } else {
-                break;  // game_over
+
+            this.x += xvel;
+            this.y += yvel;
+
+            this.xvel = xvel;
+            this.yvel = yvel;
+        },
+
+        onUpdate: function(time, deltaTime) {
+            var dt = deltaTime;
+            if (space && standing === true && !rotate) {
+                this.xvel = 0.35;
+            } else if (jump && !jumping && !rotate) {
+                this.yvel = -0.85;
+                jump = false;
+                jumping = true;
+                standing = false;
             }
+            if (!rotate) {
+                while (dt > 0) {
+                    this.move(Math.min(1, dt));
+                    dt -= 1;
+                }
+                this.yvel += deltaTime * gravity;
+            }
+        },
+
+        onDraw: function(context) {
+            context.fillStyle = 'black';
+            context.fillRect(0.5, 0.5, this.width - 0.5, this.height - 0.5);
         }
-    }
+    });
 
     mtw.Tripple = chs.Class({inherit$: chs.Drawable,
 
@@ -122,70 +174,50 @@
             this.height = board_height * cell_height;
             this.setPivot(0.5, 0.5);
             this.setPosition(chs.desktop.width / 2, chs.desktop.height / 2);
+
+            board = [];
+
+            // clear the board to white
             for (i = 0; i < board_size; ++i) {
                 board[i] = 0;
-                free_slots[i] = 0;
             }
-            board[0 + 5 * board_width] = 1;
-            board[0 + 6 * board_width] = 1;
-            board[1 + 5 * board_width] = 1;
-            board[1 + 6 * board_width] = 1;
 
-            this.onUpdate = this.waitForKeyPress;
-        },
-
-        onKeyDown: function(e) {
-            if (direction === null) {
-                direction = e.name;
-                this.onUpdate = this.doShunt;
+            // add top, bottom
+            for (i = 0; i < board_width; ++i) {
+                board[i] = 1;
+                board[i + (board_height - 1) * board_width] = 1;
             }
+
+            // add left, right
+            for (i = 0; i < board_height; ++i) {
+                board[i * board_width] = 1;
+                board[board_width - 1 + i * board_width] = 1;
+            }
+
+            // now add the rest
+            board[2 + 5 * board_width] = 1;
+            board[2 + 6 * board_width] = 1;
+            board[3 + 5 * board_width] = 1;
+            board[3 + 6 * board_width] = 1;
+
+            this.player = new mtw.Player();
+            this.addChild(this.player);
         },
 
         onUpdate: function(time, deltaTime) {
-        },
+            var dt;
+            chs.Debug.print(Math.floor(this.rotation * 180 / Math.PI));
 
-        waitForKeyPress: function(time, deltaTime) {
-        },
-
-        doShunt: function(time, deltaTime) {
-            var found,
-                shunted;
-            switch(direction) {
-                case 'up':
-                    shunted = shunt(0, board_width, 1, 0, board_height - 1, 1, board_width);
-                    break;
-                case 'down':
-                    shunted = shunt(0, board_width, 1, board_height - 1, 0, -1, -board_width);
-                    break;
-                case 'left':
-                    shunted = shunt(0, board_width - 1, 1, 0, board_height, 1, 1);
-                    break;
-                case 'right':
-                    shunted = shunt(board_width - 1, 0, -1, 0, board_height, 1, -1);
-                    break;
-            }
-            if (!shunted) {
-                found = scanForRectangles();
-                if (found > 0) {
-                    this.onUpdate = this.fadeRectangles;
-                    age = time;
+            if (rotate) {
+                dt = (rotateTime - time) / lerpTime;
+                if (dt <= 0) {
+                    rotate = false;
+                    angle &= 3;
+                    this.rotation = -angle / 2 * Math.PI;
                 } else {
-                    addRandomBlocks(2);
-                    this.onUpdate = this.waitForKeyPress;
-                    direction = null;
+                    dt = chs.Util.ease(chs.Util.ease(dt));
+                    this.rotation = targetRotation + (currentRotation - targetRotation) * dt;
                 }
-            }
-        },
-
-        fadeRectangles: function(time, deltaTime) {
-            var x;
-            if (time - age > 250) {
-                for (x = 0; x < board_size; ++x) {
-                    if (board[x] < 0) {
-                        board[x] = 0;
-                    }
-                }
-                this.onUpdate = this.doShunt;
             }
         },
 
@@ -193,15 +225,11 @@
             var x,
                 y,
                 cell;
-            flash = 1 - flash;
             for (y = 0; y < board_height; ++y) {
                 for (x = 0; x < board_width; ++x) {
                     cell = board[x + y * board_width];
-                    if (cell < 0) {
-                        cell *= -flash;
-                    }
                     context.fillStyle = colours[cell];
-                    context.fillRect(x * cell_width, y * cell_height, cell_width - 1, cell_height - 1);
+                    context.fillRect(0.5 + x * cell_width, 0.5 + y * cell_height, cell_width + 0.5, cell_height + 0.5);
                 }
             }
         }

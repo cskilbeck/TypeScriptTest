@@ -29,7 +29,10 @@ chs.Debug = (function () {
                 a;
             for (i = 2; i < arguments.length; ++i) {
                 a = arguments[i];
-                if (typeof a !== 'string') {
+                if (a === undefined) {
+                    a = "undefined";
+                }
+                else if (typeof a !== 'string') {
                     a = a.toString();
                 }
                 s = s + c + a;

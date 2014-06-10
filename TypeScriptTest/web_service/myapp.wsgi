@@ -420,12 +420,13 @@ class boardHandler(Handler):
         # add the words in the board to the words table
         words = check.get('words')
         if words is not None and len(words) > 0:
-            log("Words: ", words)
-            sql = "INSERT IGNORE INTO words (word, user_id, game_id, score) VALUES {}"
-            sql = sql.format(','.join(["(%s, %s, %s, %s)" for _ in words]))
+            sql = "INSERT IGNORE INTO words (word, user_id, game_id, score) VALUES {0} "
+            vals = ()
             params = ()
             for word in words:
+                vals += ("(%s, %s, %s, %s)",)
                 params += (word['str'], user_id, game_id, word['score'],)
+            sql = sql.format(','.join(vals))
             cur.execute(sql, params)
 
         self.add({ "score": score, "board_id": board_id })

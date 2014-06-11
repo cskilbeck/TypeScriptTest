@@ -29,10 +29,10 @@
         jump = false,
         lerpTime = 500,
         trans = [
-            { x: "xvel", y: "yvel", xm: 1, ym: 1},        // 0
-            { x: "yvel", y: "xvel", xm: 1, ym: -1},       // 90
-            { x: "xvel", y: "yvel", xm: -1, ym: -1},      // 180
-            { x: "yvel", y: "xvel", xm: -1, ym: 1}        // 270
+            { x: "xvel", y: "yvel", xm: 1, ym: 1, collide_horiz: 0 },        // 0
+            { x: "yvel", y: "xvel", xm: 1, ym: -1, collide_horiz: 1 },       // 90
+            { x: "xvel", y: "yvel", xm: -1, ym: -1, collide_horiz: 0 },      // 180
+            { x: "yvel", y: "xvel", xm: -1, ym: 1, collide_horiz: 1 }        // 270
         ];
 
     mtw.Player = chs.Class({inherit$: chs.Drawable,
@@ -94,30 +94,24 @@
                 yvel,
                 horiz,
                 vert,
-                both;
+                both,
+                collides = [],
+                hindex,
+                vindex;
 
             t = trans[angle];
+
+            hindex = t.collide_horiz;
+            vindex = 1 - hindex;
 
             xvel = this[t.x] * t.xm;
             yvel = this[t.y] * t.ym;
 
-            if (xvel !== 0) {
-                horiz = this.check(this.x + xvel, this.y);
-            }
-            if (yvel !== 0) {
-                vert = this.check(this.x, this.y + yvel);
-            }
-            if (xvel !== 0 && yvel !== 0) {
-                both = this.check(this.x + xvel, this.y + yvel);
-            }
+            collides[hindex] = this.check(this.x + xvel, this.y);
+            collides[vindex] = this.check(this.x, this.y + yvel);
+            collides[2] = this.check(this.x + xvel, this.y + yvel);
 
-            if (angle & 1) {
-                tmp = horiz;
-                horiz = vert;
-                vert = tmp;
-            }
-
-            if (horiz) {
+            if (collides[0] && !collides[1]) {
                 xvel = 0;
                 yvel = 0;
                 currentRotation = -angle / 2 * Math.PI;
@@ -129,7 +123,7 @@
                 standing = true;
                 rotateTime = lerpTime;
             } else {
-                if (vert) {
+                if (collides[1]) {
                     if (yvel > 0) {
                         if (!standing) {
                             xvel = 0;
@@ -138,7 +132,7 @@
                         standing = true;
                     }
                     yvel = 0;
-                } else if (both) {
+                } else if (collides[2]) {
                     if (yvel > 0) {
                         standing = true;
                         xvel = 0;
@@ -178,7 +172,7 @@
                         this.move(Math.min(1, dt));
                         dt -= 1;
                     }
-                    if (!rotate && !standing) {
+                    if (!rotate) {
                         this.yvel += deltaTime * gravity;
                     }
                 }

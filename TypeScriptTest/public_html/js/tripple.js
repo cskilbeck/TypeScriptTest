@@ -17,23 +17,28 @@
         ],
         board = [],
         // player
-        score = 0,
-        dead = false,
-        rotate = false,
         angle = 0,
-        rotateTime,
-        currentRotation,
+        startRotation,
         targetRotation,
-        standing = false,
+        rotateStartTime,
+        lerpTime = 1000,
+        flip = false,
+        oldFlip = false,
         space = false,
-        jump = false,
-        lerpTime = 500,
-        trans = [
-            { x: "xvel", y: "yvel", xm: 1, ym: 1, collide_horiz: 0 },        // 0
-            { x: "yvel", y: "xvel", xm: 1, ym: -1, collide_horiz: 1 },       // 90
-            { x: "xvel", y: "yvel", xm: -1, ym: -1, collide_horiz: 0 },      // 180
-            { x: "yvel", y: "xvel", xm: -1, ym: 1, collide_horiz: 1 }        // 270
-        ];
+        standing = false,
+        jump = false;
+
+    function fmod(x, y) {
+        return x - ((x / y) >>> 0) * y;
+    }
+
+    function round_up(x, y) {
+        return (((x + y - 1) / y) >>> 0) * y;
+    }
+
+    function round_down(x, y) {
+        return ((x / y) >>> 0) * y;
+    }
 
     mtw.Player = chs.Class({inherit$: chs.Drawable,
 
@@ -47,10 +52,8 @@
         },
 
         onKeyDown: function(e) {
-            if (standing && !rotate) {
-                space = e.name === 'space';
-                jump = false;
-            }
+            space = e.name === 'space';
+            jump = false;
         },
 
         onKeyUp: function(e) {
@@ -60,128 +63,170 @@
             }
         },
 
-        check: function(x, y) {
-            var p,
-                q,
-                u,
-                v,
-                cell,
-                blocking = false;
-            for (q = 0; q < 2; ++q) {
-                for (p = 0; p < 2; ++p) {
-                    u = ((x + p * (this.width - 1)) / cell_width) >>> 0;
-                    v = ((y + q * (this.height - 1)) / cell_height) >>> 0;
-                    cell = board[u + v * board_width];
-                    if (cell === 1) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        },
-
-        move: function(deltaTime) {
+        check: function(xpos, ypos) {
             var x,
                 y,
                 u,
                 v,
                 cell,
-                tmp,
-                t,
                 mask = 0,
-                add = 1,
-                xvel,
-                yvel,
-                horiz,
-                vert,
-                both,
-                collides = [],
-                hindex,
-                vindex;
-
-            t = trans[angle];
-
-            hindex = t.collide_horiz;
-            vindex = 1 - hindex;
-
-            xvel = this[t.x] * t.xm;
-            yvel = this[t.y] * t.ym;
-
-            collides[hindex] = this.check(this.x + xvel, this.y);
-            collides[vindex] = this.check(this.x, this.y + yvel);
-            collides[2] = this.check(this.x + xvel, this.y + yvel);
-
-            if (collides[0] && !collides[1]) {
-                xvel = 0;
-                yvel = 0;
-                currentRotation = -angle / 2 * Math.PI;
-                angle += 1;
-                targetRotation =  -angle / 2 * Math.PI;
-                angle &= 3;
-                space = false;
-                rotate = true;
-                standing = true;
-                rotateTime = lerpTime;
-            } else {
-                if (collides[1]) {
-                    if (yvel > 0) {
-                        if (!standing) {
-                            xvel = 0;
-                            console.log("Vertical!");
-                        }
-                        standing = true;
+                bit = 1;
+            for (y = 0; y < 2; ++y) {
+                for (x = 0; x < 2; ++x) {
+                    u = ((xpos + x * (cell_width - 1)) / cell_width) >>> 0;
+                    v = ((ypos + y * (cell_height - 1)) / cell_height) >>> 0;
+                    cell = board[u + v * board_width];
+                    if (cell === 1) {
+                        mask += bit;
                     }
-                    yvel = 0;
-                } else if (collides[2]) {
-                    if (yvel > 0) {
-                        standing = true;
-                        xvel = 0;
-                    }
-                    yvel = 0;
+                    bit <<= 1;
                 }
             }
+            return mask;
+        },
 
-            this.x += xvel;
-            this.y += yvel;
-
-            this[t.x] = xvel * t.xm;
-            this[t.y] = yvel * t.ym;
+        move: function(deltaTime) {
+            var nx = this.x + this.xvel * deltaTime,
+                ny = this.y + this.yvel * deltaTime,
+                ox,
+                oy,
+                landed = false,
+                mask = this.check(nx, ny);
+            switch(mask) {
+                case 0:
+                    break;
+                case 1:
+                    ox = fmod(nx, cell_width);
+                    oy = fmod(ny, cell_height);
+                    if (ox > oy) {
+                        nx = round_up(nx, cell_width);
+                        this.xvel = 0;
+                    } else {
+                        ny = round_up(ny, cell_height);
+                        this.yvel = 0;
+                    }
+                    break;
+                case 2:
+                    ox = fmod(nx + cell_width - 1, cell_width);
+                    oy = (cell_height - 1) - fmod(ny, cell_height);
+                    if (ox < oy) {
+                        nx = round_down(nx, cell_width);    // !!!
+                        this.xvel = 0;
+                    } else {
+                        ny = round_up(ny, cell_height);
+                        this.yvel = 0;
+                    }
+                    break;
+                case 3:
+                    ny = round_up(ny, cell_height);
+                    this.yvel = 0;
+                    break;
+                case 4:
+                    ox = fmod(nx, cell_width);
+                    oy = (cell_height - 1) - fmod(ny, cell_height);
+                    if (ox > oy) {
+                        nx = round_up(nx, cell_width);
+                        this.xvel = 0;
+                    } else {
+                        ny = round_down(ny, cell_height);
+                        this.yvel = 0;
+                        landed = true;
+                    }
+                    break;
+                case 5:
+                    nx = round_up(nx, cell_width);
+                    this.xvel = 0;
+                    break;
+                case 6:
+                    break;
+                case 7:
+                    nx = round_up(nx, cell_width);
+                    ny = round_up(ny, cell_height);
+                    this.xvel = 0;
+                    this.yvel = 0;
+                    break;
+                case 8:
+                    ox = fmod(nx + cell_width - 1, cell_width);
+                    oy = fmod(ny + cell_height - 1, cell_height);
+                    if (oy > ox) {
+                        nx = round_down(nx, cell_width);    // !!!
+                        this.xvel = 0;
+                        flip = true;
+                    } else {
+                        ny = round_down(ny, cell_height);
+                        this.yvel = 0;
+                        landed = true;
+                    }
+                    break;
+                case 9:
+                    break;
+                case 10:
+                    nx = round_down(nx, cell_width);    // !!!
+                    this.xvel = 0;
+                    flip = true;
+                    break;
+                case 11:
+                    nx = round_down(nx, cell_width);    // !!!
+                    ny = round_up(ny, cell_height);
+                    this.xvel = 0;
+                    this.yvel = 0;
+                    flip = true;
+                    break;
+                case 12:
+                    ny = round_down(ny, cell_height);
+                    this.yvel = 0;
+                    landed = true;
+                    break;
+                case 13:
+                    nx = round_up(nx, cell_width);
+                    ny = round_down(ny, cell_height);
+                    this.xvel = 0;
+                    this.yvel = 0;
+                    break;
+                case 14:
+                    nx = round_down(nx, cell_width);    // !!!
+                    ny = round_down(ny, cell_height);
+                    this.xvel = 0;
+                    this.yvel = 0;
+                    flip = true;
+                    break;
+                case 15:
+                    nx = this.x;
+                    ny = this.y;
+                    this.xvel = 0;
+                    this.yvel = 0;
+                    break;
+            }
+            this.x = nx;
+            this.y = ny;
         },
 
         onUpdate: function(time, deltaTime) {
             var dt = deltaTime,
-                t = trans[angle];
-            chs.Debug.print("Standing: " + standing.toString());
-            chs.Debug.print("Rotate: " + rotate.toString());
-            chs.Debug.print("Angle: " + angle.toString());
-            chs.Debug.print("XVel: " + this.xvel.toString());
-            chs.Debug.print("YVel: " + this.yvel.toString());
-            chs.Debug.print("`XVel: " + this[t.x].toString());
-            chs.Debug.print("`YVel: " + this[t.y].toString());
-            if (!rotate) {
-                if (space && standing) {
-                    this.xvel = 0.35;
-                } else if (jump && standing) {
-                    this.yvel = -0.85;
+                of = flip;
+            if (flip && !of) {
+                this.xvel = 0;
+                this.yvel = 0;
+            }
+            else if (!flip && this.yvel !== 0) {
+                if (space) {
+                    this.xvel = 0.5;
+                } else if (jump) {
+                    this.yvel = -0.5;
                     jump = false;
-                    standing = false;
                 }
-                if (!rotate) {
-                    dt = Math.min(dt, 1000/20);
-                    while (dt > 0 && !rotate) {
-                        this.move(Math.min(1, dt));
-                        dt -= 1;
-                    }
-                    if (!rotate) {
-                        this.yvel += deltaTime * gravity;
-                    }
-                }
+            }
+            this.yvel += gravity * deltaTime;
+            chs.Debug.print(this.xvel.toFixed(2), this.yvel.toFixed(2));
+            while (dt > 0) {
+                this.move(Math.min(dt, 1));
+                dt -= 1;
             }
         },
 
         onDraw: function(context) {
             context.fillStyle = 'black';
-            context.fillRect(0.5, 0.5, this.width - 0.5, this.height - 0.5);
+            context.fillRect(0.5, 0.5, this.width, this.height);
         }
     });
 
@@ -224,20 +269,23 @@
 
         onUpdate: function(time, deltaTime) {
             var dt;
-            chs.Debug.print(Math.floor(this.rotation * 180 / Math.PI));
-
-            if (rotate) {
-                rotateTime -= deltaTime;
-                if (rotateTime <= 0) {
-                    rotate = false;
-                    this.xvel = 0;
-                    this.yvel = 0;
-                    standing = true;
-                    space = false;
-                    this.rotation = -angle / 2 * Math.PI;
+            if (flip) {
+                if (!oldFlip) {
+                    oldFlip = true;
+                    startRotation = angle * Math.PI * -0.5;
+                    angle += 1;
+                    targetRotation = angle * Math.PI * -0.5;
+                    angle &= 3;
+                    rotateStartTime = time;
+                }
+                dt = (time - rotateStartTime) / lerpTime;
+                if (dt < 1) {
+                    dt = chs.Util.ease(dt);
+                    this.rotation = startRotation + (targetRotation - startRotation) * dt;
                 } else {
-                    dt = chs.Util.ease(chs.Util.ease(rotateTime / lerpTime));
-                    this.rotation = targetRotation + (currentRotation - targetRotation) * dt;
+                    // actually flip everything
+                    this.rotation = targetRotation;
+                    flip = false;
                 }
             }
         },

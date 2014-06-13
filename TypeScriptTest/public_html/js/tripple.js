@@ -21,7 +21,7 @@
         startRotation,
         targetRotation,
         rotateStartTime,
-        lerpTime = 1000,
+        lerpTime = 750,
         flip = false,
         oldFlip = false,
         space = false,
@@ -74,16 +74,18 @@
                 cell,
                 mask = 0,
                 bit = 1;
+            v = ypos;
             for (y = 0; y < 2; ++y) {
+                u = xpos;
                 for (x = 0; x < 2; ++x) {
-                    u = ((xpos + x * (cell_width - 1)) / cell_width) >>> 0;
-                    v = ((ypos + y * (cell_height - 1)) / cell_height) >>> 0;
-                    cell = board[u + v * board_width];
+                    cell = board[((u / cell_width) >>> 0) + ((v / cell_height) >>> 0) * board_width];
                     if (cell === 1) {
                         mask += bit;
                     }
                     bit <<= 1;
+                    u += cell_width - 1;
                 }
+                v += cell_height - 1;
             }
             return mask;
         },
@@ -231,12 +233,15 @@
                 jump = false;
                 space = false;
             }
+            return mask;
         },
 
         onUpdate: function(time, deltaTime) {
             var dt = deltaTime,
-                of = flip;
-            chs.Debug.print(Math.atan2(this.xvel, this.yvel));
+                of = flip,
+                mask,
+                firstMask;
+            chs.Debug.print("Flying: " + flying);
             if (flip && !of) {
                 jump = false;
                 space = false;
@@ -248,16 +253,18 @@
                 if (space) {
                     this.xvel = 0.5;
                 } else if (jump) {
-                    this.yvel = -0.75;
-                    console.log("JUMP!!!!!!!!!!!");
+                    this.yvel = -0.85;
                     jump = false;
                     flying = true;
                 }
                 this.yvel += gravity * deltaTime;
-                chs.Debug.print(this.xvel.toFixed(2), this.yvel.toFixed(2));
+                mask = 0;
                 while (dt > 0) {
-                    this.move(Math.min(dt, 1));
+                    mask |= this.move(Math.min(dt, 1));
                     dt -= 1;
+                }
+                if (mask === 0) {
+                    flying = true;
                 }
             }
         },
@@ -322,7 +329,6 @@
                     dt = chs.Util.ease(dt);
                     this.rotation = startRotation + (targetRotation - startRotation) * dt;
                 } else {
-                    // actually flip everything
                     this.rotation = 0;
                     flip = false;
                     tmp = [];

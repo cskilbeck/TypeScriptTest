@@ -1,5 +1,5 @@
 // how many gems you have to collect before the exit appears
-// timer running out
+// timer (running out?)
 // level editor
 // restart button
 // space,jump in 1 frame
@@ -89,6 +89,7 @@
         player.xvel = 0;
         player.yvel = 0;
         player.state = player.play;
+        player.colour = "black";
         score = 0;
 
         // clear the board to white
@@ -143,6 +144,7 @@
             this.setPosition(cell_width * 3, cell_height * 2);
             this.xvel = 0;
             this.yvel = 0;
+            this.colour = "black";
         },
 
         onKeyDown: function(e) {
@@ -401,9 +403,11 @@
                             break;
                         case poison:
                             this.state = this.die;
+                            this.colour = "rgb(128,128,128)";
                             break;
                         case exit:
                             this.state = this.exit;
+                            this.colour = "rgb(192,192,255)";
                             break;
                     }
                 }
@@ -411,7 +415,7 @@
         },
 
         onDraw: function(context) {
-            context.fillStyle = 'black';
+            context.fillStyle = this.colour;
             context.fillRect(0.5, 0.5, this.width + 0.5, this.height + 0.5);
         }
     });

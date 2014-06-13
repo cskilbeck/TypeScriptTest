@@ -1,23 +1,53 @@
-(function (){
+// how many gems you have to collect before the exit appears
+// timer running out
+// level editor
+// restart button
+// space,jump in 1 frame
+
+// game states:
+//  main menu
+//  playing
+//  level editor
+
+// player states:
+//  playing
+//  dying - flash for a bit, then reset to current level
+//  winning - lerp to the position of the exit square, then reset to next level
+
+(function () {
     "use strict";
 
     var board_width = 14,
         board_height = 14,
-        board_size = board_width * board_height,
         cell_width = 32,
         cell_height = 32,
-        board_width_in_pixels = board_width * cell_width,
-        board_height_in_pixels = board_height * cell_height,
         gravity = 0.005,
+        run_speed = 0.5,
+        jump_impulse = 0.85,
+        board_size = board_width * board_height,
         colours = [
             "white",
             "rgb(0,112,0)",  // 1: green: platform
-            "rgb(255,0,0)",  // 2: red: deadly
-            "rgb(0,0,255)"   // 3: blue: collectible    // (and 4: start position)
+            "rgb(255,0,0)",  // 2: red: poison
+            "rgb(0,0,255)",  // 3: blue: gem
+            "rgb(255,192,0)" // 4: yellow: exit
         ],
-        board = [],
-        // player
+        offsets = [
+            [0, 0],
+            [cell_width - 1, 0],
+            [0, cell_height - 1],
+            [cell_width - 1, cell_height - 1]
+        ],
+
+        empty = 0,
+        platform = 1,
+        poison = 2,
+        gem = 3,
+        exit = 4,
+        score = 0,
+        playfield = null,
         player = null,
+        board = [],
         startRotation,
         targetRotation,
         rotateStartTime,
@@ -27,6 +57,7 @@
         space = false,
         standing = false,
         flying = false,
+        sq22 = Math.sqrt(2) / 2,
         jump = false;
 
     function fmod(x, y) {
@@ -39,6 +70,68 @@
 
     function round_down(x, y) {
         return ((x / y) >>> 0) * y;
+    }
+
+    function reset() {
+        var i;
+
+        playfield.rotation = 0;
+        playfield.width = board_width * cell_width;
+        playfield.height = board_height * cell_height;
+
+        flip = false;
+        oldFlip = false;
+        space = false;
+        standing = false;
+        flying = false;
+        jump = false;
+        player.setPosition(cell_width * 3, cell_height * 2);
+        player.xvel = 0;
+        player.yvel = 0;
+        player.state = player.play;
+        score = 0;
+
+        // clear the board to white
+        for (i = 0; i < board_size; ++i) {
+            board[i] = 0;
+        }
+
+        // add top, bottom
+        for (i = 0; i < board_width; ++i) {
+            board[i] = 1;
+            board[i + (board_height - 1) * board_width] = 1;
+        }
+
+        // add left, right
+        for (i = 0; i < board_height; ++i) {
+            board[i * board_width] = 1;
+            board[board_width - 1 + i * board_width] = 1;
+        }
+
+        // now add the rest
+        board[3 + 5 * board_width] = 1;
+        board[3 + 6 * board_width] = 1;
+        board[4 + 5 * board_width] = 1;
+        board[4 + 6 * board_width] = 1;
+        board[6 + 4 * board_width] = 1;
+
+        board[3 + 11 * board_width] = 2;
+        board[12 + 6 * board_width] = 2;
+
+        board[4 + 4 * board_width] = 3;
+        board[11 + 8 * board_width] = 3;
+        board[9 + 6 * board_width] = 3;
+        board[11 + 11 * board_width] = 3;
+
+        board[11 + 4 * board_width] = 4;
+    }
+
+    function get_cell(x, y) {
+        return board[((x / cell_width) >>> 0) + ((y / cell_height) >>> 0) * board_width];
+    }
+
+    function set_cell(x, y, value) {
+        board[((x / cell_width) >>> 0) + ((y / cell_height) >>> 0) * board_width] = value;
     }
 
     mtw.Player = chs.Class({inherit$: chs.Drawable,
@@ -66,29 +159,23 @@
             }
         },
 
-        check: function(xpos, ypos) {
-            var x,
-                y,
-                u,
-                v,
-                cell,
-                mask = 0,
-                bit = 1;
-            v = ypos;
-            for (y = 0; y < 2; ++y) {
-                u = xpos;
-                for (x = 0; x < 2; ++x) {
-                    cell = board[((u / cell_width) >>> 0) + ((v / cell_height) >>> 0) * board_width];
-                    if (cell === 1) {
-                        mask += bit;
-                    }
-                    bit <<= 1;
-                    u += cell_width - 1;
+        check: function(xpos, ypos, value) {
+            var mask = 0,
+                i,
+                bit;
+            for (i = 0; i < 4; ++i) {
+                bit = 1 << i;
+                if (get_cell(xpos + offsets[i][0], ypos + offsets[i][1]) === value) {
+                    mask += bit;
                 }
-                v += cell_height - 1;
             }
             return mask;
         },
+
+        // this is a bloody silly way to do it
+        // instead, double the resolution of the grid
+        //   and create a border of platform cells around the real ones
+        //   then use a single point for the player
 
         move: function(deltaTime) {
             var nx = this.x + this.xvel * deltaTime,
@@ -96,7 +183,7 @@
                 ox,
                 oy,
                 wasFlying = flying,
-                mask = this.check(nx, ny);
+                mask = this.check(nx, ny, platform);
             switch(mask) {
                 case 0:
                     break;
@@ -147,12 +234,12 @@
                     this.xvel = 0;
                     break;
                 case 6:
-                    if (Math.atan2(this.xvel, this.yvel) > 0) {
-                        nx = round_up(nx, cell_width);
-                        ny = round_up(ny, cell_height);
-                    } else {
+                    if (this.xvel * sq22 - this.yvel * sq22 > 0) {
                         nx = round_down(nx, cell_width);
                         ny = round_down(ny, cell_height);
+                    } else {
+                        nx = round_up(nx, cell_width);
+                        ny = round_up(ny, cell_height);
                     }
                     this.xvel = 0;
                     this.yvel = 0;
@@ -180,6 +267,15 @@
                     }
                     break;
                 case 9:
+                    if (this.xvel * sq22 + this.yvel * sq22 > 0) {
+                        nx = round_down(nx, cell_width);
+                        ny = round_up(ny, cell_height);
+                    } else {
+                        nx = round_up(nx, cell_width);
+                        ny = round_down(ny, cell_height);
+                    }
+                    this.xvel = 0;
+                    this.yvel = 0;
                     break;
                 case 10:
                     nx = round_down(nx, cell_width);    // !!!
@@ -236,12 +332,39 @@
             return mask;
         },
 
-        onUpdate: function(time, deltaTime) {
-            var dt = deltaTime,
+        state: chs.Property({
+            set: function(stateFunction) {
+                this.onUpdate = stateFunction;
+                this.stateBegan = chs.Timer.time;
+            }
+        }),
+
+        stateTime: chs.Property({
+            get: function () {
+                return chs.Timer.time - this.stateBegan;
+            }
+        }),
+
+        die: function(time, deltaTime) {
+            if (this.stateTime > 1000) {
+                reset();
+            }
+        },
+
+        exit: function(time, deltaTime) {
+            if (this.stateTime > 1000) {
+                reset();
+            }
+        },
+
+        play: function(time, deltaTime) {
+            var dt = Math.min(1000/10, deltaTime),
                 of = flip,
                 mask,
+                i,
+                u,
+                v,
                 firstMask;
-            chs.Debug.print("Flying: " + flying);
             if (flip && !of) {
                 jump = false;
                 space = false;
@@ -251,13 +374,14 @@
             }
             else if (!flip) {
                 if (space) {
-                    this.xvel = 0.5;
+                    this.xvel = run_speed;
                 } else if (jump) {
-                    this.yvel = -0.85;
+                    this.xvel = run_speed;
+                    this.yvel = -jump_impulse;
                     jump = false;
                     flying = true;
                 }
-                this.yvel += gravity * deltaTime;
+                this.yvel += gravity * dt;
                 mask = 0;
                 while (dt > 0) {
                     mask |= this.move(Math.min(dt, 1));
@@ -266,12 +390,29 @@
                 if (mask === 0) {
                     flying = true;
                 }
+
+                for(i = 0; i < 4; i += 1) {
+                    u = this.x + offsets[i][0];
+                    v = this.y + offsets[i][1];
+                    switch(get_cell(u, v)) {
+                        case gem:
+                            set_cell(u, v, 0);
+                            score += 1;
+                            break;
+                        case poison:
+                            this.state = this.die;
+                            break;
+                        case exit:
+                            this.state = this.exit;
+                            break;
+                    }
+                }
             }
         },
 
         onDraw: function(context) {
             context.fillStyle = 'black';
-            context.fillRect(0.5, 0.5, this.width, this.height);
+            context.fillRect(0.5, 0.5, this.width + 0.5, this.height + 0.5);
         }
     });
 
@@ -280,36 +421,16 @@
         $: function() {
             var i;
             chs.Drawable.call(this);
+            playfield = this;
+
             this.width = board_width * cell_width;
             this.height = board_height * cell_height;
             this.setPivot(0.5, 0.5);
             this.setPosition(chs.desktop.width / 2, chs.desktop.height / 2);
-
-            // clear the board to white
-            for (i = 0; i < board_size; ++i) {
-                board[i] = 0;
-            }
-
-            // add top, bottom
-            for (i = 0; i < board_width; ++i) {
-                board[i] = 1;
-                board[i + (board_height - 1) * board_width] = 1;
-            }
-
-            // add left, right
-            for (i = 0; i < board_height; ++i) {
-                board[i * board_width] = 1;
-                board[board_width - 1 + i * board_width] = 1;
-            }
-
-            // now add the rest
-            board[3 + 5 * board_width] = 1;
-            board[3 + 6 * board_width] = 1;
-            board[4 + 5 * board_width] = 1;
-            board[4 + 6 * board_width] = 1;
-
             player = new mtw.Player();
             this.addChild(player);
+
+            reset();
         },
 
         onUpdate: function(time, deltaTime) {
@@ -344,6 +465,7 @@
                 }
             }
             oldFlip = flip;
+            chs.Debug.print("Score: " + score.toString());
         },
 
         onDraw: function(context) {

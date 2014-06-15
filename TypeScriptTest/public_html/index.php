@@ -45,6 +45,7 @@
     <script src="js/debug.js"></script>
     <script src="js/desktop.js"></script>
 
+    <script src="js/levels.js"></script>
     <script src="js/tripple.js"></script>
 
     <script src="js/dictionary.js"></script>

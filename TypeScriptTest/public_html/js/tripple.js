@@ -14,6 +14,10 @@
 //  dying - flash for a bit, then reset to current level
 //  winning - lerp to the position of the exit square, then reset to next level
 
+// Level:
+// Width, Height
+// Board
+
 (function () {
     "use strict";
 
@@ -23,14 +27,14 @@
         cell_height = 32,
         gravity = 0.005,
         run_speed = 0.5,
-        jump_impulse = 0.85,
+        jump_impulse = 0.84,
         board_size = board_width * board_height,
         colours = [
             "white",
             "rgb(0,112,0)",  // 1: green: platform
             "rgb(255,0,0)",  // 2: red: poison
             "rgb(0,0,255)",  // 3: blue: gem
-            "rgb(255,192,0)" // 4: yellow: exit
+            "rgb(255,192,0)" // 4: yellow: exit (5: start position)
         ],
         offsets = [
             [0, 0],
@@ -39,12 +43,16 @@
             [cell_width - 1, cell_height - 1]
         ],
 
+        mainmenu = null,
+        level = 0,
         empty = 0,
         platform = 1,
         poison = 2,
         gem = 3,
         exit = 4,
+        start_cell = 5,
         score = 0,
+        gems_needed = 0,
         playfield = null,
         player = null,
         board = [],
@@ -60,6 +68,50 @@
         sq22 = Math.sqrt(2) / 2,
         jump = false;
 
+    function init_board(levelString) {
+        var x,
+            y,
+            i,
+            l,
+            c,
+            startPos = { x: cell_width, y : cell_height, gems: 0 };
+
+        // assert(levelString.length === ((board_width - 2) * (board_height - 2)))
+        x = 0;
+        y = 0;
+        for (i = 0, l = levelString.length; i < l; ++i) {
+            c = parseInt(levelString[i], 10);
+            if (isNaN(c)) {
+                c = 0;
+            }
+            if (c === start_cell) {
+                c = 0;
+                startPos.x = (x + 1) * cell_width;
+                startPos.y = (y + 1) * cell_height;
+            } else if (c === gem) {
+                startPos.gems += 1;
+            }
+            board[x + 1 + (y + 1) * board_width] = c;
+            x += 1;
+            if (x > 11) {
+                x = 0;
+                y += 1;
+            }
+        }
+        // add top, bottom
+        for (i = 0; i < board_width; ++i) {
+            board[i] = 1;
+            board[i + (board_height - 1) * board_width] = 1;
+        }
+
+        // add left, right
+        for (i = 0; i < board_height; ++i) {
+            board[i * board_width] = 1;
+            board[board_width - 1 + i * board_width] = 1;
+        }
+        return startPos;
+    }
+
     function fmod(x, y) {
         return x - ((x / y) >>> 0) * y;
     }
@@ -73,7 +125,8 @@
     }
 
     function reset() {
-        var i;
+        var i,
+            startPos;
 
         playfield.rotation = 0;
         playfield.width = board_width * cell_width;
@@ -85,46 +138,17 @@
         standing = false;
         flying = false;
         jump = false;
-        player.setPosition(cell_width * 3, cell_height * 2);
         player.xvel = 0;
         player.yvel = 0;
         player.state = player.play;
         player.colour = "black";
+        player.visible = true;
         score = 0;
+        colours[exit] = "rgb(255,192,0)";
 
-        // clear the board to white
-        for (i = 0; i < board_size; ++i) {
-            board[i] = 0;
-        }
-
-        // add top, bottom
-        for (i = 0; i < board_width; ++i) {
-            board[i] = 1;
-            board[i + (board_height - 1) * board_width] = 1;
-        }
-
-        // add left, right
-        for (i = 0; i < board_height; ++i) {
-            board[i * board_width] = 1;
-            board[board_width - 1 + i * board_width] = 1;
-        }
-
-        // now add the rest
-        board[3 + 5 * board_width] = 1;
-        board[3 + 6 * board_width] = 1;
-        board[4 + 5 * board_width] = 1;
-        board[4 + 6 * board_width] = 1;
-        board[6 + 4 * board_width] = 1;
-
-        board[3 + 11 * board_width] = 2;
-        board[12 + 6 * board_width] = 2;
-
-        board[4 + 4 * board_width] = 3;
-        board[11 + 8 * board_width] = 3;
-        board[9 + 6 * board_width] = 3;
-        board[11 + 11 * board_width] = 3;
-
-        board[11 + 4 * board_width] = 4;
+        startPos = init_board(mtw.Levels[level]);
+        player.setPosition(startPos.x, startPos.y);
+        gems_needed = startPos.gems;
     }
 
     function get_cell(x, y) {
@@ -350,12 +374,27 @@
         die: function(time, deltaTime) {
             if (this.stateTime > 1000) {
                 reset();
+            } else {
+                this.visible = !this.visible;
             }
         },
 
         exit: function(time, deltaTime) {
-            if (this.stateTime > 1000) {
-                reset();
+            var t;
+            if (this.stateTime > 500) {
+                level += 1;
+                if (level >= mtw.Levels.length) {
+                    playfield.visible = false;
+                    playfield.enabled = false;
+                    mainmenu.visible = true;
+                    mainmenu.enabled = true;
+                } else {
+                    reset();
+                }
+            } else {
+                t = chs.Util.ease2(Math.min(1, this.stateTime / 250), 6);
+                this.x = this.orgX + (this.targetX - this.orgX) * t;
+                this.y = this.orgY + (this.targetY - this.orgY) * t;
             }
         },
 
@@ -406,8 +445,14 @@
                             this.colour = "rgb(128,128,128)";
                             break;
                         case exit:
-                            this.state = this.exit;
-                            this.colour = "rgb(192,192,255)";
+                            if (score === gems_needed) {
+                                this.targetX = round_down(u, cell_width);
+                                this.targetY = round_down(v, cell_height);
+                                this.orgX = this.x;
+                                this.orgY = this.y;
+                                this.state = this.exit;
+                                this.colour = "rgb(192,192,255)";
+                            }
                             break;
                     }
                 }
@@ -420,20 +465,47 @@
         }
     });
 
-    mtw.Tripple = chs.Class({inherit$: chs.Drawable,
+    mtw.TrippleMenu = chs.Class({inherit$: chs.Drawable,
+
+        $: function () {
+            var pf;
+            chs.Drawable.call(this);
+            mainmenu = this;
+            pf = new mtw.TripplePlayfield();
+            playfield.visible = false;
+            playfield.enabled = false;
+            chs.desktop.addChild(playfield);
+        },
+
+        onUpdate: function () {
+            chs.Debug.text(100, 100, "Welcome to Tripple!");
+            chs.Debug.text(100, 120, "Press enter to play");
+        },
+
+        onKeyDown: function(e) {
+            if (e.name === 'enter') {
+                this.visible = false;
+                this.enabled = false;
+                playfield.visible = true;
+                playfield.enabled = true;
+                level = 0;
+                reset();
+            }
+        }
+    });
+
+    mtw.TripplePlayfield = chs.Class({inherit$: chs.Drawable,
 
         $: function() {
             var i;
             chs.Drawable.call(this);
             playfield = this;
-
             this.width = board_width * cell_width;
             this.height = board_height * cell_height;
             this.setPivot(0.5, 0.5);
             this.setPosition(chs.desktop.width / 2, chs.desktop.height / 2);
             player = new mtw.Player();
             this.addChild(player);
-
             reset();
         },
 
@@ -444,7 +516,6 @@
                 tmp;
             if (flip) {
                 if (!oldFlip) {
-                    oldFlip = true;
                     startRotation = 0;
                     targetRotation = Math.PI * -0.5;
                     rotateStartTime = time;
@@ -469,7 +540,11 @@
                 }
             }
             oldFlip = flip;
-            chs.Debug.print("Score: " + score.toString());
+            chs.Debug.print("Level: " + (level + 1).toString());
+            chs.Debug.print("Gems: " + score.toString() + " of " + gems_needed.toString());
+            if (score === gems_needed) {
+                colours[exit] = "rgb(255,255," + ((Math.sin(chs.Timer.time / 33) * 127 + 128) >>> 0).toString() + ")";
+            }
         },
 
         onDraw: function(context) {

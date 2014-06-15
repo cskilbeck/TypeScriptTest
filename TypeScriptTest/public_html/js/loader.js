@@ -141,6 +141,7 @@
                                 data = chs.Util.getResponseAsArray(xr);
                                 process = Item.processJPEG;
                                 break;
+                            case 'text/plain':
                             case 'application/json':
                                 data = xr.responseText;
                                 process = Item.processJSON;

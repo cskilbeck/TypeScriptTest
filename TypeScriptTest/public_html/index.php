@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Make The Words</title>
+    <title>Tripple</title>
     <link rel="stylesheet" href="app.css" type="text/css" />
     <!--[if gte IE 9]><!-->
     <script src="js/chs.js"></script>

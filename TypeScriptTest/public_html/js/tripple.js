@@ -59,7 +59,7 @@
         startRotation,
         targetRotation,
         rotateStartTime,
-        lerpTime = 750,
+        lerpTime = 400,
         flip = false,
         oldFlip = false,
         space = false,
@@ -478,8 +478,14 @@
         },
 
         onUpdate: function () {
-            chs.Debug.text(100, 100, "Welcome to Tripple!");
-            chs.Debug.text(100, 120, "Press enter to play");
+            chs.Debug.text(100, 60, "Welcome to Tripple!");
+            chs.Debug.text(100, 100, "Press enter to start");
+            chs.Debug.text(100, 140, "Instructions:");
+            chs.Debug.text(100, 160, "Hold space to run");
+            chs.Debug.text(100, 180, "Release space to jump");
+            chs.Debug.text(100, 200, "Collect all blue gems");
+            chs.Debug.text(100, 220, "Avoid red poison");
+            chs.Debug.text(100, 240, "Get to the exit");
         },
 
         onKeyDown: function(e) {

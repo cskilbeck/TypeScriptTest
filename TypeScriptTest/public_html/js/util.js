@@ -3,7 +3,7 @@
 (function () {
     "use strict";
 
-    var b64c = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    var b64c =   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 
     chs.Util = {
 
@@ -144,6 +144,14 @@
 
         //////////////////////////////////////////////////////////////////////
 
+        circle: function (ctx, x, y, radius) {
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
+            ctx.closePath();
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
         rect: function (ctx, x, y, width, height) {
             var xr = x + width,
                 yr = y + height;
@@ -181,6 +189,12 @@
                 ctx.quadraticCurveTo(x, y, x + r, y);
             }
             ctx.closePath();
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        getQuery: function () {
+            return chs.Util.queryStringToJSON(window.location.search.slice(1));
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -285,6 +299,45 @@
                 break;
             }
             return res;
+        },
+
+        atob: function (input) {
+            var output = [],
+                chr1, chr2, chr3,
+                enc1, enc2, enc3, enc4 = "",
+                i = 0;
+
+            var base64test = /[^A-Za-z0-9\+\/\=]/g;
+            if (base64test.exec(input)) {
+                return null;
+                //alert("There were invalid base64 characters in the input text.\n" +
+                //"Valid base64 characters are A-Z, a-z, 0-9, '+', '/',and '='\n" +
+                //"Expect errors in decoding.");
+                //input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+            }
+
+            do {
+                enc1 = b64c.indexOf(input.charAt(i++)) >>> 0; // this is lame - use a reverse lookup table instead
+                enc2 = b64c.indexOf(input.charAt(i++)) >>> 0;
+                enc3 = b64c.indexOf(input.charAt(i++)) >>> 0;
+                enc4 = b64c.indexOf(input.charAt(i++)) >>> 0;
+
+                chr1 = (enc1 << 2) | (enc2 >>> 4);
+                chr2 = ((enc2 & 15) << 4) | (enc3 >>> 2);
+                chr3 = ((enc3 & 3) << 6) | enc4;
+
+                output.push(chr1);
+
+                if (enc3 != 64) {
+                    output.push(chr2);
+                }
+                if (enc4 != 64) {
+                    output.push(chr3);
+                }
+
+            } while (i < input.length);
+
+            return output;
         }
     };
 }());

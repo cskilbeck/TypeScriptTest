@@ -48,7 +48,7 @@
     <script src="js/levels.js"></script>
     <script src="js/tripple.js"></script>
 
-    <script src="js/dictionary.js"></script>
+<!--     <script src="js/dictionary.js"></script>
     <script src="js/letters.js"></script>
     <script src="js/word.js"></script>
     <script src="js/tile.js"></script>
@@ -61,7 +61,7 @@
     <script src="js/game.js"></script>
     <script src="js/loginscreen.js"></script>
     <script src="js/mainmenu.js"></script>
-    <script src="js/main.js"></script>
+ -->    <script src="js/main.js"></script>
     <script src="js/startup.js"></script>
     <!--<![endif]-->
 </head>

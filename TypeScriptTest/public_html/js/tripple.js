@@ -1,5 +1,4 @@
-// how many gems you have to collect before the exit appears
-// timer (running out?)
+//////////////////////////////////////////////////////////////////////
 // level editor
 // restart button
 // space,jump in 1 frame
@@ -18,8 +17,12 @@
 // Width, Height
 // Board
 
+//////////////////////////////////////////////////////////////////////
+
 (function () {
     "use strict";
+
+    //////////////////////////////////////////////////////////////////////
 
     var board_width = 14,
         board_height = 14,
@@ -29,12 +32,22 @@
         run_speed = 0.5,
         jump_impulse = 0.84,
         board_size = board_width * board_height,
+        loader,
         colours = [
             "white",
-            "rgb(0,112,0)",  // 1: green: platform
-            "rgb(255,0,0)",  // 2: red: poison
-            "rgb(0,0,255)",  // 3: blue: gem
-            "rgb(255,192,0)" // 4: yellow: exit (5: start position)
+            "rgb(0,112,0)",     // 1: green: platform
+            "rgb(255,0,0)",     // 2: red: poison
+            "rgb(0,0,255)",     // 3: blue: gem
+            "rgb(255,192,0)",   // 4: yellow: exit
+            "rgb(0,0,0)"        // 5: start position
+        ],
+        descriptions = [
+            "space",
+            "platform",
+            "poison",
+            "gem",
+            "exit",
+            "player"
         ],
         offsets = [
             [0, 0],
@@ -43,6 +56,8 @@
             [cell_width - 1, cell_height - 1]
         ],
 
+        mode = 'play',
+        game = null,
         mainmenu = null,
         level = 0,
         empty = 0,
@@ -66,7 +81,44 @@
         standing = false,
         flying = false,
         sq22 = Math.sqrt(2) / 2,
+        currentBlock = 2,
+        cursor = null,
+        startX = 1,
+        startY = 12,
+        palette = null,
         jump = false;
+
+    //////////////////////////////////////////////////////////////////////
+
+    function fmod(x, y) {
+        return x - ((x / y) >>> 0) * y;
+    }
+
+    //////////////////////////////////////////////////////////////////////
+
+    function round_up(x, y) {
+        return (((x + y - 1) / y) >>> 0) * y;
+    }
+
+    //////////////////////////////////////////////////////////////////////
+
+    function round_down(x, y) {
+        return ((x / y) >>> 0) * y;
+    }
+
+    //////////////////////////////////////////////////////////////////////
+
+    function get_cell(x, y) {
+        return board[((x / cell_width) >>> 0) + ((y / cell_height) >>> 0) * board_width];
+    }
+
+    //////////////////////////////////////////////////////////////////////
+
+    function set_cell(x, y, value) {
+        board[((x / cell_width) >>> 0) + ((y / cell_height) >>> 0) * board_width] = value;
+    }
+
+    //////////////////////////////////////////////////////////////////////
 
     function init_board(levelString) {
         var x,
@@ -76,26 +128,29 @@
             c,
             startPos = { x: cell_width, y : cell_height, gems: 0 };
 
-        // assert(levelString.length === ((board_width - 2) * (board_height - 2)))
-        x = 0;
-        y = 0;
-        for (i = 0, l = levelString.length; i < l; ++i) {
-            c = parseInt(levelString[i], 10);
-            if (isNaN(c)) {
-                c = 0;
-            }
-            if (c === start_cell) {
-                c = 0;
-                startPos.x = (x + 1) * cell_width;
-                startPos.y = (y + 1) * cell_height;
-            } else if (c === gem) {
-                startPos.gems += 1;
-            }
-            board[x + 1 + (y + 1) * board_width] = c;
-            x += 1;
-            if (x > 11) {
-                x = 0;
-                y += 1;
+        if (levelString.length === ((board_width - 2) * (board_height - 2))) {
+            x = 0;
+            y = 0;
+            for (i = 0, l = levelString.length; i < l; ++i) {
+                c = parseInt(levelString[i], 10);
+                if (isNaN(c)) {
+                    c = 0;
+                }
+                else if (c === start_cell) {
+                    c = 0;
+                    startPos.x = (x + 1) * cell_width;
+                    startPos.y = (y + 1) * cell_height;
+                } else if (c === gem) {
+                    startPos.gems += 1;
+                } else {
+                    c = Math.min(c, colours.length - 1);
+                }
+                board[x + 1 + (y + 1) * board_width] = c;
+                x += 1;
+                if (x > 11) {
+                    x = 0;
+                    y += 1;
+                }
             }
         }
         // add top, bottom
@@ -112,52 +167,36 @@
         return startPos;
     }
 
-    function fmod(x, y) {
-        return x - ((x / y) >>> 0) * y;
-    }
+    //////////////////////////////////////////////////////////////////////
+    // a crappy button
 
-    function round_up(x, y) {
-        return (((x + y - 1) / y) >>> 0) * y;
-    }
+    mtw.Button = chs.Class({inherit$: [chs.Button, chs.Drawable],
 
-    function round_down(x, y) {
-        return ((x / y) >>> 0) * y;
-    }
+        $: function(x, y, width, height, text, callback, context) {
+            chs.Button.call(this, callback, context);
+            chs.Drawable.call(this);
+            this.text = text;
+            this.setPosition(x, y);
+            this.width = width;
+            this.height = height;
+            this.colour = "rgb(192, 192, 192)";
+        },
 
-    function reset() {
-        var i,
-            startPos;
+        onIdle: function() { this.colour = "rgb(192, 192, 192)"; },
+        onPressed: function() { this.colour = "rgb(192, 32, 16)"; },
+        onHover: function() { this.colour = "rgb(128, 128, 128)"; },
 
-        playfield.rotation = 0;
-        playfield.width = board_width * cell_width;
-        playfield.height = board_height * cell_height;
+        onDraw: function(context) {
+            context.fillStyle = this.colour;
+            chs.Util.rect(context, 0, 0, this.width, this.height);
+            context.fill();
+            chs.Debug.text(this.x + 8, this.y + 4, this.text);
+        }
 
-        flip = false;
-        oldFlip = false;
-        space = false;
-        standing = false;
-        flying = false;
-        jump = false;
-        player.xvel = 0;
-        player.yvel = 0;
-        player.state = player.play;
-        player.colour = "black";
-        player.visible = true;
-        score = 0;
-        colours[exit] = "rgb(255,192,0)";
+    });
 
-        startPos = init_board(mtw.Levels[level]);
-        player.setPosition(startPos.x, startPos.y);
-        gems_needed = startPos.gems;
-    }
-
-    function get_cell(x, y) {
-        return board[((x / cell_width) >>> 0) + ((y / cell_height) >>> 0) * board_width];
-    }
-
-    function set_cell(x, y, value) {
-        board[((x / cell_width) >>> 0) + ((y / cell_height) >>> 0) * board_width] = value;
-    }
+    //////////////////////////////////////////////////////////////////////
+    // the player
 
     mtw.Player = chs.Class({inherit$: chs.Drawable,
 
@@ -202,6 +241,7 @@
         // instead, double the resolution of the grid
         //   and create a border of platform cells around the real ones
         //   then use a single point for the player
+        // or... make a per-pixel collision mask and do it properly...
 
         move: function(deltaTime) {
             var nx = this.x + this.xvel * deltaTime,
@@ -373,7 +413,7 @@
 
         die: function(time, deltaTime) {
             if (this.stateTime > 1000) {
-                reset();
+                game.reset();
             } else {
                 this.visible = !this.visible;
             }
@@ -384,12 +424,12 @@
             if (this.stateTime > 500) {
                 level += 1;
                 if (level >= mtw.Levels.length) {
-                    playfield.visible = false;
-                    playfield.enabled = false;
                     mainmenu.visible = true;
                     mainmenu.enabled = true;
+                    game.visible = false;
+                    game.enabled = false;
                 } else {
-                    reset();
+                    game.reset();
                 }
             } else {
                 t = chs.Util.ease2(Math.min(1, this.stateTime / 250), 6);
@@ -445,7 +485,7 @@
                             this.colour = "rgb(128,128,128)";
                             break;
                         case exit:
-                            if (score === gems_needed) {
+                            if (score >= gems_needed) {
                                 this.targetX = round_down(u, cell_width);
                                 this.targetY = round_down(v, cell_height);
                                 this.orgX = this.x;
@@ -465,40 +505,119 @@
         }
     });
 
+    //////////////////////////////////////////////////////////////////////
+    // main menu
+
     mtw.TrippleMenu = chs.Class({inherit$: chs.Drawable,
 
         $: function () {
-            var pf;
             chs.Drawable.call(this);
             mainmenu = this;
-            pf = new mtw.TripplePlayfield();
-            playfield.visible = false;
-            playfield.enabled = false;
-            chs.desktop.addChild(playfield);
+            game = new mtw.Game();
+            game.visible = false;
+            game.enabled = false;
+            chs.desktop.addChild(game);
+            this.addChild(new mtw.Button(50, 50, 200, 40, "Play", this.play, this));
+            this.addChild(new mtw.Button(50, 120, 200, 40, "Edit", this.edit, this));
         },
 
-        onUpdate: function () {
-            chs.Debug.text(100, 60, "Welcome to Tripple!");
-            chs.Debug.text(100, 100, "Press enter to start");
-            chs.Debug.text(100, 140, "Instructions:");
-            chs.Debug.text(100, 160, "Hold space to run");
-            chs.Debug.text(100, 180, "Release space to jump");
-            chs.Debug.text(100, 200, "Collect all blue gems");
-            chs.Debug.text(100, 220, "Avoid red poison");
-            chs.Debug.text(100, 240, "Get to the exit");
+        startGame: function() {
+            this.visible = false;
+            this.enabled = false;
+            game.visible = true;
+            game.enabled = true;
+            level = 0;
+            game.reset();
         },
 
-        onKeyDown: function(e) {
-            if (e.name === 'enter') {
-                this.visible = false;
-                this.enabled = false;
-                playfield.visible = true;
-                playfield.enabled = true;
-                level = 0;
-                reset();
-            }
+        play: function() {
+            this.startGame();
+            playfield.startPlaying();
+        },
+
+        edit: function() {
+            this.startGame();
+            playfield.startEditing();
         }
     });
+
+    //////////////////////////////////////////////////////////////////////
+    // edit cursor
+
+    mtw.Cursor = chs.Class({inherit$: chs.Drawable,
+
+        $: function() {
+            chs.Drawable.call(this);
+            this.setPosition(cell_width, cell_height);
+            this.drawing = false;
+            this.offset = 0;
+        },
+
+        onDraw: function(context) {
+            context.fillStyle = colours[currentBlock];
+            chs.Util.rect(context, 0.5, 0.5, cell_width, cell_height);
+            context.fill();
+            context.strokeStyle = "rgba(0, 0, 0, 0.5)";
+            context.lineWidth = 3;
+            context.stroke();
+        },
+
+        onUpdate: function(time, deltaTime) {
+            var i;
+            chs.Debug.text(20, 300, "Start: " + startX.toString() + "," + startY.toString());
+            if(this.drawing) {
+                if (currentBlock === start_cell) {
+                    startX = this.offset % board_width;
+                    startY = (this.offset / board_width) >>> 0;
+                    board[this.offset] = 0;
+                } else {
+                    board[this.offset] = currentBlock;
+                    gems_needed = 0;
+                    for (i = 0; i < board_size; ++i) {
+                        if (board[i] === gem) {
+                            gems_needed += 1;
+                        }
+                    }
+                }
+            }
+        }
+
+    });
+
+    //////////////////////////////////////////////////////////////////////
+    // palette of blocks for editor
+
+    mtw.Palette = chs.Class({inherit$: chs.Drawable,
+
+        $: function() {
+            chs.Drawable.call(this);
+            this.setPosition(60, 50);
+            this.width = cell_width;
+            this.height = cell_height * colours.length;
+        },
+
+        onDraw: function(context) {
+            var i;
+            for (i = 0; i < colours.length; ++i) {
+                context.fillStyle = colours[i];
+                chs.Util.rect(context, 0, i * cell_height, cell_width, cell_width);
+                context.fill();
+                chs.Debug.text(60 + cell_width + 8, 50 + i * cell_height + 8, descriptions[i]);
+            }
+            chs.Util.rect(context, 0, currentBlock * cell_height, cell_width, cell_width);
+            context.strokeStyle = "white";
+            context.lineWidth = 2;
+            context.stroke();
+        },
+
+        onLeftMouseDown: function (e) {
+            currentBlock = (this.screenToClient(e).y / cell_height) >>> 0;
+        }
+
+    });
+
+    //////////////////////////////////////////////////////////////////////
+    // the playfield
 
     mtw.TripplePlayfield = chs.Class({inherit$: chs.Drawable,
 
@@ -511,8 +630,67 @@
             this.setPivot(0.5, 0.5);
             this.setPosition(chs.desktop.width / 2, chs.desktop.height / 2);
             player = new mtw.Player();
+            cursor = new mtw.Cursor();
+        },
+
+        startPlaying: function () {
+            this.stopEditing();
             this.addChild(player);
-            reset();
+        },
+
+        stopPlaying: function () {
+            this.removeChild(player);
+        },
+
+        startEditing: function() {
+            this.stopPlaying();
+            this.addChild(cursor);
+            palette.visible = true;
+            palette.enabled = true;
+        },
+
+        stopEditing: function () {
+            this.removeChild(cursor);
+            palette.visible = false;
+            palette.enabled = false;
+        },
+
+        onMouseMove: function(e) {
+            var pos = this.screenToClient(e),
+                x = chs.Util.constrain((pos.x / cell_width) >>> 0, 1, board_width - 2),
+                y = chs.Util.constrain((pos.y / cell_height) >>> 0, 1, board_height - 2);
+            cursor.offset = x + y * board_width;
+            cursor.setPosition(x * cell_width, y * cell_height);
+        },
+
+        onLeftMouseDown: function(e) {
+            cursor.drawing = true;
+        },
+
+        onLeftMouseUp: function(e) {
+            cursor.drawing = false;
+        },
+
+        save: function() {
+            var i,
+                x,
+                y,
+                b;
+            b = [];
+            i = 0;
+            board[startX + startY * board_width] = start_cell;
+            for (y = 1; y < board_height - 1; ++y) {
+                for (x = 1; x < board_width - 1; ++x) {
+                    b[i >>> 1] |= board[x + y * board_width] << ((1 - (i & 1)) * 4);
+                    ++i;
+                }
+            }
+            board[startX + startY * board_width] = 0;
+            window.prompt("Here's the link, press ctrl-c to copy it",
+                            "http://skilbeck.com/tripple" +
+                            "?x=" + board_width.toString() +
+                            "&y=" + board_height.toString() +
+                            "&b=" + encodeURIComponent(chs.Util.btoa(b)));
         },
 
         onUpdate: function(time, deltaTime) {
@@ -548,7 +726,7 @@
             oldFlip = flip;
             chs.Debug.print("Level: " + (level + 1).toString());
             chs.Debug.print("Gems: " + score.toString() + " of " + gems_needed.toString());
-            if (score === gems_needed) {
+            if (score >= gems_needed) {
                 colours[exit] = "rgb(255,255," + ((Math.sin(chs.Timer.time / 33) * 127 + 128) >>> 0).toString() + ")";
             }
         },
@@ -566,5 +744,83 @@
             }
         }
     });
+
+    //////////////////////////////////////////////////////////////////////
+
+    mtw.Game = chs.Class({inherit$: chs.Drawable,
+
+        $: function() {
+            var pf;
+            chs.Drawable.call(this);
+            this.width = chs.desktop.width;
+            this.height = chs.desktop.height;
+            pf = new mtw.TripplePlayfield();
+            this.addChild(playfield);
+            palette = new mtw.Palette();
+            this.addChild(palette);
+
+            this.addChild(new mtw.Button(700, 10, 120, 20, "Play", function() {
+                switch(mode) {
+                    case 'play':
+                        mode = 'edit';
+                        this.text = 'Play';
+                        break;
+                    case 'edit':
+                        mode = 'play';
+                        this.text = 'Edit';
+                        break;
+                }
+            }));
+
+            this.addChild(new mtw.Button(700, 40, 120, 20, "Rotate", function() { flip = true; }));
+            this.addChild(new mtw.Button(700, 70, 120, 20, "Save", playfield.save, playfield));
+        },
+
+        reset: function() {
+            var i,
+                startPos,
+                got_board = false,
+                board_nibbles,
+                board_array,
+                bs,
+                q;
+
+            playfield.rotation = 0;
+            playfield.width = board_width * cell_width;
+            playfield.height = board_height * cell_height;
+            flip = false;
+            oldFlip = false;
+            space = false;
+            standing = false;
+            flying = false;
+            jump = false;
+            player.xvel = 0;
+            player.yvel = 0;
+            player.state = player.play;
+            player.colour = "black";
+            player.visible = true;
+            score = 0;
+            colours[exit] = "rgb(255,192,0)";
+            board_array = mtw.Levels[level];
+            bs = ((board_width - 2) * (board_height - 2) / 2);
+            q = chs.Util.getQuery();
+            if (q.x !== undefined && q.y !== undefined && q.b !== undefined) {
+                board_array = [];
+                if (parseInt(q.x) === board_width && parseInt(q.y) === board_height) {
+                    board_nibbles = chs.Util.atob(q.b);
+                    if (board_nibbles.length === bs) {
+                        for (i = 0; i < bs * 2; ++i) {
+                            board_array.push(((board_nibbles[i >>> 1] >>> ((1 - (i & 1)) * 4)) & 0xf).toString());
+                        }
+                    }
+                }
+            }
+
+            startPos = init_board(board_array);
+            player.setPosition(startPos.x, startPos.y);
+            gems_needed = startPos.gems;
+        }
+    });
+
 
 }());

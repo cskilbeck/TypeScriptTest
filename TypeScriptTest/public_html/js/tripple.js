@@ -551,6 +551,7 @@
             this.setPosition(cell_width, cell_height);
             this.drawing = false;
             this.offset = 0;
+            this.startOffset = 0;
         },
 
         onDraw: function(context) {
@@ -567,9 +568,13 @@
             chs.Debug.text(20, 300, "Start: " + startX.toString() + "," + startY.toString());
             if(this.drawing) {
                 if (currentBlock === start_cell) {
+                    if (this.startOffset !== 0) {
+                        board[this.startOffset] = 0;
+                    }
                     startX = this.offset % board_width;
                     startY = (this.offset / board_width) >>> 0;
-                    board[this.offset] = 0;
+                    this.startOffset = this.offset;
+                    board[this.offset] = currentBlock;
                 } else {
                     board[this.offset] = currentBlock;
                     gems_needed = 0;
@@ -635,6 +640,9 @@
 
         startPlaying: function () {
             this.stopEditing();
+            player.setPosition(startX * cell_width, startY * cell_height);
+            player.xvel = 0;
+            player.yvel = 0;
             this.addChild(player);
         },
 
@@ -688,9 +696,7 @@
             board[startX + startY * board_width] = 0;
             window.prompt("Here's the link, press ctrl-c to copy it",
                             "http://skilbeck.com/tripple" +
-                            "?x=" + board_width.toString() +
-                            "&y=" + board_height.toString() +
-                            "&b=" + encodeURIComponent(chs.Util.btoa(b)));
+                            "?b=" + encodeURIComponent(chs.Util.btoa(b)));
         },
 
         onUpdate: function(time, deltaTime) {
@@ -726,8 +732,10 @@
             oldFlip = flip;
             chs.Debug.print("Level: " + (level + 1).toString());
             chs.Debug.print("Gems: " + score.toString() + " of " + gems_needed.toString());
-            if (score >= gems_needed) {
+            if (score >= gems_needed && mode == 'play') {
                 colours[exit] = "rgb(255,255," + ((Math.sin(chs.Timer.time / 33) * 127 + 128) >>> 0).toString() + ")";
+            } else {
+                colours[exit] = "rgb(255,192,0)";
             }
         },
 
@@ -759,7 +767,7 @@
             palette = new mtw.Palette();
             this.addChild(palette);
 
-            this.addChild(new mtw.Button(700, 10, 120, 20, "Play", function() {
+            this.addChild(new mtw.Button(700, 10, 120, 20, "Edit", function() {
                 switch(mode) {
                     case 'play':
                         mode = 'edit';
@@ -806,14 +814,12 @@
             board_array = mtw.Levels[level];
             bs = ((board_width - 2) * (board_height - 2) / 2);
             q = chs.Util.getQuery();
-            if (q.x !== undefined && q.y !== undefined && q.b !== undefined) {
+            if (q.b !== undefined) {
                 board_array = [];
-                if (parseInt(q.x) === board_width && parseInt(q.y) === board_height) {
-                    board_nibbles = chs.Util.atob(q.b);
-                    if (board_nibbles.length === bs) {
-                        for (i = 0; i < bs * 2; ++i) {
-                            board_array.push(((board_nibbles[i >>> 1] >>> ((1 - (i & 1)) * 4)) & 0xf).toString());
-                        }
+                board_nibbles = chs.Util.atob(q.b);
+                if (board_nibbles.length === bs) {
+                    for (i = 0; i < bs * 2; ++i) {
+                        board_array.push(((board_nibbles[i >>> 1] >>> ((1 - (i & 1)) * 4)) & 0xf).toString());
                     }
                 }
             }

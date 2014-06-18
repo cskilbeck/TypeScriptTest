@@ -639,6 +639,7 @@
         },
 
         startPlaying: function () {
+            // save the board, restore it when they go back to editing
             this.stopEditing();
             player.setPosition(startX * cell_width, startY * cell_height);
             player.xvel = 0;
@@ -665,14 +666,19 @@
 
         onMouseMove: function(e) {
             var pos = this.screenToClient(e),
-                x = chs.Util.constrain((pos.x / cell_width) >>> 0, 1, board_width - 2),
-                y = chs.Util.constrain((pos.y / cell_height) >>> 0, 1, board_height - 2);
-            cursor.offset = x + y * board_width;
-            cursor.setPosition(x * cell_width, y * cell_height);
+                x = (pos.x / cell_width) >>> 0,
+                y = (pos.y / cell_height) >>> 0;
+            if (x > 0 && x < board_width - 1 && y > 0 && y < board_height - 1) {
+                cursor.visible = true;
+                cursor.offset = x + y * board_width;
+                cursor.setPosition(x * cell_width, y * cell_height);
+            } else {
+                cursor.visible = false;
+            }
         },
 
         onLeftMouseDown: function(e) {
-            cursor.drawing = true;
+            cursor.drawing = true && cursor.visible;
         },
 
         onLeftMouseUp: function(e) {

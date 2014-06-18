@@ -764,10 +764,12 @@
                     case 'play':
                         mode = 'edit';
                         this.text = 'Play';
+                        playfield.startEditing();
                         break;
                     case 'edit':
                         mode = 'play';
                         this.text = 'Edit';
+                        playfield.startPlaying();
                         break;
                 }
             }));

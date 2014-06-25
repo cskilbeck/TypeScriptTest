@@ -3,5 +3,5 @@
 function main(desktop) {
     "use strict";
 
-    desktop.addChild(new mtw.TrippleMenu());
+    desktop.addChild(new mtw.Game());
 }

@@ -1,4 +1,10 @@
 //////////////////////////////////////////////////////////////////////
+// make a blank level
+// maybe override it from the query string
+// that's your edit_level
+// edit: edit_level
+// play: copy edit_level to board
+
 // level editor
 // restart button
 // space,jump in 1 frame
@@ -59,9 +65,8 @@
         mode = 'play',
         game = null,
         mainmenu = null,
-        level = 0,
         level_len = ((board_width - 2) * (board_height - 2)),
-        savedLevelString = "54" + chs.Util.str_rep(" ", level_len - 2),
+        savedLevelString = "54" + chs.Util.str_rep(" ", level_len - 2), // override this from the query string
         empty = 0,
         platform = 1,
         poison = 2,
@@ -72,6 +77,7 @@
         gems_needed = 0,
         playfield = null,
         player = null,
+        editBoard = [],
         board = [],
         startRotation,
         targetRotation,
@@ -122,7 +128,28 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    function init_board(levelString) {
+    function copy_from_edit_board() {
+        var i;
+        board = [];
+        for (i = 0; i < board.length; ++i) {
+            board[i] = editBoard[i];
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////
+
+    function copy_to_edit_board() {
+        var i;
+        editBoard = [];
+        for (i = 0; i < board.length; ++i) {
+            editBoard[i] = board[i];
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////
+    // hmmm: find the start square (5)
+
+    function init_board(input_board) {
         var x,
             y,
             i,
@@ -130,24 +157,24 @@
             c,
             startPos = { x: cell_width, y : cell_height, gems: 0 };
 
-        if (levelString.length !== level_len) {
+        if (input_board.length !== level_len) {
             return;
         }
         x = 0;
         y = 0;
-        for (i = 0, l = levelString.length; i < l; ++i) {
-            c = parseInt(levelString[i], 10);
-            if (isNaN(c)) {
-                c = 0;
-            }
-            else if (c === start_cell) {
-                c = 0;
-                startPos.x = (x + 1) * cell_width;
-                startPos.y = (y + 1) * cell_height;
-            } else if (c === gem) {
-                startPos.gems += 1;
-            } else {
-                c = Math.min(c, colours.length - 1);
+        for (i = 0, l = input_board.length; i < l; ++i) {
+            c = input_board[l];
+            switch (c) {
+                case start_cell:
+                    startPos.x = (x + 1) * cell_width;
+                    startPos.y = (y + 1) * cell_height;
+                    break;
+                case gem:
+                    startPos.gems += 1;
+                    break;
+                default:
+                    c = Math.min(c, colours.length - 1);
+                    break;
             }
             board[x + 1 + (y + 1) * board_width] = c;
             x += 1;
@@ -195,7 +222,6 @@
             context.fill();
             chs.Debug.text(this.x + 8, this.y + 4, this.text);
         }
-
     });
 
     //////////////////////////////////////////////////////////////////////
@@ -620,7 +646,6 @@
         },
 
         stopEditing: function () {
-            savedLevelString = getLevelString();
             this.removeChild(cursor);
             palette.visible = false;
             palette.enabled = false;

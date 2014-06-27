@@ -38,7 +38,6 @@
         run_speed = 0.5,
         jump_impulse = 0.84,
         board_size = board_width * board_height,
-        loader,
         colours = [
             "white",
             "rgb(0,112,0)",     // 1: green: platform
@@ -66,25 +65,18 @@
         game = null,
         mainmenu = null,
         level_len = ((board_width - 2) * (board_height - 2)),
-        savedLevelString = "54" + chs.Util.str_rep(" ", level_len - 2), // override this from the query string
-        empty = 0,
-        platform = 1,
-        poison = 2,
-        gem = 3,
-        exit = 4,
+        editLevel = [],
+
+        empty_cell = 0,
+        platform_cell = 1,
+        poison_cell = 2,
+        gem_cell = 3,
+        exit_cell = 4,
         start_cell = 5,
+
         score = 0,
-        gems_needed = 0,
-        playfield = null,
         player = null,
-        editBoard = [],
-        board = [],
-        startRotation,
-        targetRotation,
-        rotateStartTime,
         lerpTime = 400,
-        flip = false,
-        oldFlip = false,
         space = false,
         standing = false,
         flying = false,
@@ -115,153 +107,53 @@
     }
 
     //////////////////////////////////////////////////////////////////////
-
-    function get_cell(x, y) {
-        return board[((x / cell_width) >>> 0) + ((y / cell_height) >>> 0) * board_width];
-    }
-
-    //////////////////////////////////////////////////////////////////////
-
-    function set_cell(x, y, value) {
-        board[((x / cell_width) >>> 0) + ((y / cell_height) >>> 0) * board_width] = value;
-    }
-
-    //////////////////////////////////////////////////////////////////////
-
-    function copy_from_edit_board() {
-        var i;
-        board = [];
-        for (i = 0; i < board.length; ++i) {
-            board[i] = editBoard[i];
-        }
-    }
-
-    //////////////////////////////////////////////////////////////////////
-
-    function copy_to_edit_board() {
-        var i;
-        editBoard = [];
-        for (i = 0; i < board.length; ++i) {
-            editBoard[i] = board[i];
-        }
-    }
-
-    //////////////////////////////////////////////////////////////////////
-    // hmmm: find the start square (5)
-
-    function init_board(input_board) {
-        var x,
-            y,
-            i,
-            l,
-            c,
-            startPos = { x: cell_width, y : cell_height, gems: 0 };
-
-        if (input_board.length !== level_len) {
-            return;
-        }
-        x = 0;
-        y = 0;
-        for (i = 0, l = input_board.length; i < l; ++i) {
-            c = input_board[l];
-            switch (c) {
-                case start_cell:
-                    startPos.x = (x + 1) * cell_width;
-                    startPos.y = (y + 1) * cell_height;
-                    break;
-                case gem:
-                    startPos.gems += 1;
-                    break;
-                default:
-                    c = Math.min(c, colours.length - 1);
-                    break;
-            }
-            board[x + 1 + (y + 1) * board_width] = c;
-            x += 1;
-            if (x > 11) {
-                x = 0;
-                y += 1;
-            }
-        }
-        // add top, bottom
-        for (i = 0; i < board_width; ++i) {
-            board[i] = 1;
-            board[i + (board_height - 1) * board_width] = 1;
-        }
-
-        // add left, right
-        for (i = 0; i < board_height; ++i) {
-            board[i * board_width] = 1;
-            board[board_width - 1 + i * board_width] = 1;
-        }
-        return startPos;
-    }
-
-    //////////////////////////////////////////////////////////////////////
-    // a crappy button
-
-    mtw.Button = chs.Class({inherit$: [chs.Button, chs.Drawable],
-
-        $: function(x, y, width, height, text, callback, context) {
-            chs.Button.call(this, callback, context);
-            chs.Drawable.call(this);
-            this.text = text;
-            this.setPosition(x, y);
-            this.width = width;
-            this.height = height;
-            this.colour = "rgb(192, 192, 192)";
-        },
-
-        onIdle: function() { this.colour = "rgb(192, 192, 192)"; },
-        onPressed: function() { this.colour = "rgb(192, 32, 16)"; },
-        onHover: function() { this.colour = "rgb(128, 128, 128)"; },
-
-        onDraw: function(context) {
-            context.fillStyle = this.colour;
-            chs.Util.rect(context, 0, 0, this.width, this.height);
-            context.fill();
-            chs.Debug.text(this.x + 8, this.y + 4, this.text);
-        }
-    });
-
-    //////////////////////////////////////////////////////////////////////
     // the player
 
-    mtw.Player = chs.Class({inherit$: chs.Drawable,
+    mtw.Player = chs.Class({ inherit$: chs.Drawable,
 
-        $: function() {
+        $: function(board) {
             chs.Drawable.call(this);
             this.width = cell_width;
             this.height = cell_height;
             this.setPosition(cell_width * 3, cell_height * 2);
+            this.board = board;
+            this.reset();
+        },
+
+        reset: function(x, y) {
+            this.standing = false;
+            this.flying = false;
+            this.jump = false;
             this.xvel = 0;
             this.yvel = 0;
             this.colour = "black";
+            this.visible = true;
+            this.setPosition(x * cell_width, y * cell_height);
         },
 
         onKeyDown: function(e) {
-            if (!flip) {
-                space = e.name === 'space';
-                jump = false;
+            if (!this.board.flip) {
+                this.space = e.name === 'space';
+                this.jump = false;
             }
         },
 
         onKeyUp: function(e) {
             if (e.name === 'space') {
-                jump = space;
-                space = false;
+                this.jump = this.space;
+                this.space = false;
             }
         },
 
         check: function(xpos, ypos, value) {
             var mask = 0,
                 i,
-                bit;
+                bit = 1;
             for (i = 0; i < 4; ++i) {
-                bit = 1 << i;
-                if (get_cell(xpos + offsets[i][0], ypos + offsets[i][1]) === value) {
+                if (this.board.get_cell_from_pixel_position(xpos + offsets[i][0], ypos + offsets[i][1]) === value) {
                     mask += bit;
                 }
+                bit <<= 1;
             }
             return mask;
         },
@@ -278,7 +170,7 @@
                 ox,
                 oy,
                 wasFlying = flying,
-                mask = this.check(nx, ny, platform);
+                mask = this.check(nx, ny, platform_cell);
             switch(mask) {
                 case 0:
                     break;
@@ -497,15 +389,15 @@
                     u = this.x + offsets[i][0];
                     v = this.y + offsets[i][1];
                     switch(get_cell(u, v)) {
-                        case gem:
+                        case gem_cell:
                             set_cell(u, v, 0);
                             score += 1;
                             break;
-                        case poison:
+                        case poison_cell:
                             this.state = this.die;
                             this.colour = "rgb(128,128,128)";
                             break;
-                        case exit:
+                        case exit_cell:
                             if (score >= gems_needed) {
                                 this.targetX = round_down(u, cell_width);
                                 this.targetY = round_down(v, cell_height);
@@ -531,16 +423,20 @@
 
     mtw.Cursor = chs.Class({inherit$: chs.Drawable,
 
-        $: function() {
+        $: function(board, palette) {
             chs.Drawable.call(this);
             this.setPosition(cell_width, cell_height);
             this.drawing = false;
             this.offset = 0;
             this.startOffset = 0;
+            this.board = board;
+            this.palette = palette;
+            this.cell_x = 0;
+            this.cell_y = 0;
         },
 
         onDraw: function(context) {
-            context.fillStyle = colours[currentBlock];
+            context.fillStyle = colours[this.palette.currentBlock];
             chs.Util.rect(context, 0.5, 0.5, cell_width, cell_height);
             context.fill();
             context.strokeStyle = "rgba(0, 0, 0, 0.5)";
@@ -552,24 +448,232 @@
             var i;
             chs.Debug.text(20, 300, "Start: " + startX.toString() + "," + startY.toString());
             if(this.drawing) {
-                if (currentBlock === start_cell) {
-                    if (this.startOffset !== 0) {
-                        board[this.startOffset] = 0;
-                    }
-                    startX = this.offset % board_width;
-                    startY = (this.offset / board_width) >>> 0;
-                    this.startOffset = this.offset;
-                    board[this.offset] = currentBlock;
-                } else {
-                    board[this.offset] = currentBlock;
-                    gems_needed = 0;
-                    for (i = 0; i < board_size; ++i) {
-                        if (board[i] === gem) {
-                            gems_needed += 1;
-                        }
+                this.board.set(this.cell_x, this.cell_y, this.currentBlock);
+            }
+        }
+    });
+
+    //////////////////////////////////////////////////////////////////////
+    // the board
+
+    mtw.Board = chs.Class({ inherit$: chs.Drawable,
+
+        $: function() {
+            var i;
+            chs.Drawable.call(this);
+            this.setPivot(0.5, 0.5);
+            this.setPosition(chs.desktop.width / 2, chs.desktop.height / 2);
+            this.width = board_width * cell_width;
+            this.height = board_height * cell_height;
+            this.cells = [];
+            this.start = [1, 1];
+            this.exit = [2,board_height - 2];
+            this.gems = 0;
+            this.flip = false;
+            this.oldFlip = false;
+            this.startRotation = 0;
+            this.targetRotation = 0;
+            this.rotateStartTime = 0;
+            for (i = 0; i < board_size; ++i) {
+                this.cells[i] = 0;
+            }
+            for (i = 0; i < board_width; ++i) {
+                this.cells[i] = 1;
+                this.cells[i + (board_height - 1) * board_width] = 1;
+            }
+            for (i = 0; i < board_height; ++i) {
+                this.cells[i * board_width] = 1;
+                this.cells[board_width - 1 + i * board_width] = 1;
+            }
+            this.set(this.exit[0], this.exit[1], exit_cell);
+            this.set(this.start[0], this.start[1], start_cell);
+        },
+
+        check_cell: function(x, y, block) {
+            switch(block) {
+                case gem_cell:
+                    this.gems += 1;
+                    break;
+                case exit_cell:
+                    this.exit = [x, y];
+                    break;
+                case start_cell:
+                    this.start = [x, y];
+                    break;
+            }
+        },
+
+        scan_for_specials: function() {
+            var x,
+                y;
+            this.gems = 0;
+            for (y = 1; y < board_height - 1; ++y) {
+                for (x = 1; x < board_width - 1; ++x) {
+                    this.check_cell(x, y, this.get(x, y));
+                }
+            }
+        },
+
+        get: function(x, y) {
+            return this.cells[x + y * board_width];
+        },
+
+        set: function(x, y, block) {
+            var offset = x + y * board_width;
+            if (this.cells[offset] === gem) {
+                this.gems -= 1;
+            }
+            this.cells[offset] = block;
+            this.check_cell(x, y, block);
+        },
+
+        copy_to: function(other) {
+            var i;
+            for (i = 0; i < level_len; ++i) {
+                other.cells[i] = this.cells[i];
+            }
+            other.scan_for_specials();
+        },
+
+        copy_from: function(other) {
+            var i;
+            for (i = 0; i < level_len; ++i) {
+                this.cells[i] = other.cells[i];
+            }
+            this.scan_for_specials();
+        },
+
+        set_from_querystring: function() {
+            var q = chs.Util.getQuery(),
+                nibbles,
+                i;
+            if (q.b !== undefined) {
+                nibbles = chs.Util.atob(q.b);
+                if (nibbles.length === level_len / 2) {
+                    for (i = 0; i < level_len; ++i) {
+                        this.cells[i] = (nibbles[i >>> 1] >>> ((1 - (i & 1)) * 4)) & 0xf;
                     }
                 }
             }
+        },
+
+        get_querystring: function() {
+            var i,
+                x,
+                y,
+                b;
+            b = [];
+            i = 0;
+            for (y = 1; y < board_height - 1; ++y) {
+                for (x = 1; x < board_width - 1; ++x) {
+                    b[i >>> 1] |= this.cells[x + y * board_width] << ((1 - (i & 1)) * 4);
+                    ++i;
+                }
+            }
+            return encodeURIComponent(chs.Util.btoa(b));
+        },
+
+        onUpdate: function(time, deltaTime) {
+            var dt,
+                x,
+                y,
+                tmp;
+            if (this.flip) {
+                if (!this.oldFlip) {
+                    this.startRotation = 0;
+                    this.targetRotation = Math.PI * -0.5;
+                    this.rotateStartTime = time;
+                }
+                dt = (time - rotateStartTime) / lerpTime;
+                if (dt < 1) {
+                    dt = chs.Util.ease(dt);
+                    this.rotation = this.startRotation + (this.targetRotation - this.startRotation) * dt;
+                } else {
+                    this.rotation = 0;
+                    this.flip = false;
+                    tmp = [];
+                    for (y = 0; y < board_height; ++y) {
+                        for (x = 0; x < board_width; ++x) {
+                            tmp[(board_width - 1 - y) + x * board_width] = this.cells[x + y * board_width];
+                        }
+                    }
+                    this.cells = tmp;
+                    tmp = player.x;
+                    player.x = this.width - player.y - player.width;
+                    player.y = tmp;
+                }
+            }
+            this.oldFlip = this.flip;
+        },
+
+        onDraw: function(context) {
+            var x,
+                y;
+            for (y = 0; y < board_height; ++y) {
+                for (x = 0; x < board_width; ++x) {
+                    context.fillStyle = colours[this.get(x, y)];
+                    context.fillRect(0.5 + x * cell_width, 0.5 + y * cell_height, cell_width + 0.5, cell_height + 0.5);
+                }
+            }
+        }
+
+    });
+
+    //////////////////////////////////////////////////////////////////////
+    // a board which can be edited
+
+    mtw.EditBoard = chs.Class({ inherit$: mtw.Board,
+
+        $: function(palette) {
+            mtw.Board.call(this);
+            this.cursor = new mtw.Cursor(this, palette);
+            this.addChild(this.cursor);
+        },
+
+        onMouseMove: function(e) {
+            var pos = this.screenToClient(e),
+                x = (pos.x / cell_width) >>> 0,
+                y = (pos.y / cell_height) >>> 0;
+            if (x > 0 && x < board_width - 1 && y > 0 && y < board_height - 1) {
+                this.cursor.visible = true;
+                this.cursor.cell_x = x;
+                this.cursor.cell_y = y;
+                this.cursor.setPosition(x * cell_width, y * cell_height);
+            } else {
+                this.cursor.visible = false;
+            }
+        },
+
+        onLeftMouseDown: function(e) {
+            this.cursor.drawing = cursor.visible;
+        },
+
+        onLeftMouseUp: function(e) {
+            this.cursor.drawing = false;
+        }
+
+    });
+
+    //////////////////////////////////////////////////////////////////////
+    // a board which can be played
+
+    mtw.PlayBoard = chs.Class({ inherit$: mtw.Board,
+
+        $: function() {
+            mtw.Board.call(this);
+            this.player = new mtw.Player();
+            this.addChild(this.player);
+            this.gemsCollected = 0;
+        },
+
+        startPlaying: function() {
+            this.player.reset(this.start[0], this.start[1]);
+            this.flip = false;
+            this.oldFlip = false;
+            this.startRotation = 0;
+            this.targetRotation = 0;
+            this.rotateStartTime = 0;
+            this.gemsCollected = 0;
         }
 
     });
@@ -584,6 +688,7 @@
             this.setPosition(60, 50);
             this.width = cell_width;
             this.height = cell_height * colours.length;
+            this.currentBlock = 0;
         },
 
         onDraw: function(context) {
@@ -594,210 +699,94 @@
                 context.fill();
                 chs.Debug.text(60 + cell_width + 8, 50 + i * cell_height + 8, descriptions[i]);
             }
-            chs.Util.rect(context, 0, currentBlock * cell_height, cell_width, cell_width);
+            chs.Util.rect(context, 0, this.currentBlock * cell_height, cell_width, cell_width);
             context.strokeStyle = "white";
             context.lineWidth = 2;
             context.stroke();
         },
 
         onLeftMouseDown: function (e) {
-            currentBlock = (this.screenToClient(e).y / cell_height) >>> 0;
+            this.currentBlock = (this.screenToClient(e).y / cell_height) >>> 0;
         }
 
     });
 
     //////////////////////////////////////////////////////////////////////
-    // the playfield
-
-    mtw.TripplePlayfield = chs.Class({inherit$: chs.Drawable,
-
-        $: function() {
-            var i;
-            chs.Drawable.call(this);
-            playfield = this;
-            this.width = board_width * cell_width;
-            this.height = board_height * cell_height;
-            this.setPivot(0.5, 0.5);
-            this.setPosition(chs.desktop.width / 2, chs.desktop.height / 2);
-            player = new mtw.Player();
-            cursor = new mtw.Cursor();
-        },
-
-        startPlaying: function () {
-            // save the board, restore it when they go back to editing
-            this.stopEditing();
-            player.setPosition(startX * cell_width, startY * cell_height);
-            player.xvel = 0;
-            player.yvel = 0;
-            this.addChild(player);
-            colours[start_cell] = "rgb(192,192,192)";
-        },
-
-        stopPlaying: function () {
-            this.removeChild(player);
-        },
-
-        startEditing: function() {
-            this.stopPlaying();
-            this.addChild(cursor);
-            palette.visible = true;
-            palette.enabled = true;
-            colours[start_cell] = "black";
-        },
-
-        stopEditing: function () {
-            this.removeChild(cursor);
-            palette.visible = false;
-            palette.enabled = false;
-        },
-
-        onMouseMove: function(e) {
-            var pos = this.screenToClient(e),
-                x = (pos.x / cell_width) >>> 0,
-                y = (pos.y / cell_height) >>> 0;
-            if (x > 0 && x < board_width - 1 && y > 0 && y < board_height - 1) {
-                cursor.visible = true;
-                cursor.offset = x + y * board_width;
-                cursor.setPosition(x * cell_width, y * cell_height);
-            } else {
-                cursor.visible = false;
-            }
-        },
-
-        onLeftMouseDown: function(e) {
-            cursor.drawing = cursor.visible;
-        },
-
-        onLeftMouseUp: function(e) {
-            cursor.drawing = false;
-        },
-
-        save: function() {
-            var i,
-                x,
-                y,
-                b;
-            b = [];
-            i = 0;
-            board[startX + startY * board_width] = start_cell;
-            for (y = 1; y < board_height - 1; ++y) {
-                for (x = 1; x < board_width - 1; ++x) {
-                    b[i >>> 1] |= board[x + y * board_width] << ((1 - (i & 1)) * 4);
-                    ++i;
-                }
-            }
-            board[startX + startY * board_width] = 0;
-            window.prompt("Here's the link, press ctrl-c to copy it,\nthen post it in /r/Tripple - Good Luck!",
-                            "http://skilbeck.com/tripple" +
-                            "?b=" + encodeURIComponent(chs.Util.btoa(b)));
-        },
-
-        onUpdate: function(time, deltaTime) {
-            var dt,
-                x,
-                y,
-                tmp;
-            if (flip) {
-                if (!oldFlip) {
-                    startRotation = 0;
-                    targetRotation = Math.PI * -0.5;
-                    rotateStartTime = time;
-                }
-                dt = (time - rotateStartTime) / lerpTime;
-                if (dt < 1) {
-                    dt = chs.Util.ease(dt);
-                    this.rotation = startRotation + (targetRotation - startRotation) * dt;
-                } else {
-                    this.rotation = 0;
-                    flip = false;
-                    tmp = [];
-                    for (y = 0; y < board_height; ++y) {
-                        for (x = 0; x < board_width; ++x) {
-                            tmp[(board_width - 1 - y) + x * board_width] = board[x + y * board_width];
-                        }
-                    }
-                    board = tmp;
-                    tmp = player.x;
-                    player.x = this.width - player.y - player.width;
-                    player.y = tmp;
-                }
-            }
-            oldFlip = flip;
-            chs.Debug.print("Level: " + (level + 1).toString());
-            chs.Debug.print("Gems: " + score.toString() + " of " + gems_needed.toString());
-            if (score >= gems_needed && mode == 'play') {
-                colours[exit] = "rgb(255,255," + ((Math.sin(chs.Timer.time / 33) * 127 + 128) >>> 0).toString() + ")";
-            } else {
-                colours[exit] = "rgb(255,192,0)";
-            }
-        },
-
-        onDraw: function(context) {
-            var x,
-                y,
-                cell;
-            for (y = 0; y < board_height; ++y) {
-                for (x = 0; x < board_width; ++x) {
-                    cell = board[x + y * board_width];
-                    context.fillStyle = colours[cell];
-                    context.fillRect(0.5 + x * cell_width, 0.5 + y * cell_height, cell_width + 0.5, cell_height + 0.5);
-                }
-            }
-        }
-    });
-
-    //////////////////////////////////////////////////////////////////////
+    // the game controller - can be in editing or playing mode...
 
     mtw.Game = chs.Class({inherit$: chs.Drawable,
 
         $: function() {
-            var pf,
-                bs,
-                q;
             chs.Drawable.call(this);
             this.width = chs.desktop.width;
             this.height = chs.desktop.height;
-            pf = new mtw.TripplePlayfield();
-            this.addChild(playfield);
-            palette = new mtw.Palette();
-            this.addChild(palette);
-            mode = "play";
-            game = this;
+            this.loader = new chs.Loader('img/');
+            this.font = chs.Font.load('Calibri', this.loader);
+            this.loader.addEventHandler("complete", this.init, this);
+            this.loader.start();
+        },
 
-            this.addChild(new mtw.Button(700, 10, 120, 20, "Edit", function() {
-                switch(mode) {
-                    case 'play':
-                        mode = 'edit';
-                        this.text = 'Play';
-                        playfield.startEditing();
-                        break;
-                    case 'edit':
-                        mode = 'play';
-                        this.text = 'Edit';
-                        playfield.startPlaying();
-                        break;
-                }
-            }));
+        init: function() {
+            var fh = this.font.height;
+            this.mode = 'play';
+            this.palette = new mtw.Palette();
+            this.playBoard = new mtw.PlayBoard();
+            this.editBoard = new mtw.EditBoard(this.palette);
+            this.playButton = new chs.TextButton("Edit", this.font, 700, 0, 120, fh * 1.5, this.toggleEditing, this);
+            this.rotateButton = new chs.TextButton("Rotate", this.font, 700, fh * 3, 120, fh * 1.5, this.rotate, this);
+            this.saveButton = new chs.TextButton("Save", this.font, 700, fh * 4.5, 120, fh * 1.5, this.save, this);
+            this.editor = new chs.Drawable();
+            this.cursor = new mtw.Cursor();
+            this.scoreLabel = new chs.Label("Gems: 0", this.font);
+            this.editor.addChild(this.palette);
+            this.editor.addChild(this.rotateButton);
+            this.editor.addChild(this.saveButton);
+            this.editor.addChild(this.editBoard);
+            this.editBoard.addChild(this.cursor);
+            this.playBoard.addChild(this.player);
+            this.editBoard.set_from_querystring();
+            this.editBoard.copy_to(this.playBoard);
+            this.startPlaying();
+        },
 
-            this.rotateButton = new mtw.Button(700, 40, 120, 20, "Rotate", function() { flip = true; });
-            this.saveButton = new mtw.Button(700, 70, 120, 20, "Save", playfield.save, playfield);
-            this.addChild(this.rotateButton);
-            this.addChild(this.saveButton);
-
-            bs = ((board_width - 2) * (board_height - 2) / 2);
-            q = chs.Util.getQuery();
-            if (q.b !== undefined) {
-                board_array = [];
-                board_nibbles = chs.Util.atob(q.b);
-                if (board_nibbles.length === bs) {
-                    for (i = 0; i < bs * 2; ++i) {
-                        board_array.push(((board_nibbles[i >>> 1] >>> ((1 - (i & 1)) * 4)) & 0xf).toString());
-                    }
-                }
-                savedLevelString = board_array.join('');
+        toggleEditing: function() {
+            switch(this.mode) {
+                case 'play':
+                    this.startEditing();
+                    break;
+                case 'edit':
+                    this.startPlaying();
+                    break;
             }
-            this.reset();
-            playfield.startPlaying();
+        },
+
+        rotate: function() {
+            this.editBoard.flip = true;
+        },
+
+        startPlaying: function() {
+            this.mode = 'play';
+            this.playButton.text = "Edit";
+            this.playBoard.copy_from(this.editBoard);
+            this.editor.visible = false;
+            this.editor.enabled = false;
+            this.playBoard.visible = true;
+            this.playBoard.enabled = true;
+            this.playBoard.startPlaying();
+        },
+
+        startEditing: function() {
+            this.mode = 'edit';
+            this.playButton.text = "Play";
+            this.editor.visible = true;
+            this.editor.enabled = true;
+            this.playBoard.visible = false;
+            this.playBoard.enabled = false;
+        },
+
+        save: function () {
+            window.prompt("Here's the link\nPress ctrl-c to copy it\nThen post it in /r/Tripple",
+                "http://skilbeck.com/tripple?b=" + this.playBoard.get_querystring());
         },
 
         reset: function() {
@@ -815,14 +804,6 @@
             flip = false;
             oldFlip = false;
             space = false;
-            standing = false;
-            flying = false;
-            jump = false;
-            player.xvel = 0;
-            player.yvel = 0;
-            player.state = player.play;
-            player.colour = "black";
-            player.visible = true;
             score = 0;
             colours[exit] = "rgb(255,192,0)";
             startPos = init_board(savedLevelString);

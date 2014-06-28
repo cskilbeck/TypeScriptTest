@@ -8,10 +8,10 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    var board_width = 14,
-        board_height = 14,
-        cell_width = 32,
-        cell_height = 32,
+    var board_width = 20,
+        board_height = 20,
+        cell_width = 24,
+        cell_height = 24,
         gravity = 0.005,
         run_speed = 0.5,
         jump_impulse = 0.84,
@@ -39,8 +39,6 @@
             [cell_width - 1, cell_height - 1]
         ],
 
-        level_len = ((board_width - 2) * (board_height - 2)),
-
         empty_cell = 0,
         platform_cell = 1,
         poison_cell = 2,
@@ -48,7 +46,6 @@
         exit_cell = 4,
         start_cell = 5,
 
-        score = 0,
         lerpTime = 400,
         sq22 = Math.sqrt(2) / 2;
 
@@ -79,8 +76,9 @@
             chs.Drawable.call(this);
             this.width = cell_width;
             this.height = cell_height;
-            this.setPosition(cell_width * 3, cell_height * 2);
+            this.setPosition(cell_width, cell_height);
             this.board = board;
+            this.score = 0;
             this.reset();
         },
 
@@ -93,6 +91,7 @@
             this.colour = "black";
             this.visible = true;
             this.setPosition(x * cell_width, y * cell_height);
+            this.state = this.play;
         },
 
         onKeyDown: function(e) {
@@ -133,7 +132,7 @@
                 ny = this.y + this.yvel * deltaTime,
                 ox,
                 oy,
-                wasFlying = flying,
+                wasFlying = this.flying,
                 mask = this.check(nx, ny, platform_cell);
             switch(mask) {
                 case 0:
@@ -156,9 +155,9 @@
                         nx = round_down(nx, cell_width);    // !!!
                         this.xvel = 0;
                         this.yvel = 0;
-                        jump = false;
-                        space = false;
-                        flip = true;
+                        this.jump = false;
+                        this.space = false;
+                        this.board.flip = true;
                     } else {
                         ny = round_up(ny, cell_height);
                         this.yvel = 0;
@@ -177,7 +176,7 @@
                     } else {
                         ny = round_down(ny, cell_height);
                         this.yvel = 0;
-                        flying = false;
+                        this.flying = false;
                     }
                     break;
                 case 5:
@@ -208,13 +207,13 @@
                         nx = round_down(nx, cell_width);    // !!!
                         this.xvel = 0;
                         this.yvel = 0;
-                        jump = false;
-                        space = false;
-                        flip = true;
+                        this.jump = false;
+                        this.space = false;
+                        this.board.flip = true;
                     } else {
                         ny = round_down(ny, cell_height);
                         this.yvel = 0;
-                        flying = false;
+                        this.flying = false;
                     }
                     break;
                 case 9:
@@ -232,53 +231,53 @@
                     nx = round_down(nx, cell_width);    // !!!
                     this.xvel = 0;
                     this.yvel = 0;
-                    jump = false;
-                    space = false;
-                    flip = true;
+                    this.jump = false;
+                    this.space = false;
+                    this.board.flip = true;
                     break;
                 case 11:
                     nx = round_down(nx, cell_width);    // !!!
                     ny = round_up(ny, cell_height);
                     this.xvel = 0;
                     this.yvel = 0;
-                    flip = true;
+                    this.board.flip = true;
                     break;
                 case 12:
                     ny = round_down(ny, cell_height);
                     this.yvel = 0;
-                    flying = false;
+                    this.flying = false;
                     break;
                 case 13:
                     nx = round_up(nx, cell_width);
                     ny = round_down(ny, cell_height);
                     this.xvel = 0;
                     this.yvel = 0;
-                    flying = false;
+                    this.flying = false;
                     break;
                 case 14:
                     nx = round_down(nx, cell_width);    // !!!
                     ny = round_down(ny, cell_height);
                     this.xvel = 0;
                     this.yvel = 0;
-                    flip = true;
-                    flying = false;
+                    this.board.flip = true;
+                    this.flying = false;
                     break;
                 case 15:
                     nx = this.x;
                     ny = this.y;
                     this.xvel = 0;
                     this.yvel = 0;
-                    flying = false;
+                    this.flying = false;
                     break;
             }
             this.x = nx;
             this.y = ny;
-            if (flying) {
-                space = false;
+            if (this.flying) {
+                this.space = false;
             } else if (wasFlying) {
                 this.xvel = 0;
-                jump = false;
-                space = false;
+                this.jump = false;
+                this.space = false;
             }
             return mask;
         },
@@ -298,7 +297,7 @@
 
         die: function(time, deltaTime) {
             if (this.stateTime > 1000) {
-                game.reset();
+                this.dispatchEvent("gameover");
             } else {
                 this.visible = !this.visible;
             }
@@ -307,7 +306,7 @@
         exit: function(time, deltaTime) {
             var t;
             if (this.stateTime > 500) {
-                game.reset();
+                this.dispatchEvent("gameover");
             } else {
                 t = chs.Util.ease2(Math.min(1, this.stateTime / 250), 6);
                 this.x = this.orgX + (this.targetX - this.orgX) * t;
@@ -317,27 +316,27 @@
 
         play: function(time, deltaTime) {
             var dt = Math.min(1000/10, deltaTime),
-                of = flip,
+                of = this.flip,
                 mask,
                 i,
                 u,
                 v,
                 firstMask;
-            if (flip && !of) {
-                jump = false;
-                space = false;
-                flying = false;
+            if (this.board.flip && !of) {
+                this.jump = false;
+                this.space = false;
+                this.flying = false;
                 this.xvel = 0;
                 this.yvel = 0;
             }
-            else if (!flip) {
-                if (space) {
+            else if (!this.board.flip) {
+                if (this.space) {
                     this.xvel = run_speed;
-                } else if (jump) {
+                } else if (this.jump) {
                     this.xvel = run_speed;
                     this.yvel = -jump_impulse;
-                    jump = false;
-                    flying = true;
+                    this.jump = false;
+                    this.flying = true;
                 }
                 this.yvel += gravity * dt;
                 mask = 0;
@@ -346,23 +345,23 @@
                     dt -= 1;
                 }
                 if (mask === 0) {
-                    flying = true;
+                    this.flying = true;
                 }
 
                 for(i = 0; i < 4; i += 1) {
                     u = this.x + offsets[i][0];
                     v = this.y + offsets[i][1];
-                    switch(get_cell(u, v)) {
+                    switch(this.board.get_cell_from_pixel_position(u, v)) {
                         case gem_cell:
-                            set_cell(u, v, 0);
-                            score += 1;
+                            this.board.set_cell_from_pixel_position(u, v, empty_cell);
+                            this.score += 1;
                             break;
                         case poison_cell:
                             this.state = this.die;
                             this.colour = "rgb(128,128,128)";
                             break;
                         case exit_cell:
-                            if (score >= gems_needed) {
+                            if (this.score >= this.board.gems) {
                                 this.targetX = round_down(u, cell_width);
                                 this.targetY = round_down(v, cell_height);
                                 this.orgX = this.x;
@@ -495,9 +494,17 @@
             this.check_cell(x, y, block);
         },
 
+        get_cell_from_pixel_position: function(x, y) {
+            return this.get((x / cell_width) >>> 0, (y / cell_height) >>> 0);
+        },
+
+        set_cell_from_pixel_position: function(x, y, block) {
+            return this.set((x / cell_width) >>> 0, (y / cell_height) >>> 0, block);
+        },
+
         copy_to: function(other) {
             var i;
-            for (i = 0; i < level_len; ++i) {
+            for (i = 0; i < board_size; ++i) {
                 other.cells[i] = this.cells[i];
             }
             other.scan_for_specials();
@@ -505,7 +512,7 @@
 
         copy_from: function(other) {
             var i;
-            for (i = 0; i < level_len; ++i) {
+            for (i = 0; i < board_size; ++i) {
                 this.cells[i] = other.cells[i];
             }
             this.scan_for_specials();
@@ -514,9 +521,11 @@
         set_from_querystring: function() {
             var q = chs.Util.getQuery(),
                 nibbles,
+                level_len,
                 i;
             if (q.b !== undefined) {
                 nibbles = chs.Util.atob(q.b);
+                level_len = ((board_width - 2) * (board_height - 2));
                 if (nibbles.length === level_len / 2) {
                     for (i = 0; i < level_len; ++i) {
                         this.cells[i] = (nibbles[i >>> 1] >>> ((1 - (i & 1)) * 4)) & 0xf;
@@ -647,8 +656,6 @@
             this.rotateStartTime = 0;
             this.gemsCollected = 0;
         },
-
-
     });
 
     //////////////////////////////////////////////////////////////////////
@@ -739,6 +746,9 @@
             this.addChild(this.editor);
             this.addChild(this.scoreLabel);
             this.addChild(this.playButton);
+
+            this.playBoard.player.addEventHandler("gameover", this.startEditing, this);
+
             this.startPlaying();
         },
 

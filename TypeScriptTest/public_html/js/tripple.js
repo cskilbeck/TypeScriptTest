@@ -22,7 +22,7 @@
             "rgb(255,0,0)",     // 2: red: poison
             "rgb(0,0,255)",     // 3: blue: gem
             "rgb(255,192,0)",   // 4: yellow: exit
-            "rgb(0,0,0)"        // 5: start position
+            "rgb(192,192,192)"  // 5: start position
         ],
         descriptions = [
             "space",
@@ -30,7 +30,7 @@
             "poison",
             "gem",
             "exit",
-            "player"
+            "start"
         ],
         offsets = [
             [0, 0],
@@ -78,7 +78,7 @@
             this.height = cell_height;
             this.setPosition(cell_width, cell_height);
             this.board = board;
-            this.score = 0;
+            this.gemsCollected = 0;
             this.reset();
         },
 
@@ -354,14 +354,14 @@
                     switch(this.board.get_cell_from_pixel_position(u, v)) {
                         case gem_cell:
                             this.board.set_cell_from_pixel_position(u, v, empty_cell);
-                            this.score += 1;
+                            this.gemsCollected += 1;
                             break;
                         case poison_cell:
                             this.state = this.die;
                             this.colour = "rgb(128,128,128)";
                             break;
                         case exit_cell:
-                            if (this.score >= this.board.gems) {
+                            if (this.gemsCollected >= this.board.gems) {
                                 this.targetX = round_down(u, cell_width);
                                 this.targetY = round_down(v, cell_height);
                                 this.orgX = this.x;
@@ -410,7 +410,6 @@
 
         onUpdate: function(time, deltaTime) {
             var i;
-//            chs.Debug.text(20, 300, "Start: " + startX.toString() + "," + startY.toString());
             if(this.drawing) {
                 this.board.set(this.cell_x, this.cell_y, this.palette.currentBlock);
             }
@@ -522,13 +521,19 @@
             var q = chs.Util.getQuery(),
                 nibbles,
                 level_len,
-                i;
+                x,
+                y,
+                i = 0;
             if (q.b !== undefined) {
                 nibbles = chs.Util.atob(q.b);
                 level_len = ((board_width - 2) * (board_height - 2));
                 if (nibbles.length === level_len / 2) {
-                    for (i = 0; i < level_len; ++i) {
-                        this.cells[i] = (nibbles[i >>> 1] >>> ((1 - (i & 1)) * 4)) & 0xf;
+                    this.gems = 0;
+                    for (y = 1; y < board_height - 1; ++y) {
+                        for (x = 1; x < board_width - 1; ++x) {
+                            this.set(x, y, (nibbles[i >>> 1] >>> ((1 - (i & 1)) * 4)) & 0xf);
+                            i += 1;
+                        }
                     }
                 }
             }
@@ -636,7 +641,6 @@
             mtw.Board.call(this);
             this.player = new mtw.Player(this);
             this.addChild(this.player);
-            this.gemsCollected = 0;
             this.addEventHandler("rotated", this.rotated, this);
         },
 
@@ -648,14 +652,18 @@
 
         startPlaying: function() {
             this.player.reset(this.start[0], this.start[1]);
-            this.gemsCollected = 0;
             this.flip = false;
             this.oldFlip = false;
             this.startRotation = 0;
             this.targetRotation = 0;
             this.rotateStartTime = 0;
-            this.gemsCollected = 0;
         },
+
+        onUpdate: function(time, deltaTime) {
+            if (this.player.gemsCollected === this.gems) {
+                colours[exit_cell] = "rgb(255, 192, " + (Math.sin(time / 50) * 64 + 191).toString() + ")";
+            }
+        }
     });
 
     //////////////////////////////////////////////////////////////////////
@@ -746,9 +754,8 @@
             this.addChild(this.editor);
             this.addChild(this.scoreLabel);
             this.addChild(this.playButton);
-
             this.playBoard.player.addEventHandler("gameover", this.startEditing, this);
-
+            this.onUpdate = this.showGems;
             this.startPlaying();
         },
 
@@ -783,10 +790,13 @@
             this.playBoard.enabled = false;
         },
 
-        onUpdate: function(time, deltaTime) {
-            chs.Debug.print(deltaTime);
+        showGems: function(time, deltaTime) {
+            var s = "Gems: " + this.editor.editBoard.gems.toString();
+            if (this.mode === 'play') {
+                s += " of " + this.playBoard.player.gemsCollected.toString();
+            }
+            this.scoreLabel.text = s;
         }
-
     });
 
 }());

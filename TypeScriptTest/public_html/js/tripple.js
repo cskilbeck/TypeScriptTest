@@ -1,29 +1,7 @@
 //////////////////////////////////////////////////////////////////////
-// make a blank level
-// maybe override it from the query string
-// that's your edit_level
-// edit: edit_level
-// play: copy edit_level to board
-
-// level editor
-// restart button
-// space,jump in 1 frame
-
-// game states:
-//  main menu
-//  playing
-//  level editor
-
-// player states:
-//  playing
-//  dying - flash for a bit, then reset to current level
-//  winning - lerp to the position of the exit square, then reset to next level
-
-// Level:
-// Width, Height
-// Board
-
-//////////////////////////////////////////////////////////////////////
+// different sized boards
+// zoom in / out
+// scrolling / pivot point on the player?
 
 (function () {
     "use strict";
@@ -61,11 +39,7 @@
             [cell_width - 1, cell_height - 1]
         ],
 
-        mode = 'play',
-        game = null,
-        mainmenu = null,
         level_len = ((board_width - 2) * (board_height - 2)),
-        editLevel = [],
 
         empty_cell = 0,
         platform_cell = 1,
@@ -75,18 +49,8 @@
         start_cell = 5,
 
         score = 0,
-        player = null,
         lerpTime = 400,
-        space = false,
-        standing = false,
-        flying = false,
-        sq22 = Math.sqrt(2) / 2,
-        currentBlock = 2,
-        cursor = null,
-        startX = 1,
-        startY = 1,
-        palette = null,
-        jump = false;
+        sq22 = Math.sqrt(2) / 2;
 
     //////////////////////////////////////////////////////////////////////
 
@@ -616,7 +580,6 @@
                 }
             }
         }
-
     });
 
     //////////////////////////////////////////////////////////////////////
@@ -651,7 +614,6 @@
         onLeftMouseUp: function(e) {
             this.cursor.drawing = false;
         }
-
     });
 
     //////////////////////////////////////////////////////////////////////
@@ -661,13 +623,14 @@
 
         $: function() {
             mtw.Board.call(this);
-            this.player = new mtw.Player();
+            this.player = new mtw.Player(this);
             this.addChild(this.player);
             this.gemsCollected = 0;
         },
 
         startPlaying: function() {
             this.player.reset(this.start[0], this.start[1]);
+            this.gemsCollected = 0;
             this.flip = false;
             this.oldFlip = false;
             this.startRotation = 0;
@@ -675,7 +638,6 @@
             this.rotateStartTime = 0;
             this.gemsCollected = 0;
         }
-
     });
 
     //////////////////////////////////////////////////////////////////////
@@ -708,13 +670,41 @@
         onLeftMouseDown: function (e) {
             this.currentBlock = (this.screenToClient(e).y / cell_height) >>> 0;
         }
-
     });
+
+    //////////////////////////////////////////////////////////////////////
+    // the editor bits
+
+    mtw.Editor = chs.Class({ inherit$: chs.Drawable,
+
+        $: function(font) {
+            var fh = font.height;
+            this.rotateButton = new chs.TextButton("Rotate", font, 700, fh * 3, 120, fh * 1.5, this.rotate, this);
+            this.saveButton = new chs.TextButton("Save", font, 700, fh * 4.5, 120, fh * 1.5, this.save, this);
+            this.palette = new mtw.Palette();
+            this.editBoard = new mtw.EditBoard(this.palette);
+            this.addChild(this.palette);
+            this.addChild(this.rotateButton);
+            this.addChild(this.saveButton);
+            this.addChild(this.editBoard);
+            this.editBoard.set_from_querystring();
+        },
+
+        rotate: function() {
+            this.editBoard.flip = true;
+        },
+
+        save: function () {
+            window.prompt("Here's the link\nPress ctrl-c to copy it\nThen post it in /r/Tripple",
+                "http://skilbeck.com/tripple?b=" + this.editBoard.get_querystring());
+        }
+    });
+
 
     //////////////////////////////////////////////////////////////////////
     // the game controller - can be in editing or playing mode...
 
-    mtw.Game = chs.Class({inherit$: chs.Drawable,
+    mtw.Game = chs.Class({ inherit$: chs.Drawable,
 
         $: function() {
             chs.Drawable.call(this);
@@ -727,25 +717,11 @@
         },
 
         init: function() {
-            var fh = this.font.height;
             this.mode = 'play';
-            this.palette = new mtw.Palette();
-            this.playBoard = new mtw.PlayBoard();
-            this.editBoard = new mtw.EditBoard(this.palette);
             this.playButton = new chs.TextButton("Edit", this.font, 700, 0, 120, fh * 1.5, this.toggleEditing, this);
-            this.rotateButton = new chs.TextButton("Rotate", this.font, 700, fh * 3, 120, fh * 1.5, this.rotate, this);
-            this.saveButton = new chs.TextButton("Save", this.font, 700, fh * 4.5, 120, fh * 1.5, this.save, this);
-            this.editor = new chs.Drawable();
-            this.cursor = new mtw.Cursor();
+            this.playBoard = new mtw.PlayBoard();
+            this.editor = new mtw.Editor(this.font);
             this.scoreLabel = new chs.Label("Gems: 0", this.font);
-            this.editor.addChild(this.palette);
-            this.editor.addChild(this.rotateButton);
-            this.editor.addChild(this.saveButton);
-            this.editor.addChild(this.editBoard);
-            this.editBoard.addChild(this.cursor);
-            this.playBoard.addChild(this.player);
-            this.editBoard.set_from_querystring();
-            this.editBoard.copy_to(this.playBoard);
             this.startPlaying();
         },
 
@@ -758,10 +734,6 @@
                     this.startPlaying();
                     break;
             }
-        },
-
-        rotate: function() {
-            this.editBoard.flip = true;
         },
 
         startPlaying: function() {
@@ -782,35 +754,7 @@
             this.editor.enabled = true;
             this.playBoard.visible = false;
             this.playBoard.enabled = false;
-        },
-
-        save: function () {
-            window.prompt("Here's the link\nPress ctrl-c to copy it\nThen post it in /r/Tripple",
-                "http://skilbeck.com/tripple?b=" + this.playBoard.get_querystring());
-        },
-
-        reset: function() {
-            var i,
-                startPos,
-                got_board = false,
-                board_nibbles,
-                board_array,
-                bs,
-                q;
-
-            playfield.rotation = 0;
-            playfield.width = board_width * cell_width;
-            playfield.height = board_height * cell_height;
-            flip = false;
-            oldFlip = false;
-            space = false;
-            score = 0;
-            colours[exit] = "rgb(255,192,0)";
-            startPos = init_board(savedLevelString);
-            player.setPosition(startPos.x, startPos.y);
-            gems_needed = startPos.gems;
         }
     });
-
 
 }());

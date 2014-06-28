@@ -3,7 +3,9 @@
 window.onload = function () {
     "use strict";
 
-    var startup = chs.Class({
+    var identityMatrix = new Matrix(),
+
+        startup = chs.Class({
 
         static$: {
 
@@ -26,14 +28,12 @@ window.onload = function () {
                 startup.run();
             },
 
-            identityMatrix: new chs.Matrix(),
-
             run: function () {
                 chs.Timer.update();
                 chs.Keyboard.update(chs.desktop);
                 chs.Mouse.update(chs.desktop);
                 chs.desktop.update(chs.Timer.time, chs.Timer.delta);
-                chs.desktop.draw(chs.desktop.context, startup.identityMatrix, 255);
+                chs.desktop.draw(chs.desktop.context, identityMatrix, 255);
                 // chs.Canvas.showCache();
                 // mtw.WordButton.showCache();
                 chs.Debug.draw();

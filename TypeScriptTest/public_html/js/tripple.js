@@ -397,6 +397,7 @@
             this.palette = palette;
             this.cell_x = 0;
             this.cell_y = 0;
+            this.currentBlock = 0;
         },
 
         onDraw: function(context) {
@@ -410,9 +411,9 @@
 
         onUpdate: function(time, deltaTime) {
             var i;
-            chs.Debug.text(20, 300, "Start: " + startX.toString() + "," + startY.toString());
+//            chs.Debug.text(20, 300, "Start: " + startX.toString() + "," + startY.toString());
             if(this.drawing) {
-                this.board.set(this.cell_x, this.cell_y, this.currentBlock);
+                this.board.set(this.cell_x, this.cell_y, this.palette.currentBlock);
             }
         }
     });
@@ -484,8 +485,11 @@
 
         set: function(x, y, block) {
             var offset = x + y * board_width;
-            if (this.cells[offset] === gem) {
+            if (this.cells[offset] === gem_cell) {
                 this.gems -= 1;
+            }
+            if (block == start_cell) {
+                this.cells[this.start[0] + this.start[1] * board_width] = empty_cell;
             }
             this.cells[offset] = block;
             this.check_cell(x, y, block);
@@ -548,7 +552,7 @@
                     this.targetRotation = Math.PI * -0.5;
                     this.rotateStartTime = time;
                 }
-                dt = (time - rotateStartTime) / lerpTime;
+                dt = (time - this.rotateStartTime) / lerpTime;
                 if (dt < 1) {
                     dt = chs.Util.ease(dt);
                     this.rotation = this.startRotation + (this.targetRotation - this.startRotation) * dt;
@@ -562,9 +566,7 @@
                         }
                     }
                     this.cells = tmp;
-                    tmp = player.x;
-                    player.x = this.width - player.y - player.width;
-                    player.y = tmp;
+                    this.dispatchEvent("rotated");
                 }
             }
             this.oldFlip = this.flip;
@@ -608,7 +610,7 @@
         },
 
         onLeftMouseDown: function(e) {
-            this.cursor.drawing = cursor.visible;
+            this.cursor.drawing = this.cursor.visible;
         },
 
         onLeftMouseUp: function(e) {
@@ -626,6 +628,13 @@
             this.player = new mtw.Player(this);
             this.addChild(this.player);
             this.gemsCollected = 0;
+            this.addEventHandler("rotated", this.rotated, this);
+        },
+
+        rotated: function() {
+            var tmp = this.player.x;
+            this.player.x = this.width - this.player.y - this.player.width;
+            this.player.y = tmp;
         },
 
         startPlaying: function() {
@@ -637,7 +646,9 @@
             this.targetRotation = 0;
             this.rotateStartTime = 0;
             this.gemsCollected = 0;
-        }
+        },
+
+
     });
 
     //////////////////////////////////////////////////////////////////////
@@ -678,9 +689,10 @@
     mtw.Editor = chs.Class({ inherit$: chs.Drawable,
 
         $: function(font) {
+            chs.Drawable.call(this);
             var fh = font.height;
-            this.rotateButton = new chs.TextButton("Rotate", font, 700, fh * 3, 120, fh * 1.5, this.rotate, this);
-            this.saveButton = new chs.TextButton("Save", font, 700, fh * 4.5, 120, fh * 1.5, this.save, this);
+            this.rotateButton = new chs.TextButton("Rotate", font, 700, 10 + fh * 5, 120, fh * 2, this.rotate, this);
+            this.saveButton = new chs.TextButton("Save", font, 700, 10 + fh * 8, 120, fh * 2, this.save, this);
             this.palette = new mtw.Palette();
             this.editBoard = new mtw.EditBoard(this.palette);
             this.addChild(this.palette);
@@ -711,17 +723,22 @@
             this.width = chs.desktop.width;
             this.height = chs.desktop.height;
             this.loader = new chs.Loader('img/');
-            this.font = chs.Font.load('Calibri', this.loader);
+            this.font = chs.Font.load('Consolas', this.loader);
             this.loader.addEventHandler("complete", this.init, this);
             this.loader.start();
         },
 
         init: function() {
+            var fh = this.font.height;
             this.mode = 'play';
-            this.playButton = new chs.TextButton("Edit", this.font, 700, 0, 120, fh * 1.5, this.toggleEditing, this);
+            this.playButton = new chs.TextButton("Edit", this.font, 700, 10, 120, fh * 2, this.toggleEditing, this);
             this.playBoard = new mtw.PlayBoard();
             this.editor = new mtw.Editor(this.font);
-            this.scoreLabel = new chs.Label("Gems: 0", this.font);
+            this.scoreLabel = new chs.Label("Gems: 0", this.font).setPosition(20, 20);
+            this.addChild(this.playBoard);
+            this.addChild(this.editor);
+            this.addChild(this.scoreLabel);
+            this.addChild(this.playButton);
             this.startPlaying();
         },
 
@@ -739,7 +756,7 @@
         startPlaying: function() {
             this.mode = 'play';
             this.playButton.text = "Edit";
-            this.playBoard.copy_from(this.editBoard);
+            this.playBoard.copy_from(this.editor.editBoard);
             this.editor.visible = false;
             this.editor.enabled = false;
             this.playBoard.visible = true;
@@ -754,7 +771,12 @@
             this.editor.enabled = true;
             this.playBoard.visible = false;
             this.playBoard.enabled = false;
+        },
+
+        onUpdate: function(time, deltaTime) {
+            chs.Debug.print(deltaTime);
         }
+
     });
 
 }());

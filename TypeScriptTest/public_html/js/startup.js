@@ -3,7 +3,7 @@
 window.onload = function () {
     "use strict";
 
-    var identityMatrix = new Matrix(),
+    var identityMatrix = new chs.Matrix(),
 
         startup = chs.Class({
 

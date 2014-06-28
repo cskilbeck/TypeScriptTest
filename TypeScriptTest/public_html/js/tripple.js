@@ -2,6 +2,7 @@
 // different sized boards
 // zoom in / out
 // scrolling / pivot point on the player?
+// ? moving poison / enemies?
 
 (function () {
     "use strict";
@@ -78,11 +79,11 @@
             this.height = cell_height;
             this.setPosition(cell_width, cell_height);
             this.board = board;
-            this.gemsCollected = 0;
             this.reset();
         },
 
         reset: function(x, y) {
+            this.gemsCollected = 0;
             this.standing = false;
             this.flying = false;
             this.jump = false;
@@ -642,6 +643,7 @@
             this.player = new mtw.Player(this);
             this.addChild(this.player);
             this.addEventHandler("rotated", this.rotated, this);
+            this.gemsRequired = 0;
         },
 
         rotated: function() {
@@ -651,6 +653,7 @@
         },
 
         startPlaying: function() {
+            this.gemsRequired = this.gems;
             this.player.reset(this.start[0], this.start[1]);
             this.flip = false;
             this.oldFlip = false;
@@ -660,9 +663,10 @@
         },
 
         onUpdate: function(time, deltaTime) {
-            if (this.player.gemsCollected === this.gems) {
-                colours[exit_cell] = "rgb(255, 192, " + (Math.sin(time / 50) * 64 + 191).toString() + ")";
+            if (this.player.gemsCollected === this.gemsRequired) {
+                colours[exit_cell] = "rgb(255, 192, " + ((Math.sin(time / 50) * 64 + 191) >>> 0).toString() + ")";
             }
+            mtw.Board.prototype.onUpdate.call(this, time, deltaTime);
         }
     });
 
@@ -779,6 +783,7 @@
             this.playBoard.visible = true;
             this.playBoard.enabled = true;
             this.playBoard.startPlaying();
+            colours[exit_cell] = "rgb(255,192,0)";
         },
 
         startEditing: function() {
@@ -788,12 +793,15 @@
             this.editor.enabled = true;
             this.playBoard.visible = false;
             this.playBoard.enabled = false;
+            colours[exit_cell] = "rgb(255,192,0)";
         },
 
         showGems: function(time, deltaTime) {
-            var s = "Gems: " + this.editor.editBoard.gems.toString();
+            var s = "Gems: ";
             if (this.mode === 'play') {
-                s += " of " + this.playBoard.player.gemsCollected.toString();
+                s += this.playBoard.gemsRequired.toString() + " of " + this.playBoard.player.gemsCollected.toString();
+            } else if (this.mode === 'edit') {
+                s += this.editor.editBoard.gems.toString();
             }
             this.scoreLabel.text = s;
         }

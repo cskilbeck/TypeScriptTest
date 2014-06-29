@@ -322,7 +322,9 @@
                         frozen = true;
                     }
                 }
-                this.onUpdate(time, deltaTime);   // modal children freeze their parent
+                if (self.enabled) {                 // children might disable their parent
+                    this.onUpdate(time, deltaTime);
+                }
             }
             if (frozen) {
                 chs.Mouse.unfreeze();

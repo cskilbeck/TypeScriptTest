@@ -362,7 +362,7 @@
                             this.colour = "rgb(128,128,128)";
                             break;
                         case exit_cell:
-                            if (this.gemsCollected >= this.board.gems) {
+                            if (this.gemsCollected >= this.board.gemsRequired) {
                                 this.targetX = round_down(u, cell_width);
                                 this.targetY = round_down(v, cell_height);
                                 this.orgX = this.x;
@@ -692,8 +692,8 @@
                 chs.Debug.text(60 + cell_width + 8, 50 + i * cell_height + 8, descriptions[i]);
             }
             chs.Util.rect(context, 0, this.currentBlock * cell_height, cell_width, cell_width);
-            context.strokeStyle = "white";
-            context.lineWidth = 2;
+            context.strokeStyle = "black";
+            context.lineWidth = 5;
             context.stroke();
         },
 
@@ -750,17 +750,36 @@
         init: function() {
             var fh = this.font.height;
             this.mode = 'play';
+
             this.playButton = new chs.TextButton("Edit", this.font, 700, 10, 120, fh * 2, this.toggleEditing, this);
             this.playBoard = new mtw.PlayBoard();
             this.editor = new mtw.Editor(this.font);
             this.scoreLabel = new chs.Label("Gems: 0", this.font).setPosition(20, 20);
+
             this.addChild(this.playBoard);
             this.addChild(this.editor);
             this.addChild(this.scoreLabel);
             this.addChild(this.playButton);
+
+            this.instructions = new chs.Label("Use the space bar to move & jump", this.font).setPivot(0.5, 0.5).setPosition(this.width / 2, this.height / 2);
+            this.instructions.onUpdate = this.fadeInstructions;
+            this.instructions.age = 0;
+            this.addChild(this.instructions);
+
             this.playBoard.player.addEventHandler("gameover", this.startEditing, this);
             this.onUpdate = this.showGems;
             this.startPlaying();
+        },
+
+        fadeInstructions: function(time, deltaTime) {
+            this.age += deltaTime;
+            if (this.age >= 2000) {
+                this.visible = false;
+            } else {
+                this.setScale(1 + this.age / 2000);
+                this.transparency = 255 - (this.age / 2000) * 255;
+                this.visible = true;
+            }
         },
 
         toggleEditing: function() {
@@ -783,6 +802,7 @@
             this.playBoard.visible = true;
             this.playBoard.enabled = true;
             this.playBoard.startPlaying();
+            this.instructions.age = 0;
             colours[exit_cell] = "rgb(255,192,0)";
         },
 
@@ -799,7 +819,7 @@
         showGems: function(time, deltaTime) {
             var s = "Gems: ";
             if (this.mode === 'play') {
-                s += this.playBoard.gemsRequired.toString() + " of " + this.playBoard.player.gemsCollected.toString();
+                s += this.playBoard.player.gemsCollected.toString() + " of " + this.playBoard.gemsRequired.toString();
             } else if (this.mode === 'edit') {
                 s += this.editor.editBoard.gems.toString();
             }

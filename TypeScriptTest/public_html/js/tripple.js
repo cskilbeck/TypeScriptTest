@@ -378,7 +378,7 @@
 
         onDraw: function(context) {
             context.fillStyle = this.colour;
-            context.fillRect(0.5, 0.5, this.width + 0.5, this.height + 0.5);
+            context.fillRect(0, 0, this.width + 0, this.height + 0);
         }
     });
 
@@ -402,7 +402,7 @@
 
         onDraw: function(context) {
             context.fillStyle = colours[this.palette.currentBlock];
-            chs.Util.rect(context, 0.5, 0.5, cell_width, cell_height);
+            chs.Util.rect(context, 0, 0, cell_width, cell_height);
             context.fill();
             context.strokeStyle = "rgba(0, 0, 0, 0.5)";
             context.lineWidth = 3;
@@ -414,6 +414,7 @@
             if(this.drawing) {
                 this.board.set(this.cell_x, this.cell_y, this.palette.currentBlock);
             }
+            this.setPosition(this.cell_x * cell_width, this.cell_y * cell_height);
         }
     });
 
@@ -593,7 +594,7 @@
             for (y = 0; y < board_height; ++y) {
                 for (x = 0; x < board_width; ++x) {
                     context.fillStyle = colours[this.get(x, y)];
-                    context.fillRect(0.5 + x * cell_width, 0.5 + y * cell_height, cell_width + 0.5, cell_height + 0.5);
+                    context.fillRect(x * cell_width, y * cell_height, cell_width + 0.5, cell_height + 0.5);
                 }
             }
         }
@@ -607,6 +608,7 @@
         $: function(palette) {
             mtw.Board.call(this);
             this.cursor = new mtw.Cursor(this, palette);
+            this.cursor.visible = false;
             this.addChild(this.cursor);
         },
 
@@ -618,7 +620,6 @@
                 this.cursor.visible = true;
                 this.cursor.cell_x = x;
                 this.cursor.cell_y = y;
-                this.cursor.setPosition(x * cell_width, y * cell_height);
             } else {
                 this.cursor.visible = false;
             }
@@ -634,15 +635,42 @@
     });
 
     //////////////////////////////////////////////////////////////////////
+    // instructions
+
+    mtw.Instructions = chs.Class({ inherit$: chs.Label,
+
+        $: function(text, font) {
+            chs.Label.call(this, text, font);
+            this.age = 0;
+        },
+
+        onUpdate: function(time, deltaTime) {
+            if (this.visible) {
+                this.age += deltaTime;
+                if (this.age >= 2000) {
+                    this.visible = false;
+                } else {
+                    this.setScale(1 + this.age / 2000);
+                    this.transparency = 255 - (this.age / 2000) * 255;
+                    this.visible = true;
+                }
+            }
+        }
+    });
+
+    //////////////////////////////////////////////////////////////////////
     // a board which can be played
 
     mtw.PlayBoard = chs.Class({ inherit$: mtw.Board,
 
-        $: function() {
+        $: function(font) {
             mtw.Board.call(this);
             this.player = new mtw.Player(this);
+            this.instructions = new mtw.Instructions("Press space to move & jump", font).setPivot(0.5, 0.5).setPosition(this.width / 2, this.height / 2);
             this.addChild(this.player);
+            this.addChild(this.instructions);
             this.addEventHandler("rotated", this.rotated, this);
+            this.player.addEventHandler("gameover", this.gameover, this);
             this.gemsRequired = 0;
         },
 
@@ -650,6 +678,10 @@
             var tmp = this.player.x;
             this.player.x = this.width - this.player.y - this.player.width;
             this.player.y = tmp;
+        },
+
+        gameover: function() {
+            this.instructions.visible = false;
         },
 
         startPlaying: function() {
@@ -660,6 +692,8 @@
             this.startRotation = 0;
             this.targetRotation = 0;
             this.rotateStartTime = 0;
+            this.instructions.age = 0;
+            this.instructions.visible = true;
         },
 
         onUpdate: function(time, deltaTime) {
@@ -731,7 +765,6 @@
         }
     });
 
-
     //////////////////////////////////////////////////////////////////////
     // the game controller - can be in editing or playing mode...
 
@@ -750,36 +783,16 @@
         init: function() {
             var fh = this.font.height;
             this.mode = 'play';
-
             this.playButton = new chs.TextButton("Edit", this.font, 700, 10, 120, fh * 2, this.toggleEditing, this);
-            this.playBoard = new mtw.PlayBoard();
+            this.playBoard = new mtw.PlayBoard(this.font);
             this.editor = new mtw.Editor(this.font);
             this.scoreLabel = new chs.Label("Gems: 0", this.font).setPosition(20, 20);
-
             this.addChild(this.playBoard);
-            this.addChild(this.editor);
             this.addChild(this.scoreLabel);
             this.addChild(this.playButton);
-
-            this.instructions = new chs.Label("Use the space bar to move & jump", this.font).setPivot(0.5, 0.5).setPosition(this.width / 2, this.height / 2);
-            this.instructions.onUpdate = this.fadeInstructions;
-            this.instructions.age = 0;
-            this.addChild(this.instructions);
-
             this.playBoard.player.addEventHandler("gameover", this.startEditing, this);
             this.onUpdate = this.showGems;
-            this.startPlaying();
-        },
-
-        fadeInstructions: function(time, deltaTime) {
-            this.age += deltaTime;
-            if (this.age >= 2000) {
-                this.visible = false;
-            } else {
-                this.setScale(1 + this.age / 2000);
-                this.transparency = 255 - (this.age / 2000) * 255;
-                this.visible = true;
-            }
+            this.playBoard.startPlaying();
         },
 
         toggleEditing: function() {
@@ -797,22 +810,17 @@
             this.mode = 'play';
             this.playButton.text = "Edit";
             this.playBoard.copy_from(this.editor.editBoard);
-            this.editor.visible = false;
-            this.editor.enabled = false;
-            this.playBoard.visible = true;
-            this.playBoard.enabled = true;
+            this.addChild(this.playBoard);
+            this.removeChild(this.editor);
             this.playBoard.startPlaying();
-            this.instructions.age = 0;
             colours[exit_cell] = "rgb(255,192,0)";
         },
 
         startEditing: function() {
             this.mode = 'edit';
             this.playButton.text = "Play";
-            this.editor.visible = true;
-            this.editor.enabled = true;
-            this.playBoard.visible = false;
-            this.playBoard.enabled = false;
+            this.addChild(this.editor);
+            this.removeChild(this.playBoard);
             colours[exit_cell] = "rgb(255,192,0)";
         },
 

@@ -792,6 +792,7 @@
             this.addChild(this.playButton);
             this.playBoard.player.addEventHandler("gameover", this.startEditing, this);
             this.onUpdate = this.showGems;
+            this.playBoard.set_from_querystring();
             this.playBoard.startPlaying();
         },
 

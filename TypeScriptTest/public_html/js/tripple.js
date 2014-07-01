@@ -391,8 +391,6 @@
             chs.Drawable.call(this);
             this.setPosition(cell_width, cell_height);
             this.drawing = false;
-            this.offset = 0;
-            this.startOffset = 0;
             this.board = board;
             this.palette = palette;
             this.cell_x = 0;
@@ -652,7 +650,6 @@
                 } else {
                     this.setScale(1 + this.age / 2000);
                     this.transparency = 255 - (this.age / 2000) * 255;
-                    this.visible = true;
                 }
             }
         }

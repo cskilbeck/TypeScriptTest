@@ -11,7 +11,7 @@ window.onload = function () {
 
             init: function () {
                 var loader;
-                chs.desktop = new chs.Desktop();
+                chs.desktop = new chs.Desktop(852, 480, "rgb(32, 128, 48)");
                 loader = new chs.Loader('img/');
                 chs.Debug.init(chs.desktop.context, chs.Font.load("Fixedsys", loader));
                 loader.addEventHandler("complete", startup.start);

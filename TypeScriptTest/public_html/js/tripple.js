@@ -4,6 +4,8 @@
 // scrolling / pivot point on the player?
 // ? moving poison / enemies?
 
+tripple = {};
+
 (function () {
     "use strict";
 
@@ -69,9 +71,15 @@
     }
 
     //////////////////////////////////////////////////////////////////////
+
+    function reset_colours() {
+        colours[exit_cell] = "rgb(255,192,0)";
+    }
+
+    //////////////////////////////////////////////////////////////////////
     // the player
 
-    mtw.Player = chs.Class({ inherit$: chs.Drawable,
+    var Player = chs.Class({ inherit$: chs.Drawable,
 
         $: function(board) {
             chs.Drawable.call(this);
@@ -79,6 +87,7 @@
             this.height = cell_height;
             this.setPosition(cell_width, cell_height);
             this.board = board;
+            this.alive = false;
             this.reset();
         },
 
@@ -89,10 +98,12 @@
             this.jump = false;
             this.xvel = 0;
             this.yvel = 0;
+            this.space = false;
             this.colour = "black";
             this.visible = true;
             this.setPosition(x * cell_width, y * cell_height);
             this.state = this.play;
+            this.alive = true;
         },
 
         onKeyDown: function(e) {
@@ -296,9 +307,15 @@
             }
         }),
 
+        gameover: function() {
+            this.dispatchEvent("gameover");
+            this.alive = false;
+            reset_colours();
+        },
+
         die: function(time, deltaTime) {
             if (this.stateTime > 1000) {
-                this.dispatchEvent("gameover");
+                this.gameover();
             } else {
                 this.visible = !this.visible;
             }
@@ -307,7 +324,7 @@
         exit: function(time, deltaTime) {
             var t;
             if (this.stateTime > 500) {
-                this.dispatchEvent("gameover");
+                this.gameover();
             } else {
                 t = chs.Util.ease2(Math.min(1, this.stateTime / 250), 6);
                 this.x = this.orgX + (this.targetX - this.orgX) * t;
@@ -385,7 +402,7 @@
     //////////////////////////////////////////////////////////////////////
     // edit cursor
 
-    mtw.Cursor = chs.Class({inherit$: chs.Drawable,
+    var Cursor = chs.Class({ inherit$: chs.Drawable,
 
         $: function(board, palette) {
             chs.Drawable.call(this);
@@ -419,7 +436,7 @@
     //////////////////////////////////////////////////////////////////////
     // the board
 
-    mtw.Board = chs.Class({ inherit$: chs.Drawable,
+    var Board = chs.Class({ inherit$: chs.Drawable,
 
         $: function() {
             var i;
@@ -601,11 +618,11 @@
     //////////////////////////////////////////////////////////////////////
     // a board which can be edited
 
-    mtw.EditBoard = chs.Class({ inherit$: mtw.Board,
+    var Editboard = chs.Class({ inherit$: Board,
 
         $: function(palette) {
-            mtw.Board.call(this);
-            this.cursor = new mtw.Cursor(this, palette);
+            Board.call(this);
+            this.cursor = new Cursor(this, palette);
             this.cursor.visible = false;
             this.addChild(this.cursor);
         },
@@ -635,7 +652,7 @@
     //////////////////////////////////////////////////////////////////////
     // instructions
 
-    mtw.Instructions = chs.Class({ inherit$: chs.Label,
+    var Instructions = chs.Class({ inherit$: chs.Label,
 
         $: function(text, font) {
             chs.Label.call(this, text, font);
@@ -658,12 +675,12 @@
     //////////////////////////////////////////////////////////////////////
     // a board which can be played
 
-    mtw.PlayBoard = chs.Class({ inherit$: mtw.Board,
+    var Playboard = chs.Class({ inherit$: Board,
 
         $: function(font) {
-            mtw.Board.call(this);
-            this.player = new mtw.Player(this);
-            this.instructions = new mtw.Instructions("Press space to move & jump", font).setPivot(0.5, 0.5).setPosition(this.width / 2, this.height / 2);
+            Board.call(this);
+            this.player = new Player(this);
+            this.instructions = new Instructions("Press space to move & jump", font).setPivot(0.5, 0.5).setPosition(this.width / 2, this.height / 2);
             this.addChild(this.player);
             this.addChild(this.instructions);
             this.addEventHandler("rotated", this.rotated, this);
@@ -694,17 +711,17 @@
         },
 
         onUpdate: function(time, deltaTime) {
-            if (this.player.gemsCollected === this.gemsRequired) {
+            if (this.player.gemsCollected === this.gemsRequired && this.player.alive) {
                 colours[exit_cell] = "rgb(255, 192, " + ((Math.sin(time / 50) * 64 + 191) >>> 0).toString() + ")";
             }
-            mtw.Board.prototype.onUpdate.call(this, time, deltaTime);
+            Board.prototype.onUpdate.call(this, time, deltaTime);
         }
     });
 
     //////////////////////////////////////////////////////////////////////
     // palette of blocks for editor
 
-    mtw.Palette = chs.Class({inherit$: chs.Drawable,
+    var Palette = chs.Class({inherit$: chs.Drawable,
 
         $: function() {
             chs.Drawable.call(this);
@@ -736,15 +753,15 @@
     //////////////////////////////////////////////////////////////////////
     // the editor bits
 
-    mtw.Editor = chs.Class({ inherit$: chs.Drawable,
+    var Editor = chs.Class({ inherit$: chs.Drawable,
 
         $: function(font) {
             chs.Drawable.call(this);
             var fh = font.height;
             this.rotateButton = new chs.TextButton("Rotate", font, 700, 10 + fh * 5, 120, fh * 2, this.rotate, this);
             this.saveButton = new chs.TextButton("Save", font, 700, 10 + fh * 8, 120, fh * 2, this.save, this);
-            this.palette = new mtw.Palette();
-            this.editBoard = new mtw.EditBoard(this.palette);
+            this.palette = new Palette();
+            this.editBoard = new Editboard(this.palette);
             this.addChild(this.palette);
             this.addChild(this.rotateButton);
             this.addChild(this.saveButton);
@@ -753,6 +770,7 @@
         },
 
         rotate: function() {
+            this.editBoard.cursor.visible = false;
             this.editBoard.flip = true;
         },
 
@@ -765,7 +783,7 @@
     //////////////////////////////////////////////////////////////////////
     // the game controller - can be in editing or playing mode...
 
-    mtw.Game = chs.Class({ inherit$: chs.Drawable,
+    tripple.Game = chs.Class({ inherit$: chs.Drawable,
 
         $: function() {
             chs.Drawable.call(this);
@@ -774,6 +792,7 @@
             this.loader = new chs.Loader('img/');
             this.font = chs.Font.load('Consolas', this.loader);
             this.loader.addEventHandler("complete", this.init, this);
+            this.enabled = false;
             this.loader.start();
         },
 
@@ -781,14 +800,14 @@
             var fh = this.font.height;
             this.mode = 'play';
             this.playButton = new chs.TextButton("Edit", this.font, 700, 10, 120, fh * 2, this.toggleEditing, this);
-            this.playBoard = new mtw.PlayBoard(this.font);
-            this.editor = new mtw.Editor(this.font);
+            this.playBoard = new Playboard(this.font);
+            this.editor = new Editor(this.font);
             this.scoreLabel = new chs.Label("Gems: 0", this.font).setPosition(20, 20);
             this.addChild(this.playBoard);
             this.addChild(this.scoreLabel);
             this.addChild(this.playButton);
             this.playBoard.player.addEventHandler("gameover", this.startEditing, this);
-            this.onUpdate = this.showGems;
+            this.enabled = true;
             this.playBoard.set_from_querystring();
             this.playBoard.startPlaying();
         },
@@ -811,7 +830,6 @@
             this.addChild(this.playBoard);
             this.removeChild(this.editor);
             this.playBoard.startPlaying();
-            colours[exit_cell] = "rgb(255,192,0)";
         },
 
         startEditing: function() {
@@ -819,10 +837,10 @@
             this.playButton.text = "Play";
             this.addChild(this.editor);
             this.removeChild(this.playBoard);
-            colours[exit_cell] = "rgb(255,192,0)";
+            reset_colours();
         },
 
-        showGems: function(time, deltaTime) {
+        onUpdate: function(time, deltaTime) {
             var s = "Gems: ";
             if (this.mode === 'play') {
                 s += this.playBoard.player.gemsCollected.toString() + " of " + this.playBoard.gemsRequired.toString();
@@ -834,3 +852,11 @@
     });
 
 }());
+
+//////////////////////////////////////////////////////////////////////
+
+function main(desktop) {
+    "use strict";
+
+    desktop.addChild(new tripple.Game());
+}

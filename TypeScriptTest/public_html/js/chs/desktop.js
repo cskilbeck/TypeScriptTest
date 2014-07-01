@@ -17,9 +17,9 @@
 
     chs.Desktop = chs.Class({ inherit$: chs.Panel,
 
-        $: function ()
+        $: function (width, height, color)
         {
-            chs.Panel.call(this, 0, 0, 852, 480, "rgb(32, 128, 48)");
+            chs.Panel.call(this, 0, 0, width, height, color);
             canvas = document.createElement("canvas");
             canvas.width = this.width;
             canvas.height = this.height;
@@ -30,6 +30,30 @@
             this.context = canvas.getContext("2d");
             this.canvas = canvas;
         },
+
+        width: chs.Property({
+            get: function() {
+                return this.drawableData.dimensions.width;
+            },
+            set: function(w) {
+                this.drawableData.dimensions.width = w;
+                this.drawableData.dirty = true;
+                this.canvas.width = w;
+                centerCanvas();
+            }
+        }),
+
+        height: chs.Property({
+            get: function() {
+                return this.drawableData.dimensions.height;
+            },
+            set: function(h) {
+                this.drawableData.dimensions.height = h;
+                this.drawableData.dirty = true;
+                this.canvas.height = h;
+                centerCanvas();
+            }
+        }),
 
         clear: function() {
             this.context.clearRect(0, 0, this.width, this.height);

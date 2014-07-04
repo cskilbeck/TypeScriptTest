@@ -190,7 +190,7 @@
                     switch (e.type) {
 
                     case chs.Message.touchStart:
-                        if(pick) {
+                        if(pick || self.touchCapture) {
                             self.isTouched = true;
                             this.dispatchEvent('touchStart', e);
                             return this.onTouchStart(e);
@@ -203,14 +203,14 @@
                         return this.onTouchEnd(e) && false;
 
                     case chs.Message.leftMouseDown:
-                        if(pick) {
+                        if(pick || self.mouseCapture) {
                             this.dispatchEvent('leftMouseDown', e);
                             return this.onLeftMouseDown(e);
                         }
                         break;
 
                     case chs.Message.rightMouseDown:
-                        if(pick) {
+                        if(pick || self.mouseCapture) {
                             this.dispatchEvent('rightMouseDown', e);
                             return this.onRightMouseDown(e);
                         }

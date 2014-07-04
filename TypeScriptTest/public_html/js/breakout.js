@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////
 
-var breakout = (function(){
+function main(desktop) {
     "use strict";
 
     //////////////////////////////////////////////////////////////////////
@@ -19,7 +19,7 @@ var breakout = (function(){
             "rgb(255, 64, 32)",
             "rgb(16, 224, 0)",
             "rgb(16, 96, 255)",
-            "rgb(255, 255, )" ];
+            "rgb(255, 255, 0)" ];
 
     //////////////////////////////////////////////////////////////////////
 
@@ -50,8 +50,10 @@ var breakout = (function(){
             this.yvel = 0;
             this.age = 0;
             this.speed = 4;
-            this.speedUp = 3;
+            this.collisions = 0;
+            this.speedUp = 4;
             this.onUpdate = this.stickToBat;
+            this.dead = false;
             this.setScale(0.4);
         },
 
@@ -66,14 +68,15 @@ var breakout = (function(){
         },
 
         move: function(time, deltaTime) {
-            var i;
-            for (i = 0; i < this.speed; ++i) {
+            for (var i = 0; i < this.speed && !this.dead; ++i) {
+                this.speed = (((this.collisions + 2) / 3) >>> 0) + 4;
                 this.moveAndCollide();
             }
         },
 
         moveAndCollide: function() {
-            var i, b, h, v, hb, vb, removeBrick, diff;
+            var i, b, h, v, hb, vb, removeBrick, diff, oy;
+            oy = this.y;
             hb = false;
             vb = false;
             for(i = 0; i < this.game.bricks.length; ++i) {
@@ -92,8 +95,9 @@ var breakout = (function(){
                     }
                 }
                 if (removeBrick) {
-                    this.game.deleteBrick(b);
-                    this.score += 1;
+                    this.collisions += 1;
+                    this.game.delete(b, this.game.bricks);
+                    this.game.score += this.speed;
                 }
                 if (hb && vb) {
                     break;
@@ -105,16 +109,13 @@ var breakout = (function(){
             if (this.y < 0) {
                 vb = true;
             }
-            if (this.y >= bat_y) {
+            if (this.yvel > 0 && this.y >= bat_y && this.y < bat_y + bat_height) {
                 diff = this.x - this.game.bat.x;
-                if (diff < -bat_width / 2 || diff > bat_width / 2) {
-                    this.dispatchEvent("miss", this);
-                } else {
+                if (diff >= -bat_width / 2 && diff <= bat_width / 2) {
                     this.xvel = diff * 0.05;
                     vb = true;
                 }
             }
-
             if (hb) {
                 this.xvel = -this.xvel;
             }
@@ -123,6 +124,11 @@ var breakout = (function(){
             }
             this.x += this.xvel;
             this.y += this.yvel;
+
+            if (this.y > this.parent.height) {
+                this.dispatchEvent("miss", this);
+                this.dead = true;
+            }
         },
 
         checkBrick: function(x, y, brick) {
@@ -134,13 +140,13 @@ var breakout = (function(){
 
     //////////////////////////////////////////////////////////////////////
 
-    return chs.Class({ inherit$: chs.Drawable,
+    var Game = chs.Class({ inherit$: chs.Drawable,
 
         $: function(desktop) {
             chs.Drawable.call(this);
             desktop.width = screen_width;
             desktop.height = screen_height;
-            desktop.fillColour = "black";
+            desktop.fillColour = "rgb(8, 8, 64)";
             this.size = desktop.size;
             this.loader = new chs.Loader("img/");
             this.font = chs.Font.load("Consolas", this.loader);
@@ -157,11 +163,15 @@ var breakout = (function(){
             this.bat = new Bat(this);
             this.addChild(this.bat);
 
-            this.score = new chs.Label("Score: 0", this.font).setPosition(10, 10);
-            this.addChild(this.score);
+            this.scoreLabel = new chs.Label("Score: 0", this.font).setPosition(10, 10);
+            this.addChild(this.scoreLabel);
 
-            this.lives = new chs.Label("Lives: 3", this.font).setPosition(this.width - 10, 10).setPivot(1, 0);
-            this.addChild(this.lives);
+            this.gameOver = new chs.Label("Game Over", this.font).setPosition(this.width / 2, this.height / 2).setPivot(0.5, 0.5);
+            this.gameOver.visible = false;
+            this.addChild(this.gameOver);
+
+            this.livesLabel = new chs.Label("Lives: 3", this.font).setPosition(this.width - 10, 10).setPivot(1, 0);
+            this.addChild(this.livesLabel);
 
             this.stuckBall = null;
             this.balls = [];
@@ -170,20 +180,41 @@ var breakout = (function(){
             this.enabled = true;
         },
 
+        score: chs.Property({
+            get: function() {
+                return this.myscore;
+            },
+            set: function(s) {
+                this.myscore = s;
+                this.scoreChanged = true;
+            }
+        }),
+
+        lives: chs.Property({
+            get: function() {
+                return this.mylives;
+            },
+            set: function(l) {
+                this.mylives = l;
+                this.livesChanged = true;
+            }
+        }),
+
         reset: function() {
             var x, y,
                 b,
                 brickX,
                 brickY;
+            this.scoreChanged = false;
+            this.livesChanged = false;
             this.score = 0;
-            this.speed = 1;
             this.lives = 3;
-            this.brickScore = 1;
+            this.gameOver.visible = false;
             while (this.balls.length > 0) {
-                this.removeChild(balls.pop());
+                this.removeChild(this.balls.pop());
             }
             while (this.bricks.length > 0) {
-                this.removeChild(bricks.pop());
+                this.removeChild(this.bricks.pop());
             }
             for (y = 0; y < brick_rows; ++y) {
                 for (x = 0; x < brick_columns; ++x) {
@@ -198,33 +229,39 @@ var breakout = (function(){
         },
 
         onUpdate: function(time, deltaTime) {
-            var i;
-            for (i = 0; i < this.balls.length; ++i) {
-                chs.Debug.print(this.balls[i].x.toFixed(0), this.balls[i].y.toFixed(0));
+            if (this.scoreChanged) {
+                this.scoreLabel.text = "Score: " + this.myscore.toString();
+                this.scoreChanged = false;
+            }
+            if (this.livesChanged) {
+                this.livesLabel.text = "Lives: " + this.mylives.toString();
+                this.livesChanged = false;
+            }
+            if (this.bricks.length === 0) {
+                this.gameOver.visible = true;
+                while (this.balls.length > 0) {
+                    this.delete(this.balls[0], this.balls);
+                }
             }
         },
 
-        deleteBall: function(b) {
-            var i = this.balls.indexOf(b);
+        delete: function(b, arr) {
+            var i = arr.indexOf(b);
             if (i !== -1) {
                 b.close();
-                this.balls.splice(i, 1);
-            }
-        },
-
-        deleteBrick: function(b) {
-            var i = this.bricks.indexOf(b);
-            if (i !== -1) {
-                this.removeChild(b);
-                this.bricks.splice(i, 1);
+                arr.splice(i, 1);
             }
         },
 
         missed: function(ball) {
-            this.deleteBall(ball);
-            this.lives -= 1;
+            this.delete(ball, this.balls);
             if (this.balls.length === 0) {
-                this.createBall();
+                this.lives -= 1;
+                if (this.lives > 0) {
+                    this.createBall();
+                } else {
+                    this.gameOver.visible = true;
+                }
             }
         },
 
@@ -239,17 +276,12 @@ var breakout = (function(){
                 this.stuckBall.launch();
                 this.balls.push(this.stuckBall);
                 this.stuckBall = null;
+            } else if (this.gameOver.visible) {
+                this.reset();
             }
         }
 
     });
 
-}());
-
-    //////////////////////////////////////////////////////////////////////
-
-function main(desktop) {
-    "use strict";
-
-    desktop.addChild(new breakout(desktop));
+    desktop.addChild(new Game(desktop));
 }

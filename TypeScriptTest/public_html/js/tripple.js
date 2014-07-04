@@ -7,7 +7,9 @@
 // ?different keys for run & jump?
 // run (& rotate) in both directions?
 
-var tripple = (function () {
+//////////////////////////////////////////////////////////////////////
+
+function main(desktop) {
     "use strict";
 
     //////////////////////////////////////////////////////////////////////
@@ -784,7 +786,7 @@ var tripple = (function () {
     //////////////////////////////////////////////////////////////////////
     // the game controller - can be in editing or playing mode...
 
-    return chs.Class({ inherit$: chs.Drawable,
+    var Game = chs.Class({ inherit$: chs.Drawable,
 
         $: function() {
             chs.Drawable.call(this);
@@ -852,12 +854,5 @@ var tripple = (function () {
         }
     });
 
-}());
-
-//////////////////////////////////////////////////////////////////////
-
-function main(desktop) {
-    "use strict";
-
-    desktop.addChild(new tripple());
+    desktop.addChild(new Game());
 }

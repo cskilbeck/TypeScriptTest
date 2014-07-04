@@ -59,8 +59,8 @@ function main(desktop) {
 
         launch: function() {
             this.onUpdate = this.move;
-            this.xvel = 0.5;
-            this.yvel = -0.5;
+            this.xvel = 0.05;
+            this.yvel = -0.05;
         },
 
         stickToBat: function(time, deltaTime) {
@@ -68,13 +68,13 @@ function main(desktop) {
         },
 
         move: function(time, deltaTime) {
+            this.speed = (((this.collisions + 4) / 5) >>> 0) + 4;
             for (var i = 0; i < this.speed && !this.dead; ++i) {
-                this.speed = (((this.collisions + 2) / 3) >>> 0) + 4;
-                this.moveAndCollide();
+                this.moveAndCollide(deltaTime);
             }
         },
 
-        moveAndCollide: function() {
+        moveAndCollide: function(deltaTime) {
             var i, b, h, v, hb, vb, removeBrick, diff, oy;
             oy = this.y;
             hb = false;
@@ -83,13 +83,13 @@ function main(desktop) {
                 b = this.game.bricks[i];
                 removeBrick = false;
                 if (!hb) {
-                    if (this.checkBrick(this.x + this.xvel, this.y, b)) {
+                    if (this.checkBrick(this.x + this.xvel * deltaTime, this.y, b)) {
                         hb = true;
                         removeBrick = true;
                     }
                 }
                 if (!vb) {
-                    if (this.checkBrick(this.x, this.y + this.yvel, b)) {
+                    if (this.checkBrick(this.x, this.y + this.yvel * deltaTime, b)) {
                         vb = true;
                         removeBrick = true;
                     }
@@ -112,7 +112,7 @@ function main(desktop) {
             if (this.yvel > 0 && this.y >= bat_y && this.y < bat_y + bat_height) {
                 diff = this.x - this.game.bat.x;
                 if (diff >= -bat_width / 2 && diff <= bat_width / 2) {
-                    this.xvel = diff * 0.05;
+                    this.xvel = diff / bat_width / 5;
                     vb = true;
                 }
             }
@@ -122,8 +122,8 @@ function main(desktop) {
             if (vb) {
                 this.yvel = -this.yvel;
             }
-            this.x += this.xvel;
-            this.y += this.yvel;
+            this.x += this.xvel * deltaTime;
+            this.y += this.yvel * deltaTime;
 
             if (this.y > this.parent.height) {
                 this.dispatchEvent("miss", this);
@@ -166,9 +166,9 @@ function main(desktop) {
             this.scoreLabel = new chs.Label("Score: 0", this.font).setPosition(10, 10);
             this.addChild(this.scoreLabel);
 
-            this.gameOver = new chs.Label("Game Over", this.font).setPosition(this.width / 2, this.height / 2).setPivot(0.5, 0.5);
-            this.gameOver.visible = false;
-            this.addChild(this.gameOver);
+            this.banner = new chs.Label("Click to launch", this.font).setPosition(this.width / 2, this.height / 2).setPivot(0.5, 0.5);
+            this.banner.visible = true;
+            this.addChild(this.banner);
 
             this.livesLabel = new chs.Label("Lives: 3", this.font).setPosition(this.width - 10, 10).setPivot(1, 0);
             this.addChild(this.livesLabel);
@@ -205,11 +205,9 @@ function main(desktop) {
                 b,
                 brickX,
                 brickY;
-            this.scoreChanged = false;
-            this.livesChanged = false;
             this.score = 0;
             this.lives = 3;
-            this.gameOver.visible = false;
+            this.banner.text = "Click to launch";
             while (this.balls.length > 0) {
                 this.removeChild(this.balls.pop());
             }
@@ -238,7 +236,7 @@ function main(desktop) {
                 this.livesChanged = false;
             }
             if (this.bricks.length === 0) {
-                this.gameOver.visible = true;
+                this.banner.visible = true;
                 while (this.balls.length > 0) {
                     this.delete(this.balls[0], this.balls);
                 }
@@ -260,7 +258,8 @@ function main(desktop) {
                 if (this.lives > 0) {
                     this.createBall();
                 } else {
-                    this.gameOver.visible = true;
+                    this.banner.text = "Game Over";
+                    this.banner.visible = true;
                 }
             }
         },
@@ -276,7 +275,8 @@ function main(desktop) {
                 this.stuckBall.launch();
                 this.balls.push(this.stuckBall);
                 this.stuckBall = null;
-            } else if (this.gameOver.visible) {
+                this.banner.visible = false;
+            } else if (this.banner.visible) {
                 this.reset();
             }
         }

@@ -3,10 +3,11 @@
 // zoom in / out
 // scrolling / pivot point on the player?
 // ? moving poison / enemies?
+// motion bug when you clip the end of a platform and the player drops vertically down
+// ?different keys for run & jump?
+// run (& rotate) in both directions?
 
-tripple = {};
-
-(function () {
+var tripple = (function () {
     "use strict";
 
     //////////////////////////////////////////////////////////////////////
@@ -783,7 +784,7 @@ tripple = {};
     //////////////////////////////////////////////////////////////////////
     // the game controller - can be in editing or playing mode...
 
-    tripple.Game = chs.Class({ inherit$: chs.Drawable,
+    return chs.Class({ inherit$: chs.Drawable,
 
         $: function() {
             chs.Drawable.call(this);
@@ -858,5 +859,5 @@ tripple = {};
 function main(desktop) {
     "use strict";
 
-    desktop.addChild(new tripple.Game());
+    desktop.addChild(new tripple());
 }

@@ -92,7 +92,7 @@ net.createServer(function (socket) {
 
         console.log(Date().toString() + ":" + data.toString());
 
-        var params = chs.Util.queryStringToJSON(data.toString()),
+        var params = chs.Util.queryStringToObject(data.toString()),
             action,
             output = {};
 

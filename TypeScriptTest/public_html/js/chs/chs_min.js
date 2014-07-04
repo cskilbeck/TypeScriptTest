@@ -483,12 +483,12 @@
         //////////////////////////////////////////////////////////////////////
 
         getQuery: function () {
-            return chs.Util.queryStringToJSON(window.location.search.slice(1));
+            return chs.Util.queryStringToObject(window.location.search.slice(1));
         },
 
         //////////////////////////////////////////////////////////////////////
 
-        queryStringToJSON: function (url) {
+        queryStringToObject: function (url) {
 
             var result = {},
                 pairs,

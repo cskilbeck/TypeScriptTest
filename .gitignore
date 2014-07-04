@@ -167,3 +167,4 @@ TypeScriptTest/config/
 *.dmp
 *.lnk
 TypeScriptTest/manager/sftp-config.json
+TypeScriptTest/public_html/js/chs/webserviceurl.js

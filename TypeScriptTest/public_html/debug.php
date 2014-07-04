@@ -39,7 +39,7 @@
     <script src="js/chs/desktop.js"></script>
     <script src="js/chs/startup.js"></script>
 
-    <script src="js/tripple.js"></script>
+    <script src="js/breakout.js"></script>
 </head>
 <body></body>
 </html>

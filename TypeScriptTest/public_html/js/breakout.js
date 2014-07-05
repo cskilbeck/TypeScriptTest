@@ -9,17 +9,17 @@ function main(desktop) {
         screen_height = 480,
         bat_width = 100,
         bat_height = 10,
-        bat_y = screen_height - bat_height * 2,
-        bat_colour = "white",
-        brick_rows = 4,
-        brick_columns = 12,
-        brick_width = screen_width / brick_columns,
-        brick_height = 30,
         brick_colours = [
             "rgb(255, 64, 32)",
             "rgb(16, 224, 0)",
             "rgb(16, 96, 255)",
-            "rgb(255, 255, 0)" ];
+            "rgb(255, 255, 0)" ],
+        bat_y = screen_height - bat_height * 2,
+        bat_colour = "white",
+        brick_rows = brick_colours.length,
+        brick_columns = 12,
+        brick_width = screen_width / brick_columns,
+        brick_height = 30;
 
     //////////////////////////////////////////////////////////////////////
 
@@ -180,26 +180,6 @@ function main(desktop) {
             this.enabled = true;
         },
 
-        score: chs.Property({
-            get: function() {
-                return this.myscore;
-            },
-            set: function(s) {
-                this.myscore = s;
-                this.scoreChanged = true;
-            }
-        }),
-
-        lives: chs.Property({
-            get: function() {
-                return this.mylives;
-            },
-            set: function(l) {
-                this.mylives = l;
-                this.livesChanged = true;
-            }
-        }),
-
         reset: function() {
             var x, y,
                 b,
@@ -227,17 +207,12 @@ function main(desktop) {
         },
 
         onUpdate: function(time, deltaTime) {
-            if (this.scoreChanged) {
-                this.scoreLabel.text = "Score: " + this.myscore.toString();
-                this.scoreChanged = false;
-            }
-            if (this.livesChanged) {
-                this.livesLabel.text = "Lives: " + this.mylives.toString();
-                this.livesChanged = false;
-            }
+            this.scoreLabel.text = "Score: " + this.score.toString();
+            this.livesLabel.text = "Lives: " + this.lives.toString();
             if (this.bricks.length === 0) {
                 this.banner.visible = true;
                 while (this.balls.length > 0) {
+                    this.balls[0].visible = false;
                     this.delete(this.balls[0], this.balls);
                 }
             }
@@ -258,7 +233,6 @@ function main(desktop) {
                 if (this.lives > 0) {
                     this.createBall();
                 } else {
-                    this.banner.text = "Game Over";
                     this.banner.visible = true;
                 }
             }
@@ -275,6 +249,7 @@ function main(desktop) {
                 this.stuckBall.launch();
                 this.balls.push(this.stuckBall);
                 this.stuckBall = null;
+                this.banner.text = "Game Over";
                 this.banner.visible = false;
             } else if (this.banner.visible) {
                 this.reset();

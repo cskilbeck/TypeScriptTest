@@ -33,9 +33,11 @@
                 return this.labelData.text;
             },
             set: function (s) {
-                this.labelData.text = s;
-                measureText.call(this);
-                this.compose();
+                if (this.labelData.text !== s) {
+                    this.labelData.text = s;
+                    measureText.call(this);
+                    this.compose();
+                }
             }
         }),
 
@@ -44,9 +46,11 @@
                 return this.labelData.font;
             },
             set: function (f) {
-                this.labelData.font = f;
-                measureText.call(this);
-                this.compose();
+                if (this.labelData.font !== f) {
+                    this.labelData.font = f;
+                    measureText.call(this);
+                    this.compose();
+                }
             }
         }),
 

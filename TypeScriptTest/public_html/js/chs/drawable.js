@@ -356,7 +356,6 @@
                 }
                 matrix.multiplyInto(this.drawMatrix(), self.globalMatrix);
                 self.globalMatrix.invert(self.pickMatrix);
-                context.save();
                 self.globalMatrix.setContextTransform(context);
                 tr = (transparency * self.transparency) / 255;
                 context.globalAlpha = tr / 255;
@@ -365,7 +364,6 @@
                         self.children[i].draw(context, self.globalMatrix, tr);
                     }
                 }
-                context.restore();
             }
         },
 

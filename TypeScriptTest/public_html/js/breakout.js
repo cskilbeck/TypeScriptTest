@@ -45,30 +45,39 @@ function main(desktop) {
             this.setPivot(0.5, 0.5);
             this.setPosition(x, y);
             this.game = game;
-            this.stuck = true;
             this.xvel = 0;
             this.yvel = 0;
             this.age = 0;
-            this.speed = 4;
             this.collisions = 0;
-            this.speedUp = 4;
             this.onUpdate = this.stickToBat;
             this.dead = false;
             this.setScale(0.4);
         },
 
-        launch: function() {
+        launch: function(xvel, yvel) {
+            this.xvel = xvel;
+            this.yvel = yvel;
             this.onUpdate = this.move;
-            this.xvel = 0.05;
-            this.yvel = -0.05;
+        },
+
+        freeze: function() {
+            this.onUpdate = this.frozen;
+        },
+
+        frozen: function(time, deltaTime) {
         },
 
         stickToBat: function(time, deltaTime) {
             this.x = this.game.bat.x;
         },
 
+        speed: chs.Property({
+            get: function() {
+                return (((this.collisions + 4) / 5) >>> 0) + 4;
+            }
+        }),
+
         move: function(time, deltaTime) {
-            this.speed = (((this.collisions + 4) / 5) >>> 0) + 4;
             for (var i = 0; i < this.speed && !this.dead; ++i) {
                 this.moveAndCollide(deltaTime);
             }
@@ -140,6 +149,38 @@ function main(desktop) {
 
     //////////////////////////////////////////////////////////////////////
 
+    var Brick = chs.Class({ inherit$: chs.SolidRectangle,
+
+        $: function(game, x, y, colour, ballImage) {
+            chs.SolidRectangle.call(this, x + 1, y + 1, brick_width - 2, brick_height - 2, 2, colour);
+            this.game = game;
+            if (ballImage) {
+                this.ball = new Ball(game, this.width / 2, this.height / 2, ballImage);
+                this.ball.zIndex = 1;
+                this.ball.freeze();
+                this.addChild(this.ball);
+            }
+        },
+
+        onClosed: function() {
+            var angle,
+                ballPos;
+            if (this.ball) {
+                this.removeChild(this.ball);
+                ballPos = this.ball.clientToScreen(this.ball);
+                ballPos = this.game.screenToClient(ballPos);
+                this.ball.setPosition(ballPos.x, ballPos.y);
+                angle = Math.random() * Math.PI / 4 - Math.PI / 8;
+                this.ball.launch(Math.sin(angle) * 0.05, Math.cos(angle) * 0.05);
+                this.game.addBall(this.ball);
+                this.ball = null;
+            }
+        }
+
+    });
+
+    //////////////////////////////////////////////////////////////////////
+
     var Game = chs.Class({ inherit$: chs.Drawable,
 
         $: function(desktop) {
@@ -183,6 +224,7 @@ function main(desktop) {
         reset: function() {
             var x, y,
                 b,
+                ballColumn,
                 brickX,
                 brickY;
             this.score = 0;
@@ -195,10 +237,11 @@ function main(desktop) {
                 this.removeChild(this.bricks.pop());
             }
             for (y = 0; y < brick_rows; ++y) {
+                ballColumn = (Math.random() * brick_columns) >>> 0;
                 for (x = 0; x < brick_columns; ++x) {
                     brickX = x * brick_width;
                     brickY = (y + 2) * brick_height;
-                    b = new chs.SolidRectangle(brickX + 1, brickY + 1, brick_width - 2, brick_height - 2, 0, brick_colours[y]);
+                    b = new Brick(this, brickX, brickY, brick_colours[y], x === ballColumn ? this.ballImage : null);
                     this.addChild(b);
                     this.bricks.push(b);
                 }
@@ -238,16 +281,20 @@ function main(desktop) {
             }
         },
 
+        addBall: function(ball) {
+            this.balls.push(ball);
+            this.addChild(ball);
+            ball.addEventHandler("miss", this.missed, this);
+        },
+
         createBall: function() {
             this.stuckBall = new Ball(this, this.bat.x, this.bat.y - bat_height, this.ballImage);
-            this.addChild(this.stuckBall);
-            this.stuckBall.addEventHandler("miss", this.missed, this);
+            this.addBall(this.stuckBall);
         },
 
         onLeftMouseDown: function(e) {
             if (this.stuckBall !== null) {
-                this.stuckBall.launch();
-                this.balls.push(this.stuckBall);
+                this.stuckBall.launch(0.05, -0.05);
                 this.stuckBall = null;
                 this.banner.text = "Game Over";
                 this.banner.visible = false;

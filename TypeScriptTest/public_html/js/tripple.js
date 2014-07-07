@@ -82,10 +82,10 @@ function main(desktop) {
     //////////////////////////////////////////////////////////////////////
     // the player
 
-    var Player = chs.Class({ inherit$: chs.Drawable,
+    var Player = glib.Class({ inherit$: glib.Drawable,
 
         $: function(board) {
-            chs.Drawable.call(this);
+            glib.Drawable.call(this);
             this.width = cell_width;
             this.height = cell_height;
             this.setPosition(cell_width, cell_height);
@@ -297,16 +297,16 @@ function main(desktop) {
             return mask;
         },
 
-        state: chs.Property({
+        state: glib.Property({
             set: function(stateFunction) {
                 this.onUpdate = stateFunction;
-                this.stateBegan = chs.Timer.time;
+                this.stateBegan = glib.Timer.time;
             }
         }),
 
-        stateTime: chs.Property({
+        stateTime: glib.Property({
             get: function () {
-                return chs.Timer.time - this.stateBegan;
+                return glib.Timer.time - this.stateBegan;
             }
         }),
 
@@ -329,7 +329,7 @@ function main(desktop) {
             if (this.stateTime > 500) {
                 this.gameover();
             } else {
-                t = chs.Util.ease2(Math.min(1, this.stateTime / 250), 6);
+                t = glib.Util.ease2(Math.min(1, this.stateTime / 250), 6);
                 this.x = this.orgX + (this.targetX - this.orgX) * t;
                 this.y = this.orgY + (this.targetY - this.orgY) * t;
             }
@@ -405,10 +405,10 @@ function main(desktop) {
     //////////////////////////////////////////////////////////////////////
     // edit cursor
 
-    var Cursor = chs.Class({ inherit$: chs.Drawable,
+    var Cursor = glib.Class({ inherit$: glib.Drawable,
 
         $: function(board, palette) {
-            chs.Drawable.call(this);
+            glib.Drawable.call(this);
             this.setPosition(cell_width, cell_height);
             this.drawing = false;
             this.board = board;
@@ -420,7 +420,7 @@ function main(desktop) {
 
         onDraw: function(context) {
             context.fillStyle = colours[this.palette.currentBlock];
-            chs.Util.rect(context, 0, 0, cell_width, cell_height);
+            glib.Util.rect(context, 0, 0, cell_width, cell_height);
             context.fill();
             context.strokeStyle = "rgba(0, 0, 0, 0.5)";
             context.lineWidth = 3;
@@ -439,13 +439,13 @@ function main(desktop) {
     //////////////////////////////////////////////////////////////////////
     // the board
 
-    var Board = chs.Class({ inherit$: chs.Drawable,
+    var Board = glib.Class({ inherit$: glib.Drawable,
 
         $: function() {
             var i;
-            chs.Drawable.call(this);
+            glib.Drawable.call(this);
             this.setPivot(0.5, 0.5);
-            this.setPosition(chs.desktop.width / 2, chs.desktop.height / 2);
+            this.setPosition(glib.desktop.width / 2, glib.desktop.height / 2);
             this.width = board_width * cell_width;
             this.height = board_height * cell_height;
             this.cells = [];
@@ -538,14 +538,14 @@ function main(desktop) {
         },
 
         set_from_querystring: function() {
-            var q = chs.Util.getQuery(),
+            var q = glib.Util.getQuery(),
                 nibbles,
                 level_len,
                 x,
                 y,
                 i = 0;
             if (q.b !== undefined) {
-                nibbles = chs.Util.atob(q.b);
+                nibbles = glib.Util.atob(q.b);
                 level_len = ((board_width - 2) * (board_height - 2));
                 if (nibbles.length === level_len / 2) {
                     this.gems = 0;
@@ -572,7 +572,7 @@ function main(desktop) {
                     ++i;
                 }
             }
-            return encodeURIComponent(chs.Util.btoa(b));
+            return encodeURIComponent(glib.Util.btoa(b));
         },
 
         onUpdate: function(time, deltaTime) {
@@ -588,7 +588,7 @@ function main(desktop) {
                 }
                 dt = (time - this.rotateStartTime) / lerpTime;
                 if (dt < 1) {
-                    dt = chs.Util.ease(dt);
+                    dt = glib.Util.ease(dt);
                     this.rotation = this.startRotation + (this.targetRotation - this.startRotation) * dt;
                 } else {
                     this.rotation = 0;
@@ -621,7 +621,7 @@ function main(desktop) {
     //////////////////////////////////////////////////////////////////////
     // a board which can be edited
 
-    var Editboard = chs.Class({ inherit$: Board,
+    var Editboard = glib.Class({ inherit$: Board,
 
         $: function(palette) {
             Board.call(this);
@@ -655,10 +655,10 @@ function main(desktop) {
     //////////////////////////////////////////////////////////////////////
     // instructions
 
-    var Instructions = chs.Class({ inherit$: chs.Label,
+    var Instructions = glib.Class({ inherit$: glib.Label,
 
         $: function(text, font) {
-            chs.Label.call(this, text, font);
+            glib.Label.call(this, text, font);
             this.age = 0;
         },
 
@@ -678,7 +678,7 @@ function main(desktop) {
     //////////////////////////////////////////////////////////////////////
     // a board which can be played
 
-    var Playboard = chs.Class({ inherit$: Board,
+    var Playboard = glib.Class({ inherit$: Board,
 
         $: function(font) {
             Board.call(this);
@@ -724,10 +724,10 @@ function main(desktop) {
     //////////////////////////////////////////////////////////////////////
     // palette of blocks for editor
 
-    var Palette = chs.Class({inherit$: chs.Drawable,
+    var Palette = glib.Class({inherit$: glib.Drawable,
 
         $: function() {
-            chs.Drawable.call(this);
+            glib.Drawable.call(this);
             this.setPosition(60, 50);
             this.width = cell_width;
             this.height = cell_height * colours.length;
@@ -738,11 +738,11 @@ function main(desktop) {
             var i;
             for (i = 0; i < colours.length; ++i) {
                 context.fillStyle = colours[i];
-                chs.Util.rect(context, 0, i * cell_height, cell_width, cell_width);
+                glib.Util.rect(context, 0, i * cell_height, cell_width, cell_width);
                 context.fill();
-                chs.Debug.text(60 + cell_width + 8, 50 + i * cell_height + 8, descriptions[i]);
+                glib.Debug.text(60 + cell_width + 8, 50 + i * cell_height + 8, descriptions[i]);
             }
-            chs.Util.rect(context, 0, this.currentBlock * cell_height, cell_width, cell_width);
+            glib.Util.rect(context, 0, this.currentBlock * cell_height, cell_width, cell_width);
             context.strokeStyle = "black";
             context.lineWidth = 5;
             context.stroke();
@@ -756,13 +756,13 @@ function main(desktop) {
     //////////////////////////////////////////////////////////////////////
     // the editor bits
 
-    var Editor = chs.Class({ inherit$: chs.Drawable,
+    var Editor = glib.Class({ inherit$: glib.Drawable,
 
         $: function(font) {
-            chs.Drawable.call(this);
+            glib.Drawable.call(this);
             var fh = font.height;
-            this.rotateButton = new chs.TextButton("Rotate", font, 700, 10 + fh * 5, 120, fh * 2, this.rotate, this);
-            this.saveButton = new chs.TextButton("Save", font, 700, 10 + fh * 8, 120, fh * 2, this.save, this);
+            this.rotateButton = new glib.TextButton("Rotate", font, 700, 10 + fh * 5, 120, fh * 2, this.rotate, this);
+            this.saveButton = new glib.TextButton("Save", font, 700, 10 + fh * 8, 120, fh * 2, this.save, this);
             this.palette = new Palette();
             this.editBoard = new Editboard(this.palette);
             this.addChild(this.palette);
@@ -786,14 +786,14 @@ function main(desktop) {
     //////////////////////////////////////////////////////////////////////
     // the game controller - can be in editing or playing mode...
 
-    var Game = chs.Class({ inherit$: chs.Drawable,
+    var Game = glib.Class({ inherit$: glib.Drawable,
 
         $: function() {
-            chs.Drawable.call(this);
-            this.width = chs.desktop.width;
-            this.height = chs.desktop.height;
-            this.loader = new chs.Loader('img/');
-            this.font = chs.Font.load('Consolas', this.loader);
+            glib.Drawable.call(this);
+            this.width = glib.desktop.width;
+            this.height = glib.desktop.height;
+            this.loader = new glib.Loader('img/');
+            this.font = glib.Font.load('Consolas', this.loader);
             this.loader.addEventHandler("complete", this.init, this);
             this.enabled = false;
             this.loader.start();
@@ -802,10 +802,10 @@ function main(desktop) {
         init: function() {
             var fh = this.font.height;
             this.mode = 'play';
-            this.playButton = new chs.TextButton("Edit", this.font, 700, 10, 120, fh * 2, this.toggleEditing, this);
+            this.playButton = new glib.TextButton("Edit", this.font, 700, 10, 120, fh * 2, this.toggleEditing, this);
             this.playBoard = new Playboard(this.font);
             this.editor = new Editor(this.font);
-            this.scoreLabel = new chs.Label("Gems: 0", this.font).setPosition(20, 20);
+            this.scoreLabel = new glib.Label("Gems: 0", this.font).setPosition(20, 20);
             this.addChild(this.playBoard);
             this.addChild(this.scoreLabel);
             this.addChild(this.playButton);

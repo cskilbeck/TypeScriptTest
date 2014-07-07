@@ -6,7 +6,7 @@ GLOBAL.window = GLOBAL;
 
 var dictionary = require('./dictionary.json');
 
-require('./js/chs.js');
+require('./js/glib.js');
 require('./js/util.js');
 require('./js/class.js');
 require('./js/list.js');
@@ -92,7 +92,7 @@ net.createServer(function (socket) {
 
         console.log(Date().toString() + ":" + data.toString());
 
-        var params = chs.Util.queryStringToObject(data.toString()),
+        var params = glib.Util.queryStringToObject(data.toString()),
             action,
             output = {};
 

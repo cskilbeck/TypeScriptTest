@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Tripple</title>
-    <script src="js/chs/chs.js"></script>
+    <script src="js/chs/global.js"></script>
     <script src="js/chs/browser.js"></script>
     <script src="js/chs/class.js"></script>
     <script src="js/chs/user.js"></script>

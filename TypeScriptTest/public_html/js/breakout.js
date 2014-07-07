@@ -23,25 +23,25 @@ function main(desktop) {
 
     //////////////////////////////////////////////////////////////////////
 
-    var Bat = chs.Class({ inherit$: chs.SolidRectangle,
+    var Bat = glib.Class({ inherit$: glib.SolidRectangle,
 
         $: function(game) {
-            chs.SolidRectangle.call(this, game.width / 2, bat_y, bat_width, bat_height, 4, bat_colour);
+            glib.SolidRectangle.call(this, game.width / 2, bat_y, bat_width, bat_height, 4, bat_colour);
             this.setPivot(0.5, 0);
             this.setCapture(true);
         },
 
         onMouseMove: function(e) {
-            this.setPosition(chs.Util.constrain(e.x, 5, this.parent.width - 10), bat_y);
+            this.setPosition(glib.Util.constrain(e.x, bat_width / 4, this.parent.width - bat_width / 4), bat_y);
         }
     });
 
     //////////////////////////////////////////////////////////////////////
 
-    var Ball = chs.Class({ inherit$: chs.Sprite,
+    var Ball = glib.Class({ inherit$: glib.Sprite,
 
         $: function(game, x, y, image) {
-            chs.Sprite.call(this, image);
+            glib.Sprite.call(this, image);
             this.setPivot(0.5, 0.5);
             this.setPosition(x, y);
             this.game = game;
@@ -71,7 +71,7 @@ function main(desktop) {
             this.x = this.game.bat.x;
         },
 
-        speed: chs.Property({
+        speed: glib.Property({
             get: function() {
                 return (((this.collisions + 4) / 5) >>> 0) + 4;
             }
@@ -149,10 +149,10 @@ function main(desktop) {
 
     //////////////////////////////////////////////////////////////////////
 
-    var Brick = chs.Class({ inherit$: chs.SolidRectangle,
+    var Brick = glib.Class({ inherit$: glib.SolidRectangle,
 
         $: function(game, x, y, colour, ballImage) {
-            chs.SolidRectangle.call(this, x + 1, y + 1, brick_width - 2, brick_height - 2, 2, colour);
+            glib.SolidRectangle.call(this, x + 1, y + 1, brick_width - 2, brick_height - 2, 2, colour);
             this.game = game;
             if (ballImage) {
                 this.ball = new Ball(game, this.width / 2, this.height / 2, ballImage);
@@ -181,16 +181,16 @@ function main(desktop) {
 
     //////////////////////////////////////////////////////////////////////
 
-    var Game = chs.Class({ inherit$: chs.Drawable,
+    var Game = glib.Class({ inherit$: glib.Drawable,
 
         $: function(desktop) {
-            chs.Drawable.call(this);
+            glib.Drawable.call(this);
             desktop.width = screen_width;
             desktop.height = screen_height;
             desktop.fillColour = "rgb(8, 8, 64)";
             this.size = desktop.size;
-            this.loader = new chs.Loader("img/");
-            this.font = chs.Font.load("Consolas", this.loader);
+            this.loader = new glib.Loader("img/");
+            this.font = glib.Font.load("Consolas", this.loader);
             this.ballImage = this.loader.load("blob.png");
             this.loader.addEventHandler("complete", this.init, this);
             this.enabled = false;
@@ -204,14 +204,14 @@ function main(desktop) {
             this.bat = new Bat(this);
             this.addChild(this.bat);
 
-            this.scoreLabel = new chs.Label("Score: 0", this.font).setPosition(10, 10);
+            this.scoreLabel = new glib.Label("Score: 0", this.font).setPosition(10, 10);
             this.addChild(this.scoreLabel);
 
-            this.banner = new chs.Label("Click to launch", this.font).setPosition(this.width / 2, this.height / 2).setPivot(0.5, 0.5);
+            this.banner = new glib.Label("Click to launch", this.font).setPosition(this.width / 2, this.height / 2).setPivot(0.5, 0.5);
             this.banner.visible = true;
             this.addChild(this.banner);
 
-            this.livesLabel = new chs.Label("Lives: 3", this.font).setPosition(this.width - 10, 10).setPivot(1, 0);
+            this.livesLabel = new glib.Label("Lives: 3", this.font).setPosition(this.width - 10, 10).setPivot(1, 0);
             this.addChild(this.livesLabel);
 
             this.stuckBall = null;

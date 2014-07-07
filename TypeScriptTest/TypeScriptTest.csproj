@@ -28,7 +28,7 @@
     <Content Include="public_html\app.css" />
     <Content Include="public_html\js\board.js" />
     <Content Include="public_html\js\button.js" />
-    <Content Include="public_html\js\chs.js" />
+    <Content Include="public_html\js\glib.js" />
     <Content Include="public_html\js\cookies.js" />
     <Content Include="public_html\js\debug.js" />
     <Content Include="public_html\js\drawable.js" />

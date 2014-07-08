@@ -13,11 +13,11 @@
         static$: {
 
             init: function () {
-                currentTime = glib.performance.now();
+                currentTime = performance.now();
             },
 
             update: function () {
-                var now = glib.performance.now();
+                var now = performance.now();
                 deltaTime = now - currentTime;
                 currentTime = now;
             },

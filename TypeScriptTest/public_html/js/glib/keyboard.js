@@ -143,11 +143,11 @@
                 previous[i] = false;
             }
 
-            window.addEventListener('keydown', function (e) {
+            addEventListener('keydown', function (e) {
                 q.push(new glib.KeyDownMessage(keyNames[e.which], e.which));
             }, false);
 
-            window.addEventListener('keyup', function (e) {
+            addEventListener('keyup', function (e) {
                 q.push(new glib.KeyUpMessage(keyNames[e.which], e.which));
             }, false);
         },

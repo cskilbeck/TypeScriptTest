@@ -32,7 +32,7 @@ function main(desktop) {
         },
 
         onMouseMove: function(e) {
-            this.setPosition(glib.Util.constrain(e.x, bat_width / 4, this.parent.width - bat_width / 4), bat_y);
+            this.setPosition(glib.Util.constrain(e.x, bat_width / 2, this.parent.width - bat_width / 2), bat_y);
         }
     });
 
@@ -68,7 +68,7 @@ function main(desktop) {
         },
 
         stickToBat: function(time, deltaTime) {
-            this.x = this.game.bat.x;
+            this.x = this.game.bat.x - (this.game.width / 2 - this.game.bat.x) / (this.game.width / this.game.bat.width);
         },
 
         speed: glib.Property({
@@ -294,7 +294,7 @@ function main(desktop) {
 
         onLeftMouseDown: function(e) {
             if (this.stuckBall !== null) {
-                this.stuckBall.launch(0.05, -0.05);
+                this.stuckBall.launch((this.stuckBall.x - this.bat.x) / bat_width / 5, -0.05);
                 this.stuckBall = null;
                 this.banner.text = "Game Over";
                 this.banner.visible = false;

@@ -34,12 +34,6 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    function addListener(element, name, func) {
-        glib.addEventListener(element, name, func, false);
-    }
-
-    //////////////////////////////////////////////////////////////////////
-
     function viewport() {
         var wnd = window,
             innerW = 'innerWidth',
@@ -59,18 +53,18 @@
             element.setCapture();
         }
 
-/*        document.oncontextmenu = function (e) {
+/*      document.oncontextmenu = function (e) {
             e.cancelBubble = true;
             return false;
         };
 */
-        addListener(element, "losecapture", function () {
+        element.addEventListener("losecapture", function () {
             if (element.setCapture) {
                 element.setCapture();
             }
         });
 
-        addListener(element, "touchstart", function (event) {
+        element.addEventListener("touchstart", function (event) {
             var touch = event.targetTouches[0],
                 pos = relMouseCoords(canvas, touch.clientX, touch.clientY);
             events.push(new glib.TouchMessage(glib.Message.touchStart, pos));
@@ -78,7 +72,7 @@
             return false;
         });
 
-        addListener(element, "touchmove", function (event) {
+        element.addEventListener("touchmove", function (event) {
             var touch = event.targetTouches[0],
                 pos = relMouseCoords(canvas, touch.clientX, touch.clientY);
             events.push(new glib.TouchMessage(glib.Message.touchMove, pos));
@@ -86,13 +80,13 @@
             return false;
         });
 
-        addListener(element, "touchend", function (event) {
+        element.addEventListener("touchend", function (event) {
             events.push(new glib.TouchMessage(glib.Message.touchEnd, { x: 0, y: 0 }, true));
             event.preventDefault();
             return false;
         });
 
-        addListener(element, "mousedown", function (event) {
+        element.addEventListener("mousedown", function (event) {
             var p;
             if (element.setCapture) {
                 element.setCapture();
@@ -112,7 +106,7 @@
             return false;
         });
 
-        addListener(element, "mouseup", function (event) {
+        element.addEventListener("mouseup", function (event) {
             var p;
             event = fixupMouseEvent(event);
             p = relMouseCoords(canvas, event.x, event.y);
@@ -128,7 +122,7 @@
             }
         });
 
-        addListener(element, "mousemove", function (event) {
+        element.addEventListener("mousemove", function (event) {
             var view = viewport(),
                 e,
                 p;

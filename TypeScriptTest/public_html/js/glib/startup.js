@@ -37,7 +37,7 @@ window.onload = function () {
                 // glib.Canvas.showCache();
                 // mtw.WordButton.showCache();
                 glib.Debug.draw();
-                glib.requestAnimationFrame(startup.run);
+                requestAnimationFrame(startup.run);
             }
         }
     });

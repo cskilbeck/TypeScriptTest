@@ -5,19 +5,24 @@
 
     //////////////////////////////////////////////////////////////////////
 
+    var vendors = [
+        "moz",
+        "ms",
+        "o",
+        "webkit" ];
+
     (function() {
         var lastTime = 0,
             x,
-            vendors = ['webkit', 'moz'],
             raf = null,
             caf = null;
-        for(x = 0; x < vendors.length && !raf; ++x) {
-            raf = window[vendors[x]+'RequestAnimationFrame'];
-            caf = window[vendors[x]+'CancelAnimationFrame'] || window[vendors[x]+'CancelRequestAnimationFrame'];
+        for(x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+            window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+            window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame'] || window[vendors[x]+'CancelRequestAnimationFrame'];
         }
 
-        if (!raf) {
-            raf = function(callback, element) {
+        if (!window.requestAnimationFrame) {
+            window.requestAnimationFrame = function(callback, element) {
                 var currTime = new Date().getTime(),
                     timeToCall = Math.max(0, 16 - (currTime - lastTime)),
                     id = window.setTimeout(function() {
@@ -28,18 +33,16 @@
             };
         }
 
-        if (!caf) {
-            caf = function(id) {
+        if (!window.cancelAnimationFrame) {
+            window.cancelAnimationFrame = function(id) {
                 clearTimeout(id);
             };
         }
-        glib.requestAnimationFrame = raf;
-        glib.cancelAnimationFrame = caf;
     }());
 
     //////////////////////////////////////////////////////////////////////
 
-    glib.performance = window.performance || {};
+    performance = window.performance || {};
 
     if (!Date.now) {
         Date.now = function now() {
@@ -47,27 +50,13 @@
         };
     }
 
-    glib.performance.now = (function () {
-
-        return performance.now ||
-                performance.mozNow ||
-                performance.msNow ||
-                performance.oNow ||
-                performance.webkitNow ||
-            function () {
-                return Date.now();
-            };
-    }());
-
-    //////////////////////////////////////////////////////////////////////
-
-    glib.addEventListener = function(el, name, callback) {
-        if (el.addEventListener) {
-            el.addEventListener(name, callback, false);
-        } else if (el.attachEvent) {
-            el.attachEvent(name, callback);
-        } // else tough shit
-    };
+    if (!performance.now) {
+        performance.now = performance.mozNow ||
+                            performance.msNow ||
+                            performance.oNow ||
+                            performance.webkitNow ||
+                            Date.now;
+    }
 
     //////////////////////////////////////////////////////////////////////
 

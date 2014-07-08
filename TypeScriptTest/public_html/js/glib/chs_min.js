@@ -935,7 +935,7 @@ glib.Cookies = (function () {
             xr.ontimeout = function () {
                 callback.call(context, url, xr);
             };
-            glib.addEventListener(xr, "error", function () {
+            addEventListener(xr, "error", function () {
                 console.log("Error!");
             });
             xr.onprogress = function (e) {

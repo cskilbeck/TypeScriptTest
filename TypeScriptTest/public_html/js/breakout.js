@@ -1,21 +1,3 @@
-//////////////////////////////////////////////////////////////////////
-// Troll
-// Ranger
-// Mage
-// Scout
-// Sorcerer
-// Ogre
-// Legionnaire
-// Summoner
-// Witch
-// Necromancer
-//
-//
-// strength
-// resilience
-// range
-// speed
-
 function main(desktop) {
     "use strict";
 

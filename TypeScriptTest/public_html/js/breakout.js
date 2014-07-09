@@ -1,4 +1,8 @@
 //////////////////////////////////////////////////////////////////////
+// strength
+// resilience
+// range
+// speed
 
 function main(desktop) {
     "use strict";
@@ -106,7 +110,7 @@ function main(desktop) {
                 if (removeBrick) {
                     this.collisions += 1;
                     this.game.delete(b, this.game.bricks);
-                    this.game.score += this.speed;
+                    this.game.score += this.speed * this.game.balls.length;
                 }
                 if (hb && vb) {
                     break;

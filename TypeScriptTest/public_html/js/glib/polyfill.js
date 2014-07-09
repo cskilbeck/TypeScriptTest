@@ -5,14 +5,13 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    var vendors = [
-        "moz",
-        "ms",
-        "o",
-        "webkit" ];
-
     (function() {
         var lastTime = 0,
+            vendors = [
+            "moz",
+            "ms",
+            "o",
+            "webkit" ],
             x,
             raf = null,
             caf = null;

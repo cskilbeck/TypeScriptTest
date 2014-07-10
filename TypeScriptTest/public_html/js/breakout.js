@@ -1,4 +1,4 @@
-function main(desktop) {
+window.onload = function() {
     "use strict";
 
     //////////////////////////////////////////////////////////////////////
@@ -303,5 +303,6 @@ function main(desktop) {
 
     });
 
+    var desktop = new glib.Desktop(640, 480, "rgb(8, 8, 64)");
     desktop.addChild(new Game(desktop));
-}
+};

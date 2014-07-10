@@ -181,12 +181,9 @@ window.onload = function() {
 
     var Game = glib.Class({ inherit$: glib.Drawable,
 
-        $: function(desktop) {
+        $: function() {
             glib.Drawable.call(this);
-            desktop.width = screen_width;
-            desktop.height = screen_height;
-            desktop.fillColour = "rgb(8, 8, 64)";
-            this.size = desktop.size;
+            this.size = playfield.size;
             this.loader = new glib.Loader("img/");
             this.font = glib.Font.load("Consolas", this.loader);
             this.ballImage = this.loader.load("blob.png");
@@ -303,6 +300,6 @@ window.onload = function() {
 
     });
 
-    var desktop = new glib.Desktop(640, 480, "rgb(8, 8, 64)");
-    desktop.addChild(new Game(desktop));
+    var playfield = new glib.Playfield(640, 480, "rgb(8, 8, 64)");
+    playfield.addChild(new Game());
 };

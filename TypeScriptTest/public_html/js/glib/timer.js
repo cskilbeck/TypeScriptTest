@@ -49,7 +49,7 @@
                 if(this.timeout) {
                     this.age = this.timeout;
                 } else if (this.parent) {
-                    this.parent.removeChild(this);
+                    this.close();
                 }
                 if (this.callback.call(this.context) === false) {
                     this.parent.removeChild(this);

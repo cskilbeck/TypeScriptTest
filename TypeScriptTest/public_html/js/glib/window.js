@@ -21,7 +21,7 @@
             this.size = { width: desc.width, height: desc.height };
             this.setPosition(desc.x, desc.y);
 
-            this.panel = new glib.Panel(0, 0, desc.width, desc.height, bgcol, none, radius, 0);
+            this.panel = new glib.Panel(0, 0, desc.width, desc.height, bgcol, undefined, radius, 0);
             this.addChild(this.panel);
 
             if (hasCloseButton) {
@@ -37,7 +37,7 @@
             this.border = null;
 
             if (hasTitleBar) {
-                this.titleBar = new glib.Panel(0, 0, titleBarWidth, titleBarHeight, captionColour, none, 0);
+                this.titleBar = new glib.Panel(0, 0, titleBarWidth, titleBarHeight, captionColour, undefined, 0);
                 this.titleBar.window = this;
                 this.clip.addChild(this.titleBar);
                 this.caption = new glib.Label(desc.caption, desc.font).setPosition(radius + borderWidth + 4, titleBarHeight / 2).setScale(captionScale).setPivot(0, desc.font.midPivot);
@@ -48,7 +48,7 @@
             }
 
             if (hasCloseButton) {
-                this.closeButton = new glib.PanelButton(desc.width - titleBarHeight, 0, titleBarHeight, titleBarHeight, "darkred", none, 0, 0, function () { this.close(); }, this);
+                this.closeButton = new glib.PanelButton(desc.width - titleBarHeight, 0, titleBarHeight, titleBarHeight, "darkred", undefined, 0, 0, function () { this.close(); }, this);
                 this.closeButton.onHover = function () { this.fillColour = "firebrick"; };
                 this.closeButton.onIdle = function () { this.fillColour = "darkred"; };
                 this.closeButton.onPressed = function () { this.fillColour = "red"; };
@@ -59,7 +59,7 @@
             }
 
             if (borderColour !== undefined) {
-                this.border = new glib.Panel(0, 0, desc.width, desc.height, none, borderColour, radius, borderWidth);
+                this.border = new glib.Panel(0, 0, desc.width, desc.height, undefined, borderColour, radius, borderWidth);
                 this.addChild(this.border);
             }
             this.client.window = this;

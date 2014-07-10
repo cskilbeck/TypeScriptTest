@@ -123,13 +123,7 @@
 
         clearEventHandlers: function ()
         {
-            var self = this.eventSourceData,
-                i,
-                l;
-            for (i in self.handlers) {
-                self.handlers[i].length = 0;
-            }
-            self.handlers = {};
+            this.eventSourceData.handlers = {};
         },
 
         removeEventHandler: function (name, target) {

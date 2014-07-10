@@ -32,6 +32,5 @@ copy global.js +^
     keyboard.js +^
     mouse.js +^
     debug.js +^
-    desktop.js +^
-    startup.js ^
- glib_min.js
+    playfield.js^
+ glib.js

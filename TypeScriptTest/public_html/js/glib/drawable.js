@@ -451,6 +451,7 @@
         setCapture: function (f) {
             this.drawableData.mouseCapture = f;
             this.drawableData.touchCapture = f;
+            return this;
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -513,12 +514,14 @@
             c.drawableData.parent = this;
             self.children.push(c);
             self.reorder = true;
+            return this;
         },
 
         //////////////////////////////////////////////////////////////////////
 
         addSibling: function (c) {
             this.drawableData.parent.addChild(c);
+            return this;
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -526,6 +529,7 @@
         close: function () {
             this.dispatchEvent("closing");
             this.drawableData.closed = true;
+            return this;
         },
 
         //////////////////////////////////////////////////////////////////////

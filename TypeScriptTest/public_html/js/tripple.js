@@ -9,12 +9,13 @@
 
 //////////////////////////////////////////////////////////////////////
 
-function main(desktop) {
+window.onload = function() {
     "use strict";
 
     //////////////////////////////////////////////////////////////////////
 
-    var board_width = 20,
+    var playfield,
+        board_width = 20,
         board_height = 20,
         cell_width = 24,
         cell_height = 24,
@@ -398,7 +399,7 @@ function main(desktop) {
 
         onDraw: function(context) {
             context.fillStyle = this.colour;
-            context.fillRect(0, 0, this.width + 0, this.height + 0);
+            context.fillRect(0, 0, this.width, this.height);
         }
     });
 
@@ -445,7 +446,7 @@ function main(desktop) {
             var i;
             glib.Drawable.call(this);
             this.setPivot(0.5, 0.5);
-            this.setPosition(glib.desktop.width / 2, glib.desktop.height / 2);
+            this.setPosition(playfield.width / 2, playfield.height / 2);
             this.width = board_width * cell_width;
             this.height = board_height * cell_height;
             this.cells = [];
@@ -790,8 +791,8 @@ function main(desktop) {
 
         $: function() {
             glib.Drawable.call(this);
-            this.width = glib.desktop.width;
-            this.height = glib.desktop.height;
+            this.width = playfield.width;
+            this.height = playfield.height;
             this.loader = new glib.Loader('img/');
             this.font = glib.Font.load('Consolas', this.loader);
             this.loader.addEventHandler("complete", this.init, this);
@@ -854,5 +855,6 @@ function main(desktop) {
         }
     });
 
-    desktop.addChild(new Game());
-}
+    playfield = new glib.Playfield(852, 480, "rgb(16, 96, 32)");
+    playfield.addChild(new Game());
+};

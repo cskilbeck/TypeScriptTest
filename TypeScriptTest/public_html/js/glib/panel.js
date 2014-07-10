@@ -11,7 +11,7 @@
             glib.Drawable.call(this);
             this.setPosition(x, y);
             this.size = { width: w, height: h };
-            this.radius = (radius !== none) ? radius : 0;
+            this.radius = (radius !== undefined) ? radius : 0;
         },
 
         onDraw: function (context) {

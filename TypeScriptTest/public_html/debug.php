@@ -34,8 +34,7 @@
     <script src="js/glib/keyboard.js"></script>
     <script src="js/glib/mouse.js"></script>
     <script src="js/glib/debug.js"></script>
-    <script src="js/glib/desktop.js"></script>
-    <script src="js/glib/startup.js"></script>
+    <script src="js/glib/playfield.js"></script>
 
     <script src="js/breakout.js"></script>
 </head>

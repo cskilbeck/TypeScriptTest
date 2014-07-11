@@ -5,8 +5,6 @@
     <script src="js/glib/global.js"></script>
     <script src="js/glib/browser.js"></script>
     <script src="js/glib/class.js"></script>
-    <script src="js/glib/user.js"></script>
-    <script src="js/glib/oauth.js"></script>
     <script src="js/glib/polyfill.js"></script>
     <script src="js/glib/util.js"></script>
     <script src="js/glib/event.js"></script>

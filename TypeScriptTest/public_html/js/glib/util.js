@@ -114,6 +114,12 @@
 
         //////////////////////////////////////////////////////////////////////
 
+        isArray: function (o) {
+            return Object.prototype.toString.call(o) === '[object Array]';
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
         getResponseAsArray: function (xr) {
 
             function toUint8Array(x) {

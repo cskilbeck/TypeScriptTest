@@ -58,10 +58,7 @@
 
         // inheritance
         if (desc.hasOwnProperty('inherit$')) {
-            if (Object.prototype.toString.call(desc.inherit$) !== '[object Array]') {
-                extend(newClass, desc.inherit$, false);
-                extend(newClass.prototype, desc.inherit$.prototype, false);
-            } else {
+            if (glib.Util.isArray(desc.inherit$)) {
                 for (i = 0; i < desc.inherit$.length; ++i) {
                     if (!desc.inherit$[i]) {
                         throw new TypeError('Inheriting from undefined class!?');
@@ -70,6 +67,9 @@
                         extend(newClass.prototype, desc.inherit$[i].prototype, false);
                     }
                 }
+            } else {
+                extend(newClass, desc.inherit$, false);
+                extend(newClass.prototype, desc.inherit$.prototype, false);
             }
         }
         return newClass;

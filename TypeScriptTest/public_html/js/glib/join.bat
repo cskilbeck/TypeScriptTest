@@ -1,8 +1,6 @@
 copy global.js +^
     browser.js +^
     class.js +^
-    user.js +^
-    oauth.js +^
     polyfill.js +^
     util.js +^
     event.js +^

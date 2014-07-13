@@ -4,18 +4,34 @@
     "use strict";
 
     //////////////////////////////////////////////////////////////////////
+    //@class: glib.Rectangle
+    //@description: base class for various rectangular objects
+    //@inherits: >glib.Drawable
 
     glib.Rectangle = glib.Class({ inherit$: glib.Drawable,
 
+        //@function: constructor
+        //@input: x number
+        //@input: y number
+        //@input: w number
+        //@input: h number
+        //@input: radius [number|array] radius of corners, can be a single number or an array for topleft, topright, bottomright, bottomleft
         $: function (x, y, w, h, radius) {
             glib.Drawable.call(this);
             this.setPosition(x, y);
             this.size = { width: w, height: h };
-            this.radius = (radius !== undefined) ? radius : 0;
+            this.radius = (radius === undefined) ? 0 : radius;
+            this.fancy = glib.Util.isArray(this.radius);
         },
 
+        //@function: onDraw
+        //@description: sets up the context, but draws nothing
+        //@input: context canvas context2D
         onDraw: function (context) {
-            if(this.radius > 0) {
+            if (this.fancy) {
+                glib.Util.fancyRect(context, 0, 0, this.width, this.height, this.radius);
+            }
+            else if (this.radius > 0) {
                 glib.Util.roundRect(context, 0, 0, this.width, this.height, this.radius);
             } else {
                 glib.Util.rect(context, 0, 0, this.width, this.height);
@@ -24,9 +40,19 @@
     });
 
     //////////////////////////////////////////////////////////////////////
+    //@class: glib.ClipRect
+    //@description: set up a clipping rectangle for child objects
+    //@inherits: >glib.Rectangle
 
     glib.ClipRect = glib.Class({ inherit$: glib.Rectangle,
 
+        //@function: constructor
+        //@description: see >glib.Rectangle constructor
+        //@input: x number
+        //@input: y number
+        //@input: w number
+        //@input: h number
+        //@input: radius [number|array] radius of corners, can be a single number or an array for topleft, topright, bottomright, bottomleft
         $: function (x, y, w, h, radius) {
             glib.Rectangle.call(this, x, y, w, h, radius);
         },
@@ -38,9 +64,19 @@
     });
 
     //////////////////////////////////////////////////////////////////////
+    //@class: glib.SolidRectangle
+    //@description: a rectangle of solid colour
+    //@inherits: >glib.Rectangle
 
     glib.SolidRectangle = glib.Class({ inherit$: glib.Rectangle,
 
+        //@function: constructor
+        //@input: x number
+        //@input: y number
+        //@input: w number
+        //@input: h number
+        //@input: radius [number|array] radius of corners, can be a single number or an array for topleft, topright, bottomright, bottomleft
+        //@input: fillColour string any valid context fill string (colour name, rgb(r,g,b), gradient)
         $: function (x, y, w, h, radius, fillColour) {
             glib.Rectangle.call(this, x, y, w, h, radius);
             this.fillColour = fillColour;

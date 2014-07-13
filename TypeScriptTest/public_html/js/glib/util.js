@@ -199,6 +199,25 @@
 
         //////////////////////////////////////////////////////////////////////
 
+        fancyRect: function (ctx, x, y, width, height, radius) {
+            var r = radius,
+                xr = x + width,
+                yr = y + height;
+            ctx.beginPath();
+            ctx.moveTo(x + r[0], y);
+            ctx.lineTo(xr - r[1], y);
+            ctx.quadraticCurveTo(xr, y, xr, y + r[1]);
+            ctx.lineTo(xr, yr - r[2]);
+            ctx.quadraticCurveTo(xr, yr, xr - r[2], yr);
+            ctx.lineTo(x + r[3], yr);
+            ctx.quadraticCurveTo(x, yr, x, yr - r[3]);
+            ctx.lineTo(x, y + r[0]);
+            ctx.quadraticCurveTo(x, y, x + r[0], y);
+            ctx.closePath();
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
         getQuery: function () {
             return glib.Util.queryStringToObject(window.location.search.slice(1));
         },

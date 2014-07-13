@@ -3,7 +3,8 @@ window.onload = function() {
 
     //////////////////////////////////////////////////////////////////////
 
-    var screen_width = 640,
+    var playfield,
+        screen_width = 640,
         screen_height = 480,
         bat_width = 100,
         bat_height = 10,
@@ -198,17 +199,14 @@ window.onload = function() {
                 batY = this.height - 10 - bat_height;
             this.bat = new Bat(this);
             this.addChild(this.bat);
-
             this.scoreLabel = new glib.Label("Score: 0", this.font).setPosition(10, 10);
             this.addChild(this.scoreLabel);
-
-            this.banner = new glib.Label("Click to launch", this.font).setPosition(this.width / 2, this.height / 2).setPivot(0.5, 0.5);
-            this.banner.visible = true;
-            this.addChild(this.banner);
-
             this.livesLabel = new glib.Label("Lives: 3", this.font).setPosition(this.width - 10, 10).setPivot(1, 0);
             this.addChild(this.livesLabel);
-
+            this.panel = new glib.Panel(this.width / 2, this.height / 2, 300, 60, "black", "white", [0, 30, 0, 30], 4).setPivot(0.5, 0.5);
+            this.addChild(this.panel);
+            this.banner = new glib.Label("Click to launch", this.font).setPosition(150, 30).setPivot(0.5, 0.5).setScale(1.5);
+            this.panel.addChild(this.banner);
             this.stuckBall = null;
             this.balls = [];
             this.bricks = [];
@@ -248,7 +246,7 @@ window.onload = function() {
             this.scoreLabel.text = "Score: " + this.score.toString();
             this.livesLabel.text = "Lives: " + this.lives.toString();
             if (this.bricks.length === 0) {
-                this.banner.visible = true;
+                this.panel.visible = true;
                 while (this.balls.length > 0) {
                     this.balls[0].visible = false;
                     this.delete(this.balls[0], this.balls);
@@ -271,7 +269,7 @@ window.onload = function() {
                 if (this.lives > 0) {
                     this.createBall();
                 } else {
-                    this.banner.visible = true;
+                    this.panel.visible = true;
                 }
             }
         },
@@ -284,6 +282,7 @@ window.onload = function() {
 
         createBall: function() {
             this.stuckBall = new Ball(this, this.bat.x, this.bat.y - bat_height, this.ballImage);
+            this.stuckBall.stickToBat();
             this.addBall(this.stuckBall);
         },
 
@@ -292,14 +291,34 @@ window.onload = function() {
                 this.stuckBall.launch((this.stuckBall.x - this.bat.x) / bat_width / 5, -0.05);
                 this.stuckBall = null;
                 this.banner.text = "Game Over";
-                this.banner.visible = false;
-            } else if (this.banner.visible) {
+                this.panel.visible = false;
+            } else if (this.panel.visible) {
                 this.reset();
             }
         }
 
     });
 
-    var playfield = new glib.Playfield(640, 480, "rgb(8, 8, 64)");
-    playfield.addChild(new Game());
+    function onResize() {
+        document.body.style.width = window.innerWidth + "px";
+        document.body.style.height = window.innerHeight + "px";
+    }
+
+    (function(e) {
+        document.body.style.position = "absolute";
+        document.body.style.margin = "0px";
+        document.body.style.padding = "0px";
+        document.body.style.left = "0px";
+        document.body.style.top = "0px";
+        window.addEventListener("resize", onResize, false);
+        onResize();
+        playfield = new glib.Playfield({
+            width: 640,
+            height: 480,
+            backgroundColour: "rgb(8, 8, 64)",
+            autoCenter: true,
+            DOMContainer: document.body
+        });
+        playfield.addChild(new Game());
+    }());
 };

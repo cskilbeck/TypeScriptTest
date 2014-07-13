@@ -13,12 +13,15 @@
         if (glib.Browser.type === 'MSIE' && glib.Browser.version <= 10 && crossDomain) {
             xr = new XDomainRequest();
             xr.open(method, url);
-            xr.onerror = function () {};
+            xr.onerror = function () {
+                console.log("XDomainRequest error loading " + url);
+            };
             xr.onprogress = function () {};
             xr.timeout = 5000;
             xr.ontimeout = function () {
                 xr.status = 408;
                 xr.responseText = "";
+                console.log("XDomainRequest timeout loading " + url);
                 callback.call(context, url, xr);
             };
             xr.onload = function () {
@@ -34,19 +37,17 @@
                 xr.responseType = 'arraybuffer';
             }
             xr.onreadystatechange = function () {
-                var contentType;
-                console.log(url + " : " + xr.status.toString());
                 if (xr.readyState === XMLHttpRequest.DONE) {
-                    contentType = xr.getResponseHeader("Content-Type");
                     callback.call(context, url, xr);
                 }
             };
             xr.ontimeout = function () {
+                console.log("Ajax timeout loading " + url);
                 callback.call(context, url, xr);
             };
-            addEventListener(xr, "error", function () {
-                console.log("Error!");
-            });
+            xr.onerror = function() {
+                console.log("Ajax Error loading " + url);
+            };
             xr.onprogress = function (e) {
                 if (progressCallback) {
                     progressCallback.call(context, url, e);

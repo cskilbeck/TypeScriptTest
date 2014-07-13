@@ -119,11 +119,13 @@
                 self.handlers[name] = [];
             }
             self.handlers[name].push(new glib.EventHandler(target, ctx, oneShot));
+            return this;
         },
 
         clearEventHandlers: function ()
         {
             this.eventSourceData.handlers = {};
+            return this;
         },
 
         removeEventHandler: function (name, target) {
@@ -139,6 +141,7 @@
                     hl.splice(f, 1);
                 }
             }
+            return this;
         },
 
         dispatchEvent: function (name) {
@@ -157,6 +160,7 @@
                     }
                 }
             }
+            return this;
         }
     });
 

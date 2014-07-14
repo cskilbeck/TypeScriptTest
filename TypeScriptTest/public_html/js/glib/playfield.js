@@ -53,18 +53,13 @@
             }
             element.appendChild(canvas);
             context = canvas.getContext("2d");
-            if (opt.NoDebug) {
-                update();
-            } else {
-                loader = new glib.Loader('img/');
-                glib.Debug.init(context, glib.Font.load("Fixedsys", loader));
-                loader.addEventHandler("complete", function() {
-                    glib.Mouse.init(canvas);
-                    glib.Keyboard.init();
-                    glib.Timer.init();
-                    update();
-                }).start();
+            if (!opt.NoDebug) {
+                glib.Debug.init(context);
             }
+            glib.Mouse.init(canvas);
+            glib.Keyboard.init();
+            glib.Timer.init();
+            update();
         }
     });
 

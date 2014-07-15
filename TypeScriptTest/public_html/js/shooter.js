@@ -39,7 +39,6 @@ window.onload = function () {
         onUpdate: function(time, deltaTime) {
             var i,
                 star;
-
             for (i = 0; i < this.numStars; ++i) {
                 star = this.stars[i];
                 star.y = (star.y + deltaTime / star.speed);
@@ -88,29 +87,34 @@ window.onload = function () {
         }
     });
 
+    var Enemy = glib.Class({ inherit$: glib.Sprite,
+
+        $: function(image) {
+            glib.Sprite.call(this, image);
+        }
+    });
+
     function onResize() {
         document.body.style.width = window.innerWidth + "px";
         document.body.style.height = window.innerHeight + "px";
     }
 
-    (function(e) {
-        document.body.style.position = "absolute";
-        document.body.style.margin = "0px";
-        document.body.style.padding = "0px";
-        document.body.style.left = "0px";
-        document.body.style.top = "0px";
-        window.addEventListener("resize", onResize, false);
-        onResize();
-        playfield = new glib.Playfield({
-            width: 1280,
-            height: 720,
-            backgroundColour: "rgb(8, 8, 64)",
-            autoCenter: true,
-            DOMContainer: document.body
-        });
-        loader = new glib.Loader("img/");
-        playfield.addChild(new Starfield(150));
-        playfield.addChild(new Ship());
-        loader.start();
-    }());
+    document.body.style.position = "absolute";
+    document.body.style.margin = "0px";
+    document.body.style.padding = "0px";
+    document.body.style.left = "0px";
+    document.body.style.top = "0px";
+    window.addEventListener("resize", onResize, false);
+    onResize();
+    playfield = new glib.Playfield({
+        width: 1280,
+        height: 720,
+        backgroundColour: "rgb(8, 8, 64)",
+        autoCenter: true,
+        DOMContainer: document.body
+    });
+    loader = new glib.Loader("img/");
+    playfield.addChild(new Starfield(150));
+    playfield.addChild(new Ship());
+    loader.start();
 };

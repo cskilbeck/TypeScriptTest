@@ -1,4 +1,5 @@
 //////////////////////////////////////////////////////////////////////
+// BUG: when loading the same file twice from 2 different calls, loader "complete" callback called multiple times
 
 (function () {
     "use strict";

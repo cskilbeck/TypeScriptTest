@@ -85,6 +85,60 @@
             return x;
         },
 
+        // rect: { x, y, width, height }
+        // line[0].x, line[0].y, line[1].x, line[1].y
+
+        lineIntersectsRectangle: function(rect, line) {
+            var t,
+                minX = line[0].x,
+                maxX = line[1].x,
+                dx = maxX - minX;
+
+            if (minX > maxX) {
+                t = minX;
+                minX = maxX;
+                maxX = t;
+            }
+
+            if (maxX > rect.x + rect.width) {
+                maxX = rect.x + rect.width;
+            }
+
+            if (minX < rect.x) {
+                minX = rect.x;
+            }
+
+            if (minX > maxX) {
+                return false;
+            }
+
+            var minY = line[0].y;
+            var maxY = line[1].y;
+
+            if (Math.abs(dx) > 0.0000001) {
+                var a = (line[1].y - line[0].y) / dx;
+                var b = line[0].y - a * line[0].x;
+                minY = a * minX + b;
+                maxY = a * maxX + b;
+            }
+
+            if (minY > maxY) {
+                t = maxY;
+                maxY = minY;
+                minY = t;
+            }
+
+            if (maxY > rect.y + rect.height) {
+                maxY = rect.y + rect.height;
+            }
+
+            if (minY < rect.y) {
+                minY = rect.y;
+            }
+
+            return maxY > minY;
+        },
+
         //////////////////////////////////////////////////////////////////////
 
         lineDistance: function (a, b, p) {

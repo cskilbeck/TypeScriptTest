@@ -514,7 +514,7 @@
             c.drawableData.parent = this;
             self.children.push(c);
             self.reorder = true;
-            return this;
+            return c;
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -530,6 +530,13 @@
             this.dispatchEvent("closing");
             this.drawableData.closed = true;
             return this;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+        // check if this overlaps another (only rectangles supported)
+
+        overlaps: function(other) {
+            return false;
         },
 
         //////////////////////////////////////////////////////////////////////

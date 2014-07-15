@@ -8,7 +8,7 @@ window.onload = function () {
 
     var Starfield = glib.Class({ inherit$: glib.Drawable,
 
-        $: function(loader, numStars) {
+        $: function(numStars) {
             glib.Drawable.call(this);
             this.numStars = numStars;
             this.enabled = false;
@@ -17,7 +17,7 @@ window.onload = function () {
             this.height = playfield.height;
             this.random = new glib.Random();
             this.stars = [];
-            loader.addEventHandler("complete", this.loaded, this);
+            loader.addEventHandler("complete", this.loaded, this, true);
         },
 
         loaded: function() {
@@ -38,8 +38,8 @@ window.onload = function () {
 
         onUpdate: function(time, deltaTime) {
             var i,
-                wibbleScale = 16 / this.numStars,
                 star;
+
             for (i = 0; i < this.numStars; ++i) {
                 star = this.stars[i];
                 star.y = (star.y + deltaTime / star.speed);
@@ -52,7 +52,40 @@ window.onload = function () {
                 }
             }
         }
+    });
 
+    var Ship = glib.Class({ inherit$: glib.Sprite,
+
+        $: function() {
+            glib.Sprite.call(this, loader.load("blob.png"));
+            this.setPosition(playfield.width / 2, playfield.height / 2);
+            this.setScale(2,2);
+            this.setPivot(0.5, 0.5);
+            this.speed = 1;
+            this.enabled = false;
+            loader.addEventHandler("complete", this.loaded, this, true);
+        },
+
+        loaded: function() {
+            this.enabled = true;
+        },
+
+        onUpdate: function(time, deltaTime) {
+            var x = 0,
+                y = 0,
+                v = this.speed * deltaTime / 10;
+            if (glib.Keyboard.held("left")) { x -= 4; }
+            if (glib.Keyboard.held("right")) { x += 4; }
+            if (glib.Keyboard.held("up")) { y -= 3; }
+            if (glib.Keyboard.held("down")) { y += 3; }
+            if (glib.Keyboard.held("shift")) {
+                this.visible = false;
+            } else {
+                this.visible = true;
+            }
+            this.x = glib.Util.constrain(this.x + x * v, 0, playfield.width);
+            this.y = glib.Util.constrain(this.y + y * v, 0, playfield.height);
+        }
     });
 
     function onResize() {
@@ -76,7 +109,8 @@ window.onload = function () {
             DOMContainer: document.body
         });
         loader = new glib.Loader("img/");
-        playfield.addChild(new Starfield(loader, 150));
+        playfield.addChild(new Starfield(150));
+        playfield.addChild(new Ship());
         loader.start();
     }());
 };

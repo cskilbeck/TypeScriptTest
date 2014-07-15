@@ -10,6 +10,12 @@
         loader,
         cursorX,
         cursorY,
+        fontHeight = 0,
+        DBText = 1,
+        DBRect = 2,
+        DBFillRect = 3,
+        DBPoly = 4,
+        DBLine = 5,
         d = [],
 
         // Stub debug output, used before font loaded or if Debug.init never called
@@ -45,7 +51,7 @@
                     s = s + c + a;
                     c = ",";
                 }
-                d.push("text", s, x, y);
+                d.push(DBText, s, x, y);
             },
 
             print: function () {
@@ -54,23 +60,23 @@
             },
 
             rect: function (x, y, w, h, colour) {
-                d.push("rect", x, y, w, h, colour);
+                d.push(DBRect, x, y, w, h, colour);
             },
 
             fillRect: function (x, y, w, h, colour) {
-                d.push("fillrect", x, y, w, h, colour);
+                d.push(DBFillRect, x, y, w, h, colour);
             },
 
             poly: function (points, colour) {
                 var i;
-                d.push("poly", points.length, colour);
+                d.push(DBPoly, points.length, colour);
                 for (i = 0; i < points.length; ++i) {
                     d.push(points[i].x, points[i].y);
                 }
             },
 
             line: function (x1, y1, x2, y2, colour) {
-                d.push("line", x1, y1, x2, y2, colour);
+                d.push(DBLine, x1, y1, x2, y2, colour);
             },
 
             draw: function () {
@@ -80,27 +86,27 @@
                 context.setTransform(1, 0, 0, 1, 0, 0);
                 while (d.length > 0) {
                     switch (d.shift()) {
-                    case 'text':    // x, y, string
+                    case DBText:    // x, y, string
                         font.renderString(context, d.shift(), d.shift(), d.shift());
                         break;
-                    case 'rect':    // x, y, w, h, colour
+                    case DBRect:    // x, y, w, h, colour
                         glib.Util.rect(context, d.shift(), d.shift(), d.shift(), d.shift());
                         context.strokeStyle = d.shift();
                         context.stroke();
                         break;
-                    case 'fillrect':    // x, y, w, h, colour
+                    case DBFillRect:    // x, y, w, h, colour
                         glib.Util.rect(context, d.shift(), d.shift(), d.shift(), d.shift());
                         context.fillStyle = d.shift();
                         context.fill();
                         break;
-                    case 'line':    // x1, y1, x1, y1, colour
+                    case DBLine:    // x1, y1, x1, y1, colour
                         context.beginPath();
                         context.moveTo(d.shift(), d.shift());
                         context.lineTo(d.shift(), d.shift());
                         context.strokeStyle = d.shift();
                         context.stroke();
                         break;
-                    case 'poly':
+                    case DBPoly:
                         context.beginPath();
                         l = d.shift();
                         colour = d.shift();
@@ -136,6 +142,7 @@
                 loader.start();
             },
             fontLoaded: function() {
+                fontHeight = font.height;
                 current = new Real();
             },
             text: function (x, y, things) {
@@ -143,7 +150,7 @@
             },
             print: function () {
                 current.text.apply(null, [cursorX, cursorY].concat(Array.prototype.slice.call(arguments, 0)));
-                cursorY += font.height;
+                cursorY += fontHeight;
             },
             rect: function (x, y, w, h, colour) {
                 current.rect(x, y, w, h, colour);

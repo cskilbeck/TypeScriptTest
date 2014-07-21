@@ -10,6 +10,7 @@ window.onload = function () {
         clip,
         font,
         loader,
+        powerupBar,
         bulletImage,
         laserImage;
 
@@ -189,10 +190,10 @@ window.onload = function () {
     // ]
 
     var powerUps = [
-        { name: "Speed", price: 100, action: function() {
+        { name: "Speed", price: 300, action: function() {
             ship.speed = Math.min(3, ship.speed + 1);
         } },
-        { name: "Shield", price: 200, action: function() {
+        { name: "Shield", price: 300, action: function() {
             ship.activateShield();
         } },
         { name: "Big Clip", price: 400, action: function() {
@@ -201,13 +202,13 @@ window.onload = function () {
         { name: "Fast Charge", price: 600, action: function() {
             clip.speedUp();
         } },
-        { name: "Double Shot", price: 800, action: function() {
+        { name: "Double Shot", price: 600, action: function() {
             ship.startDoubleShot();
         } },
-        { name: "Laser", price: 800, action: function() {
+        { name: "Laser", price: 600, action: function() {
             ship.startLaser();
         } },
-        { name: "Multiple", price: 900, action: function() {
+        { name: "Multiple", price: 800, action: function() {
             ship.addMultiple();
         } },
         { name: "Smart", price: 300, action: function() {
@@ -218,8 +219,8 @@ window.onload = function () {
     var PowerUpLabel = glib.Class({ inherit$: glib.Panel,
 
         $: function(x, y, w, h, text) {
-            glib.Panel.call(this, w, y, w, h, "black", "white", 0, 2);
-            this.addChild(new chs.Label(text, font)).setPosition(this.width / 2, this.height / 2).setPivot(0.5, 0.5);
+            glib.Panel.call(this, x, y, w, h, "black", "white", 0, 2);
+            this.addChild(new glib.Label(text, font)).setPosition(this.width / 2, this.height / 2).setPivot(0.5, 0.5);
         }
 
     });
@@ -227,6 +228,7 @@ window.onload = function () {
     var PowerUpBar = glib.Class({ inherit$: glib.Drawable,
 
         $: function() {
+            glib.Drawable.call(this);
             var i, t = 0, x, label;
             for (i = 0; i < powerUps.length; ++i) {
                 t += powerUps[i].price;
@@ -236,12 +238,14 @@ window.onload = function () {
             t = this.width / t;
 
             this.labels = [];
-            x = 10;
+            x = 0;
             for (i = 0; i < powerUps.length; ++i) {
                 label = new PowerUpLabel(x, 0, powerUps[i].price * t, this.height, powerUps[i].name);
                 this.labels.push(label);
                 this.addChild(label);
+                x += label.width;
             }
+            this.setPosition(10, playfield.height - this.height - 10);
         }
     });
 
@@ -406,7 +410,8 @@ window.onload = function () {
         starfield = playfield.addChild(new Starfield(150));
         ship = playfield.addChild(new Ship());
         clip = playfield.addChild(new Clip());
+        powerupBar = playfield.addChild(new PowerUpBar());
         // start game...
-    });
+    }, true);
     loader.start();
 };

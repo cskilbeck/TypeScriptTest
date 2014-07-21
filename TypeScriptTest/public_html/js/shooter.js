@@ -9,7 +9,9 @@ window.onload = function () {
         moneyPointer,
         clip,
         font,
-        loader;
+        loader,
+        bulletImage,
+        laserImage;
 
     var Starfield = glib.Class({ inherit$: glib.Drawable,
 
@@ -67,6 +69,7 @@ window.onload = function () {
             }
         },
 
+        // add image option?
         $: function(x, y, xvel, yvel) {
             glib.Sprite.call(this, Bullet.image);
             this.setPosition(x, y);
@@ -90,9 +93,9 @@ window.onload = function () {
 
     // Clip - bullets in the clip
 
-    var clipSize = 50,              // default clip size
-        maxClipSize = 100,          // clip can grow to this
-        clipIncrementRate = 200;    // add 1 to the clip every N ms
+    var clipSize = 20,              // default clip size
+        maxClipSize = 60,          // clip can grow to this
+        clipIncrementRate = 500;    // add 1 to the clip every N ms
 
     var Clip = glib.Class({ inherit$: glib.Drawable,
 
@@ -205,6 +208,7 @@ window.onload = function () {
             this.setPosition(x, y);
             this.speed = speed;
             this.lives = lives;
+            this.x += this.speed * 1000/60;
         },
 
         onUpdate: function(time, deltaTime) {
@@ -220,7 +224,9 @@ window.onload = function () {
     var StandardProjectile = glib.Class({ inherit$: Projectile,
 
         $: function(x, y) {
-            glib.Projectile.call(this, x, y, 10, bulletImage, 1);
+            Projectile.call(this, x, y, 2000 / 1000, bulletImage, 1);
+            this.setScale(1.85, 0.15);
+            this.setPivot(0.5, 0.5);
         }
     });
 
@@ -229,9 +235,14 @@ window.onload = function () {
     var LaserProjectile = glib.Class({ inherit$: Projectile,
 
         $: function(x, y) {
-            glib.Projectile.call(this, x, y, 20, laserImage, 3);
+            Projectile.call(this, x, y, 20, laserImage, 3);
         }
     });
+
+    // ? Many types of Multiple?
+    //  Circle the ship
+    //  Fan out behind & above/below
+    //  Follow ship path
 
     // Multiple - circles the ship and shoots bullets as well
     // any contact with enemy bullet kills it
@@ -251,7 +262,7 @@ window.onload = function () {
 
     // follow / circle / fan / cross ?
 
-    var shotDelay = 200;    // ms between shots
+    var shotDelay = 100;    // ms between shots
 
     var Ship = glib.Class({ inherit$: glib.Sprite,
 
@@ -264,9 +275,8 @@ window.onload = function () {
         },
 
         $: function() {
-            glib.Sprite.call(this, ship.image);
+            glib.Sprite.call(this, Ship.image);
             this.setPosition(playfield.width / 2, playfield.height / 2);
-            this.setScale(2,2);
             this.setPivot(0.5, 0.5);
             this.speed = 0.1;
             this.hit = 0;
@@ -275,7 +285,7 @@ window.onload = function () {
         },
 
         fireBullet: function() {
-
+            playfield.addChild(new StandardProjectile(this.x, this.y));
         },
 
         onUpdate: function(time, deltaTime) {
@@ -344,9 +354,12 @@ window.onload = function () {
     font = glib.Font.load("Consolas", loader);
     Starfield.load();
     Ship.load();
+    bulletImage = loader.load("blob.png");
+    laserImage = loader.load("blob.png");
     loader.addEventHandler("complete", function() {
         starfield = playfield.addChild(new Starfield(150));
         ship = playfield.addChild(new Ship());
+        clip = playfield.addChild(new Clip());
         // start game...
     });
     loader.start();

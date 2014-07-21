@@ -93,9 +93,12 @@ window.onload = function () {
 
     // Clip - bullets in the clip
 
-    var clipSize = 20,              // default clip size
-        maxClipSize = 60,          // clip can grow to this
-        clipIncrementRate = 500;    // add 1 to the clip every N ms
+    var clipSize = 20,                                  // default clip size
+        maxClipSize = 60,                               // clip can grow to this
+        clipGrow = 10,                                  // grow the clip by this when they buy 'Big Clip'
+        defaultReloadDelay = 500,                       // default reload rate
+        reloadDelayDecrement = -50,                     // get faster by this when they buy 'Fast Reload'
+        minReloadDelay = 300;                           // fastest it can get
 
     var Clip = glib.Class({ inherit$: glib.Drawable,
 
@@ -104,7 +107,7 @@ window.onload = function () {
             this.setPosition(10, 10);
             this.bullets = clipSize;
             this.clipSize = clipSize;
-            this.incrementRate = clipIncrementRate;
+            this.reloadDelay = defaultReloadDelay;
             this.increment = 0;
         },
 
@@ -114,14 +117,19 @@ window.onload = function () {
 
         onUpdate: function(time, deltaTime) {
             this.increment += deltaTime;
-            if (this.increment >= this.incrementRate) {
+            if (this.increment >= this.reloadDelay) {
                 this.bullets = Math.min(this.clipSize, this.bullets + 1);
-                this.increment = 0;
+                this.increment = this.reloadDelay / 2;
             }
+        },
+
+        speedUp: function() {
+            this.reloadDelay = Math.max(minReloadDelay, this.reloadDelay - reloadDelayDecrement);
         },
 
         deplete: function() {
             this.bullets = Math.max(0, this.bullets - 1);
+            this.increment = 0;
         }
     });
 
@@ -181,21 +189,59 @@ window.onload = function () {
     // ]
 
     var powerUps = [
-        { name: "Speed Up" },
-        { name: "Shield" },
-        { name: "Rapid Fire" },
-        { name: "Big Clip" },
-        { name: "Fast Charge" },
-        { name: "Double Shot" },
-        { name: "Laser" },
-        { name: "Multiple" },
-        { name: "Smart Bomb" }
+        { name: "Speed", price: 100, action: function() {
+            ship.speed = Math.min(3, ship.speed + 1);
+        } },
+        { name: "Shield", price: 200, action: function() {
+            ship.activateShield();
+        } },
+        { name: "Big Clip", price: 400, action: function() {
+            clipSize = Math.min(maxClipSize, clipSize + clipGrow);
+        } },
+        { name: "Fast Charge", price: 600, action: function() {
+            clip.speedUp();
+        } },
+        { name: "Double Shot", price: 800, action: function() {
+            ship.startDoubleShot();
+        } },
+        { name: "Laser", price: 800, action: function() {
+            ship.startLaser();
+        } },
+        { name: "Multiple", price: 900, action: function() {
+            ship.addMultiple();
+        } },
+        { name: "Smart", price: 300, action: function() {
+            doSmartBomb();
+        } }
     ];
+
+    var PowerUpLabel = glib.Class({ inherit$: glib.Panel,
+
+        $: function(x, y, w, h, text) {
+            glib.Panel.call(this, w, y, w, h, "black", "white", 0, 2);
+            this.addChild(new chs.Label(text, font)).setPosition(this.width / 2, this.height / 2).setPivot(0.5, 0.5);
+        }
+
+    });
 
     var PowerUpBar = glib.Class({ inherit$: glib.Drawable,
 
         $: function() {
+            var i, t = 0, x, label;
+            for (i = 0; i < powerUps.length; ++i) {
+                t += powerUps[i].price;
+            }
+            this.width = playfield.width - 20;
+            this.height = font.height + 4;
+            t = this.width / t;
 
+            this.labels = [];
+            x = 10;
+            for (i = 0; i < powerUps.length; ++i) {
+                label = new PowerUpLabel(x, 0, powerUps[i].price * t, this.height, powerUps[i].name);
+                this.labels.push(label);
+                this.addChild(label);
+            }
         }
     });
 

@@ -13,6 +13,8 @@
         p.bottom = self.extent.bottom - self.extent.height;
     };
 
+    // TODO: alignment, padding, margin, autosize
+
     glib.Label = glib.Class({ inherit$: [glib.Composite, glib.Drawable],
 
         $: function (text, font) {

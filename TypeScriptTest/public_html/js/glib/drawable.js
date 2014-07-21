@@ -409,6 +409,15 @@
 
         //////////////////////////////////////////////////////////////////////
 
+        setSize: function (w, h) {
+            this.drawableData.dimensions.width = w;
+            this.drawableData.dimensions.height = h;
+            this.drawableData.dirty = true;
+            return this;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
         move: function (x, y) {
             this.drawableData.position.x += x;
             this.drawableData.position.y += y;

@@ -3,16 +3,20 @@
 window.onload = function () {
     "use strict";
 
-    var playfield,
+    var font,
+        loader,
+        playfield,
+        game,
         starfield,
         ship,
+        ui,
         moneyPointer,
         clip,
-        font,
-        loader,
         powerupBar,
         bulletImage,
         laserImage;
+
+    /////////////////////////////////////////////////////////////////////
 
     var Starfield = glib.Class({ inherit$: glib.Drawable,
 
@@ -61,6 +65,8 @@ window.onload = function () {
         }
     });
 
+    /////////////////////////////////////////////////////////////////////
+
     var Bullet = glib.Class({ inherit$: glib.Sprite,
 
         static$: {
@@ -92,7 +98,7 @@ window.onload = function () {
         }
     });
 
-    // Clip - bullets in the clip
+    /////////////////////////////////////////////////////////////////////
 
     var clipSize = 20,                                  // default clip size
         maxClipSize = 60,                               // clip can grow to this
@@ -134,7 +140,7 @@ window.onload = function () {
         }
     });
 
-    // Money - floats along waiting to be picked up
+    /////////////////////////////////////////////////////////////////////
 
     var Money = glib.Class({ inherit$: glib.Sprite,
 
@@ -162,7 +168,7 @@ window.onload = function () {
         }
     });
 
-    // MoneyPointer - shows on the powerup bar what you can buy
+    /////////////////////////////////////////////////////////////////////
 
     var MoneyPointer = glib.Class({ inherit$: glib.Drawable,
 
@@ -176,18 +182,7 @@ window.onload = function () {
 
     });
 
-    // PowerUpBar - ways to upgrade the ship
-    // [
-    //      Speed Up (up to 3x)
-    //      Shield (degrades with hits and over time)
-    //      Rapid Fire (fire bullets faster)
-    //      Big CLip (more bullets in the clip)
-    //      Fast Charge (charge the clip faster)
-    //      Double Shot (fire two bullets at once)
-    //      Laser (goes through N enemies)
-    //      Multiple (up to N followers)
-    //      Smart Bomb (SmartBomb, damages all enemies)
-    // ]
+    /////////////////////////////////////////////////////////////////////
 
     var powerUps = [
         { name: "Speed", price: 300, action: function() {
@@ -216,6 +211,8 @@ window.onload = function () {
         } }
     ];
 
+    /////////////////////////////////////////////////////////////////////
+
     var PowerUpLabel = glib.Class({ inherit$: glib.Panel,
 
         $: function(x, y, w, h, text) {
@@ -224,6 +221,8 @@ window.onload = function () {
         }
 
     });
+
+    /////////////////////////////////////////////////////////////////////
 
     var PowerUpBar = glib.Class({ inherit$: glib.Drawable,
 
@@ -249,7 +248,7 @@ window.onload = function () {
         }
     });
 
-    // Projectile - base for all things the ship can shoot
+    /////////////////////////////////////////////////////////////////////
 
     var Projectile = glib.Class({ inherit$: glib.Sprite,
 
@@ -269,7 +268,7 @@ window.onload = function () {
         }
     });
 
-    // Regular Projectile
+    /////////////////////////////////////////////////////////////////////
 
     var StandardProjectile = glib.Class({ inherit$: Projectile,
 
@@ -280,7 +279,7 @@ window.onload = function () {
         }
     });
 
-    // Laser Projectile
+    /////////////////////////////////////////////////////////////////////
 
     var LaserProjectile = glib.Class({ inherit$: Projectile,
 
@@ -289,14 +288,7 @@ window.onload = function () {
         }
     });
 
-    // ? Many types of Multiple?
-    //  Circle the ship
-    //  Fan out behind & above/below
-    //  Follow ship path
-
-    // Multiple - circles the ship and shoots bullets as well
-    // any contact with enemy bullet kills it
-    // can't be shielded
+    /////////////////////////////////////////////////////////////////////
 
     var Multiple = glib.Class({ inherit$: glib.Sprite,
 
@@ -305,12 +297,7 @@ window.onload = function () {
         }
     });
 
-    // Ship - the player ship
-    // arrow keys to move
-    // shift to fire
-    // ctrl to take powerup
-
-    // follow / circle / fan / cross ?
+    /////////////////////////////////////////////////////////////////////
 
     var shotDelay = 100;    // ms between shots
 
@@ -335,7 +322,7 @@ window.onload = function () {
         },
 
         fireBullet: function() {
-            playfield.addChild(new StandardProjectile(this.x, this.y));
+            game.addChild(new StandardProjectile(this.x, this.y));
         },
 
         onUpdate: function(time, deltaTime) {
@@ -357,7 +344,7 @@ window.onload = function () {
         }
     });
 
-    // Enemy - base enemy class
+    /////////////////////////////////////////////////////////////////////
 
     var Enemy = glib.Class({ inherit$: glib.Sprite,
 
@@ -366,7 +353,7 @@ window.onload = function () {
         }
     });
 
-    // Wave - a wave of enemies
+    /////////////////////////////////////////////////////////////////////
 
     var Wave = glib.Class({ inherit$: glib.Drawable,
 
@@ -377,14 +364,14 @@ window.onload = function () {
 
     });
 
-    // OnResize - make the document.body fill the browser window
+    /////////////////////////////////////////////////////////////////////
 
     function onResize() {
         document.body.style.width = window.innerWidth + "px";
         document.body.style.height = window.innerHeight + "px";
     }
 
-    // Main
+    /////////////////////////////////////////////////////////////////////
 
     document.body.style.position = "absolute";
     document.body.style.margin = "0px";
@@ -407,11 +394,12 @@ window.onload = function () {
     bulletImage = loader.load("blob.png");
     laserImage = loader.load("blob.png");
     loader.addEventHandler("complete", function() {
-        starfield = playfield.addChild(new Starfield(150));
-        ship = playfield.addChild(new Ship());
-        clip = playfield.addChild(new Clip());
-        powerupBar = playfield.addChild(new PowerUpBar());
-        // start game...
+        game = playfield.addChild(new glib.Drawable().setSize(playfield.width, playfield.height));
+        ui = playfield.addChild(new glib.Drawable().setSize(playfield.width, playfield.height));
+        starfield = game.addChild(new Starfield(150));
+        ship = game.addChild(new Ship());
+        clip = ui.addChild(new Clip());
+        powerupBar = ui.addChild(new PowerUpBar());
     }, true);
     loader.start();
 };

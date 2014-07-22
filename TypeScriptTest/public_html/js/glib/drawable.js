@@ -427,6 +427,13 @@
 
         //////////////////////////////////////////////////////////////////////
 
+        setVisible: function (v) {
+            this.drawableData.visible = v;
+            return this;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
         setScale: function (x, y) {
             this.drawableData.scale.x = x;
             this.drawableData.scale.y = (y !== undefined) ? y : x;

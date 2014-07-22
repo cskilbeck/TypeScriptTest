@@ -191,11 +191,11 @@ window.onload = function () {
 
         onUpdate: function(time, deltaTime) {
             var dx, dy, d;
-            this.x -= deltaTime / 1000 * 40;
+            this.x -= deltaTime / 1000 * 60;
             if (this.x < -this.width / 4) {
                 this.close();
             } else {
-                this.y += Math.sin(time / 200 + this.x / 10) * 0.2;
+                this.y += Math.sin(time / 100 + this.x / 5) * 0.6;
                 this.age += deltaTime;
                 this.frame = (this.age / 33.3333) % this.framesWide;
                 d = glib.Util.distance(this, ship);
@@ -206,6 +206,7 @@ window.onload = function () {
                     dx = ship.x - this.x;
                     dy = ship.y - this.y;
                     d = 80 - d;
+                    this.setScale(0.5 - (d / 320));
                     d *= d;
                     this.x += (d * dx * deltaTime) / 80000;
                     this.y += (d * dy * deltaTime) / 80000;
@@ -236,32 +237,113 @@ window.onload = function () {
     });
 
     /////////////////////////////////////////////////////////////////////
+    // Powerups may accumulate to a max, but all reset to nothing when they drain...
+
+    var powerUpIDs = {
+        speed: 1,
+        shield: 2,
+        bigClip: 3,
+        fastCharge: 4,
+        doubleShot: 5,
+        laser: 6,
+        multiple: 7,
+        smart: 8
+    };
 
     var powerUps = [
-        { name: "Speed", price: 300, context: ship, action: function() {
-            ship.speed = Math.min(3, ship.speed + 1);
-        } },
-        { name: "Shield", price: 300, context: ship, action: function() {
-            ship.activateShield();
-        } },
-        { name: "Big Clip", price: 400, context: null, action: function() {
-            clipSize = Math.min(maxClipSize, clipSize + clipGrow);
-        } },
-        { name: "Fast Charge", price: 600, context: clip, action: function() {
-            clip.speedUp();
-        } },
-        { name: "Double Shot", price: 600, context: ship, action: function() {
-            ship.startDoubleShot();
-        } },
-        { name: "Laser", price: 600, context: ship, action: function() {
-            ship.startLaser();
-        } },
-        { name: "Multiple", price: 800, context: ship, action: function() {
-            ship.addMultiple();
-        } },
-        { name: "Smart", price: 300, context: null, action: function() {
-            doSmartBomb();
-        } }
+        {
+            name: "Speed",
+            price: 300,
+            drainTime: 60,
+            context: ship,
+            onbuy: function() {
+                ship.speed = Math.min(shipMaxSpeed, ship.speed + 0.01);
+            },
+            onDrain: function() {
+                ship.speed = shipMinSpeed;
+            }
+        },
+        {
+            name: "Shield",
+            price: 300,
+            drainTime: 30,
+            context: ship,
+            onbuy: function() {
+               ship.activateShield();   // replenish shield which is degraded by bullets and doesn't work against enemies
+            },
+            onDrain: function() {
+                ship.deactivateShield();
+            }
+        },
+        {
+            name: "Big Clip",
+            price: 400,
+            drainTime: 120,
+            context: null,
+            onbuy: function() {
+                clipSize = Math.min(maxClipSize, clipSize + clipGrow);
+            },
+            onDrain: function() {
+                clipSize = minClipSize;
+            }
+        },
+        {
+            name: "Fast Charge",
+            price: 600,
+            drainTime: 120,
+            context: clip,
+            onbuy: function() {
+                clip.speedUp();
+            }, onDrain: function() {
+                clip.slowDown();
+            }
+        },
+        {
+            name: "Double Shot",
+            price: 600,
+            drainTime: 60,
+            context: ship,
+            onbuy: function() {
+                ship.startDoubleShot();
+            },
+            onDrain: function() {
+                ship.stopDoubleShot();
+            }
+        },
+        {
+            name: "Laser",
+            price: 600,
+            drainTime: 80,
+            context: ship,
+            onbuy: function() {
+                ship.startLaser();
+            },
+            onDrain: function() {
+                shop.stopLaser();
+            }
+        },
+        {
+            name: "Multiple",
+            price: 800,
+            drainTime: 240,
+            context: ship,
+            onbuy: function() {
+                ship.addMultiple(); // add up to 3 - all disappear if it drains out!
+            }, onDrain: function() {
+                ship.removeAllMultiples();
+            }
+        },
+        {
+            name: "Smart",
+            price: 300,
+            drainTime: 120,
+            context: null,
+            onbuy: function() {
+                enableSmartBullets();
+            }, onDrain: function() {
+                disableSmartBullets();
+            }
+        }
     ];
 
     /////////////////////////////////////////////////////////////////////
@@ -269,8 +351,10 @@ window.onload = function () {
     var PowerUpLabel = glib.Class({ inherit$: glib.Panel,
 
         $: function(x, y, w, h, powerUp, baseMoney) {
-            glib.Panel.call(this, Math.floor(x) + 0.5, Math.floor(y) + 0.5, w, h, "black", "white", 0, 1);
+            var xp = Math.floor(x) + 0.5;
+            glib.Panel.call(this, xp, Math.floor(y) + 0.5, w, h, "black", "white", 0, 1);
             this.powerUp = powerUp;
+            this.drain = this.addChild(new glib.SolidRectangle(xp + 1, y + 1, w - 2, h - 2, "yellow").setVisible(false));
             this.addChild(new glib.Label(powerUp.name, font)).setPosition(this.width / 2, this.height / 2).setPivot(0.5, font.midPivot);
             this.baseMoney = baseMoney;
             this.hover = false;
@@ -306,7 +390,7 @@ window.onload = function () {
 
         onLeftMouseDown: function(e) {
             if (bankBalance >= this.baseMoney) {
-                //this.powerUp.action.call(this.powerUp.context);
+                //this.powerUp.onBuy.call(this.powerUp.context);
                 bankBalance = Math.max(0, bankBalance - this.powerUp.price);
             }
         }
@@ -409,7 +493,7 @@ window.onload = function () {
             glib.Sprite.call(this, Ship.image);
             this.setPosition(playfield.width / 2, playfield.height / 2);
             this.setPivot(0.5, 0.5);
-            this.speed = 0.1;
+            this.speed = 0.05;
             this.hit = 0;
             this.shotTime = 0;
             this.multiples = [];
@@ -417,6 +501,10 @@ window.onload = function () {
 
         fireBullet: function() {
             game.addChild(new StandardProjectile(this.x, this.y));
+        },
+
+        speedUp: function() {
+            this.speed = Math.min(0.12, this.speed + 0.01);
         },
 
         onUpdate: function(time, deltaTime) {

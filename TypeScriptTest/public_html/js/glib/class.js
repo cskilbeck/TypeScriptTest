@@ -40,13 +40,8 @@
     //////////////////////////////////////////////////////////////////////
 
     glib.Class = function (desc) {
-        var newClass = {},
+        var newClass = desc.$ || {},
             i;
-
-        // constructor
-        if (desc.$ !== undefined) {
-            newClass = desc.$;
-        }
 
         // static members
         if (desc.static$ !== undefined) {

@@ -1,4 +1,26 @@
 /////////////////////////////////////////////////////////////////////
+// Blank playfield
+// Bouncing sprite
+// Animating sprite
+// Class
+// Debug
+// Mouse control
+// Keyboard control
+// Breakout
+// Loader
+// Fonts
+// Label
+// Pivot & Transforms
+// addChild
+// Events
+// Picking
+// Button
+// Panel
+// Timer
+// Random
+// Window
+// Composite
+/////////////////////////////////////////////////////////////////////
 
 window.onload = function () {
     "use strict";
@@ -13,6 +35,7 @@ window.onload = function () {
         clip,
         moneyScale,
         bankBalance,
+        maxBankBalance,
         moneyPointer,
         powerupBar,
         bulletImage,
@@ -160,17 +183,33 @@ window.onload = function () {
             this.framesWide = 10;
             this.framesHigh = 1;
             this.yorg = y;
-            this.age = 10000;
+            this.age = 0;
             this.setScale(0.5);
+            this.setPivot(0.5, 0.5);
             this.setPosition(x, y);
         },
 
         onUpdate: function(time, deltaTime) {
+            var dx, dy, d;
             this.x -= deltaTime / 1000 * 40;
-            this.y = this.yorg + Math.sin(time / 200 + this.x / 10) * 20;
-            this.frame = ++this.frame % 10;
-            if (this.overlaps(ship)) {
-                bankBalance.add(100);
+            if (this.x < -this.width / 4) {
+                this.close();
+            } else {
+                this.y += Math.sin(time / 200 + this.x / 10) * 0.2;
+                this.age += deltaTime;
+                this.frame = (this.age / 33.3333) % this.framesWide;
+                d = glib.Util.distance(this, ship);
+                if (d < 20) {
+                    bankBalance = Math.min(bankBalance + 100, maxBankBalance);
+                    this.close();
+                } else if (d < 80) {
+                    dx = ship.x - this.x;
+                    dy = ship.y - this.y;
+                    d = 80 - d;
+                    d *= d;
+                    this.x += (d * dx * deltaTime) / 80000;
+                    this.y += (d * dy * deltaTime) / 80000;
+                }
             }
         }
     });
@@ -181,18 +220,17 @@ window.onload = function () {
 
         $: function() {
             glib.Drawable.call(this);
+            this.setPosition(powerupBar.x, powerupBar.y - 14);
             this.arrow = this.addChild(new glib.SolidRectangle(0, 0, 20, 20, [10, 10, 0, 10], "yellow").setRotation(-Math.PI * 0.25).setPivot(0.5, 0.5));
-            this.x = powerupBar.x;
-            this.y = powerupBar.y - 14;
         },
 
         onUpdate: function(time, deltaTime) {
             var x = bankBalance * moneyScale,
-                d = x - this.x;
-            if (d < 2) {
-                this.x = x;
+                d = x - this.arrow.x;
+            if (Math.abs(d) < 2) {
+                this.arrow.x = x;
             } else {
-                this.x += d * deltaTime / 100;
+                this.arrow.x += d * deltaTime / 100;
             }
         }
     });
@@ -230,15 +268,16 @@ window.onload = function () {
 
     var PowerUpLabel = glib.Class({ inherit$: glib.Panel,
 
-        $: function(x, y, w, h, text, baseMoney) {
+        $: function(x, y, w, h, powerUp, baseMoney) {
             glib.Panel.call(this, Math.floor(x) + 0.5, Math.floor(y) + 0.5, w, h, "black", "white", 0, 1);
-            this.addChild(new glib.Label(text, font)).setPosition(this.width / 2, this.height / 2).setPivot(0.5, font.midPivot);
+            this.powerUp = powerUp;
+            this.addChild(new glib.Label(powerUp.name, font)).setPosition(this.width / 2, this.height / 2).setPivot(0.5, font.midPivot);
             this.baseMoney = baseMoney;
             this.hover = false;
         },
 
         setFillColour: function() {
-            if (bankBalance > this.baseMoney) {
+            if (bankBalance >= this.baseMoney) {
                 if (this.hover) {
                     this.fillColour = "rgb(16, 224, 32)";
                 } else {
@@ -266,8 +305,9 @@ window.onload = function () {
         },
 
         onLeftMouseDown: function(e) {
-            if (bankBalance > this.baseMoney) {
-                this.action.call(this.context);
+            if (bankBalance >= this.baseMoney) {
+                //this.powerUp.action.call(this.powerUp.context);
+                bankBalance = Math.max(0, bankBalance - this.powerUp.price);
             }
         }
 
@@ -283,6 +323,7 @@ window.onload = function () {
             for (i = 0; i < powerUps.length; ++i) {
                 t += powerUps[i].price;
             }
+            maxBankBalance = t;
             this.width = playfield.width - 20;
             this.height = font.height + 8;
             moneyScale = this.width / t;
@@ -292,7 +333,7 @@ window.onload = function () {
             baseMoney = 0;
             for (i = 0; i < powerUps.length; ++i) {
                 baseMoney += powerUps[i].price;
-                label = new PowerUpLabel(x, 0, powerUps[i].price * moneyScale, this.height, powerUps[i].name, baseMoney);
+                label = new PowerUpLabel(x, 0, powerUps[i].price * moneyScale, this.height, powerUps[i], baseMoney);
                 this.labels.push(label);
                 this.addChild(label);
                 x += label.width;
@@ -440,7 +481,7 @@ window.onload = function () {
         autoCenter: true,
         DOMContainer: document.body
     });
-    bankBalance = 1000;
+    bankBalance = 0;
     loader = new glib.Loader("img/");
     font = glib.Font.load("Consolas", loader);
     Starfield.load();
@@ -453,10 +494,15 @@ window.onload = function () {
         ui = playfield.addChild(new glib.Drawable().setSize(playfield.width, playfield.height));
         starfield = game.addChild(new Starfield(150));
         ship = game.addChild(new Ship());
-        game.addChild(new Money(playfield.width / 2, playfield.height / 2));
+        game.addChild(new Money(playfield.width / 1.25, playfield.height / 2));
         clip = ui.addChild(new Clip());
         powerupBar = ui.addChild(new PowerUpBar());
         moneyPointer = ui.addChild(new MoneyPointer());
+        game.onUpdate = function(time, deltaTime) {
+            if (Math.random() > 0.96) {
+                game.addChild(new Money(playfield.width / 1.25, Math.random() * playfield.height));
+            }
+        };
     }, true);
     loader.start();
 };

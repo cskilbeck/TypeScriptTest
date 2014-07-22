@@ -216,8 +216,20 @@ window.onload = function () {
     var PowerUpLabel = glib.Class({ inherit$: glib.Panel,
 
         $: function(x, y, w, h, text) {
-            glib.Panel.call(this, x, y, w, h, "black", "white", 0, 2);
-            this.addChild(new glib.Label(text, font)).setPosition(this.width / 2, this.height / 2).setPivot(0.5, 0.5);
+            glib.Panel.call(this, Math.floor(x) + 0.5, Math.floor(y) + 0.5, w, h, "black", "white", 0, 1);
+            this.addChild(new glib.Label(text, font)).setPosition(this.width / 2, this.height / 2).setPivot(0.5, font.midPivot);
+        },
+
+        onMouseEnter: function(e) {
+            this.fillColour = "rgb(8, 192, 8)"; // check money, make it red or green
+        },
+
+        onMouseLeave: function(e) {
+            this.fillColour = "black";
+        },
+
+        onLeftMouseDown: function(e) {
+            // try to buy it
         }
 
     });
@@ -233,7 +245,7 @@ window.onload = function () {
                 t += powerUps[i].price;
             }
             this.width = playfield.width - 20;
-            this.height = font.height + 4;
+            this.height = font.height + 8;
             t = this.width / t;
 
             this.labels = [];
@@ -330,13 +342,13 @@ window.onload = function () {
                 y = 0,
                 v = this.speed * deltaTime;
             this.shotTime -= deltaTime;
-            if (glib.Keyboard.held("left")) { x -= 4; }
-            if (glib.Keyboard.held("right")) { x += 4; }
-            if (glib.Keyboard.held("up")) { y -= 4; }
-            if (glib.Keyboard.held("down")) { y += 4; }
+            if (glib.Keyboard.held("a")) { x -= 4; }
+            if (glib.Keyboard.held("d")) { x += 4; }
+            if (glib.Keyboard.held("w")) { y -= 4; }
+            if (glib.Keyboard.held("s")) { y += 4; }
             this.x = glib.Util.constrain(this.x + x * v, 0, playfield.width);
             this.y = glib.Util.constrain(this.y + y * v, 0, playfield.height);
-            if (glib.Keyboard.held("shift") && this.shotTime <= 0 && clip.bullets > 0) {
+            if (glib.Mouse.left.held && this.shotTime <= 0 && clip.bullets > 0 && glib.Mouse.position.y < powerupBar.y) {
                 this.fireBullet();
                 clip.deplete();
                 this.shotTime = shotDelay;

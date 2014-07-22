@@ -10,8 +10,10 @@ window.onload = function () {
         starfield,
         ship,
         ui,
-        moneyPointer,
         clip,
+        moneyScale,
+        bankBalance,
+        moneyPointer,
         powerupBar,
         bulletImage,
         laserImage;
@@ -53,7 +55,7 @@ window.onload = function () {
                 star;
             for (i = 0; i < this.numStars; ++i) {
                 star = this.stars[i];
-                star.x = (star.x - deltaTime / star.speed);
+                star.x -= deltaTime / star.speed;
                 star.setScale(Math.sin(star.x / this.height * Math.PI * 2 * star.period) * 0.05 + 0.1);
                 if (star.x < -star.height / 2) {
                     star.y = this.random.next() % this.height;
@@ -147,23 +149,28 @@ window.onload = function () {
         static$: {
             image: null,
             load: function() {
-                Money.image = loader.load("blob.png");
+                Money.image = loader.load("coin.png");
             }
         },
 
         $: function(x, y) {
             glib.Sprite.call(this, Money.image);
+            this.frameWidth = 44;
+            this.frameHeight = 40;
+            this.framesWide = 10;
+            this.framesHigh = 1;
             this.yorg = y;
             this.age = 10000;
+            this.setScale(0.5);
             this.setPosition(x, y);
         },
 
         onUpdate: function(time, deltaTime) {
-            this.age = Math.max(0, this.age - deltaTime);
-            this.x -= deltaTime / 1000 * 2;
-            this.y = Math.sin(time / 1000 + this.x / 10 + this.yorg / 10) * this.age / 1000;
+            this.x -= deltaTime / 1000 * 40;
+            this.y = this.yorg + Math.sin(time / 200 + this.x / 10) * 20;
+            this.frame = ++this.frame % 10;
             if (this.overlaps(ship)) {
-                moneyPointer.add(this);
+                bankBalance.add(100);
             }
         }
     });
@@ -174,39 +181,47 @@ window.onload = function () {
 
         $: function() {
             glib.Drawable.call(this);
+            this.arrow = this.addChild(new glib.SolidRectangle(0, 0, 20, 20, [10, 10, 0, 10], "yellow").setRotation(-Math.PI * 0.25).setPivot(0.5, 0.5));
+            this.x = powerupBar.x;
+            this.y = powerupBar.y - 14;
         },
 
-        add: function(money) {
-
+        onUpdate: function(time, deltaTime) {
+            var x = bankBalance * moneyScale,
+                d = x - this.x;
+            if (d < 2) {
+                this.x = x;
+            } else {
+                this.x += d * deltaTime / 100;
+            }
         }
-
     });
 
     /////////////////////////////////////////////////////////////////////
 
     var powerUps = [
-        { name: "Speed", price: 300, action: function() {
+        { name: "Speed", price: 300, context: ship, action: function() {
             ship.speed = Math.min(3, ship.speed + 1);
         } },
-        { name: "Shield", price: 300, action: function() {
+        { name: "Shield", price: 300, context: ship, action: function() {
             ship.activateShield();
         } },
-        { name: "Big Clip", price: 400, action: function() {
+        { name: "Big Clip", price: 400, context: null, action: function() {
             clipSize = Math.min(maxClipSize, clipSize + clipGrow);
         } },
-        { name: "Fast Charge", price: 600, action: function() {
+        { name: "Fast Charge", price: 600, context: clip, action: function() {
             clip.speedUp();
         } },
-        { name: "Double Shot", price: 600, action: function() {
+        { name: "Double Shot", price: 600, context: ship, action: function() {
             ship.startDoubleShot();
         } },
-        { name: "Laser", price: 600, action: function() {
+        { name: "Laser", price: 600, context: ship, action: function() {
             ship.startLaser();
         } },
-        { name: "Multiple", price: 800, action: function() {
+        { name: "Multiple", price: 800, context: ship, action: function() {
             ship.addMultiple();
         } },
-        { name: "Smart", price: 300, action: function() {
+        { name: "Smart", price: 300, context: null, action: function() {
             doSmartBomb();
         } }
     ];
@@ -215,21 +230,45 @@ window.onload = function () {
 
     var PowerUpLabel = glib.Class({ inherit$: glib.Panel,
 
-        $: function(x, y, w, h, text) {
+        $: function(x, y, w, h, text, baseMoney) {
             glib.Panel.call(this, Math.floor(x) + 0.5, Math.floor(y) + 0.5, w, h, "black", "white", 0, 1);
             this.addChild(new glib.Label(text, font)).setPosition(this.width / 2, this.height / 2).setPivot(0.5, font.midPivot);
+            this.baseMoney = baseMoney;
+            this.hover = false;
+        },
+
+        setFillColour: function() {
+            if (bankBalance > this.baseMoney) {
+                if (this.hover) {
+                    this.fillColour = "rgb(16, 224, 32)";
+                } else {
+                    this.fillColour = "rgb(8, 96, 16)";
+                }
+            } else {
+                if (this.hover) {
+                    this.fillColour = "rgb(80, 0, 0)";
+                } else {
+                    this.fillColour = "black";
+                }
+            }
+        },
+
+        onUpdate: function(time, deltaTime) {
+            this.setFillColour();
         },
 
         onMouseEnter: function(e) {
-            this.fillColour = "rgb(8, 192, 8)"; // check money, make it red or green
+            this.hover = true;
         },
 
         onMouseLeave: function(e) {
-            this.fillColour = "black";
+            this.hover = false;
         },
 
         onLeftMouseDown: function(e) {
-            // try to buy it
+            if (bankBalance > this.baseMoney) {
+                this.action.call(this.context);
+            }
         }
 
     });
@@ -239,19 +278,21 @@ window.onload = function () {
     var PowerUpBar = glib.Class({ inherit$: glib.Drawable,
 
         $: function() {
+            var i, t = 0, x, label, baseMoney;
             glib.Drawable.call(this);
-            var i, t = 0, x, label;
             for (i = 0; i < powerUps.length; ++i) {
                 t += powerUps[i].price;
             }
             this.width = playfield.width - 20;
             this.height = font.height + 8;
-            t = this.width / t;
+            moneyScale = this.width / t;
 
             this.labels = [];
             x = 0;
+            baseMoney = 0;
             for (i = 0; i < powerUps.length; ++i) {
-                label = new PowerUpLabel(x, 0, powerUps[i].price * t, this.height, powerUps[i].name);
+                baseMoney += powerUps[i].price;
+                label = new PowerUpLabel(x, 0, powerUps[i].price * moneyScale, this.height, powerUps[i].name, baseMoney);
                 this.labels.push(label);
                 this.addChild(label);
                 x += label.width;
@@ -348,7 +389,7 @@ window.onload = function () {
             if (glib.Keyboard.held("s")) { y += 4; }
             this.x = glib.Util.constrain(this.x + x * v, 0, playfield.width);
             this.y = glib.Util.constrain(this.y + y * v, 0, playfield.height);
-            if (glib.Mouse.left.held && this.shotTime <= 0 && clip.bullets > 0 && glib.Mouse.position.y < powerupBar.y) {
+            if (glib.Mouse.left.held && this.shotTime <= 0 && clip.bullets > 0 && !powerupBar.pick(glib.Mouse.position)) {
                 this.fireBullet();
                 clip.deplete();
                 this.shotTime = shotDelay;
@@ -399,10 +440,12 @@ window.onload = function () {
         autoCenter: true,
         DOMContainer: document.body
     });
+    bankBalance = 1000;
     loader = new glib.Loader("img/");
     font = glib.Font.load("Consolas", loader);
     Starfield.load();
     Ship.load();
+    Money.load();
     bulletImage = loader.load("blob.png");
     laserImage = loader.load("blob.png");
     loader.addEventHandler("complete", function() {
@@ -410,8 +453,10 @@ window.onload = function () {
         ui = playfield.addChild(new glib.Drawable().setSize(playfield.width, playfield.height));
         starfield = game.addChild(new Starfield(150));
         ship = game.addChild(new Ship());
+        game.addChild(new Money(playfield.width / 2, playfield.height / 2));
         clip = ui.addChild(new Clip());
         powerupBar = ui.addChild(new PowerUpBar());
+        moneyPointer = ui.addChild(new MoneyPointer());
     }, true);
     loader.start();
 };

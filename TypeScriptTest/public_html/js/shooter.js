@@ -37,9 +37,11 @@ window.onload = function () {
         bankBalance,
         maxBankBalance,
         moneyPointer,
-        powerupBar,
-        bulletImage,
-        laserImage;
+        powerupBar;
+
+    var shipMinSpeed = 50,
+        shipSpeedIncrement = 20,
+        shipMaxSpeed = 90;
 
     /////////////////////////////////////////////////////////////////////
 
@@ -139,7 +141,7 @@ window.onload = function () {
             this.setPosition(10, 10);
             this.bullets = clipSize;
             this.clipSize = clipSize;
-            this.reloadDelay = defaultReloadDelay;
+            this.reloadTimer = defaultReloadDelay;
             this.increment = 0;
         },
 
@@ -256,7 +258,7 @@ window.onload = function () {
             drainTime: 60,
             context: ship,
             onbuy: function() {
-                ship.speed = Math.min(shipMaxSpeed, ship.speed + 10);
+                ship.speed = Math.min(shipMaxSpeed, ship.speed + shipSpeedIncrement);
             },
             onDrain: function() {
                 ship.speed = shipMinSpeed;
@@ -353,10 +355,11 @@ window.onload = function () {
             var xp = Math.floor(x) + 0.5;
             glib.Panel.call(this, xp, Math.floor(y) + 0.5, w, h, "black", "white", 0, 1);
             this.powerUp = powerUp;
-            this.drain = this.addChild(new glib.SolidRectangle(xp + 1, y + 1, w - 2, 4, "yellow").setVisible(false));
-            this.addChild(new glib.Label(powerUp.name, font)).setPosition(this.width / 2, this.height / 2).setPivot(0.5, font.midPivot);
+            this.drain = this.addChild(new glib.SolidRectangle(1, 1, w - 2, 4, 0, "yellow").setVisible(false));
+            this.addChild(new glib.Label(powerUp.name, font)).setPosition(this.width / 2, this.height / 2 + 1).setPivot(0.5, font.midPivot);
             this.baseMoney = baseMoney;
             this.hover = false;
+            this.active = false;
         },
 
         setFillColour: function() {
@@ -376,7 +379,18 @@ window.onload = function () {
         },
 
         onUpdate: function(time, deltaTime) {
+            var t;
             this.setFillColour();
+            if (this.active) {
+                t = time - this.activatedTime;
+                if (t <= this.powerUp.drainTime) {
+                    this.drain.setScale(1 - t / this.powerUp.drainTime, 1);
+                } else {
+                    this.active = false;
+                    this.powerUp.onDrain.call(this.powerUp.context);
+                }
+            }
+            this.drain.setVisible(this.active);
         },
 
         onMouseEnter: function(e) {
@@ -389,7 +403,9 @@ window.onload = function () {
 
         onLeftMouseDown: function(e) {
             if (bankBalance >= this.baseMoney) {
-                //this.powerUp.onBuy.call(this.powerUp.context);
+                this.powerUp.onbuy.call(this.powerUp.context);
+                this.active = true;
+                this.activatedTime = glib.Timer.time;
                 bankBalance = Math.max(0, bankBalance - this.powerUp.price);
             }
         }
@@ -449,8 +465,15 @@ window.onload = function () {
 
     var StandardProjectile = glib.Class({ inherit$: Projectile,
 
+        static$: {
+            image: null,
+            load: function() {
+                StandardProjectile.image = loader.load("blob.png");
+            }
+        },
+
         $: function(x, y) {
-            Projectile.call(this, x, y, 2000, bulletImage, 1);
+            Projectile.call(this, x, y, 2000, StandardProjectile.image, 1);
             this.setScale(1.85, 0.15);
             this.setPivot(0.5, 0.5);
         }
@@ -460,8 +483,15 @@ window.onload = function () {
 
     var LaserProjectile = glib.Class({ inherit$: Projectile,
 
+        static$: {
+            image: null,
+            load: function() {
+                LaserProjectile.image = loader.load("blob.png");
+            }
+        },
+
         $: function(x, y) {
-            Projectile.call(this, x, y, 20, laserImage, 3);
+            Projectile.call(this, x, y, 20, LaserProjectile.image, 3);
         }
     });
 
@@ -492,7 +522,7 @@ window.onload = function () {
             glib.Sprite.call(this, Ship.image);
             this.setPosition(playfield.width / 2, playfield.height / 2);
             this.setPivot(0.5, 0.5);
-            this.speed = 50;
+            this.speed = shipMinSpeed;
             this.hit = 0;
             this.shotTime = 0;
             this.multiples = [];
@@ -510,6 +540,7 @@ window.onload = function () {
             var x = 0,
                 y = 0,
                 v = this.speed * deltaTime;
+            glib.Debug.print(this.speed);
             this.shotTime -= deltaTime;
             if (glib.Keyboard.held("a")) { x -= 4; }
             if (glib.Keyboard.held("d")) { x += 4; }
@@ -526,15 +557,49 @@ window.onload = function () {
     });
 
     /////////////////////////////////////////////////////////////////////
+    // Queue up the actions
+    // Actions are complete on some condition (time, proximity to the ship, position, whatever)
+    // Each action is a function
+    // Action list is circular (if the last one completes, it goes back to the first one)
+    // Enemies can fire bullets (towards the ship, or whatever)
+    // Enemies are derived from glib.Sprite
+    // Would be cool to have an Enemy which has children (gun turrets, say)
+    // Enemies can be invulnerable
+    // Create a white mask from the image for when it gets hit
+    // Some Enemies drop Money (random? velocity?)
 
     var Enemy = glib.Class({ inherit$: glib.Sprite,
 
         $: function(image) {
             glib.Sprite.call(this, image);
+            this.actions = [];
+            this.actionPointer = 0;
+            this.stateTime = 0;
+            // create a mask
+            this.maskImage = glib.Util.createMask(image);
+        },
+
+        addAction: function(callback) {
+            this.actions.push(callback);
+        },
+
+        launch: function(x, y, time) {
+            this.setPosition(x, y);
+            this.stateTime = time;
+            this.actionPointer = 0;
+        },
+
+        onUpdate: function(time, deltaTime) {
+            if (this.actions[this.actionPointer].call(this, time, deltaTime)) {
+                this.actionPointer = ++this.actionPointer % this.actions.length;
+                this.stateTime = time;
+            }
         }
     });
 
+
     /////////////////////////////////////////////////////////////////////
+    // A wave is a list of what enemies to launch, where to launch them and a delay
 
     var Wave = glib.Class({ inherit$: glib.Drawable,
 
@@ -568,14 +633,14 @@ window.onload = function () {
         autoCenter: true,
         DOMContainer: document.body
     });
-    bankBalance = 0;
+    bankBalance = 2000;
     loader = new glib.Loader("img/");
     font = glib.Font.load("Consolas", loader);
     Starfield.load();
     Ship.load();
     Money.load();
-    bulletImage = loader.load("blob.png");
-    laserImage = loader.load("blob.png");
+    StandardProjectile.load();
+    LaserProjectile.load();
     loader.addEventHandler("complete", function() {
         game = playfield.addChild(new glib.Drawable().setSize(playfield.width, playfield.height));
         ui = playfield.addChild(new glib.Drawable().setSize(playfield.width, playfield.height));

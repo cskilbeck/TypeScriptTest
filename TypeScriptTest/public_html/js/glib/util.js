@@ -212,6 +212,14 @@
 
         //////////////////////////////////////////////////////////////////////
 
+        createMask: function (image) {
+            var d = 1;
+            // create a blank one the same size
+            // create the mask
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
         circle: function (ctx, x, y, radius) {
             ctx.beginPath();
             ctx.arc(x, y, radius, 0, 2 * Math.PI, false);

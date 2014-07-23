@@ -141,6 +141,14 @@
 
         //////////////////////////////////////////////////////////////////////
 
+        distance: function (a, b) {
+            var dx = a.x - b.x,
+                dy = a.y - b.y;
+            return Math.sqrt(dx * dx + dy * dy);
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
         lineDistance: function (a, b, p) {
             var dx = b.x - a.x,
                 dy = b.y - a.y,

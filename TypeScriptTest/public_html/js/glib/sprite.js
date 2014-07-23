@@ -16,6 +16,7 @@
             this.framesHigh = 1;
             this.frameWidth = null;
             this.frameHeight = null;
+            this.currentFrame = 0;
             this.frame = 0;
         },
 
@@ -32,8 +33,18 @@
         },
 
         setFrame: function (frame) {
+            this.currentFrame = frame;
             this.setFrameXY((frame % this.framesWide) >>> 0, (frame / this.framesWide) >>> 0);
         },
+
+        frame: glib.Property({
+            get: function () {
+                return this.currentFrame;
+            },
+            set: function (f) {
+                this.setFrame(f);
+            }
+        }),
 
         width: glib.Property({
             get: function () {

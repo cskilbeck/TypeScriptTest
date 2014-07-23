@@ -13,11 +13,11 @@
         static$: {
 
             init: function () {
-                currentTime = performance.now();
+                currentTime = performance.now() / 1000;
             },
 
             update: function () {
-                var now = performance.now();
+                var now = performance.now() / 1000;
                 deltaTime = now - currentTime;
                 currentTime = now;
             },

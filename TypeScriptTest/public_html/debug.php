@@ -34,7 +34,7 @@
     <script src="js/glib/debug.js"></script>
     <script src="js/glib/playfield.js"></script>
 
-    <script src="js/shooter.js"></script>
+    <script src="js/breakout.js"></script>
 </head>
 <body></body>
 </html>

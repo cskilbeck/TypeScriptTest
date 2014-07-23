@@ -120,7 +120,7 @@ window.onload = function() {
             if (this.yvel > 0 && this.y >= bat_y && this.y < bat_y + bat_height) {
                 diff = this.x - this.game.bat.x;
                 if (diff >= -bat_width / 2 && diff <= bat_width / 2) {
-                    this.xvel = diff / bat_width / 5;
+                    this.xvel = diff / bat_width * 150;
                     vb = true;
                 }
             }
@@ -170,7 +170,7 @@ window.onload = function() {
                 ballPos = this.game.screenToClient(ballPos);
                 this.ball.setPosition(ballPos.x, ballPos.y);
                 angle = Math.random() * Math.PI / 4 - Math.PI / 8;
-                this.ball.launch(Math.sin(angle) * 0.05, Math.cos(angle) * 0.05);
+                this.ball.launch(Math.sin(angle) * 50, Math.cos(angle) * 50);
                 this.game.addBall(this.ball);
                 this.ball = null;
             }
@@ -288,7 +288,7 @@ window.onload = function() {
 
         onLeftMouseDown: function(e) {
             if (this.stuckBall !== null) {
-                this.stuckBall.launch((this.stuckBall.x - this.bat.x) / bat_width / 5, -0.05);
+                this.stuckBall.launch((this.stuckBall.x - this.bat.x) / bat_width * 150, -50);
                 this.stuckBall = null;
                 this.banner.text = "Game Over";
                 this.panel.visible = false;

@@ -128,9 +128,9 @@ window.onload = function () {
     var clipSize = 20,                                  // default clip size
         maxClipSize = 60,                               // clip can grow to this
         clipGrow = 10,                                  // grow the clip by this when they buy 'Big Clip'
-        defaultReloadDelay = 500,                       // default reload rate
-        reloadDelayDecrement = -50,                     // get faster by this when they buy 'Fast Reload'
-        minReloadDelay = 300;                           // fastest it can get
+        defaultReloadDelay = 0.5,                       // default reload rate
+        reloadDelayDecrement = -0.05,                   // get faster by this when they buy 'Fast Reload'
+        minReloadDelay = 0.3;                           // fastest it can get
 
     var Clip = glib.Class({ inherit$: glib.Drawable,
 
@@ -182,7 +182,6 @@ window.onload = function () {
             this.frameHeight = 40;
             this.framesWide = 10;
             this.framesHigh = 1;
-            this.yorg = y;
             this.age = 0;
             this.setScale(0.5);
             this.setPivot(0.5, 0.5);
@@ -191,13 +190,13 @@ window.onload = function () {
 
         onUpdate: function(time, deltaTime) {
             var dx, dy, d;
-            this.x -= deltaTime / 1000 * 60;
+            this.x -= deltaTime * 60;
             if (this.x < -this.width / 4) {
                 this.close();
             } else {
-                this.y += Math.sin(time / 100 + this.x / 5) * 0.6;
+                this.y += Math.sin(time * 10 + this.x / 5) * 0.6;
                 this.age += deltaTime;
-                this.frame = (this.age / 33.3333) % this.framesWide;
+                this.frame = this.age * 30 % this.framesWide;
                 d = glib.Util.distance(this, ship);
                 if (d < 20) {
                     bankBalance = Math.min(bankBalance + 100, maxBankBalance);
@@ -208,8 +207,8 @@ window.onload = function () {
                     d = 80 - d;
                     this.setScale(0.5 - (d / 320));
                     d *= d;
-                    this.x += (d * dx * deltaTime) / 80000;
-                    this.y += (d * dy * deltaTime) / 80000;
+                    this.x += (d * dx * deltaTime) / 80;
+                    this.y += (d * dy * deltaTime) / 80;
                 }
             }
         }
@@ -231,7 +230,7 @@ window.onload = function () {
             if (Math.abs(d) < 2) {
                 this.arrow.x = x;
             } else {
-                this.arrow.x += d * deltaTime / 100;
+                this.arrow.x += d * deltaTime * 10;
             }
         }
     });
@@ -257,7 +256,7 @@ window.onload = function () {
             drainTime: 60,
             context: ship,
             onbuy: function() {
-                ship.speed = Math.min(shipMaxSpeed, ship.speed + 0.01);
+                ship.speed = Math.min(shipMaxSpeed, ship.speed + 10);
             },
             onDrain: function() {
                 ship.speed = shipMinSpeed;
@@ -435,7 +434,7 @@ window.onload = function () {
             this.setPosition(x, y);
             this.speed = speed;
             this.lives = lives;
-            this.x += this.speed * 1000/60;
+            this.x += this.speed * 1/60;
         },
 
         onUpdate: function(time, deltaTime) {
@@ -451,7 +450,7 @@ window.onload = function () {
     var StandardProjectile = glib.Class({ inherit$: Projectile,
 
         $: function(x, y) {
-            Projectile.call(this, x, y, 2000 / 1000, bulletImage, 1);
+            Projectile.call(this, x, y, 2000, bulletImage, 1);
             this.setScale(1.85, 0.15);
             this.setPivot(0.5, 0.5);
         }
@@ -477,7 +476,7 @@ window.onload = function () {
 
     /////////////////////////////////////////////////////////////////////
 
-    var shotDelay = 100;    // ms between shots
+    var shotDelay = 0.1;    // ms between shots
 
     var Ship = glib.Class({ inherit$: glib.Sprite,
 
@@ -493,7 +492,7 @@ window.onload = function () {
             glib.Sprite.call(this, Ship.image);
             this.setPosition(playfield.width / 2, playfield.height / 2);
             this.setPivot(0.5, 0.5);
-            this.speed = 0.05;
+            this.speed = 50;
             this.hit = 0;
             this.shotTime = 0;
             this.multiples = [];
@@ -504,7 +503,7 @@ window.onload = function () {
         },
 
         speedUp: function() {
-            this.speed = Math.min(0.12, this.speed + 0.01);
+            this.speed = Math.min(120, this.speed + 10);
         },
 
         onUpdate: function(time, deltaTime) {

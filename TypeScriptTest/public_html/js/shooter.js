@@ -78,7 +78,7 @@ window.onload = function () {
                 star;
             for (i = 0; i < this.numStars; ++i) {
                 star = this.stars[i];
-                star.x -= deltaTime / star.speed;
+                star.x -= deltaTime * star.speed;
                 star.setScale(Math.sin(star.x / this.height * Math.PI * 2 * star.period) * 0.05 + 0.1);
                 if (star.x < -star.height / 2) {
                     star.y = this.random.next() % this.height;
@@ -353,7 +353,7 @@ window.onload = function () {
             var xp = Math.floor(x) + 0.5;
             glib.Panel.call(this, xp, Math.floor(y) + 0.5, w, h, "black", "white", 0, 1);
             this.powerUp = powerUp;
-            this.drain = this.addChild(new glib.SolidRectangle(xp + 1, y + 1, w - 2, h - 2, "yellow").setVisible(false));
+            this.drain = this.addChild(new glib.SolidRectangle(xp + 1, y + 1, w - 2, 4, "yellow").setVisible(false));
             this.addChild(new glib.Label(powerUp.name, font)).setPosition(this.width / 2, this.height / 2).setPivot(0.5, font.midPivot);
             this.baseMoney = baseMoney;
             this.hover = false;

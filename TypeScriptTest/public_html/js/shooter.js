@@ -25,7 +25,9 @@
 window.onload = function () {
     "use strict";
 
-    var font,
+    var screenWidth = 1280,
+        screenHeight = 720,
+        font,
         loader,
         playfield,
         game,
@@ -59,8 +61,8 @@ window.onload = function () {
                 this.stars.push({
                     x: this.random.next() % this.width,
                     y: this.random.next() % this.height,
-                    period: this.random.next() % 16 + 16,
-                    speed: this.random.next() % 15 + 20,
+                    period: this.random.nextFloat() * 16 + 16,
+                    speed: this.random.nextFloat() * 15 + 20,
                     size: 2.5 + this.random.nextFloat() * 1.75,
                     scale: 1
                 });
@@ -78,8 +80,8 @@ window.onload = function () {
                 if (star.x < -star.scale) {
                     star.x = this.width;
                     star.y = this.random.next() % this.height;
-                    star.period = this.random.next() % 16 + 16;
-                    star.speed = this.random.next() % 15 + 20;
+                    star.period = this.random.nextFloat() * 16 + 16;
+                    star.speed = this.random.nextFloat() * 15 + 20;
                 }
             }
         },
@@ -598,16 +600,42 @@ window.onload = function () {
                 this.actionPointer = ++this.actionPointer % this.actions.length;
                 this.stateTime = time;
             }
+            if (this.x < -this.width) {
+                this.close();
+            }
         }
     });
 
+    var grunt = [
+        function(time, deltaTime) {
+            this.x -= time * 50;
+        }
+    ];
+
+    var wibbler = [
+        function(time, deltaTime) {
+            this.x -= deltaTime * 40;
+            this.y += Math.sin(this.x / 50) * 40 * deltaTime;
+        }
+    ];
+
+    // var seeker = []; // and so on
+
+    var wave1 = [
+        {
+            launch: 5,
+            of: grunt,
+            at: [screenWidth, screenHeight / 2],
+            every: 1
+        }
+    ];
 
     /////////////////////////////////////////////////////////////////////
     // A wave is a list of what enemies to launch, where to launch them and a delay
 
     var Wave = glib.Class({ inherit$: glib.Drawable,
 
-        $: function(image) {
+        $: function(actions, image) {
             // create the enemies as children
             // add 'closed' event handler
         }
@@ -631,8 +659,8 @@ window.onload = function () {
     window.addEventListener("resize", onResize, false);
     onResize();
     playfield = new glib.Playfield({
-        width: 1280,
-        height: 720,
+        width: screenWidth,
+        height: screenHeight,
         backgroundColour: "rgb(8, 8, 64)",
         autoCenter: true,
         DOMContainer: document.body

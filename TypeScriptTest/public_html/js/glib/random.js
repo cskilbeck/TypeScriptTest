@@ -30,6 +30,10 @@
             w = v;
             v = (v ^ (v << 6)) ^ (t ^ (t << 13)) >>> 0;
             return ((y + y + 1) * v) >>> 16;
+        },
+
+        nextFloat: function() {
+            return this.next() / 65536;
         }
     });
 

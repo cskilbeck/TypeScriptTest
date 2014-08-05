@@ -247,14 +247,14 @@ window.onload = function () {
     // Powerups may accumulate to a max, but all reset to nothing when they drain...
 
     var powerUpIDs = {
-        speed: 1,
-        shield: 2,
-        bigClip: 3,
-        fastCharge: 4,
-        doubleShot: 5,
-        laser: 6,
-        multiple: 7,
-        smart: 8
+        speed: 0,
+        shield: 1,
+        bigClip: 2,
+        fastCharge: 3,
+        doubleShot: 4,
+        laser: 5,
+        multiple: 6,
+        smart: 7
     };
 
     var powerUps = [
@@ -502,11 +502,41 @@ window.onload = function () {
     });
 
     /////////////////////////////////////////////////////////////////////
+    // Make Multiples repel eachother...
 
     var Multiple = glib.Class({ inherit$: glib.Sprite,
 
-        $: function() {
+        static$: {
+            image: null,
+            load: function() {
+                Multiple.image = loader.load("blob.png");
+            }
+        },
 
+        $: function(parent, distance) {
+            glib.Sprite.call(this, Multiple.image);
+            this.parentObject = parent;
+            this.distance = distance;
+            this.setScale(0.75);
+            this.setPivot(0.5, 0.5);
+            this.setPosition(parent.x + distance, parent.y);
+            this.xvel = 0;
+            this.yvel = 0;
+        },
+
+        onUpdate: function (time, deltaTime) {
+            var ox, oy, dx, dy, scale;
+            ox = this.x;
+            oy = this.y;
+            this.x += this.xvel * deltaTime;
+            this.y += this.yvel * deltaTime;
+            dx = this.x - this.parentObject.x;
+            dy = this.y - this.parentObject.y;
+            scale = this.distance / Math.sqrt(dx * dx + dy * dy);
+            this.x = this.parentObject.x + dx * scale;
+            this.y = this.parentObject.y + dy * scale;
+            this.xvel = glib.Util.constrain(this.x - ox, -100, 100) / deltaTime;
+            this.yvel = glib.Util.constrain(this.y - oy, -100, 100) / deltaTime;
         }
     });
 
@@ -535,11 +565,27 @@ window.onload = function () {
         },
 
         fireBullet: function() {
+            var i, l, multiple;
             game.addChild(new StandardProjectile(this.x, this.y));
+            for (i = 0, l = this.multiples.length; i < l; ++i) {
+                multiple = this.multiples[i];
+                game.addChild(new StandardProjectile(multiple.x, multiple.y));
+            }
         },
 
         speedUp: function() {
             this.speed = Math.min(120, this.speed + 10);
+        },
+
+        addMultiple: function() {
+            var l = this.multiples.length,
+                p = this;
+            if (l < 5) {
+                if (l > 0) {
+                    p = this.multiples[l - 1];
+                }
+                this.multiples.push(game.addChild(new Multiple(p, 40)));
+            }
         },
 
         onUpdate: function(time, deltaTime) {
@@ -669,6 +715,7 @@ window.onload = function () {
     loader = new glib.Loader("img/");
     font = glib.Font.load("Consolas", loader);
     Ship.load();
+    Multiple.load();
     Money.load();
     StandardProjectile.load();
     LaserProjectile.load();
@@ -685,6 +732,11 @@ window.onload = function () {
                 game.addChild(new Money(playfield.width / 1.25, Math.random() * playfield.height));
             }
         };
+        ship.addMultiple();
+        ship.addMultiple();
+        ship.addMultiple();
+        ship.addMultiple();
+        ship.addMultiple();
     }, true);
     loader.start();
 };

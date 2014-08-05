@@ -147,7 +147,7 @@ window.onload = function () {
             this.setPosition(10, 10);
             this.bullets = clipSize;
             this.clipSize = clipSize;
-            this.reloadTimer = defaultReloadDelay;
+            this.reloadDelay = defaultReloadDelay;
             this.increment = 0;
         },
 
@@ -677,7 +677,6 @@ window.onload = function () {
         ui = playfield.addChild(new glib.Drawable().setSize(playfield.width, playfield.height));
         starfield = game.addChild(new Starfield(100));
         ship = game.addChild(new Ship());
-        game.addChild(new Money(playfield.width / 1.25, playfield.height / 2));
         clip = ui.addChild(new Clip());
         powerupBar = ui.addChild(new PowerUpBar());
         moneyPointer = ui.addChild(new MoneyPointer());

@@ -519,15 +519,23 @@ window.onload = function () {
             this.setScale(0.75);
             this.setPivot(0.5, 0.5);
             this.setPosition(parent.x + distance, parent.y);
+            this.xvel = 0;
+            this.yvel = 0;
         },
 
         onUpdate: function (time, deltaTime) {
-            var dx = this.x - this.parentObject.x;
-            var dy = this.y - this.parentObject.y;
-            var d = this.distance + Math.sin(time * 5) * 3;
+            var nx = this.x + this.xvel * deltaTime;
+            var ny = this.y + this.yvel * deltaTime;
+            var dx = nx - this.parentObject.x;
+            var dy = ny - this.parentObject.y;
+            var d = this.distance;
             var scale = d / Math.sqrt(dx * dx + dy * dy);
-            this.x = this.parentObject.x + dx * scale;
-            this.y = this.parentObject.y + dy * scale;
+            nx = this.parentObject.x + dx * scale;
+            ny = this.parentObject.y + dy * scale;
+            this.xvel = ((nx - this.x) / deltaTime) * 0.75;
+            this.yvel = ((ny - this.y) / deltaTime) * 0.75;
+            this.x = nx;
+            this.y = ny;
         }
     });
 
@@ -575,7 +583,7 @@ window.onload = function () {
                 if (l > 0) {
                     p = this.multiples[l - 1];
                 }
-                this.multiples.push(game.addChild(new Multiple(p, 25)));
+                this.multiples.push(game.addChild(new Multiple(p, 20)));
             }
         },
 

@@ -502,7 +502,6 @@ window.onload = function () {
     });
 
     /////////////////////////////////////////////////////////////////////
-    // Make Multiples repel eachother...
 
     var Multiple = glib.Class({ inherit$: glib.Sprite,
 
@@ -520,23 +519,15 @@ window.onload = function () {
             this.setScale(0.75);
             this.setPivot(0.5, 0.5);
             this.setPosition(parent.x + distance, parent.y);
-            this.xvel = 0;
-            this.yvel = 0;
         },
 
         onUpdate: function (time, deltaTime) {
-            var ox, oy, dx, dy, scale;
-            ox = this.x;
-            oy = this.y;
-            this.x += this.xvel * deltaTime;
-            this.y += this.yvel * deltaTime;
-            dx = this.x - this.parentObject.x;
-            dy = this.y - this.parentObject.y;
-            scale = this.distance / Math.sqrt(dx * dx + dy * dy);
+            var dx = this.x - this.parentObject.x;
+            var dy = this.y - this.parentObject.y;
+            var d = this.distance + Math.sin(time * 5) * 3;
+            var scale = d / Math.sqrt(dx * dx + dy * dy);
             this.x = this.parentObject.x + dx * scale;
             this.y = this.parentObject.y + dy * scale;
-            this.xvel = glib.Util.constrain(this.x - ox, -100, 100) / deltaTime;
-            this.yvel = glib.Util.constrain(this.y - oy, -100, 100) / deltaTime;
         }
     });
 
@@ -580,11 +571,11 @@ window.onload = function () {
         addMultiple: function() {
             var l = this.multiples.length,
                 p = this;
-            if (l < 5) {
+            if (l < 50) {
                 if (l > 0) {
                     p = this.multiples[l - 1];
                 }
-                this.multiples.push(game.addChild(new Multiple(p, 40)));
+                this.multiples.push(game.addChild(new Multiple(p, 25)));
             }
         },
 
@@ -732,11 +723,9 @@ window.onload = function () {
                 game.addChild(new Money(playfield.width / 1.25, Math.random() * playfield.height));
             }
         };
-        ship.addMultiple();
-        ship.addMultiple();
-        ship.addMultiple();
-        ship.addMultiple();
-        ship.addMultiple();
+        for (var i=0; i<30; ++i) {
+            ship.addMultiple();
+        }
     }, true);
     loader.start();
 };

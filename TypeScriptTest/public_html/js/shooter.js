@@ -31,6 +31,7 @@ window.onload = function () {
         loader,
         playfield,
         game,
+        multiples,
         starfield,
         ship,
         ui,
@@ -521,20 +522,22 @@ window.onload = function () {
             this.setPosition(parent.x + distance, parent.y);
             this.xvel = 0;
             this.yvel = 0;
+            this.dt = 1/60;
         },
 
         onUpdate: function (time, deltaTime) {
-            var nx = this.x + this.xvel * deltaTime;
-            var ny = this.y + this.yvel * deltaTime;
+            var nx = this.x + this.xvel * this.dt;
+            var ny = this.y + this.yvel * this.dt;
             var dx = nx - this.parentObject.x;
             var dy = ny - this.parentObject.y;
             var scale = this.distance / Math.sqrt(dx * dx + dy * dy);
             nx = this.parentObject.x + dx * scale;
             ny = this.parentObject.y + dy * scale;
-            this.xvel = ((nx - this.x) / deltaTime) * 0.75;
-            this.yvel = ((ny - this.y) / deltaTime) * 0.75;
+            this.xvel = ((nx - this.x) * 0.625) / this.dt;
+            this.yvel = ((ny - this.y) * 0.625) / this.dt;
             this.x = nx;
             this.y = ny;
+            this.dt = deltaTime;
         }
     });
 
@@ -582,7 +585,7 @@ window.onload = function () {
                 if (l > 0) {
                     p = this.multiples[l - 1];
                 }
-                this.multiples.push(game.addChild(new Multiple(p, 20)));
+                this.multiples.push(multiples.addChildToFront(new Multiple(p, 20)));
             }
         },
 
@@ -592,12 +595,17 @@ window.onload = function () {
                 v = this.speed * deltaTime;
             glib.Debug.print(this.speed);
             this.shotTime -= deltaTime;
-            if (glib.Keyboard.held("a")) { x -= 4; }
-            if (glib.Keyboard.held("d")) { x += 4; }
-            if (glib.Keyboard.held("w")) { y -= 4; }
-            if (glib.Keyboard.held("s")) { y += 4; }
-            this.x = glib.Util.constrain(this.x + x * v, 0, playfield.width);
-            this.y = glib.Util.constrain(this.y + y * v, 0, playfield.height);
+            x = glib.Mouse.position.x - this.x;
+            y = glib.Mouse.position.y - this.y;
+            v = Math.sqrt(x * x + y * y);
+            if (v > 0) {
+                x /= v;
+                y /= v;
+                v = Math.min(25, v);
+                this.x = glib.Util.constrain(this.x + x * v, 0, screenWidth - 1);
+                this.y = glib.Util.constrain(this.y + y * v, 0, screenHeight - 1);
+            }
+
             if (glib.Mouse.left.held && this.shotTime <= 0 && clip.bullets > 0 && !powerupBar.pick(glib.Mouse.position)) {
                 this.fireBullet();
                 clip.deplete();
@@ -719,9 +727,11 @@ window.onload = function () {
     LaserProjectile.load();
     loader.addEventHandler("complete", function() {
         game = playfield.addChild(new glib.Drawable().setSize(playfield.width, playfield.height));
-        ui = playfield.addChild(new glib.Drawable().setSize(playfield.width, playfield.height));
         starfield = game.addChild(new Starfield(100));
         ship = game.addChild(new Ship());
+        multiples = playfield.addChild(new glib.Drawable().setSize(playfield.width, playfield.height));
+
+        ui = playfield.addChild(new glib.Drawable().setSize(playfield.width, playfield.height));
         clip = ui.addChild(new Clip());
         powerupBar = ui.addChild(new PowerUpBar());
         moneyPointer = ui.addChild(new MoneyPointer());
@@ -730,7 +740,7 @@ window.onload = function () {
                 game.addChild(new Money(playfield.width / 1.25, Math.random() * playfield.height));
             }
         };
-        for (var i=0; i<30; ++i) {
+        for (var i=0; i<50; ++i) {
             ship.addMultiple();
         }
     }, true);

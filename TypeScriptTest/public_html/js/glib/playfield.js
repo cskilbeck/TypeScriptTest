@@ -18,7 +18,9 @@
             glib.Timer.update();
             glib.Keyboard.update(playfield);
             glib.Mouse.update(playfield);
+            glib.Drawable.updateId = 0;
             playfield.update(glib.Timer.time, glib.Timer.delta);
+            glib.Drawable.drawId = 0;
             playfield.draw(context, identityMatrix, 255);
             glib.Debug.draw();
             requestAnimationFrame(update);

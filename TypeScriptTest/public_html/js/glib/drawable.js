@@ -7,6 +7,11 @@
 
     glib.Drawable = glib.Class({ inherit$: glib.EventSource,
 
+        static$: {
+            updateId: 0,
+            drawId: 0
+        },
+
         $: function () {
             glib.EventSource.call(this);
             this.drawableData = {
@@ -324,6 +329,8 @@
                 }
                 if (self.enabled) {                 // children might disable their parent
                     this.onUpdate(time, deltaTime);
+                    // glib.Debug.text(this.x, this.y, glib.Drawable.updateId.toString());
+                    // glib.Drawable.updateId += 1;
                 }
             }
             if (frozen) {
@@ -529,6 +536,16 @@
             var self = this.drawableData;
             c.drawableData.parent = this;
             self.children.push(c);
+            self.reorder = true;
+            return c;
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        addChildToFront: function (c) {
+            var self = this.drawableData;
+            c.drawableData.parent = this;
+            self.children.unshift(c);
             self.reorder = true;
             return c;
         },

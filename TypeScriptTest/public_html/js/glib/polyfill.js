@@ -1,5 +1,9 @@
 //////////////////////////////////////////////////////////////////////
 
+if (typeof performance === "undefined") {
+    performance = {};
+}
+
 (function () {
     "use strict";
 

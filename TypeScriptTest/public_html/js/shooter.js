@@ -210,6 +210,7 @@ window.onload = function () {
                 if (d < 20) {
                     bankBalance = Math.min(bankBalance + 100, maxBankBalance);
                     this.close();
+                    ship.addMultiple();
                 } else if (d < 80) {
                     dx = ship.x - this.x;
                     dy = ship.y - this.y;
@@ -510,34 +511,48 @@ window.onload = function () {
             image: null,
             load: function() {
                 Multiple.image = loader.load("blob.png");
-            }
+            },
+            damping: 0.7,
+            scale: 0.6
         },
 
         $: function(parent, distance) {
+            var dx, dy, dl;
             glib.Sprite.call(this, Multiple.image);
             this.parentObject = parent;
             this.distance = distance;
-            this.setScale(0.75);
+            this.setScale(Multiple.scale);
             this.setPivot(0.5, 0.5);
-            this.setPosition(parent.x + distance, parent.y);
+            if (parent.parentObject !== undefined) {
+                dx = parent.x - parent.parentObject.x;
+                dy = parent.y - parent.parentObject.y;
+                dl = distance / Math.sqrt(dx * dx + dy * dy);
+                dx *= dl;
+                dy *= dl;
+            } else {
+                dx = distance;
+                dy = 0;
+            }
+            this.setPosition(parent.x + dx, parent.y + dy);
             this.xvel = 0;
             this.yvel = 0;
-            this.dt = 1/60;
+            this.damping = Multiple.damping;
+            Multiple.damping -= 0.25 / 200;
+            Multiple.scale -= 0.35 / 200;
         },
 
         onUpdate: function (time, deltaTime) {
-            var nx = this.x + this.xvel * this.dt;
-            var ny = this.y + this.yvel * this.dt;
+            var nx = this.x + this.xvel;
+            var ny = this.y + this.yvel;
             var dx = nx - this.parentObject.x;
             var dy = ny - this.parentObject.y;
             var scale = this.distance / Math.sqrt(dx * dx + dy * dy);
             nx = this.parentObject.x + dx * scale;
             ny = this.parentObject.y + dy * scale;
-            this.xvel = ((nx - this.x) * 0.625) / this.dt;
-            this.yvel = ((ny - this.y) * 0.625) / this.dt;
+            this.xvel = (nx - this.x) * this.damping;
+            this.yvel = (ny - this.y) * this.damping;
             this.x = nx;
             this.y = ny;
-            this.dt = deltaTime;
         }
     });
 
@@ -581,11 +596,11 @@ window.onload = function () {
         addMultiple: function() {
             var l = this.multiples.length,
                 p = this;
-            if (l < 50) {
+            if (l < 200) {
                 if (l > 0) {
                     p = this.multiples[l - 1];
                 }
-                this.multiples.push(multiples.addChildToFront(new Multiple(p, 20)));
+                this.multiples.push(multiples.addChildToFront(new Multiple(p, 5)));
             }
         },
 
@@ -597,11 +612,14 @@ window.onload = function () {
             this.shotTime -= deltaTime;
             x = glib.Mouse.position.x - this.x;
             y = glib.Mouse.position.y - this.y;
+            if (glib.Keyboard.pressed('m')) {
+                ship.addMultiple();
+            }
             v = Math.sqrt(x * x + y * y);
             if (v > 0) {
                 x /= v;
                 y /= v;
-                v = Math.min(25, v);
+                v = Math.min(5, v);
                 this.x = glib.Util.constrain(this.x + x * v, 0, screenWidth - 1);
                 this.y = glib.Util.constrain(this.y + y * v, 0, screenHeight - 1);
             }
@@ -740,9 +758,6 @@ window.onload = function () {
                 game.addChild(new Money(playfield.width / 1.25, Math.random() * playfield.height));
             }
         };
-        for (var i=0; i<50; ++i) {
-            ship.addMultiple();
-        }
     }, true);
     loader.start();
 };

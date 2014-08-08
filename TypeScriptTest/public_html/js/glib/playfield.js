@@ -55,6 +55,9 @@
             }
             element.appendChild(canvas);
             context = canvas.getContext("2d");
+            context.webkitImageSmoothingEnabled = false;
+            context.mozImageSmoothingEnabled = false;
+            context.imageSmoothingEnabled = false;
             if (!opt.NoDebug) {
                 glib.Debug.init(context);
             }

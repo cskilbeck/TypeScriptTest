@@ -191,7 +191,7 @@ window.onload = function () {
             this.frameHeight = 40;
             this.framesWide = 10;
             this.framesHigh = 1;
-            this.age = 0;
+            this.age = Math.random();
             this.setScale(0.5);
             this.setPivot(0.5, 0.5);
             this.setPosition(x, y);
@@ -199,7 +199,7 @@ window.onload = function () {
 
         onUpdate: function(time, deltaTime) {
             var dx, dy, d;
-            this.x -= deltaTime * 60;
+//            this.x -= deltaTime * 60;
             if (this.x < -this.width / 4) {
                 this.close();
             } else {
@@ -511,9 +511,7 @@ window.onload = function () {
             image: null,
             load: function() {
                 Multiple.image = loader.load("blob.png");
-            },
-            damping: 0.7,
-            scale: 0.6
+            }
         },
 
         $: function(parent, distance) {
@@ -521,7 +519,7 @@ window.onload = function () {
             glib.Sprite.call(this, Multiple.image);
             this.parentObject = parent;
             this.distance = distance;
-            this.setScale(Multiple.scale);
+            this.setScale(0.6);
             this.setPivot(0.5, 0.5);
             if (parent.parentObject !== undefined) {
                 dx = parent.x - parent.parentObject.x;
@@ -536,9 +534,7 @@ window.onload = function () {
             this.setPosition(parent.x + dx, parent.y + dy);
             this.xvel = 0;
             this.yvel = 0;
-            this.damping = Multiple.damping;
-            Multiple.damping -= 0.25 / 200;
-            Multiple.scale -= 0.35 / 200;
+            this.damping = 1;
         },
 
         onUpdate: function (time, deltaTime) {
@@ -595,12 +591,28 @@ window.onload = function () {
 
         addMultiple: function() {
             var l = this.multiples.length,
-                p = this;
+                p = this,
+                i,
+                s,
+                d,
+                sd,
+                dd;
             if (l < 200) {
                 if (l > 0) {
                     p = this.multiples[l - 1];
                 }
                 this.multiples.push(multiples.addChildToFront(new Multiple(p, 5)));
+                l += 1;
+                s = l / 200 * 0.1 + 0.3;
+                sd = (0.2 - s) / l;
+                d = 0.75;
+                dd = (0.35 - d) / l;
+                for (i = 0; i < l; ++i) {
+                    this.multiples[i].setScale(s);
+                    this.multiples[i].damping = d;
+                    s += sd;
+                    d += dd;
+                }
             }
         },
 
@@ -608,11 +620,11 @@ window.onload = function () {
             var x = 0,
                 y = 0,
                 v = this.speed * deltaTime;
-            glib.Debug.print(this.speed);
+            // glib.Debug.print(this.speed);
             this.shotTime -= deltaTime;
             x = glib.Mouse.position.x - this.x;
             y = glib.Mouse.position.y - this.y;
-            if (glib.Keyboard.pressed('m')) {
+            if (glib.Keyboard.held('m')) {
                 ship.addMultiple();
             }
             v = Math.sqrt(x * x + y * y);
@@ -624,11 +636,11 @@ window.onload = function () {
                 this.y = glib.Util.constrain(this.y + y * v, 0, screenHeight - 1);
             }
 
-            if (glib.Mouse.left.held && this.shotTime <= 0 && clip.bullets > 0 && !powerupBar.pick(glib.Mouse.position)) {
-                this.fireBullet();
-                clip.deplete();
-                this.shotTime = shotDelay;
-            }
+            // if (glib.Mouse.left.held && this.shotTime <= 0 && clip.bullets > 0 && !powerupBar.pick(glib.Mouse.position)) {
+            //     this.fireBullet();
+            //     clip.deplete();
+            //     this.shotTime = shotDelay;
+            // }
         }
     });
 
@@ -749,15 +761,18 @@ window.onload = function () {
         ship = game.addChild(new Ship());
         multiples = playfield.addChild(new glib.Drawable().setSize(playfield.width, playfield.height));
 
-        ui = playfield.addChild(new glib.Drawable().setSize(playfield.width, playfield.height));
-        clip = ui.addChild(new Clip());
-        powerupBar = ui.addChild(new PowerUpBar());
-        moneyPointer = ui.addChild(new MoneyPointer());
-        game.onUpdate = function(time, deltaTime) {
-            if (Math.random() > 0.96) {
-                game.addChild(new Money(playfield.width / 1.25, Math.random() * playfield.height));
-            }
-        };
+//        ui = playfield.addChild(new glib.Drawable().setSize(playfield.width, playfield.height));
+//        clip = ui.addChild(new Clip());
+//        powerupBar = ui.addChild(new PowerUpBar());
+//        moneyPointer = ui.addChild(new MoneyPointer());
+        var i;
+        for (i = 0; i < 200; ++i) {
+            game.addChild(new Money(Math.random() * (playfield.width / 1.1) + playfield.width * 0.05, Math.random() * (playfield.height / 1.1) + playfield.height * 0.05));
+        }
+        // game.onUpdate = function(time, deltaTime) {
+        //     if (Math.random() > 0.96) {
+        //     }
+        // };
     }, true);
     loader.start();
 };

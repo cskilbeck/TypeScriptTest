@@ -11,7 +11,6 @@
 
 canvas
 {
-    -webkit-transform: scale3d(1, 1, 0) translate3d(0px, 0px, 0);
     image-rendering:optimizeSpeed;             /* Legal fallback */
     image-rendering:-moz-crisp-edges;          /* Firefox        */
     image-rendering:-o-crisp-edges;            /* Opera          */

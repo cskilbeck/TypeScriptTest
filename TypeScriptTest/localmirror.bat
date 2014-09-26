@@ -5,6 +5,8 @@ WinSCP /command "open Debian" "synchronize remote ""%CURDIR%\web_service"" /usr/
 WinSCP /command "open Debian" "synchronize remote ""%CURDIR%\nodejs"" /home/charlie/nodejs" "exit"
 WinSCP /command "open Debian" "synchronize remote ""%CURDIR%\public_html\js"" /home/charlie/nodejs/js"  "exit"
 WinSCP /command "open Debian" "synchronize remote ""%CURDIR%\manager"" /home/charlie/manager"  "exit"
+WinSCP /command "open Debian" "synchronize remote ""%CURDIR%\config"" /usr/local/www/js"  "exit"
+WinSCP /command "open Debian" "synchronize remote ""%CURDIR%\config"" /usr/local/www/wsgi-scripts"  "exit"
 
 start /b WinSCP /command "open Debian" "keepuptodate ""%CURDIR%\public_html"" /usr/local/www"
 start /b WinSCP /command "open Debian" "keepuptodate ""%CURDIR%\SQL"" /home/charlie/sql"

@@ -43,7 +43,7 @@
         }
     }());
 
-    mtw.Letters = chs.Class({
+    mtw.Letters = glib.Class({
 
         static$: {
             random: function (random) {

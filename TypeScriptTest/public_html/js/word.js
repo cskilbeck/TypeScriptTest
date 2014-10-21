@@ -1,7 +1,7 @@
 (function () {
     "use strict";
 
-    mtw.Word = chs.Class({
+    mtw.Word = glib.Class({
 
         static$: {
             horizontal: 0,

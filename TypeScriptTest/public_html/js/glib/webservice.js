@@ -19,15 +19,15 @@
         }
     }
 
-    chs.WebService = chs.Class({
+    glib.WebService = glib.Class({
 
         static$: {
 
             get: function (command, params, callback, context) {
                 var url;
                 params.action = command;
-                url = chs.ajax.url(mtw.WebServiceURL, params, true);
-                chs.ajax.get(url, function (url, xr) {
+                url = glib.ajax.url(mtw.WebServiceURL, params, true);
+                glib.ajax.get(url, function (url, xr) {
                     handleResult(url, xr, callback, context);
                 }, null, this, false, true);
             },
@@ -35,8 +35,8 @@
             post: function (command, params, data, callback, context) {
                 var url;
                 params.action = command;
-                url = chs.ajax.url(mtw.WebServiceURL, params, true);
-                chs.ajax.post(url, data, function (url, xr) {
+                url = glib.ajax.url(mtw.WebServiceURL, params, true);
+                glib.ajax.post(url, data, function (url, xr) {
                     handleResult(url, xr, callback, context);
                 }, null, this, false, true);
             }

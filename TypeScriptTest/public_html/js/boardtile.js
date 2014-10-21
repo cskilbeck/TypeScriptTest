@@ -13,7 +13,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    mtw.BoardTile = chs.Class({ inherit$: [mtw.Tile, chs.Composite, chs.Drawable],
+    mtw.BoardTile = glib.Class({ inherit$: [mtw.Tile, glib.Composite, glib.Drawable],
 
         static$: {
 
@@ -21,16 +21,17 @@
             height: tileHeight,
 
             load: function (loader) {
-                font = chs.Font.load("Arial", loader);
-                digits = chs.Font.load("digits", loader);
+                font = glib.Font.load("Arial", loader);
+                digits = glib.Font.load("digits", loader);
                 tileImage = loader.load("allColour.png");
             }
         },
 
         $: function (letter, x, y, showDigits) {
             mtw.Tile.call(this, letter);
-            chs.Composite.call(this);
-            chs.Drawable.call(this);
+
+            glib.Composite.call(this);
+            glib.Drawable.call(this);
             this.font = font;
             this.selected = false;
             this.swapped = false;
@@ -50,20 +51,20 @@
                 x: this.position.x,
                 y: this.position.y
             };
-            this.lerpTime = 100;
+            this.lerpTime = 0.1;
             this.moveTime = 0;
-            this.sprite = new chs.Sprite(tileImage);
+            this.sprite = new glib.Sprite(tileImage);
             this.sprite.framesWide = 5;
             this.sprite.framesHigh = 5;
             this.sprite.frameWidth = tileWidth;
             this.sprite.frameHeight = tileHeight;
             this.addChild(this.sprite);
-            this.label = new chs.Label(letter, font).setPivot(0.5, font.midPivot);
+            this.label = new glib.Label(letter, font).setPivot(0.5, font.midPivot);
             this.label.setPosition(this.width / 2 - 1, this.height / 2);
             this.label.transparency = 224;
             this.label.composable = false;  // because the tile is composed...
             if (showDigits) {
-                this.digits = new chs.Label(mtw.Letters.letterScore(letter).toString(), digits).setPivot(1, 1).setPosition(this.width - 12, this.height - 8);
+                this.digits = new glib.Label(mtw.Letters.letterScore(letter).toString(), digits).setPivot(1, 1).setPosition(this.width - 12, this.height - 8);
                 this.digits.transparency = 96;
                 this.digits.composable = false;
                 this.sprite.addChild(this.digits);
@@ -78,7 +79,7 @@
 
         //////////////////////////////////////////////////////////////////////
 
-        letter: chs.Property({
+        letter: glib.Property({
             get: function () {
                 return this.myLetter;
             },
@@ -174,7 +175,7 @@
                 if(this.moveTime < 0) {
                     this.moveTime = 0;
                 }
-                t = chs.Util.lerp(this.target, this.source, this.moveTime / this.lerpTime);
+                t = glib.Util.lerp(this.target, this.source, this.moveTime / this.lerpTime);
                 this.setPosition(t.x, t.y);
             }
         }

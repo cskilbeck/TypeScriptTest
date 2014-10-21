@@ -8,14 +8,14 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.PropertyDescriptor = function (desc) {
+    glib.PropertyDescriptor = function (desc) {
         this.desc = desc;
     };
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.Property = function (desc) {
-        return new chs.PropertyDescriptor(desc);
+    glib.Property = function (desc) {
+        return new glib.PropertyDescriptor(desc);
     };
 
     //////////////////////////////////////////////////////////////////////
@@ -28,7 +28,7 @@
         for (i = 0; i < names.length; ++i) {
             if (names[i].indexOf("$") === -1 && (!(names[i] in child) || force)) {
                 desc = Object.getOwnPropertyDescriptor(proto, names[i]);
-                if (desc.value instanceof chs.PropertyDescriptor) {
+                if (desc.value instanceof glib.PropertyDescriptor) {
                     Object.defineProperty(child, names[i], desc.value.desc);
                 } else {
                     Object.defineProperty(child, names[i], desc);
@@ -39,14 +39,9 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.Class = function (desc) {
-        var newClass = {},
+    glib.Class = function (desc) {
+        var newClass = desc.$ || {},
             i;
-
-        // constructor
-        if (desc.$ !== undefined) {
-            newClass = desc.$;
-        }
 
         // static members
         if (desc.static$ !== undefined) {
@@ -58,10 +53,7 @@
 
         // inheritance
         if (desc.hasOwnProperty('inherit$')) {
-            if (Object.prototype.toString.call(desc.inherit$) !== '[object Array]') {
-                extend(newClass, desc.inherit$, false);
-                extend(newClass.prototype, desc.inherit$.prototype, false);
-            } else {
+            if (glib.Util.isArray(desc.inherit$)) {
                 for (i = 0; i < desc.inherit$.length; ++i) {
                     if (!desc.inherit$[i]) {
                         throw new TypeError('Inheriting from undefined class!?');
@@ -70,6 +62,9 @@
                         extend(newClass.prototype, desc.inherit$[i].prototype, false);
                     }
                 }
+            } else {
+                extend(newClass, desc.inherit$, false);
+                extend(newClass.prototype, desc.inherit$.prototype, false);
             }
         }
         return newClass;

@@ -16,7 +16,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    mtw.TileWordIndex = chs.Class({
+    mtw.TileWordIndex = glib.Class({
         $: function () {
             this.reset();
         },
@@ -32,7 +32,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    mtw.Tile = chs.Class({
+    mtw.Tile = glib.Class({
 
         $: function (letter) {
             this.myLetter = letter;
@@ -42,7 +42,7 @@
             ];
         },
 
-        letter: chs.Property({
+        letter: glib.Property({
             get: function () {
                 return this.myLetter;
             },
@@ -53,7 +53,7 @@
 
         //////////////////////////////////////////////////////////////////////
 
-        hasHorizontalWord: chs.Property({
+        hasHorizontalWord: glib.Property({
             get: function () {
                 return this.wordIndices[mtw.Word.horizontal].word !== null;
             }
@@ -61,7 +61,7 @@
 
         //////////////////////////////////////////////////////////////////////
 
-        hasVerticalWord: chs.Property({
+        hasVerticalWord: glib.Property({
             get: function () {
                 return this.wordIndices[mtw.Word.vertical].word !== null;
             }

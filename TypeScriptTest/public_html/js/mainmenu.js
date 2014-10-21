@@ -8,21 +8,21 @@
         gameLabel,
         timeLabel,
 
-        UserImage = chs.Class({ inherit$: [chs.Button, chs.Drawable],
+        UserImage = glib.Class({ inherit$: [glib.Button, glib.Drawable],
 
             $: function (x, y, width, height, url) {
-                chs.Button.call(this);
-                chs.Drawable.call(this);
-                this.loader = new chs.Loader("");
+                glib.Button.call(this);
+                glib.Drawable.call(this);
+                this.loader = new glib.Loader("");
                 this.width = width;
                 this.height = height;
                 this.org = { x: x, y: y };
                 this.setPosition(x, y);
-                this.clipRect = new chs.ClipRect(0, 0, this.width, this.height, 14);
+                this.clipRect = new glib.ClipRect(0, 0, this.width, this.height, 14);
                 this.addChild(this.clipRect);
-                this.image = new chs.Image(url);
+                this.image = new glib.Image(url);
                 this.clipRect.addChild(this.image);
-                this.border = new chs.OutlineRectangle(0, 0, this.width, this.height, this.clipRect.radius, "black", 3);
+                this.border = new glib.OutlineRectangle(0, 0, this.width, this.height, this.clipRect.radius, "black", 3);
                 this.addChild(this.border);
                 this.onIdle = function () { this.setPosition(this.org.x, this.org.y); this.border.lineColour = "black"; };
                 this.onHover = function () { this.setPosition(this.org.x, this.org.y); this.border.lineColour = "white"; };
@@ -36,18 +36,18 @@
             }
         });
 
-    mtw.MainMenu = chs.Class({ inherit$: chs.Drawable,
+    mtw.MainMenu = glib.Class({ inherit$: glib.Drawable,
 
         $: function () {
-            chs.Drawable.call(this);
-            chs.User.id = 0;
+            glib.Drawable.call(this);
+            mtw.User.id = 0;
             this.enabled = false;
             this.visible = false;
-            this.size = chs.desktop.size;
-            loader = new chs.Loader('img/');
-            chs.desktop.addChild(loader);
-            consolasItalic = chs.Font.load("Consolas_Italic", loader);
-            consolas = chs.Font.load("Consolas", loader);
+            this.size = glib.Playfield.Size;
+            loader = new glib.Loader('img/');
+            glib.Playfield.Root.addChild(loader);
+            consolasItalic = glib.Font.load("Consolas_Italic", loader);
+            consolas = glib.Font.load("Consolas", loader);
             mtw.BoardTile.load(loader);
             mtw.Dictionary.init(loader.load("words.json"));
             this.game = new mtw.Game(this, loader);
@@ -57,32 +57,32 @@
         },
 
         logout: function () {
-            chs.Cookies.remove('provider_id');
-            chs.Cookies.remove('session_id');
-            chs.Cookies.remove('login_error');
+            glib.Cookies.remove('provider_id');
+            glib.Cookies.remove('session_id');
+            glib.Cookies.remove('login_error');
             window.location.reload();
             this.panel.removeChildren();
-            this.panel.addChild(new chs.Label("Logging out...", consolasItalic).setPosition(this.panel.width / 2, this.panel.height / 2).setPivot(0.5, 0.5));
+            this.panel.addChild(new glib.Label("Logging out...", consolasItalic).setPosition(this.panel.width / 2, this.panel.height / 2).setPivot(0.5, 0.5));
         },
 
         getSession: function () {
-            var session_id = chs.Cookies.get('session_id'),
-                provider_id = chs.Cookies.get('provider_id'),   // this will be null if nothing chosen or 0 if Anon or valid provider ID
-                login_error = chs.Cookies.get('login_error');
+            var session_id = glib.Cookies.get('session_id'),
+                provider_id = glib.Cookies.get('provider_id'),   // this will be null if nothing chosen or 0 if Anon or valid provider ID
+                login_error = glib.Cookies.get('login_error');
             provider_id = provider_id ? parseInt(provider_id, 10) : 0;
             if (provider_id === 0) {
                 if (login_error !== null) {
-                    this.panel.addChild(new chs.Label("Login error: " + login_error, consolas).setPosition(this.panel.width - 24, 16).setPivot(1, 0));
+                    this.panel.addChild(new glib.Label("Login error: " + login_error, consolas).setPosition(this.panel.width - 24, 16).setPivot(1, 0));
                     alert(login_error);
-                    chs.Cookies.remove("login_error");
+                    glib.Cookies.remove("login_error");
                 }
             }
             if (session_id !== null) {
-                chs.WebService.get('session', { session_id: session_id }, function (data) {
+                glib.WebService.get('session', { session_id: session_id }, function (data) {
                     var logoutButton;
                     if (!data || data.error !== undefined) {
-                        chs.Cookies.remove('session_id');
-                        chs.Cookies.remove('login_error');
+                        glib.Cookies.remove('session_id');
+                        glib.Cookies.remove('login_error');
                         // session probably expired...
                         if(provider_id !== 0) {
                             window.location.reload();
@@ -90,24 +90,24 @@
                             // weird:
                         }
                     } else {
-                        chs.User.id = data.user_id;
-                        chs.User.name = data.name;
-                        chs.User.picture = data.picture;
-                        chs.User.providerName = data.providerName;
-                        if(chs.User.picture) {
-                            logoutButton = new UserImage(12, 12, 64, 64, chs.User.picture);
+                        mtw.User.id = data.user_id;
+                        mtw.User.name = data.name;
+                        mtw.User.picture = data.picture;
+                        mtw.User.providerName = data.providerName;
+                        if(mtw.User.picture) {
+                            logoutButton = new UserImage(12, 12, 64, 64, mtw.User.picture);
                         } else {
-                            logoutButton = new chs.TextButton(chs.User.name, consolasItalic, 12, 12, 20, 35);
+                            logoutButton = new glib.TextButton(mtw.User.name, consolasItalic, 12, 12, 20, 35);
                         }
                         this.panel.addChild(logoutButton);
-                        this.panel.addChild(new chs.Label(provider_id === 0 ? "Log in" : "Log out", consolas).setPosition(44, 84).setPivot(0.5, 0));
+                        this.panel.addChild(new glib.Label(provider_id === 0 ? "Log in" : "Log out", consolas).setPosition(44, 84).setPivot(0.5, 0));
                         logoutButton.addEventHandler("clicked", function () {
                             if(provider_id === 0) {
                                 this.showLogin();
                             } else {
                                 this.addChild(
-                                    new chs.MessageBox(
-                                        "You are logged in as " + chs.User.name + " with " + chs.User.providerName + ", would you like to log out?",
+                                    new glib.MessageBox(
+                                        "You are logged in as " + mtw.User.name + " with " + mtw.User.providerName + ", would you like to log out?",
                                         consolasItalic,
                                         ['Yes, log me out', 'No'],
                                         function (button) {
@@ -123,11 +123,11 @@
         },
 
         scheduleGameUpdate: function () {
-            this.addChild(new chs.Timer(2000, 0, this.updateGame, this));
+            this.addChild(new glib.Timer(2, 0, this.updateGame, this));
         },
 
         updateGame: function () {
-            chs.WebService.get('game', {}, function (data) {
+            glib.WebService.get('game', {}, function (data) {
                 var remaining_time,
                     last_snapshot_time,
                     remainder,
@@ -141,19 +141,19 @@
                     this.game_ends = Date.parse(data.end_time);
                     remainder = this.game_ends - this.now;          // how much time left in this game
                     if (remainder > 0) {
-                        last_snapshot_time = chs.Timer.time;
+                        last_snapshot_time = glib.Timer.time;
                         gameLabel.text = "Game " + this.game_id.toString();
-                        this.addChild(new chs.Timer(0, 1000, function() {
-                            var elapsed = chs.Timer.time - last_snapshot_time,
+                        this.addChild(new glib.Timer(0, 1, function() {
+                            var elapsed = glib.Timer.time - last_snapshot_time,
                                 remain = new Date(remainder - elapsed),
                                 hours = remain.getHours();
                                 minutes = remain.getMinutes();
                                 seconds = remain.getSeconds();
                             if (elapsed < remainder) {
-                                timeLabel.text = chs.Util.format("{0}:{1}:{2} remaining",
-                                                    chs.Util.pad(hours, 2),
-                                                    chs.Util.pad(minutes, 2),
-                                                    chs.Util.pad(seconds, 2));
+                                timeLabel.text = glib.Util.format("{0}:{1}:{2} remaining",
+                                                    glib.Util.pad(hours, 2),
+                                                    glib.Util.pad(minutes, 2),
+                                                    glib.Util.pad(seconds, 2));
                             } else {
                                 console.log("elapsed: " + elapsed.toString() + ", remainder: " + remainder.toString());
                                 gameLabel.text = "Game ended..." + remain.toString();
@@ -161,7 +161,7 @@
                                 return false;
                             }
                             // now and again, get the top words list
-                            chs.WebService.get('gameInfo', { game_id: this.game_id }, function(data) {
+                            glib.WebService.get('gameInfo', { game_id: this.game_id }, function(data) {
                                 console.log(data.topWords.length);
                             }, this);
                         }, this));
@@ -177,9 +177,9 @@
         },
 
         loadComplete: function () {
-            var session_id = chs.Cookies.get('session_id'),
-                provider_id = chs.Cookies.get('provider_id'),   // this will be null if nothing chosen or 0 if Anon or valid provider ID
-                login_error = chs.Cookies.get('login_error'),
+            var session_id = glib.Cookies.get('session_id'),
+                provider_id = glib.Cookies.get('provider_id'),   // this will be null if nothing chosen or 0 if Anon or valid provider ID
+                login_error = glib.Cookies.get('login_error'),
                 buttons = [
                     "Options",
                     "How to play",
@@ -195,23 +195,23 @@
                 pw = w / 1.05,
                 ph = h / 1.05;
 
-            chs.desktop.clear();
+            //glib.Playfield.Root.clear();
             this.game.loadComplete();
             provider_id = provider_id ? parseInt(provider_id, 10) : 0;
-            chs.desktop.removeChild(loader);
-            this.panel = new chs.OutlineRectangle(w / 2, h / 2, pw, ph, 25, "white", 4).setPivot(0.5, 0.5);
-            this.button = new chs.TextButton("PLAY!", consolasItalic, pw / 2, ph / 2, 200, 50, this.playClicked, this).setPivot(0.5, 0.5);
+            glib.Playfield.Root.removeChild(loader);
+            this.panel = new glib.OutlineRectangle(w / 2, h / 2, pw, ph, 25, "white", 4).setPivot(0.5, 0.5);
+            this.button = new glib.TextButton("PLAY!", consolasItalic, pw / 2, ph / 2, 200, 50, this.playClicked, this).setPivot(0.5, 0.5);
             this.button.onUpdate = function (time, deltaTime) {
-                this.rotation = Math.pow(Math.sin(time / 1000), 16) * Math.sin(time / 25) * 0.05;
+                this.rotation = Math.pow(Math.sin(time), 16) * Math.sin(time * 40) * 0.05;
             };
             this.panel.addChild(this.button);
             this.addChild(this.panel);
-            this.panel.addChild(new chs.Menu(20, this.panel.height - 20, consolasItalic, buttons, callbacks, this).setPivot(0, 1));
+            this.panel.addChild(new glib.Menu(20, this.panel.height - 20, consolasItalic, buttons, callbacks, this).setPivot(0, 1));
             this.enabled = true;
             this.visible = true;
-            chs.OAuth.login(this.getSession, this);
-            gameLabel = new chs.Label("", consolas).setPosition(this.panel.width - 24, 20).setPivot(1, 0);
-            timeLabel = new chs.Label("", consolas).setPosition(this.panel.width - 24, 50).setPivot(1, 0);
+            mtw.OAuth.login(this.getSession, this);
+            gameLabel = new glib.Label("", consolas).setPosition(this.panel.width - 24, 20).setPivot(1, 0);
+            timeLabel = new glib.Label("", consolas).setPosition(this.panel.width - 24, 50).setPivot(1, 0);
             this.panel.addChild(gameLabel);
             this.panel.addChild(timeLabel);
             this.updateGame();

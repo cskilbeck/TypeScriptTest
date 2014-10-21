@@ -34,12 +34,6 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    function addListener(element, name, func) {
-        element.addEventListener(name, func, false);
-    }
-
-    //////////////////////////////////////////////////////////////////////
-
     function viewport() {
         var wnd = window,
             innerW = 'innerWidth',
@@ -59,40 +53,40 @@
             element.setCapture();
         }
 
-/*        document.oncontextmenu = function (e) {
+/*      document.oncontextmenu = function (e) {
             e.cancelBubble = true;
             return false;
         };
 */
-        addListener(element, "losecapture", function () {
+        element.addEventListener("losecapture", function () {
             if (element.setCapture) {
                 element.setCapture();
             }
         });
 
-        addListener(element, "touchstart", function (event) {
+        element.addEventListener("touchstart", function (event) {
             var touch = event.targetTouches[0],
                 pos = relMouseCoords(canvas, touch.clientX, touch.clientY);
-            events.push(new chs.TouchMessage(chs.Message.touchStart, pos));
+            events.push(new glib.TouchMessage(glib.Message.touchStart, pos));
             event.preventDefault();
             return false;
         });
 
-        addListener(element, "touchmove", function (event) {
+        element.addEventListener("touchmove", function (event) {
             var touch = event.targetTouches[0],
                 pos = relMouseCoords(canvas, touch.clientX, touch.clientY);
-            events.push(new chs.TouchMessage(chs.Message.touchMove, pos));
+            events.push(new glib.TouchMessage(glib.Message.touchMove, pos));
             event.preventDefault();
             return false;
         });
 
-        addListener(element, "touchend", function (event) {
-            events.push(new chs.TouchMessage(chs.Message.touchEnd, { x: 0, y: 0 }, true));
+        element.addEventListener("touchend", function (event) {
+            events.push(new glib.TouchMessage(glib.Message.touchEnd, { x: 0, y: 0 }, true));
             event.preventDefault();
             return false;
         });
 
-        addListener(element, "mousedown", function (event) {
+        element.addEventListener("mousedown", function (event) {
             var p;
             if (element.setCapture) {
                 element.setCapture();
@@ -102,33 +96,33 @@
             switch (event.which) {
             case 1:
                 mouse.left.held = true;
-                events.push(new chs.MouseMessage(chs.Message.leftMouseDown, p));
+                events.push(new glib.MouseMessage(glib.Message.leftMouseDown, p));
                 break;
             case 3:
                 mouse.right.held = true;
-                events.push(new chs.MouseMessage(chs.Message.rightMouseDown, p));
+                events.push(new glib.MouseMessage(glib.Message.rightMouseDown, p));
                 break;
             }
             return false;
         });
 
-        addListener(element, "mouseup", function (event) {
+        element.addEventListener("mouseup", function (event) {
             var p;
             event = fixupMouseEvent(event);
             p = relMouseCoords(canvas, event.x, event.y);
             switch (event.which) {
             case 1:
                 mouse.left.held = false;
-                events.push(new chs.MouseMessage(chs.Message.leftMouseUp, p));
+                events.push(new glib.MouseMessage(glib.Message.leftMouseUp, p));
                 break;
             case 3:
                 mouse.right.held = false;
-                events.push(new chs.MouseMessage(chs.Message.rightMouseUp, p));
+                events.push(new glib.MouseMessage(glib.Message.rightMouseUp, p));
                 break;
             }
         });
 
-        addListener(element, "mousemove", function (event) {
+        element.addEventListener("mousemove", function (event) {
             var view = viewport(),
                 e,
                 p;
@@ -149,7 +143,7 @@
                     element.setCapture();
                 }
             }
-            events.push(new chs.MouseMessage(chs.Message.mouseMove, p));
+            events.push(new glib.MouseMessage(glib.Message.mouseMove, p));
         });
     }
 
@@ -177,7 +171,7 @@
         cur = active,
         events = [];
 
-    chs.Mouse = chs.Class({
+    glib.Mouse = glib.Class({
 
         static$: {
 
@@ -206,25 +200,25 @@
                 cur = active;
             },
 
-            position: chs.Property({
+            position: glib.Property({
                 get: function () {
                     return cur.position;
                 }
             }),
 
-            delta: chs.Property({
+            delta: glib.Property({
                 get: function () {
                     return cur.delta;
                 }
             }),
 
-            left: chs.Property({
+            left: glib.Property({
                 get: function () {
                     return cur.left;
                 }
             }),
 
-            right: chs.Property({
+            right: glib.Property({
                 get: function () {
                     return cur.right;
                 }

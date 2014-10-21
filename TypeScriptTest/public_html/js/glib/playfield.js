@@ -5,6 +5,7 @@
         canvas,
         element,
         loader,
+        frame = 0,
         context,
         autoCenter,
         identityMatrix = new glib.Matrix(),
@@ -19,7 +20,7 @@
             glib.Keyboard.update(playfield);
             glib.Mouse.update(playfield);
             glib.Drawable.updateId = 0;
-            playfield.update(glib.Timer.time, glib.Timer.delta);
+            playfield.update(glib.Timer.time, glib.Timer.delta, frame++, 0);
             glib.Drawable.drawId = 0;
             playfield.draw(context, identityMatrix, 255);
             glib.Debug.draw();
@@ -48,16 +49,19 @@
             canvas = document.createElement("canvas");
             canvas.width = this.width;
             canvas.height = this.height;
-            canvas.style.position = "absolute";
             if (autoCenter) {
+                canvas.style.position = "absolute";
                 centerCanvas();
                 window.addEventListener("resize", centerCanvas, false);
             }
             element.appendChild(canvas);
             context = canvas.getContext("2d");
-            context.webkitImageSmoothingEnabled = false;
-            context.mozImageSmoothingEnabled = false;
-            context.imageSmoothingEnabled = false;
+
+            // TODO: make this optional or platform-dependent
+            //context.webkitImageSmoothingEnabled = false;
+            //context.mozImageSmoothingEnabled = false;
+            //context.imageSmoothingEnabled = false;
+
             if (!opt.NoDebug) {
                 glib.Debug.init(context);
             }
@@ -65,7 +69,35 @@
             glib.Keyboard.init();
             glib.Timer.init();
             update();
+        },
+
+        static$: {
+
+            Width: glib.Property({
+                get: function() {
+                    return playfield.width;
+                }
+            }),
+
+            Height: glib.Property({
+                get: function() {
+                    return playfield.height;
+                }
+            }),
+
+            Size: glib.Property({
+                get: function() {
+                    return { width: playfield.width, height: playfield.height };
+                }
+            }),
+
+            Root: glib.Property({
+                get: function() {
+                    return playfield;
+                }
+            })
         }
+
     });
 
 } ());

@@ -3,7 +3,7 @@
 
     var buttons = [];
 
-    mtw.WordButton = chs.Class({ inherit$: [chs.Composite, chs.PanelButton],
+    mtw.WordButton = glib.Class({ inherit$: [glib.Composite, glib.PanelButton],
 
         static$: {
             reset: function () {
@@ -24,7 +24,7 @@
             create: function(wrd, board, game, x, y, w, h, font, callback, context) {
                 var b = mtw.WordButton.findButton(wrd);
                 if(b !== null) {
-                    chs.Util.remove(buttons, b);
+                    glib.Util.remove(buttons, b);
                     b.word = wrd;
                     b.reset();
                     b.setPosition(x, y);
@@ -46,21 +46,21 @@
                 var i,
                     l;
                 for (i = 0, l = buttons.length; i < l; ++i) {
-                    chs.Debug.print("     ", buttons[i].word.str);
+                    glib.Debug.print("     ", buttons[i].word.str);
                 }
             }
         },
 
         $: function (wrd, board, game, x, y, w, h, font, callback, context) {
-            chs.Composite.call(this);
-            chs.PanelButton.call(this, x, y, w, h, "darkslategrey", undefined, 4, 0, callback, context);
+            glib.Composite.call(this);
+            glib.PanelButton.call(this, x, y, w, h, "darkslategrey", undefined, 4, 0, callback, context);
             this.board = board;
             this.game = game;
             this.word = wrd;
             this.wordHighlight = null;
             this.shader = null;
-            this.addChild(new chs.Label(wrd.str, font).setPosition(5, this.height / 2).setPivot(0, font.midPivot));
-            this.addChild(new chs.Label(wrd.score.toString(), font).setPosition(this.width - 8, this.height / 2).setPivot(1, font.midPivot));
+            this.addChild(new glib.Label(wrd.str, font).setPosition(5, this.height / 2).setPivot(0, font.midPivot));
+            this.addChild(new glib.Label(wrd.score.toString(), font).setPosition(this.width - 8, this.height / 2).setPivot(1, font.midPivot));
             this.addEventHandler("clicked", function () {
                 game.showDefinition(this.word);
             }, this);
@@ -79,11 +79,11 @@
         reset: function () {
             this.clearWordHighlight();
             this.shader = null;
-            this.state = chs.Button.idle;
+            this.state = glib.Button.idle;
         },
 
         onClicked: function () {
-            this.state = chs.Button.idle;
+            this.state = glib.Button.idle;
         },
 
         onIdle: function () {
@@ -131,11 +131,11 @@
                 y += i;
                 w -= i * 2;
                 h -= i * 2;
-                this.wordHighlight = new chs.Drawable();
+                this.wordHighlight = new glib.Drawable();
                 this.wordHighlight.setPosition(x, y);
-                this.shader = new chs.SolidRectangle(0, 0, w, h, 10, "white");
+                this.shader = new glib.SolidRectangle(0, 0, w, h, 10, "white");
                 this.wordHighlight.addChild(this.shader);
-                this.wordHighlight.addChild(new chs.OutlineRectangle(0, 0, w, h, 10, "white", 6));
+                this.wordHighlight.addChild(new glib.OutlineRectangle(0, 0, w, h, 10, "white", 6));
                 this.shader.transparency = 64;
                 this.board.addChild(this.wordHighlight);
                 this.wordHighlight.zIndex = 2;

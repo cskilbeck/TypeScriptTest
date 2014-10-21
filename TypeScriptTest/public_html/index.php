@@ -59,7 +59,6 @@
     <script src="js/loginscreen.js"></script>
     <script src="js/mainmenu.js"></script>
     <script src="js/main.js"></script>
-    <script src="js/startup.js"></script>
     <!--<![endif]-->
 </head>
 

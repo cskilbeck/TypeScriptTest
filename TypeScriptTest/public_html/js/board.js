@@ -5,7 +5,7 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    mtw.Board = chs.Class({
+    mtw.Board = glib.Class({
 
         $: function (tileType, mainBoard) {
             var i,
@@ -16,7 +16,7 @@
             this.score = 0;
             this.seed = 0;
             this.words = [];
-            this.random = new chs.Random();
+            this.random = new glib.Random();
             this.tiles = [];
             this.tiles.length = this.tileWidth * this.tileHeight;
             for (i = 0; i < this.tiles.length; ++i) {

@@ -300,7 +300,7 @@
 
         //////////////////////////////////////////////////////////////////////
 
-        update: function (time, deltaTime) {
+        update: function (time, deltaTime, frame, indent) {
             var self = this.drawableData,
                 c,
                 i,
@@ -320,7 +320,7 @@
             if (self.enabled) {
                 for (i = self.children.length - 1; i >= 0; --i) {
                     c = self.children[i];
-                    c.update(time, deltaTime);
+                    c.update(time, deltaTime, frame, indent + 4);
                     if (c.drawableData.modal && !frozen) {
                         glib.Mouse.freeze();
                         glib.Keyboard.freeze();
@@ -329,8 +329,8 @@
                 }
                 if (self.enabled) {                 // children might disable their parent
                     this.onUpdate(time, deltaTime);
-                    // glib.Debug.text(this.x, this.y, glib.Drawable.updateId.toString());
-                    // glib.Drawable.updateId += 1;
+                    glib.Debug.text(this.x, this.y, glib.Drawable.updateId.toString());
+                    glib.Drawable.updateId += 1;
                 }
             }
             if (frozen) {

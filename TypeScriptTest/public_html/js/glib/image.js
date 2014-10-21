@@ -5,11 +5,11 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    chs.Image = chs.Class({ inherit$: chs.Drawable,
+    glib.Image = glib.Class({ inherit$: glib.Drawable,
 
         $: function (url) {
             var that = this;
-            chs.Drawable.call(this);
+            glib.Drawable.call(this);
             this.loaded = false;
             this.image = new Image();
             this.image.onload = function () {
@@ -28,7 +28,7 @@
             return this;
         },
 
-        src: chs.Property({
+        src: glib.Property({
             set: function (s) {
                 this.image.src = s;
             }

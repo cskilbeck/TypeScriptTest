@@ -17,13 +17,13 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    mtw.BoardGame = chs.Class({ inherit$: [mtw.Board, chs.Drawable],
+    mtw.BoardGame = glib.Class({ inherit$: [mtw.Board, glib.Drawable],
 
         $: function (x, y, game, mainBoard) {
             var i;
 
             mtw.Board.call(this, 'BoardTile', mainBoard);
-            chs.Drawable.call(this);
+            glib.Drawable.call(this);
             this.size = {
                 width: this.tileWidth * mtw.BoardTile.width,
                 height: this.tileHeight * mtw.BoardTile.height
@@ -73,17 +73,17 @@
 
         load: function () {
             var b;
-            if (parseInt(chs.Cookies.get("game"), 10) === this.seed) {
-                b = chs.Cookies.get("board");
+            if (parseInt(glib.Cookies.get("game"), 10) === this.seed) {
+                b = glib.Cookies.get("board");
                 if (b !== null) {
                     this.setFromString(b);
                 }
-                if (parseInt(chs.Cookies.get("bestSeed"), 10) === this.seed) {
-                    b = chs.Cookies.get("best");
+                if (parseInt(glib.Cookies.get("bestSeed"), 10) === this.seed) {
+                    b = glib.Cookies.get("best");
                     if (b !== null) {
                         this.bestBoard = b;
                     }
-                    b = chs.Cookies.get("bestScore");
+                    b = glib.Cookies.get("bestScore");
                     if (b !== null) {
                         this.bestScore = parseInt(b, 10);
                     }
@@ -96,11 +96,11 @@
 
         save: function () {
             if (this.mainBoard) {
-                chs.Cookies.set("game", this.seed, 10);
-                chs.Cookies.set("board", this.getAsString(), 10);
-                chs.Cookies.set("best", this.bestBoard, 10);
-                chs.Cookies.set("bestScore", this.bestScore, 10);
-                chs.Cookies.set("bestSeed", this.bestSeed, 10);
+                glib.Cookies.set("game", this.seed, 10);
+                glib.Cookies.set("board", this.getAsString(), 10);
+                glib.Cookies.set("best", this.bestBoard, 10);
+                glib.Cookies.set("bestScore", this.bestScore, 10);
+                glib.Cookies.set("bestSeed", this.bestSeed, 10);
             }
         },
 
@@ -215,8 +215,8 @@
                 pos = this.screenToClient(e.position);
                 this.activeTile.selected = true;
                 this.activeTile.zIndex = 1;
-                tileX = chs.Util.constrain(pos.x - this.offsetX, tw / 2, this.pixelWidth() + tw / 2);
-                tileY = chs.Util.constrain(pos.y - this.offsetY, th / 2, this.pixelHeight() + th / 2);
+                tileX = glib.Util.constrain(pos.x - this.offsetX, tw / 2, this.pixelWidth() + tw / 2);
+                tileY = glib.Util.constrain(pos.y - this.offsetY, th / 2, this.pixelHeight() + th / 2);
                 snapX = Math.floor(tileX / tw) * tw + tw / 2;
                 snapY = Math.floor(tileY / th) * th + th / 2;
                 if (Math.abs(tileX - snapX) < tw / 3 && Math.abs(tileY - snapY) < th / 3) {

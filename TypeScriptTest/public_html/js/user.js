@@ -1,7 +1,7 @@
 (function () {
     "use strict";
 
-    chs.User = {
+    mtw.User = {
         id: 0,
         name: "",
         picture: null,

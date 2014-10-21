@@ -5,20 +5,20 @@
         undoImage,
         redoImage;
 
-    mtw.UI = chs.Class({ inherit$: chs.Drawable,
+    mtw.UI = glib.Class({ inherit$: glib.Drawable,
 
         $: function (loader) {
-            chs.Drawable.call(this);
-            font = chs.Font.load("Calibri", loader);
+            glib.Drawable.call(this);
+            font = glib.Font.load("Calibri", loader);
             undoImage = loader.load("undo.png");
             redoImage = loader.load("redo.png");
         },
 
         loadComplete: function() {
-            this.size = { width: 180, height: chs.desktop.height };
-            this.setPosition(chs.desktop.width, 0);
+            this.size = { width: 180, height: glib.Playfield.Height };
+            this.setPosition(glib.Playfield.Width, 0);
             this.setPivot(1, 0);
-            this.button = new chs.TextButton("", font, 0, 0, this.width, font.height + 12, function () {
+            this.button = new glib.TextButton("", font, 0, 0, this.width, font.height + 12, function () {
                 var s = this.screens[this.currentScreen];
                 if (s) {
                     s.visible = false;
@@ -35,9 +35,9 @@
                 }
             }, this, 0, false);
             this.addChild(this.button);
-            this.addChild(new chs.SpriteButton(undoImage, "scale", this.width / 2 - this.width / 4, this.height - undoImage.height / 2, this.undo, this));
-            this.addChild(new chs.SpriteButton(redoImage, "scale", this.width / 2 + this.width / 4, this.height - redoImage.height / 2, this.redo, this));
-            this.client = new chs.ClipRect(0, this.button.height + 4, this.width, this.height - this.button.height - undoImage.height - 4, 0);
+            this.addChild(new glib.SpriteButton(undoImage, "scale", this.width / 2 - this.width / 4, this.height - undoImage.height / 2, this.undo, this));
+            this.addChild(new glib.SpriteButton(redoImage, "scale", this.width / 2 + this.width / 4, this.height - redoImage.height / 2, this.redo, this));
+            this.client = new glib.ClipRect(0, this.button.height + 4, this.width, this.height - this.button.height - undoImage.height - 4, 0);
             this.addChild(this.client);
             this.screens = [];
             this.currentScreen = 0;

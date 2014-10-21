@@ -17,7 +17,7 @@
                         if (data && !data.error) {
                             glib.Cookies.set('session_id', data.session_id);
                             glib.Cookies.set('anon_user_id', data.user_id);
-                            mtw.User.id = data.user_id;
+                            glib.User.id = data.user_id;
                             callback.call(context);
                         } else {
                             console.log("Error getting anon user id");

@@ -51,18 +51,18 @@
 
     //////////////////////////////////////////////////////////////////////
 
-    mtw.Game = chs.Class({ inherit$: chs.Drawable,
+    mtw.Game = glib.Class({ inherit$: glib.Drawable,
 
         $: function (mainMenu, loader) {
-            chs.Drawable.call(this);
-            this.size = { width: chs.desktop.width, height: chs.desktop.height };
+            glib.Drawable.call(this);
+            this.size = { width: glib.Playfield.Width, height: glib.Playfield.Height };
             this.mainMenu = mainMenu;
             this.game_id = 0;
-            consolas = chs.Font.load("Consolas", loader);
-            arial = chs.Font.load("Arial", loader);
-            consolasItalic = chs.Font.load("Consolas_Italic", loader);
-            consolasItalicBold = chs.Font.load("Consolas_Italic", loader);
-            calibri = chs.Font.load("Calibri", loader);
+            consolas = glib.Font.load("Consolas", loader);
+            arial = glib.Font.load("Arial", loader);
+            consolasItalic = glib.Font.load("Consolas_Italic", loader);
+            consolasItalicBold = glib.Font.load("Consolas_Italic", loader);
+            calibri = glib.Font.load("Calibri", loader);
             this.board_id = 0;
             ui = new mtw.UI(loader);
         },
@@ -79,14 +79,14 @@
             ui.addEventHandler("redo", this.redo, this);
             this.addChild(ui);
 
-            words = new chs.Drawable();
+            words = new glib.Drawable();
             words.width = ui.client.width;
             words.height = ui.client.height;
 
-            scoreButton = new chs.PanelButton(ui.client.width / 2, 0, ui.client.width, consolas.height + 8, 'black', none, 3, 0, null, null).setPivot(0.5, 0);
-            scoreButton.scoreLabel = new chs.Label("0", consolas).setPosition(scoreButton.width - 4, 4).setPivot(1, 0);
+            scoreButton = new glib.PanelButton(ui.client.width / 2, 0, ui.client.width, consolas.height + 8, 'black', glib.none, 3, 0, null, null).setPivot(0.5, 0);
+            scoreButton.scoreLabel = new glib.Label("0", consolas).setPosition(scoreButton.width - 4, 4).setPivot(1, 0);
             scoreButton.addChild(scoreButton.scoreLabel);
-            scoreButton.addChild(new chs.Label("Score:", consolas).setPosition(4, 4));
+            scoreButton.addChild(new glib.Label("Score:", consolas).setPosition(4, 4));
             words.addChild(scoreButton);
             scoreButton.highlight = 0;
             scoreButton.compose();
@@ -117,10 +117,10 @@
                 }
             };
 
-            bestButton = new chs.PanelButton(ui.client.width / 2, scoreButton.height + 2, ui.client.width, consolas.height + 8, 'black', none, 3, 0, this.bestClicked, this).setPivot(0.5, 0);
-            bestLabel = new chs.Label("0", consolas).setPosition(bestButton.width - 4, 4).setPivot(1, 0);
+            bestButton = new glib.PanelButton(ui.client.width / 2, scoreButton.height + 2, ui.client.width, consolas.height + 8, 'black', glib.none, 3, 0, this.bestClicked, this).setPivot(0.5, 0);
+            bestLabel = new glib.Label("0", consolas).setPosition(bestButton.width - 4, 4).setPivot(1, 0);
             bestButton.addChild(bestLabel);
-            bestButton.addChild(new chs.Label("Best:", consolas).setPosition(4, 4));
+            bestButton.addChild(new glib.Label("Best:", consolas).setPosition(4, 4));
             bestButton.highlight = 0;
             bestButton.flash = 0;
 
@@ -148,7 +148,7 @@
             };
             words.addChild(bestButton);
             words.title = "Words";
-            words.wordList = new chs.Drawable().setPosition(0, bestButton.height + bestButton.y + 4);
+            words.wordList = new glib.Drawable().setPosition(0, bestButton.height + bestButton.y + 4);
             words.addChild(words.wordList);
             ui.addScreen(words);
 
@@ -156,7 +156,7 @@
             leaderBoard.title = "Leaderboard";
             ui.addScreen(leaderBoard);
 
-            menu = new chs.Menu(ui.client.width / 2, 8, consolas,
+            menu = new glib.Menu(ui.client.width / 2, 8, consolas,
                 [
                     "Quit",
                     "Shuffle!"
@@ -182,7 +182,7 @@
         onDraw: function (context) {
             // var ext = arial.measureText("W");
             // arial.renderString(context, "W", 688, 350);
-            // chs.Debug.rect(688 + ext.left, 350 + ext.top, (ext.right - ext.left), (ext.bottom - ext.top));
+            // glib.Debug.rect(688 + ext.left, 350 + ext.top, (ext.right - ext.left), (ext.bottom - ext.top));
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -196,9 +196,9 @@
 
             // right, if there's a user logged in, try and get their board for this game
             // but only splat into the board if this is the first time they've played this session...
-            if(chs.User.id !== 0) {
+            if(mtw.User.id !== 0) {
                 // disable play until this comes back, either way
-                chs.WebService.get("game", { seed: seed, user_id: chs.User.id }, function (data) {
+                glib.WebService.get("game", { seed: seed, user_id: mtw.User.id }, function (data) {
                     if(data && !data.error) {
                         if (data.score > bestScore) {
                             this.board_id = data.board_id;
@@ -247,7 +247,7 @@
                 };
             }
             if (msg) {
-                msgBox = new chs.MessageBox(msg, consolasItalicBold, btns, goBack, this);
+                msgBox = new glib.MessageBox(msg, consolasItalicBold, btns, goBack, this);
                 brd = new mtw.BoardGame(0, 0, this, false);
                 brd.setFromString(board.bestBoard);
                 brd.setScale(0.5);
@@ -263,20 +263,20 @@
 
         onClosed: function () {
             if (this.mainBoard) {
-                chs.Cookies.set("game", board.seed, 10);
-                chs.Cookies.set("board", board.getAsString(), 10);
+                glib.Cookies.set("game", board.seed, 10);
+                glib.Cookies.set("board", board.getAsString(), 10);
             }
         },
 
         //////////////////////////////////////////////////////////////////////
 
         shuffle: function () {
-            this.addChild(new chs.MessageBox("Really shuffle? You can undo it...", consolas, ['Yes', 'No'], function (idx) {
+            this.addChild(new glib.MessageBox("Really shuffle? You can undo it...", consolas, ['Yes', 'No'], function (idx) {
                 var i,
                     r,
                     n;
                 if (idx === 0) {
-                    r = new chs.Random();
+                    r = new glib.Random();
                     board.beforeDrag = board.getAsString();
                     for (i = 0; i < board.tiles.length - 1; ++i) {
                         n = i + (r.next() % (board.tiles.length - 1 - i));
@@ -294,7 +294,7 @@
         //////////////////////////////////////////////////////////////////////
 
         closeIt: function () {
-            this.addChild(new chs.MessageBox("Really quit?", consolas, ['Yes, quit', 'No'], function (idx) {
+            this.addChild(new glib.MessageBox("Really quit?", consolas, ['Yes, quit', 'No'], function (idx) {
                 if (idx === 0) {
                     this.close();
                 }
@@ -327,7 +327,7 @@
                 getDef = function(word) {
                     netWorkIndicator.age = 0;
                     networkInprogress = true;
-                    chs.WebService.get("definition", { word: word }, function (data) {
+                    glib.WebService.get("definition", { word: word }, function (data) {
                         netWorkIndicator.rotation = 0;
                         networkInprogress = false;
                         if (data && !data.error) {
@@ -336,11 +336,11 @@
                     });
                 };
 
-            win = new chs.Window({
-                x: chs.desktop.width / 2,
-                y: chs.desktop.height / 2,
-                width: chs.desktop.width * 0.85,
-                height: chs.desktop.height * 0.95,
+            win = new glib.Window({
+                x: glib.Playfield.Width / 2,
+                y: glib.Playfield.Height / 2,
+                width: glib.Playfield.Width * 0.85,
+                height: glib.Playfield.Height * 0.95,
                 caption: w.str.toUpperCase(),
                 captionScale: 0.5,
                 font: arial,
@@ -361,28 +361,28 @@
             win.onUpdate = function (time, deltaTime) {
                 var a;
                 if (this.age < 1) {
-                    this.age += deltaTime / 750;
+                    this.age += deltaTime * 1.3333;
                     if (this.age > 1) {
                         this.age = 1;
                     }
-                    a = chs.Util.ease(chs.Util.ease(this.age));
+                    a = glib.Util.ease(glib.Util.ease(this.age));
                     this.rotation = (a - 1) * 3.14159265 * 0.5;
                     this.setScale(a);
                     this.transparency = (this.age - 0.5) * 510;
                 }
                 if(networkInprogress) {
-                    netWorkIndicator.age += deltaTime / 150;
+                    netWorkIndicator.age += deltaTime * 6.6666666667;
                     netWorkIndicator.rotation = netWorkIndicator.age + Math.sin(netWorkIndicator.age * 2) * 0.5 + Math.PI / 2;
                 }
             };
 
-            netWorkIndicator = new chs.OutlineRectangle(0, 0, 16, 16, 3, "white", 1.5).setPivot(0.5, 0.5).setPosition(22, 22);
+            netWorkIndicator = new glib.OutlineRectangle(0, 0, 16, 16, 3, "white", 1.5).setPivot(0.5, 0.5).setPosition(22, 22);
             netWorkIndicator.age = 0;
-            netWorkIndicator.addChild(new chs.SolidRectangle(4, 4, 8, 8, 2, "white"));
+            netWorkIndicator.addChild(new glib.SolidRectangle(4, 4, 8, 8, 2, "white"));
             win.addChild(netWorkIndicator);
 
-            scoreLabel = new chs.Label(w.score.toString() + " points", consolasItalic);
-            textBox = new chs.TextBox(16, 16, win.client.width - 32, win.client.height - 32, "...", consolasItalic, '\r    ', function (link) {
+            scoreLabel = new glib.Label(w.score.toString() + " points", consolasItalic);
+            textBox = new glib.TextBox(16, 16, win.client.width - 32, win.client.height - 32, "...", consolasItalic, '\r    ', function (link) {
                 win.text = link.toUpperCase();
                 scoreLabel.text = mtw.Letters.getWordScore(link).toString() + " points";
                 getDef(link);
@@ -423,8 +423,8 @@
             if (board.bestScore > bestScore || retry) {
                 bestButton.highlight = 1000;
                 bestScore = board.bestScore;
-                if(chs.User.id) {
-                    chs.WebService.post("board", {}, { board: board.getAsString(), user_id: chs.User.id, game_id: this.game_id, seed: board.seed }, function (data) {
+                if(mtw.User.id) {
+                    glib.WebService.post("board", {}, { board: board.getAsString(), user_id: mtw.User.id, game_id: this.game_id, seed: board.seed }, function (data) {
                         if (data && !data.error) {
                             leaderBoard.board_id = data.board_id;
                             this.board_id = data.board_id;  // for LB tracking

@@ -177,7 +177,7 @@
                             skip = true;
                             if (links && l === 0) {
                                 if (inLink) {
-                                    links.push(xc, yc);
+                                    links.push(xc - layer.offsetX, yc);
                                 } else {
                                     links.push(xc, yc + this.font.baseline + 3, link);
                                     link = "";

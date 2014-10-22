@@ -2,4 +2,4 @@
 
     exports.mtw = {};
 
-})(typeof module !== 'undefined' && module.exports === this.exports ? module.exports : window);
+})(typeof module !== 'undefined' && module.exports === exports ? module.exports : window);

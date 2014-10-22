@@ -183,7 +183,7 @@
                 b = Math.floor(y2) + 0.5,
                 h = b - t,
                 w = r - l;
-            glib.Line.call(this, 0, h, w, h, "skyblue", 2);
+            glib.Line.call(this, 0, h, w, h, "skyblue", 1);
             glib.Button.call(this, function () {
                 if (this.linkClicked) {
                     this.linkClicked.call(this.clickContext, this.link);

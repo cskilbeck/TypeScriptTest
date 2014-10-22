@@ -1,18 +1,3 @@
-/////////////////////////////////////////////////////////////////////
-
-var test = glib.Class({ inherit$: glib.SolidRectangle,
-
-    $: function(x, y, w, h, radius, fillColour) {
-        glib.SolidRectangle.call(this, x, y, w, h, radius, fillColour);
-    },
-
-    onUpdate: function(time, deltaTime) {
-        glib.Debug.text(100, 100, "Hello" + deltaTime.toString());
-        this.x += 1;
-    }
-
-});
-
 
 window.onload = function () {
     "use strict";

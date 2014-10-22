@@ -1,34 +1,33 @@
-copy global.js +^
-    browser.js +^
-    class.js +^
-    polyfill.js +^
-    util.js +^
-    event.js +^
-    random.js +^
-    cookies.js +^
-    ajax.js +^
-    webserviceurl.js +^
-    webservice.js +^
-    list.js +^
-    canvas.js +^
-    matrix.js +^
-    drawable.js +^
-    timer.js +^
-    composite.js +^
-    loader.js +^
-    image.js +^
-    sprite.js +^
-    button.js +^
-    panel.js +^
-    label.js +^
-    font.js +^
-    textbutton.js +^
-    spritebutton.js +^
-    menu.js +^
-    window.js +^
-    messagebox.js +^
-    keyboard.js +^
-    mouse.js +^
-    debug.js +^
-    playfield.js^
- glib.js
+copy /B global.js +^
+    /B browser.js +^
+    /B class.js +^
+    /B debug.js +^
+    /B polyfill.js +^
+    /B util.js +^
+    /B event.js +^
+    /B random.js +^
+    /B cookies.js +^
+    /B ajax.js +^
+    /B webservice.js +^
+    /B list.js +^
+    /B canvas.js +^
+    /B matrix.js +^
+    /B drawable.js +^
+    /B timer.js +^
+    /B composite.js +^
+    /B loader.js +^
+    /B image.js +^
+    /B sprite.js +^
+    /B button.js +^
+    /B panel.js +^
+    /B label.js +^
+    /B font.js +^
+    /B textbutton.js +^
+    /B spritebutton.js +^
+    /B menu.js +^
+    /B window.js +^
+    /B messagebox.js +^
+    /B keyboard.js +^
+    /B mouse.js +^
+    /B playfield.js^
+ /B glib.js

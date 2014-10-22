@@ -73,11 +73,12 @@
 
         $: function (x, y, w, h, text, font, lineBreak, linkClicked, context) {
             glib.ClipRect.call(this, x, y, w, h, 0);
+            this.label = new glib.Label(text, font);
             if (linkClicked) {
                 this.links = new glib.Drawable();
                 this.addChild(this.links);
+                this.links.zIndex = 10;
             }
-            this.label = new glib.Label(text, font);
             this.addChild(this.label);
             this.context = context;
             this.setPosition(x, y);
@@ -102,7 +103,7 @@
                             links.shift(),
                             linkClickedCallback,
                             this);
-                        link.transparency = 192;
+//                        link.transparency = 255;
                         this.links.addChild(link);
                     }
                 }

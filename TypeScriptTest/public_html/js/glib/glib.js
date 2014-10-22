@@ -1,4 +1,8 @@
-window.glib = {};
+(function(exports){
+
+    exports.glib = { none: undefined };
+
+})(typeof module !== 'undefined' && module.exports === exports ? module.exports : window);
 (function () {
     "use strict";
 
@@ -105,6 +109,178 @@ window.glib = {};
         return newClass;
     };
 
+}());
+//////////////////////////////////////////////////////////////////////
+
+(function () {
+    "use strict";
+
+    //////////////////////////////////////////////////////////////////////
+
+    var context,
+        font,
+        loader,
+        cursorX,
+        cursorY,
+        fontHeight = 0,
+        DBText = 1,
+        DBRect = 2,
+        DBFillRect = 3,
+        DBPoly = 4,
+        DBLine = 5,
+        d = [],
+
+        // Stub debug output, used before font loaded or if Debug.init never called
+
+        Stub = glib.Class({
+            $: function() { },
+            text: function() { },
+            print: function() { },
+            rect: function() { },
+            fillRect: function() { },
+            poly: function() { },
+            line: function() { },
+            draw: function() { }
+        }),
+
+        // Real debug output, used when font is available
+
+        Real = glib.Class({
+            $: function() {},
+            text: function (x, y, things) {
+                var i,
+                    s = "",
+                    c = "",
+                    a;
+                for (i = 2; i < arguments.length; ++i) {
+                    a = arguments[i];
+                    if (a === undefined) {
+                        a = "undefined";
+                    }
+                    else if (typeof a !== 'string') {
+                        a = a.toString();
+                    }
+                    s = s + c + a;
+                    c = ",";
+                }
+                d.push(DBText, s, x, y);
+            },
+
+            print: function () {
+                glib.Debug.text.apply(this, [cursorX, cursorY].concat(Array.prototype.slice.call(arguments, 0)));
+                cursorY += font.height;
+            },
+
+            rect: function (x, y, w, h, colour) {
+                d.push(DBRect, x, y, w, h, colour);
+            },
+
+            fillRect: function (x, y, w, h, colour) {
+                d.push(DBFillRect, x, y, w, h, colour);
+            },
+
+            poly: function (points, colour) {
+                var i;
+                d.push(DBPoly, points.length, colour);
+                for (i = 0; i < points.length; ++i) {
+                    d.push(points[i].x, points[i].y);
+                }
+            },
+
+            line: function (x1, y1, x2, y2, colour) {
+                d.push(DBLine, x1, y1, x2, y2, colour);
+            },
+
+            draw: function () {
+                var i,
+                    l,
+                    colour;
+                context.setTransform(1, 0, 0, 1, 0, 0);
+                while (d.length > 0) {
+                    switch (d.shift()) {
+                    case DBText:    // x, y, string
+                        font.renderString(context, d.shift(), d.shift(), d.shift());
+                        break;
+                    case DBRect:    // x, y, w, h, colour
+                        glib.Util.rect(context, d.shift(), d.shift(), d.shift(), d.shift());
+                        context.strokeStyle = d.shift();
+                        context.stroke();
+                        break;
+                    case DBFillRect:    // x, y, w, h, colour
+                        glib.Util.rect(context, d.shift(), d.shift(), d.shift(), d.shift());
+                        context.fillStyle = d.shift();
+                        context.fill();
+                        break;
+                    case DBLine:    // x1, y1, x1, y1, colour
+                        context.beginPath();
+                        context.moveTo(d.shift(), d.shift());
+                        context.lineTo(d.shift(), d.shift());
+                        context.strokeStyle = d.shift();
+                        context.stroke();
+                        break;
+                    case DBPoly:
+                        context.beginPath();
+                        l = d.shift();
+                        colour = d.shift();
+                        context.moveTo(d.shift(), d.shift());
+                        for (i = 1; i < l; ++i) {
+                            context.lineTo(d.shift(), d.shift());
+                        }
+                        context.closePath();
+                        context.fillStyle = colour;
+                        context.fill();
+                    }
+                }
+                cursorX = 0;
+                cursorY = 0;
+            }
+        }),
+
+        // current debug output object, defaults to Stub
+
+        current = new Stub();
+
+    //////////////////////////////////////////////////////////////////////
+    // Customer facing interface
+
+    glib.Debug = glib.Class({
+
+        static$: {
+            init: function(ctx) {
+                context = ctx;
+                loader = new glib.Loader("img/");
+                loader.addEventHandler("complete", glib.Debug.fontLoaded);
+                font = glib.Font.load("Fixedsys", loader);
+                loader.start();
+            },
+            fontLoaded: function() {
+                fontHeight = font.height;
+                current = new Real();
+            },
+            text: function (x, y, things) {
+                current.text.apply(null, Array.prototype.slice.call(arguments, 0));
+            },
+            print: function () {
+                current.text.apply(null, [cursorX, cursorY].concat(Array.prototype.slice.call(arguments, 0)));
+                cursorY += fontHeight;
+            },
+            rect: function (x, y, w, h, colour) {
+                current.rect(x, y, w, h, colour);
+            },
+            fillRect: function (x, y, w, h, colour) {
+                current.fillRect(x, y, w, h, colour);
+            },
+            poly: function (points, colour) {
+                current.poly(points, colour);
+            },
+            line: function (x1, y1, x2, y2, colour) {
+                current.line(x1, y1, x2, y2, colour);
+            },
+            draw: function () {
+                current.draw();
+            }
+        }
+    });
 }());
 //////////////////////////////////////////////////////////////////////
 
@@ -1035,6 +1211,53 @@ glib.Cookies = (function () {
 }());
 
 //////////////////////////////////////////////////////////////////////
+(function () {
+    "use strict";
+
+    function handleResult(url, xr, callback, context) {
+        var d;
+        if(xr.status == 200) {
+            try {
+                d = JSON.parse(xr.responseText);
+            }
+            catch (e) {
+                console.log("Bad result from web service: " + xr.responseText);
+                d = null;
+            }
+            if (d !== null && callback) {
+                callback.call(context, d);
+            }
+        } else {
+            callback.call(context, null);
+        }
+    }
+
+    glib.WebService = glib.Class({
+
+        static$: {
+
+            get: function (command, params, callback, context) {
+                var url;
+                params.action = command;
+                url = glib.ajax.url(mtw.WebServiceURL, params, true);
+                glib.ajax.get(url, function (url, xr) {
+                    handleResult(url, xr, callback, context);
+                }, null, this, false, true);
+            },
+
+            post: function (command, params, data, callback, context) {
+                var url;
+                params.action = command;
+                url = glib.ajax.url(mtw.WebServiceURL, params, true);
+                glib.ajax.post(url, data, function (url, xr) {
+                    handleResult(url, xr, callback, context);
+                }, null, this, false, true);
+            }
+
+        }
+    });
+
+}());
 //////////////////////////////////////////////////////////////////////
 
 glib.List = (function () {
@@ -1977,7 +2200,7 @@ glib.List = (function () {
 
         //////////////////////////////////////////////////////////////////////
 
-        update: function (time, deltaTime) {
+        update: function (time, deltaTime, frame, indent) {
             var self = this.drawableData,
                 c,
                 i,
@@ -1997,7 +2220,7 @@ glib.List = (function () {
             if (self.enabled) {
                 for (i = self.children.length - 1; i >= 0; --i) {
                     c = self.children[i];
-                    c.update(time, deltaTime);
+                    c.update(time, deltaTime, frame, indent + 4);
                     if (c.drawableData.modal && !frozen) {
                         glib.Mouse.freeze();
                         glib.Keyboard.freeze();
@@ -2006,8 +2229,8 @@ glib.List = (function () {
                 }
                 if (self.enabled) {                 // children might disable their parent
                     this.onUpdate(time, deltaTime);
-                    // glib.Debug.text(this.x, this.y, glib.Drawable.updateId.toString());
-                    // glib.Drawable.updateId += 1;
+                    //glib.Debug.text(this.x, this.y, glib.Drawable.updateId.toString());
+                    glib.Drawable.updateId += 1;
                 }
             }
             if (frozen) {
@@ -2043,11 +2266,13 @@ glib.List = (function () {
                 self.globalMatrix.setContextTransform(context);
                 tr = (transparency * self.transparency) / 255;
                 context.globalAlpha = tr / 255;
+                context.save();
                 if(this.onDraw(context) !== false) {
                     for (i = 0, l = self.children.length; i < l; ++i) {
                         self.children[i].draw(context, self.globalMatrix, tr);
                     }
                 }
+                context.restore();
             }
         },
 
@@ -3351,7 +3576,7 @@ glib.List = (function () {
                 b = Math.floor(y2) + 0.5,
                 h = b - t,
                 w = r - l;
-            glib.Line.call(this, 0, h, w, h, "skyblue", 2);
+            glib.Line.call(this, 0, h, w, h, "skyblue", 1);
             glib.Button.call(this, function () {
                 if (this.linkClicked) {
                     this.linkClicked.call(this.clickContext, this.link);
@@ -3443,11 +3668,12 @@ glib.List = (function () {
 
         $: function (x, y, w, h, text, font, lineBreak, linkClicked, context) {
             glib.ClipRect.call(this, x, y, w, h, 0);
+            this.label = new glib.Label(text, font);
             if (linkClicked) {
                 this.links = new glib.Drawable();
                 this.addChild(this.links);
+                this.links.zIndex = 10;
             }
-            this.label = new glib.Label(text, font);
             this.addChild(this.label);
             this.context = context;
             this.setPosition(x, y);
@@ -3472,7 +3698,7 @@ glib.List = (function () {
                             links.shift(),
                             linkClickedCallback,
                             this);
-                        link.transparency = 192;
+//                        link.transparency = 255;
                         this.links.addChild(link);
                     }
                 }
@@ -3664,7 +3890,7 @@ glib.List = (function () {
                             skip = true;
                             if (links && l === 0) {
                                 if (inLink) {
-                                    links.push(xc, yc);
+                                    links.push(xc - layer.offsetX, yc);
                                 } else {
                                     links.push(xc, yc + this.font.baseline + 3, link);
                                     link = "";
@@ -4047,10 +4273,12 @@ glib.List = (function () {
                         w,
                         h;
                     if (this.drag) {
+                        var pfw = glib.Playfield.Width,
+                            pfh = glib.Playfield.Height;
                         x = e.position.x + this.dragOffset.x;   // WINDOW DRAG CONTRAINT BROKEN IF TRANSFORM IS MORE THAN SIMPLE TRANSLATION!!!
                         y = e.position.y + this.dragOffset.y;
-                        x = glib.Util.constrain(x, -this.width / 4, glib.desktop.width + this.width / 4);
-                        y = glib.Util.constrain(y, this.height / 2, glib.desktop.height + this.height / 2 - this.clientOffset);
+                        x = glib.Util.constrain(x, -this.width / 4, pfw + this.width / 4);
+                        y = glib.Util.constrain(y, this.height / 2, pfh + this.height / 2 - this.clientOffset);
                         this.setPosition(x, y);
                     }
                 }, this);
@@ -4122,8 +4350,8 @@ glib.List = (function () {
     glib.MessageWindow = glib.Class({ inherit$: glib.Window,
 
         $: function (text, textFont, buttons, callback, context, buttonFont) {
-            var dw = glib.desktop.width / 1.6666,
-                dh = glib.desktop.height / 2,
+            var dw = glib.Playfield.Width / 1.6666,
+                dh = glib.Playfield.Height / 2,
                 btnFont = (buttonFont === undefined) ? textFont : buttonFont,
                 wrapped = textFont.wrapText(text, dw - 20, '\r'),
                 dim = textFont.measureText(wrapped),
@@ -4135,7 +4363,7 @@ glib.List = (function () {
                 button,
                 controls;
             glib.Window.call(this, {
-                x: glib.desktop.width / 2,
+                x: glib.Playfield.Width / 2,
                 y: dh,
                 width: dw,
                 height: h,
@@ -4174,7 +4402,7 @@ glib.List = (function () {
 
         $: function (text, textFont, buttons, callback, context, buttonFont) {
             glib.Drawable.call(this);
-            this.panel = new glib.Panel(0, 0, glib.desktop.width, glib.desktop.height, "black");
+            this.panel = new glib.Panel(0, 0, glib.Playfield.Width, glib.Playfield.Height, "black");
             this.msgBox = new glib.MessageWindow(text, textFont, buttons, callback, context, buttonFont);
             this.addChild(this.panel);
             this.addChild(this.msgBox);
@@ -4189,7 +4417,7 @@ glib.List = (function () {
         onUpdate: function (time, deltaTime) {
             var t;
             this.age += deltaTime;
-            t = Math.min(1, this.age / 125);    // half a second to face in
+            t = Math.min(1, this.age * 6);    // 1/6th of a second to fade in
             t = glib.Util.ease(t);
             this.msgBox.panel.transparency = t * 224;
             this.panel.transparency = t * 96;
@@ -4667,178 +4895,6 @@ glib.List = (function () {
     });
 
 }());
-//////////////////////////////////////////////////////////////////////
-
-(function () {
-    "use strict";
-
-    //////////////////////////////////////////////////////////////////////
-
-    var context,
-        font,
-        loader,
-        cursorX,
-        cursorY,
-        fontHeight = 0,
-        DBText = 1,
-        DBRect = 2,
-        DBFillRect = 3,
-        DBPoly = 4,
-        DBLine = 5,
-        d = [],
-
-        // Stub debug output, used before font loaded or if Debug.init never called
-
-        Stub = glib.Class({
-            $: function() { },
-            text: function() { },
-            print: function() { },
-            rect: function() { },
-            fillRect: function() { },
-            poly: function() { },
-            line: function() { },
-            draw: function() { }
-        }),
-
-        // Real debug output, used when font is available
-
-        Real = glib.Class({
-            $: function() {},
-            text: function (x, y, things) {
-                var i,
-                    s = "",
-                    c = "",
-                    a;
-                for (i = 2; i < arguments.length; ++i) {
-                    a = arguments[i];
-                    if (a === undefined) {
-                        a = "undefined";
-                    }
-                    else if (typeof a !== 'string') {
-                        a = a.toString();
-                    }
-                    s = s + c + a;
-                    c = ",";
-                }
-                d.push(DBText, s, x, y);
-            },
-
-            print: function () {
-                glib.Debug.text.apply(this, [cursorX, cursorY].concat(Array.prototype.slice.call(arguments, 0)));
-                cursorY += font.height;
-            },
-
-            rect: function (x, y, w, h, colour) {
-                d.push(DBRect, x, y, w, h, colour);
-            },
-
-            fillRect: function (x, y, w, h, colour) {
-                d.push(DBFillRect, x, y, w, h, colour);
-            },
-
-            poly: function (points, colour) {
-                var i;
-                d.push(DBPoly, points.length, colour);
-                for (i = 0; i < points.length; ++i) {
-                    d.push(points[i].x, points[i].y);
-                }
-            },
-
-            line: function (x1, y1, x2, y2, colour) {
-                d.push(DBLine, x1, y1, x2, y2, colour);
-            },
-
-            draw: function () {
-                var i,
-                    l,
-                    colour;
-                context.setTransform(1, 0, 0, 1, 0, 0);
-                while (d.length > 0) {
-                    switch (d.shift()) {
-                    case DBText:    // x, y, string
-                        font.renderString(context, d.shift(), d.shift(), d.shift());
-                        break;
-                    case DBRect:    // x, y, w, h, colour
-                        glib.Util.rect(context, d.shift(), d.shift(), d.shift(), d.shift());
-                        context.strokeStyle = d.shift();
-                        context.stroke();
-                        break;
-                    case DBFillRect:    // x, y, w, h, colour
-                        glib.Util.rect(context, d.shift(), d.shift(), d.shift(), d.shift());
-                        context.fillStyle = d.shift();
-                        context.fill();
-                        break;
-                    case DBLine:    // x1, y1, x1, y1, colour
-                        context.beginPath();
-                        context.moveTo(d.shift(), d.shift());
-                        context.lineTo(d.shift(), d.shift());
-                        context.strokeStyle = d.shift();
-                        context.stroke();
-                        break;
-                    case DBPoly:
-                        context.beginPath();
-                        l = d.shift();
-                        colour = d.shift();
-                        context.moveTo(d.shift(), d.shift());
-                        for (i = 1; i < l; ++i) {
-                            context.lineTo(d.shift(), d.shift());
-                        }
-                        context.closePath();
-                        context.fillStyle = colour;
-                        context.fill();
-                    }
-                }
-                cursorX = 0;
-                cursorY = 0;
-            }
-        }),
-
-        // current debug output object, defaults to Stub
-
-        current = new Stub();
-
-    //////////////////////////////////////////////////////////////////////
-    // Customer facing interface
-
-    glib.Debug = glib.Class({
-
-        static$: {
-            init: function(ctx) {
-                context = ctx;
-                loader = new glib.Loader("img/");
-                loader.addEventHandler("complete", glib.Debug.fontLoaded);
-                font = glib.Font.load("Fixedsys", loader);
-                loader.start();
-            },
-            fontLoaded: function() {
-                fontHeight = font.height;
-                current = new Real();
-            },
-            text: function (x, y, things) {
-                current.text.apply(null, Array.prototype.slice.call(arguments, 0));
-            },
-            print: function () {
-                current.text.apply(null, [cursorX, cursorY].concat(Array.prototype.slice.call(arguments, 0)));
-                cursorY += fontHeight;
-            },
-            rect: function (x, y, w, h, colour) {
-                current.rect(x, y, w, h, colour);
-            },
-            fillRect: function (x, y, w, h, colour) {
-                current.fillRect(x, y, w, h, colour);
-            },
-            poly: function (points, colour) {
-                current.poly(points, colour);
-            },
-            line: function (x1, y1, x2, y2, colour) {
-                current.line(x1, y1, x2, y2, colour);
-            },
-            draw: function () {
-                current.draw();
-            }
-        }
-    });
-}());
 (function () {
     "use strict";
 
@@ -4846,6 +4902,7 @@ glib.List = (function () {
         canvas,
         element,
         loader,
+        frame = 0,
         context,
         autoCenter,
         identityMatrix = new glib.Matrix(),
@@ -4860,7 +4917,7 @@ glib.List = (function () {
             glib.Keyboard.update(playfield);
             glib.Mouse.update(playfield);
             glib.Drawable.updateId = 0;
-            playfield.update(glib.Timer.time, glib.Timer.delta);
+            playfield.update(glib.Timer.time, glib.Timer.delta, frame++, 0);
             glib.Drawable.drawId = 0;
             playfield.draw(context, identityMatrix, 255);
             glib.Debug.draw();
@@ -4889,16 +4946,14 @@ glib.List = (function () {
             canvas = document.createElement("canvas");
             canvas.width = this.width;
             canvas.height = this.height;
-            canvas.style.position = "absolute";
             if (autoCenter) {
+                canvas.style.position = "absolute";
                 centerCanvas();
                 window.addEventListener("resize", centerCanvas, false);
             }
             element.appendChild(canvas);
             context = canvas.getContext("2d");
-            context.webkitImageSmoothingEnabled = false;
-            context.mozImageSmoothingEnabled = false;
-            context.imageSmoothingEnabled = false;
+
             if (!opt.NoDebug) {
                 glib.Debug.init(context);
             }
@@ -4906,7 +4961,35 @@ glib.List = (function () {
             glib.Keyboard.init();
             glib.Timer.init();
             update();
+        },
+
+        static$: {
+
+            Width: glib.Property({
+                get: function() {
+                    return playfield.width;
+                }
+            }),
+
+            Height: glib.Property({
+                get: function() {
+                    return playfield.height;
+                }
+            }),
+
+            Size: glib.Property({
+                get: function() {
+                    return { width: playfield.width, height: playfield.height };
+                }
+            }),
+
+            Root: glib.Property({
+                get: function() {
+                    return playfield;
+                }
+            })
         }
+
     });
 
 } ());

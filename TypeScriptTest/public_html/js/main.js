@@ -1,5 +1,19 @@
 /////////////////////////////////////////////////////////////////////
 
+var test = glib.Class({ inherit$: glib.SolidRectangle,
+
+    $: function(x, y, w, h, radius, fillColour) {
+        glib.SolidRectangle.call(this, x, y, w, h, radius, fillColour);
+    },
+
+    onUpdate: function(time, deltaTime) {
+        glib.Debug.text(100, 100, "Hello" + deltaTime.toString());
+        this.x += 1;
+    }
+
+});
+
+
 window.onload = function () {
     "use strict";
 
@@ -22,10 +36,11 @@ window.onload = function () {
     onResize();
 
     new glib.Playfield({
-        width: 1280,
-        height: 720,
+        width: 852,
+        height: 480,
         backgroundColour: "rgb(8, 8, 64)",
         autoCenter: true,
         DOMContainer: document.body
     }).addChild(new mtw.MainMenu());
+//    }).addChild(new test(0, 0, 100, 100, 0, "white"));
 };

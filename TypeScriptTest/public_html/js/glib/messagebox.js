@@ -11,8 +11,8 @@
     glib.MessageWindow = glib.Class({ inherit$: glib.Window,
 
         $: function (text, textFont, buttons, callback, context, buttonFont) {
-            var dw = glib.desktop.width / 1.6666,
-                dh = glib.desktop.height / 2,
+            var dw = glib.Playfield.Width / 1.6666,
+                dh = glib.Playfield.Height / 2,
                 btnFont = (buttonFont === undefined) ? textFont : buttonFont,
                 wrapped = textFont.wrapText(text, dw - 20, '\r'),
                 dim = textFont.measureText(wrapped),
@@ -24,7 +24,7 @@
                 button,
                 controls;
             glib.Window.call(this, {
-                x: glib.desktop.width / 2,
+                x: glib.Playfield.Width / 2,
                 y: dh,
                 width: dw,
                 height: h,
@@ -63,7 +63,7 @@
 
         $: function (text, textFont, buttons, callback, context, buttonFont) {
             glib.Drawable.call(this);
-            this.panel = new glib.Panel(0, 0, glib.desktop.width, glib.desktop.height, "black");
+            this.panel = new glib.Panel(0, 0, glib.Playfield.Width, glib.Playfield.Height, "black");
             this.msgBox = new glib.MessageWindow(text, textFont, buttons, callback, context, buttonFont);
             this.addChild(this.panel);
             this.addChild(this.msgBox);
@@ -78,7 +78,7 @@
         onUpdate: function (time, deltaTime) {
             var t;
             this.age += deltaTime;
-            t = Math.min(1, this.age / 125);    // half a second to face in
+            t = Math.min(1, this.age * 6);    // 1/6th of a second to fade in
             t = glib.Util.ease(t);
             this.msgBox.panel.transparency = t * 224;
             this.panel.transparency = t * 96;

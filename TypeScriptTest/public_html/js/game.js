@@ -208,7 +208,7 @@
                             bestScore = board.bestScore;
                             bestLabel.text = board.bestScore.toString();    // if board.bestScore has gone up, flash this!
                             bestButton.compose();
-                            bestButton.highlight = 1000;
+                            bestButton.highlight = 0.5;
                             leaderboard.board_id = data.board_id;
                             leaderBoard.doUpdate();
                         } else {
@@ -421,7 +421,7 @@
             bestLabel.text = board.bestScore.toString();    // if board.bestScore has gone up, flash this!
 
             if (board.bestScore > bestScore || retry) {
-                bestButton.highlight = 1000;
+                bestButton.highlight = 0.5;
                 bestScore = board.bestScore;
                 if(mtw.User.id) {
                     glib.WebService.post("board", {}, { board: board.getAsString(), user_id: mtw.User.id, game_id: this.game_id, seed: board.seed }, function (data) {

@@ -195,7 +195,6 @@
                 pw = w / 1.05,
                 ph = h / 1.05;
 
-            //glib.Playfield.Root.clear();
             this.game.loadComplete();
             provider_id = provider_id ? parseInt(provider_id, 10) : 0;
             glib.Playfield.Root.removeChild(loader);

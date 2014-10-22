@@ -329,7 +329,7 @@
                 }
                 if (self.enabled) {                 // children might disable their parent
                     this.onUpdate(time, deltaTime);
-                    glib.Debug.text(this.x, this.y, glib.Drawable.updateId.toString());
+                    //glib.Debug.text(this.x, this.y, glib.Drawable.updateId.toString());
                     glib.Drawable.updateId += 1;
                 }
             }
@@ -366,11 +366,13 @@
                 self.globalMatrix.setContextTransform(context);
                 tr = (transparency * self.transparency) / 255;
                 context.globalAlpha = tr / 255;
+                context.save();
                 if(this.onDraw(context) !== false) {
                     for (i = 0, l = self.children.length; i < l; ++i) {
                         self.children[i].draw(context, self.globalMatrix, tr);
                     }
                 }
+                context.restore();
             }
         },
 

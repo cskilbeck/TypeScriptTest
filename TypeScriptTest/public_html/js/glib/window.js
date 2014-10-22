@@ -88,10 +88,12 @@
                         w,
                         h;
                     if (this.drag) {
+                        var pfw = glib.Playfield.Width,
+                            pfh = glib.Playfield.Height;
                         x = e.position.x + this.dragOffset.x;   // WINDOW DRAG CONTRAINT BROKEN IF TRANSFORM IS MORE THAN SIMPLE TRANSLATION!!!
                         y = e.position.y + this.dragOffset.y;
-                        x = glib.Util.constrain(x, -this.width / 4, glib.desktop.width + this.width / 4);
-                        y = glib.Util.constrain(y, this.height / 2, glib.desktop.height + this.height / 2 - this.clientOffset);
+                        x = glib.Util.constrain(x, -this.width / 4, pfw + this.width / 4);
+                        y = glib.Util.constrain(y, this.height / 2, pfh + this.height / 2 - this.clientOffset);
                         this.setPosition(x, y);
                     }
                 }, this);

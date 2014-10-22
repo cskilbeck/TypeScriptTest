@@ -57,11 +57,6 @@
             element.appendChild(canvas);
             context = canvas.getContext("2d");
 
-            // TODO: make this optional or platform-dependent
-            //context.webkitImageSmoothingEnabled = false;
-            //context.mozImageSmoothingEnabled = false;
-            //context.imageSmoothingEnabled = false;
-
             if (!opt.NoDebug) {
                 glib.Debug.init(context);
             }

@@ -118,7 +118,7 @@
         // put it back to its origin
 
         resetPosition: function () {
-            this.setTarget(this.org.x, this.org.y, 50);
+            this.setTarget(this.org.x, this.org.y, 0.05);
 //            this.setPosition(this.org.x, this.org.y);
         },
 

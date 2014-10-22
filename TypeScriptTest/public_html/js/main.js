@@ -38,9 +38,8 @@ window.onload = function () {
     new glib.Playfield({
         width: 852,
         height: 480,
-        backgroundColour: "rgb(8, 8, 64)",
+        backgroundColour: "rgb(16, 72, 16)",
         autoCenter: true,
         DOMContainer: document.body
     }).addChild(new mtw.MainMenu());
-//    }).addChild(new test(0, 0, 100, 100, 0, "white"));
 };

@@ -93,7 +93,7 @@
 
             scoreButton.flash = function (color) {
                 this.fillColour = color;
-                this.highlight = 500;
+                this.highlight = 0.5;
                 this.compose();
             };
 

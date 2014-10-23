@@ -35,6 +35,7 @@
     <script src="js/glib/mouse.js"></script>
     <script src="js/glib/playfield.js"></script>
 
+<!--
     <script src="js/mtw.js"></script>
     <script src="js/webserviceurl.js"></script>
     <script src="js/oauth.js"></script>
@@ -53,6 +54,14 @@
     <script src="js/loginscreen.js"></script>
     <script src="js/mainmenu.js"></script>
     <script src="js/main.js"></script>
+-->
+<!--
+    <script src="js/breakout.js"></script>
+-->
+<!--
+    <script src="js/shooter.js"></script>
+-->
+    <script src="js/tripple.js"></script>
 </head>
 <body></body>
 </html>

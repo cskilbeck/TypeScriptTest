@@ -769,6 +769,18 @@
 
         //////////////////////////////////////////////////////////////////////
 
+        root: glib.Property({
+            get: function() {
+                var parent = this.drawableData.parent;
+                while(parent !== null && parent.drawableData.parent !== null) {
+                    parent = parent.drawableData.parent;
+                }
+                return parent;
+            }
+        }),
+
+        //////////////////////////////////////////////////////////////////////
+
         setDirty: function () {
             this.drawableData.dirty = true;
         }

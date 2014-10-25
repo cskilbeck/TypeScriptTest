@@ -137,15 +137,15 @@
                 if (data && !data.error) {
                     this.seed = data.seed;
                     this.game_id = data.game_id;
-                    this.now = Date.parse(data.now);
-                    this.game_ends = Date.parse(data.end_time);
+                    this.now = Date.parse(data.now) / 1000;
+                    this.game_ends = Date.parse(data.end_time) / 1000;
                     remainder = this.game_ends - this.now;          // how much time left in this game
                     if (remainder > 0) {
                         last_snapshot_time = glib.Timer.time;
                         gameLabel.text = "Game " + this.game_id.toString();
                         this.addChild(new glib.Timer(0, 1, function() {
                             var elapsed = glib.Timer.time - last_snapshot_time,
-                                remain = new Date(remainder - elapsed),
+                                remain = new Date((remainder - elapsed) * 1000),
                                 hours = remain.getHours();
                                 minutes = remain.getMinutes();
                                 seconds = remain.getSeconds();

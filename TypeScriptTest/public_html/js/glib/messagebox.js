@@ -30,8 +30,7 @@
                 height: h,
                 borderWidth: 4,
                 cornerRadius: 8,
-                backgroundTransparency: 224,
-                modal: true
+                backgroundTransparency: 224
             });
             this.setPivot(0.5, 0.5);
             this.buttonHolder = new glib.Drawable();
@@ -66,6 +65,10 @@
             this.panel = new glib.Panel(0, 0, glib.Playfield.Width, glib.Playfield.Height, "black");
             this.msgBox = new glib.MessageWindow(text, textFont, buttons, callback, context, buttonFont);
             this.addChild(this.panel);
+            this.panel.modal = true;
+            this.panel.addEventHandler('leftMouseDown', function() {
+                this.close();
+            }, this);
             this.addChild(this.msgBox);
             this.msgBox.addEventHandler('closing', function () {
                 this.close();

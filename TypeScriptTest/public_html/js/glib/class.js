@@ -3,6 +3,8 @@
 // instanceof not supported
 // everything is a mixin...
 
+/** @module glib */
+
 (function () {
     "use strict";
 
@@ -13,6 +15,7 @@
     };
 
     //////////////////////////////////////////////////////////////////////
+    /** Create a property entry in your class */
 
     glib.Property = function (desc) {
         return new glib.PropertyDescriptor(desc);
@@ -38,6 +41,18 @@
     }
 
     //////////////////////////////////////////////////////////////////////
+    /**
+        @typedef ClassDescriptor
+        @type {object}
+        @property {object}      inherit$    - object (or array of objects) specifying parent class(es)
+        @property {function}    $           - constructor function - you must call all parent constructors with relevant parameters
+        @property {object}      static$     - all static members, these can be Properties, functions or values
+        @property {function}    memberfunc  - name your member functions what you want. name clash with parent class = override
+
+        @function glib.Class
+        @description Declare a class
+        @param @type {CLassDescriptor} desc - the class definition
+    */
 
     glib.Class = function (desc) {
         var newClass = desc.$ || {},

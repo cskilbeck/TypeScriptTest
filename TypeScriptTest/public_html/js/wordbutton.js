@@ -140,7 +140,7 @@
                 this.board.addChild(this.wordHighlight);
                 this.wordHighlight.zIndex = 2;
                 this.shader.onUpdate = function(time, deltaTime) {
-                    this.transparency = Math.sin(time / 80) * 16 + 64;
+                    this.transparency = Math.sin(time * 12.5) * 16 + 64;
                 };
             }
         },

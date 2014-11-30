@@ -6,12 +6,12 @@ GLOBAL.window = GLOBAL;
 
 var dictionary = require('./dictionary.json');
 
-require('./js/chs.js');
-require('./js/util.js');
-require('./js/class.js');
-require('./js/list.js');
-require('./js/random.js');
+require('./js/glib/global.js');
+require('./js/glib/class.js');
+require('./js/glib/util.js');
+require('./js/glib/random.js');
 require('./js/letters.js');
+require('./js/board.js');
 require('./js/word.js');
 require('./js/dictionary.js');
 require('./js/tile.js');

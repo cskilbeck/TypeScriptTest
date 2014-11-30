@@ -2,4 +2,4 @@
 
     exports.glib = { none: undefined };
 
-})(typeof module !== 'undefined' && module.exports === exports ? module.exports : window);
+})(typeof module !== 'undefined' ? module.exports : window);

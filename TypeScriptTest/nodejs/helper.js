@@ -2,9 +2,11 @@
 
 console.log("Helper started at " + Date().toString());
 
-GLOBAL.window = GLOBAL;
+//GLOBAL.window = GLOBAL;
 
 var dictionary = require('./dictionary.json');
+
+mtw = {};
 
 require('./js/glib/global.js');
 require('./js/glib/class.js');
@@ -92,7 +94,7 @@ net.createServer(function (socket) {
 
         console.log(Date().toString() + ":" + data.toString());
 
-        var params = chs.Util.queryStringToJSON(data.toString()),
+        var params = glib.Util.queryStringToObject(data.toString()),
             action,
             output = {};
 

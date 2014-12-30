@@ -445,7 +445,11 @@ class definitionHandler(Handler):
 
     def handle(self, cur, db):
         check_parameters(self.query, ['word'])
-        self.add(service(self.query))
+        result = service(self.query)
+        if result is not None:
+            self.add(result)
+        else:
+            self.err(e_dbaseerror)
 
 #----------------------------------------------------------------------
 # GET:leaderboard - get leaderboard
@@ -465,7 +469,7 @@ class leaderboardHandler(Handler):
         check_parameters(self.query, ['board_id', 'offset', 'page_size', 'game_id'])
         page_size = int(self.query['page_size'], 10)
         board_id = int(self.query['board_id'], 10)
-        if (page_size > 30):
+        if page_size > 30:
             self.err(e_badparameter)
         cur.execute("SELECT COUNT(*) AS total FROM boards WHERE game_id = %(game_id)s", self.query)
         self.add({ "total": cur.fetchone()['total'] })
@@ -486,6 +490,8 @@ def application(environ, start_response):
 
     resetLog()
 
+#    print(pprint.pformat(environ))
+
     log("--------------------------------------------------------------------------------")
     headers = [('Content-type', 'application/json')]
     output = dict()
@@ -498,6 +504,7 @@ def application(environ, start_response):
             headers.append(('Access-Control-Allow-Origin', org))
             method = environ['REQUEST_METHOD']
             query = query_to_dict(environ.get('QUERY_STRING', ""))
+            log("QUERY:", query)
             post = dict()
             if method == 'POST':
                 post = query_to_dict(environ['wsgi.input'].read(int(environ.get('CONTENT_LENGTH', 4096), 10)))  # 4096? should be enough...
@@ -508,6 +515,7 @@ def application(environ, start_response):
             log("Query:", query)
             log("Post:", post)
             func = query.get('action', '!') + 'Handler'
+            log("FUNC:", func)
             if not func in globals():
                 raise(Error(e_badaction))
             status = globals()[func](query, post, output).processRequest(db)

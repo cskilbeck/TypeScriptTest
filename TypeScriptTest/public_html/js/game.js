@@ -420,25 +420,27 @@
             scoreButton.setScore(board.score);
             bestLabel.text = board.bestScore.toString();    // if board.bestScore has gone up, flash this!
 
-            if (board.bestScore > bestScore || retry) {
+            if (board.bestScore > bestScore) {
                 bestButton.highlight = 0.5;
                 bestScore = board.bestScore;
-                if(mtw.User.id) {
-                    glib.WebService.post("board", {}, { board: board.getAsString(), user_id: mtw.User.id, game_id: this.game_id, seed: board.seed }, function (data) {
-                        if (data && !data.error) {
-                            leaderBoard.board_id = data.board_id;
-                            this.board_id = data.board_id;  // for LB tracking
-                            leaderBoard.doUpdate();
-                            retry = false;
-                        } else {
-                            if (data !== null) {
-                                console.log("Error! " + data.error.toString());
+                if(retry) {
+                    if(mtw.User.id) {
+                        glib.WebService.post("board", {}, { board: board.getAsString(), user_id: mtw.User.id, game_id: this.game_id, seed: board.seed }, function (data) {
+                            if (data && !data.error) {
+                                leaderBoard.board_id = data.board_id;
+                                this.board_id = data.board_id;  // for LB tracking
+                                leaderBoard.doUpdate();
+                                retry = false;
                             } else {
-                                console.log("No data");
+                                if (data !== null) {
+                                    console.log("Error! " + data.error.toString());
+                                } else {
+                                    console.log("No data");
+                                }
+                                retry = true;
                             }
-                            retry = true;
-                        }
-                    }, this);
+                        }, this);
+                    }
                 }
             }
         }

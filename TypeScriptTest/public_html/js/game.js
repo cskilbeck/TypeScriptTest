@@ -330,8 +330,14 @@
                     glib.WebService.get("definition", { word: word }, function (data) {
                         netWorkIndicator.rotation = 0;
                         networkInprogress = false;
-                        if (data && !data.error) {
-                            textBox.text = data.definition;
+                        if (data) {
+                            if(!data.error) {
+                                textBox.text = data.definition;
+                            } else {
+                                textBox.text = "Can't get word definition - check network...?";
+                            }
+                        } else {
+                            textBox.text = "Can't get word definition - check network...?";
                         }
                     });
                 };

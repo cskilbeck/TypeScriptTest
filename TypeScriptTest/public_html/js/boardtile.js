@@ -84,6 +84,9 @@
                 return this.myLetter;
             },
             set: function (s) {
+                if(s === undefined) {
+                    console.log("!");
+                }
                 this.myLetter = s;
                 this.label.text = s.toUpperCase();
                 if (this.digits) {

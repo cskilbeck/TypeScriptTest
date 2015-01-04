@@ -24,23 +24,87 @@
             }
         },
 
+        vowelPercentage: function() {
+            var i,
+                vowels = 0;
+            for(i = 0; i < this.tiles.length; ++i) {
+                if("aeiouy".indexOf(this.tiles[i].letter) != -1) {
+                    vowels += 1;
+                }
+            }
+            return vowels * 100 / this.tiles.length;
+        },
+
         //////////////////////////////////////////////////////////////////////
         // fill with random letters which don't make any words
 
         randomize: function (seed) {
-            var i;
+            var i,
+                vc = (this.tiles.length / 3) >>> 0,
+                letter,
+                letters = [],
+                vowelPercent,
+                vowels,
+                consonants;
+/*
+                arr,
+                res,
+                key;
 
+            res = {
+                '1,2,3': 0, '1,3,2': 0,
+                '2,1,3': 0, '2,3,1': 0,
+                '3,1,2': 0, '3,2,1': 0
+            };
+
+            letter = new glib.Random();
+
+            for (i = 0; i < 1000000; i++) {
+                arr = [1,2,3];
+                glib.Util.shuffle(arr, letter);
+                res[arr.join(',')] += 1;
+            }
+            for (key in res) {
+                console.log(key + "\t" + res[key]);
+            }
+*/
             this.seed = seed;
             // fill with random letters
             this.random.seed(seed);
-            for (i = 0; i < this.tiles.length; ++i) {
-                this.tiles[i].letter = mtw.Letters.random(this.random);
+
+            // somewhat fix the ratio of vowels to consonants to avoid annoying/boring boards:
+            // vowels should be 40% of the letters, +/- 5% so, 35-45%
+            // the rest are consonants
+            vowelPercent = 0.4 + this.random.float() * 0.1 - 0.05;
+            vowels = (this.tiles.length * vowelPercent + 0.5) >>> 0;
+            consonants = this.tiles.length - vowels;
+
+            letters.length = this.tiles.length;
+
+            for (i = 0; i < vowels; ++i) {
+                letters[i] = mtw.Letters.randomVowel(this.random);  // vowel please, Carol
+            }
+
+            for(; i < this.tiles.length; ++i) {
+                letters[i] = mtw.Letters.randomConsonant(this.random);
+            }
+
+            // then shuffle the letters
+            glib.Util.shuffle(letters, this.random);
+
+            // and assign to the board
+            for(i=0; i < letters.length; ++i) {
+                this.tiles[i].letter = letters[i];
             }
 
             // nobble it until there are no words on it
             while (this.markAllWords() !== 0) {
-                this.getWordTile(this.words[0], 0).letter = mtw.Letters.random(this.random);
+                vowelPercent = this.vowelPercentage();
+                this.getWordTile(this.words[0], 0).letter = (vowelPercent < 35) ?   mtw.Letters.randomVowel(this.random) :
+                                                            (vowelPercent > 45) ?   mtw.Letters.randomConsonant(this.random) :
+                                                                                    mtw.Letters.random(this.random);
             }
+            console.log(this.vowelPercentage().toString() + "% vowels");
         },
 
         //////////////////////////////////////////////////////////////////////

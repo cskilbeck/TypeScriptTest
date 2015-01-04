@@ -2,20 +2,17 @@
     "use strict";
 
     function handleResult(url, xr, callback, context) {
-        var d;
+        var d = null;
         if(xr.status == 200) {
             try {
                 d = JSON.parse(xr.responseText);
             }
             catch (e) {
                 console.log("Bad result from web service: " + xr.responseText);
-                d = null;
             }
-            if (d !== null && callback) {
-                callback.call(context, d);
-            }
-        } else {
-            callback.call(context, null);
+        }
+        if(callback) {
+            callback.call(context, d);
         }
     }
 

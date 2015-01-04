@@ -5,7 +5,8 @@
         y,
         z,
         w,
-        v;
+        v,
+        RAND_MAX = 65535;
 
     glib.Random = glib.Class({
 
@@ -32,8 +33,15 @@
             return ((y + y + 1) * v) >>> 16;
         },
 
-        nextFloat: function() {
-            return this.next() / 65536;
+        ranged: function(range) {
+            var limit = RAND_MAX - (RAND_MAX + 1) % range,
+                candidate;
+            do candidate = this.next(); while(candidate > limit);
+            return candidate / ((limit + 1) / range) >>> 0;
+        },
+
+        float: function() {
+            return this.next() / (RAND_MAX + 1);
         }
     });
 

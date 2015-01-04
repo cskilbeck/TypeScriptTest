@@ -6,7 +6,7 @@
 // Fix tile grabbing/moving/swapping/lerping/tap to swap
 // menu button repositioned working on phone
 // font: layermask, composited labels all wonky
-// munger: piece ({{term}}) / body <span id='group'> / meal (senseid, en, food) / field (senseid) / coastal (cx, geography) / daub (cx) / source (,) / eyen (Category) / torr <sup> / meg (SI prefix) / ai (l/en)
+// munger: every (!?) piece ({{term}}) / body <span id='group'> / meal (senseid, en, food) / field (senseid) / coastal (cx, geography) / daub (cx) / source (,) / eyen (Category) / torr <sup> / meg (SI prefix) / ai (l/en)
 // make all drawables compositable?
 // make login robust
 // loader outputs manifest with file sizes for proper progress bar
@@ -273,14 +273,16 @@
         shuffle: function () {
             this.addChild(new glib.MessageBox("Really shuffle? You can undo it...", consolas, ['Yes', 'No'], function (idx) {
                 var i,
-                    r,
-                    n;
+                    l,
+                    rand,
+                    r;
                 if (idx === 0) {
-                    r = new glib.Random();
+                    board.pushUndo();
                     board.beforeDrag = board.getAsString();
-                    for (i = 0; i < board.tiles.length - 1; ++i) {
-                        n = i + (r.next() % (board.tiles.length - 1 - i));
-                        board.tiles[i].swap(board.tiles[n]);
+                    rand = new glib.Random();
+                    for(i = board.tiles.length; i > 1;) {
+                        r = rand.ranged(i--);
+                        board.tiles[i].swap(board.tiles[r]);
                     }
                     board.markAllWords();
                     this.updateWordList();

@@ -43,6 +43,7 @@
             mtw.User.id = 0;
             this.enabled = false;
             this.visible = false;
+            this.practiceRNG = new glib.Random();
             this.size = glib.Playfield.Size;
             loader = new glib.Loader('img/');
             glib.Playfield.Root.addChild(loader);
@@ -203,7 +204,9 @@
             this.button.onUpdate = function (time, deltaTime) {
                 this.rotation = Math.pow(Math.sin(time), 16) * Math.sin(time * 40) * 0.05;
             };
+            this.practiceButton = new glib.TextButton("Practice", consolasItalic, pw / 2, ph / 4 + ph / 2, 190, 45, this.practiceClicked, this).setPivot(0.5, 0.5);
             this.panel.addChild(this.button);
+            this.panel.addChild(this.practiceButton);
             this.addChild(this.panel);
             this.panel.addChild(new glib.Menu(20, this.panel.height - 20, consolasItalic, buttons, callbacks, this).setPivot(0, 1));
             this.enabled = true;
@@ -221,6 +224,12 @@
             loginScreen.addEventHandler("closed", this.activate, this);
             this.activate(false);
             this.addSibling(loginScreen);
+        },
+
+        practiceClicked: function() {
+            this.activate(false);
+            this.addSibling(this.game);
+            this.game.init(0, this.practiceRNG.ranged(5000) + 5000);
         },
 
         playClicked: function () {

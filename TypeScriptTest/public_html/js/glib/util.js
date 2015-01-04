@@ -74,6 +74,20 @@
 
         //////////////////////////////////////////////////////////////////////
 
+        shuffle: function(arr, random) {
+            var i,
+                r,
+                t;
+            for(i = arr.length; i > 1;) {
+                r = random.ranged(i--);
+                t = arr[r];
+                arr[r] = arr[i];
+                arr[i] = t;
+            }
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
         constrain: function (x, min, max) {
 
             if (x < min) {

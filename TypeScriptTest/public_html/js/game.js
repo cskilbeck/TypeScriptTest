@@ -5,8 +5,24 @@
 // new words each day...
 // Fix tile grabbing/moving/swapping/lerping/tap to swap
 // menu button repositioned working on phone
+// Put a leaderboard on the mainmenu screen
 // font: layermask, composited labels all wonky
-// munger: every (!?) piece ({{term}}) / body <span id='group'> / meal (senseid, en, food) / field (senseid) / coastal (cx, geography) / daub (cx) / source (,) / eyen (Category) / torr <sup> / meg (SI prefix) / ai (l/en)
+// munger:
+//     every (!?)
+//     piece ({{term}})
+//     body <span id='group'>
+//     meal (senseid, en, food)
+//     field (senseid)
+//     coastal (cx, geography)
+//     daub (cx)
+//     source (,)
+//     eyen (Category)
+//     torr <sup>
+//     meg (SI prefix)
+//     ail (/en)
+//     volvae
+//     ALL: determiner (fewer, fewest etc)
+// mouse message flowing through incorrectly to button underneath
 // make all drawables compositable?
 // make login robust
 // loader outputs manifest with file sizes for proper progress bar
@@ -189,6 +205,7 @@
         // new game starting
 
         init: function (game_id, seed) {
+            glib.Util.log("Game::Init({0}, {1})", game_id, seed);
             this.game_id = game_id;
             board.randomize(seed);
             board.load();
@@ -200,22 +217,23 @@
                 // disable play until this comes back, either way
                 glib.WebService.get("game", { seed: seed, user_id: mtw.User.id }, function (data) {
                     if(data && !data.error) {
-                        if (data.score > bestScore) {
+                        if (data.score > bestScore) {       // they have a top score in the leaderboard already, grab it
                             this.board_id = data.board_id;
                             board.bestScore = data.score;
                             board.bestBoard = data.board;
                             board.bestSeed = seed;
                             bestScore = board.bestScore;
-                            bestLabel.text = board.bestScore.toString();    // if board.bestScore has gone up, flash this!
+                            bestLabel.text = board.bestScore.toString();
                             bestButton.compose();
                             bestButton.highlight = 0.5;
                             leaderboard.board_id = data.board_id;
                             leaderBoard.doUpdate();
                         } else {
-
+                            console.log("Score not improved on...");
+                            leaderBoard.setUpdateFrequency(1);
                         }
                     } else {
-                        // new game, probly
+                        console.log("No game from web service...");
                     }
                 }, this);
             }

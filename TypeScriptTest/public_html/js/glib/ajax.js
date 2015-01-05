@@ -10,6 +10,8 @@
         var cd = crossDomain === undefined ? false : crossDomain,
             xr;
 
+        console.log("AJAX " + method + ":" + url);
+
         if (glib.Browser.type === 'MSIE' && glib.Browser.version <= 10 && crossDomain) {
             xr = new XDomainRequest();
             xr.open(method, url);
@@ -38,6 +40,11 @@
             }
             xr.onreadystatechange = function () {
                 if (xr.readyState === XMLHttpRequest.DONE) {
+                    if(xr.responseType === 'text' || xr.responseType === '') {
+                        if(xr.responseText.length < 1000) {
+                            console.log("Data:" + xr.responseText);
+                        }
+                    }
                     callback.call(context, url, xr);
                 }
             };

@@ -2,6 +2,8 @@
 window.onload = function () {
     "use strict";
 
+    var playfield;
+
     /////////////////////////////////////////////////////////////////////
 
     function onResize() {
@@ -20,11 +22,13 @@ window.onload = function () {
     window.addEventListener("resize", onResize, false);
     onResize();
 
-    new glib.Playfield({
+    playfield = new glib.Playfield({
         width: 852,
         height: 480,
         backgroundColour: "rgb(16, 72, 16)",
         autoCenter: true,
         DOMContainer: document.body
-    }).addChild(new mtw.MainMenu());
+    });
+
+    playfield.addChild(new mtw.MainMenu());
 };

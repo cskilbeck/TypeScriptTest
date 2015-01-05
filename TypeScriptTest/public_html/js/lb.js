@@ -41,7 +41,7 @@
         },
 
         setUpdateFrequency: function (f) {
-            this.addChild(new glib.Timer(f, f, this.update, this));
+            this.addChild(new glib.Timer(f, f, this.doUpdate, this));
         },
 
         doUpdate: function() {
@@ -81,6 +81,8 @@
                                 break;
                             }
                         }
+                    } else {
+                        console.log("Error getting Leaderboard...");
                     }
                 }, this);
             }

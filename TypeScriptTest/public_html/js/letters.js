@@ -67,11 +67,12 @@
 
             getWordScore: function (str) {
                 var s = 0,
+                    l = str.length,
                     i;
-                for (i = 0; i < str.length; ++i) {
+                for (i = 0; i < l; ++i) {
                     s += letters[str.charCodeAt(i) - asciiA].score;
                 }
-                return s * str.length;
+                return s * l;
             },
 
             letterScore: function (letter) {

@@ -29,7 +29,7 @@ var net = require('net');
 //                                  result: { 'score': 5, 'valid': true }
 //          getboard(seed): action=getboard&seed=5
 //                                  result: { 'board': 'sjdklhfjksdhfkjsdhfkjsdhfkj' }
-//          getdefinition(word):    action=getdefinition&word=examine
+//          definition(word):    action=getdefinition&word=examine
 //                                  result: { 'definition': 'the definition' }
 //
 

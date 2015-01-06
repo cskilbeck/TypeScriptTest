@@ -45,7 +45,6 @@
         },
 
         doUpdate: function() {
-
             if (!this.requestInProgress) {
                 this.requestInProgress = true;
                 var params = {

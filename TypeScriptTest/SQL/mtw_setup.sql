@@ -148,7 +148,8 @@ INSERT INTO oauth_providers (oauth_provider, oauth_name, oauth_icon, url, client
 
 \! echo '*** Insert sites'
 INSERT INTO sites(site_url) VALUES
-	('http://make-the-words.com'),
+    ('http://make-the-words.com'),
+    ('http://skilbeck.com'),
 	('http://debian.local');
 
 -- ----------------------------------------------------------------------

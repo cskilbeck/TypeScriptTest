@@ -81,7 +81,7 @@ function get($url, $params = null) {
 }
 
 function serviceget($action, $params) {
-    $webservice = "http://ec2-75-101-200-254.compute-1.amazonaws.com/mtw?action=";
+    $webservice = "http://45.55.170.25/mtw?action=";
     $p = "";
     if(!is_null($params)) {
         $p = "&".http_build_query($params);
@@ -90,7 +90,7 @@ function serviceget($action, $params) {
 }
 
 function servicepost($action, $params) {
-    $webservice = "http://ec2-75-101-200-254.compute-1.amazonaws.com/mtw?action=";
+    $webservice = "http://45.55.170.25/mtw?action=";
     return post($webservice.$action, $params);
 }
 ?>

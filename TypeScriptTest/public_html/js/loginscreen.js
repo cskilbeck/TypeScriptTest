@@ -16,16 +16,18 @@
             $: function (x, y, provider) {    // oauth_id, oauth_name, oauth_icon
                 var fh = pfont.height,
                     params,
+                    url,
                     logo = new glib.Image();
                 glib.PanelButton.call(this, x, y, 320, fh + 24, "rgb(96, 128, 128)", "white", 4, 2, function () {
                     glib.Cookies.set('provider_id', provider.oauth_provider, 30);
                     params = {
                         'client_id': provider.client_id,
                         'scope': provider.scope,
-                        'redirect_uri': "http://make-the-words.com/oauth2callback",
+                        'redirect_uri': mtw.RedirectURI,
                         'response_type': "code"
                     };
-                    window.location.replace(provider.url + "?" + glib.Util.objectToQueryString(params));
+                    url =  provider.url + "?" + glib.Util.objectToQueryString(params);
+                    window.location.replace(url);
                 });
                 this.addChild(new glib.Label(provider.oauth_name, pfont).setPosition(8, this.height / 2).setPivot(0, pfont.midPivot));
                 logo.addEventHandler("loaded", function () {

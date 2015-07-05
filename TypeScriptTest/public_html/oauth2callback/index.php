@@ -1,7 +1,7 @@
 <?
 session_start();
 
-require('../php/HttpPost.class.php');
+require('../HttpPost.class.php');
 
 setcookie("t0", "N", time() + 999999, '/');
 

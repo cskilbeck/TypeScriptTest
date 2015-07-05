@@ -1,9 +1,11 @@
+/*
 (function(exports){
 
     exports.glib = { none: undefined };
 
-})(typeof module !== 'undefined' && module.exports === exports ? module.exports : window);
-(function () {
+})(typeof module !== 'undefined' ? module.exports : window);
+*/
+glib = { none: undefined };(function () {
     "use strict";
 
     function id() {
@@ -42,6 +44,8 @@
 // instanceof not supported
 // everything is a mixin...
 
+/** @module glib */
+
 (function () {
     "use strict";
 
@@ -52,6 +56,7 @@
     };
 
     //////////////////////////////////////////////////////////////////////
+    /** Create a property entry in your class */
 
     glib.Property = function (desc) {
         return new glib.PropertyDescriptor(desc);
@@ -77,6 +82,18 @@
     }
 
     //////////////////////////////////////////////////////////////////////
+    /**
+        @typedef ClassDescriptor
+        @type {object}
+        @property {object}      inherit$    - object (or array of objects) specifying parent class(es)
+        @property {function}    $           - constructor function - you must call all parent constructors with relevant parameters
+        @property {object}      static$     - all static members, these can be Properties, functions or values
+        @property {function}    memberfunc  - name your member functions what you want. name clash with parent class = override
+
+        @function glib.Class
+        @description Declare a class
+        @param @type {CLassDescriptor} desc - the class definition
+    */
 
     glib.Class = function (desc) {
         var newClass = desc.$ || {},
@@ -481,6 +498,20 @@ if (typeof performance === "undefined") {
 
         //////////////////////////////////////////////////////////////////////
 
+        shuffle: function(arr, random) {
+            var i,
+                r,
+                t;
+            for(i = arr.length; i > 1;) {
+                r = random.ranged(i--);
+                t = arr[r];
+                arr[r] = arr[i];
+                arr[i] = t;
+            }
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
         constrain: function (x, min, max) {
 
             if (x < min) {
@@ -742,6 +773,15 @@ if (typeof performance === "undefined") {
             return format.replace(/{(\d+)}/g, function(match, number) {
                 return typeof args[number] !== 'undefined' ? args[number] : match;
             });
+        },
+
+        //////////////////////////////////////////////////////////////////////
+
+        log: function (format) {
+            var args = Array.prototype.slice.call(arguments, 1);
+            console.log(format.replace(/{(\d+)}/g, function(match, number) {
+                return typeof args[number] !== 'undefined' ? args[number] : match;
+            }));
         },
 
         //////////////////////////////////////////////////////////////////////
@@ -1035,7 +1075,8 @@ if (typeof performance === "undefined") {
         y,
         z,
         w,
-        v;
+        v,
+        RAND_MAX = 65535;
 
     glib.Random = glib.Class({
 
@@ -1062,8 +1103,15 @@ if (typeof performance === "undefined") {
             return ((y + y + 1) * v) >>> 16;
         },
 
-        nextFloat: function() {
-            return this.next() / 65536;
+        ranged: function(range) {
+            var limit = RAND_MAX - (RAND_MAX + 1) % range,
+                candidate;
+            do candidate = this.next(); while(candidate > limit);
+            return candidate / ((limit + 1) / range) >>> 0;
+        },
+
+        float: function() {
+            return this.next() / (RAND_MAX + 1);
         }
     });
 
@@ -1115,6 +1163,8 @@ glib.Cookies = (function () {
         var cd = crossDomain === undefined ? false : crossDomain,
             xr;
 
+        console.log("AJAX " + method + ":" + url);
+
         if (glib.Browser.type === 'MSIE' && glib.Browser.version <= 10 && crossDomain) {
             xr = new XDomainRequest();
             xr.open(method, url);
@@ -1143,6 +1193,11 @@ glib.Cookies = (function () {
             }
             xr.onreadystatechange = function () {
                 if (xr.readyState === XMLHttpRequest.DONE) {
+                    if(xr.responseType === 'text' || xr.responseType === '') {
+                        if(xr.responseText.length < 1000) {
+                            console.log("Data:" + xr.responseText);
+                        }
+                    }
                     callback.call(context, url, xr);
                 }
             };
@@ -1215,20 +1270,17 @@ glib.Cookies = (function () {
     "use strict";
 
     function handleResult(url, xr, callback, context) {
-        var d;
+        var d = null;
         if(xr.status == 200) {
             try {
                 d = JSON.parse(xr.responseText);
             }
             catch (e) {
                 console.log("Bad result from web service: " + xr.responseText);
-                d = null;
             }
-            if (d !== null && callback) {
-                callback.call(context, d);
-            }
-        } else {
-            callback.call(context, null);
+        }
+        if(callback) {
+            callback.call(context, d);
         }
     }
 
@@ -2664,6 +2716,18 @@ glib.List = (function () {
             },
             get: function () {
                 return this.drawableData.modal;
+            }
+        }),
+
+        //////////////////////////////////////////////////////////////////////
+
+        root: glib.Property({
+            get: function() {
+                var parent = this.drawableData.parent;
+                while(parent !== null && parent.drawableData.parent !== null) {
+                    parent = parent.drawableData.parent;
+                }
+                return parent;
             }
         }),
 
@@ -4369,8 +4433,7 @@ glib.List = (function () {
                 height: h,
                 borderWidth: 4,
                 cornerRadius: 8,
-                backgroundTransparency: 224,
-                modal: true
+                backgroundTransparency: 224
             });
             this.setPivot(0.5, 0.5);
             this.buttonHolder = new glib.Drawable();
@@ -4405,6 +4468,10 @@ glib.List = (function () {
             this.panel = new glib.Panel(0, 0, glib.Playfield.Width, glib.Playfield.Height, "black");
             this.msgBox = new glib.MessageWindow(text, textFont, buttons, callback, context, buttonFont);
             this.addChild(this.panel);
+            this.panel.modal = true;
+            this.panel.addEventHandler('leftMouseDown', function() {
+                this.close();
+            }, this);
             this.addChild(this.msgBox);
             this.msgBox.addEventHandler('closing', function () {
                 this.close();

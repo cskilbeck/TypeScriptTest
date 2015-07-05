@@ -3,6 +3,7 @@ REM if NOT "%SURE%" == "yes" GOTO End
 set CURDIR=%CD%
 
 WinSCP /command "open FatCow" "synchronize remote ""%CURDIR%\public_html"" /skilbeck/mtw" "exit"
+WinSCP /command "open FatCow" "put ""%CURDIR%%\public_html\debug.php"" /skilbeck/mtw/index.php" "exit"
 WinSCP /command "open FatCow" "synchronize remote -filemask=""*.js"" ""%CURDIR%\config_debug"" /skilbeck/mtw/js"  "exit"
 WinSCP /command "open DigitalOcean" "synchronize remote ""%CURDIR%\SQL"" /home/chs/sql" "exit"
 WinSCP /command "open DigitalOcean" "synchronize remote ""%CURDIR%\web_service"" /usr/local/www/debug/" "exit"

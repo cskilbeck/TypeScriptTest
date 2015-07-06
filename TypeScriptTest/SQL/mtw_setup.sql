@@ -5,15 +5,6 @@
 \! echo '**************************************************************************'
 \! echo '*** Database setup begins'
 
-\! echo '*** Drop'
-DROP DATABASE IF EXISTS mtwdb;
-
-\! echo '*** Create'
-CREATE DATABASE mtwdb;
-
-\! echo '*** Use'
-USE mtwdb;
-
 -- ----------------------------------------------------------------------
 -- tables
 

@@ -18,8 +18,6 @@ import urllib2
 import pprint
 from time import sleep
 
-sys.path.append('/usr/local/www/wsgi-scripts')
-os.chdir('/usr/local/www/wsgi-scripts')
 from dbaseconfig import *
 
 logString = ""

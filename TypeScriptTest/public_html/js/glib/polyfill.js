@@ -45,7 +45,9 @@ if (typeof performance === "undefined") {
 
     //////////////////////////////////////////////////////////////////////
 
-    performance = window.performance || {};
+    if ("performance" in window === false) {
+        window.performance = {};
+    }
 
     if (!Date.now) {
         Date.now = function now() {

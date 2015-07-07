@@ -162,9 +162,9 @@
                                 return false;
                             }
                             // now and again, get the top words list
-                            glib.WebService.get('gameInfo', { game_id: this.game_id }, function(data) {
-                                console.log(data.topWords.length);
-                            }, this);
+                            // glib.WebService.get('gameInfo', { game_id: this.game_id }, function(data) {
+                            //     console.log(data.topWords.length);
+                            // }, this);
                         }, this));
                     } else {
                         gameLabel.text = "Game ended..." + remainder.toString();

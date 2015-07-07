@@ -14,7 +14,6 @@
 
         if (glib.Browser.type === 'MSIE' && glib.Browser.version <= 10 && crossDomain) {
             xr = new XDomainRequest();
-            xr.open(method, url);
             xr.onerror = function () {
                 console.log("XDomainRequest error loading " + url);
             };
@@ -32,13 +31,12 @@
                 }
                 callback.call(context, url, xr);
             };
+            xr.open(method, url);
         } else {
             xr = new XMLHttpRequest();
             xr.open(method, url);
-            if (binary) {
-                xr.responseType = 'arraybuffer';
-            }
             xr.onreadystatechange = function () {
+                console.log("onreadystatechange = " + xr.readyState.toString());
                 if (xr.readyState === XMLHttpRequest.DONE) {
                     if(xr.responseType === 'text' || xr.responseType === '') {
                         if(xr.responseText.length < 1000) {
@@ -60,11 +58,15 @@
                     progressCallback.call(context, url, e);
                 }
             };
+            if (binary) {
+                xr.responseType = 'arraybuffer';
+            }
             if (method === 'POST') {
                 xr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
             }
         }
         xr.send(data);
+        console.log("XR = " + xr.toString() + ", " + xr.status.toString());
         return xr;
     }
 

@@ -336,6 +336,21 @@ class gameHandler(Handler):
             self.err(e_dbaseerror)
 
 #----------------------------------------------------------------------
+# POST:message - print some info to the debug stream
+#
+# parameters:   text: string
+#
+# response:     ok: bool
+#----------------------------------------------------------------------
+
+class messageHandler(Handler):
+
+    def handle(self, cur, db):
+        check_parameters(self.post, ['text'])
+        log("Message: " + self.post['text'])
+        self.add({ 'ok': True })
+
+#----------------------------------------------------------------------
 # GET:gameInfo - get some info about a game
 #
 # parameters:

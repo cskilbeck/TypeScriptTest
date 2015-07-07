@@ -17,11 +17,11 @@ WinSCP /command "open DigitalOceanDEBUG" "synchronize remote ""%CURDIR%\nodejs""
 WinSCP /command "open DigitalOceanDEBUG" "synchronize remote ""%CURDIR%\public_html\js"" /home/chs/nodejs/js"  "exit"
 WinSCP /command "open DigitalOceanDEBUG" "synchronize remote ""%CURDIR%\manager"" /home/chs/manager"  "exit"
 
-REM start /b WinSCP /command "open FatCow" "keepuptodate ""%CURDIR%\public_html"" /skilbeck/mtw"
-REM start /b WinSCP /command "open DigitalOceanDEBUG" "keepuptodate ""%CURDIR%\SQL"" /home/chs/sql"
-REM start /b WinSCP /command "open DigitalOceanDEBUG" "keepuptodate ""%CURDIR%\web_service"" /usr/local/www/wsgi-scripts"
-REM start /b WinSCP /command "open DigitalOceanDEBUG" "keepuptodate ""%CURDIR%\nodejs"" /home/chs/nodejs"
-REM start /b WinSCP /command "open DigitalOceanDEBUG" "keepuptodate ""%CURDIR%\public_html\js"" /home/chs/nodejs/js"
-REM start /b WinSCP /command "open DigitalOceanDEBUG" "keepuptodate ""%CURDIR%\manager"" /home/chs/manager"
+start /b WinSCP /command "open FatCow" "keepuptodate ""%CURDIR%\public_html"" /skilbeck/mtw"
+start /b WinSCP /command "open DigitalOceanDEBUG" "keepuptodate ""%CURDIR%\SQL"" /home/chs/sql"
+start /b WinSCP /command "open DigitalOceanDEBUG" "keepuptodate ""%CURDIR%\web_service"" /usr/local/www/wsgi-scripts"
+start /b WinSCP /command "open DigitalOceanDEBUG" "keepuptodate ""%CURDIR%\nodejs"" /home/chs/nodejs"
+start /b WinSCP /command "open DigitalOceanDEBUG" "keepuptodate ""%CURDIR%\public_html\js"" /home/chs/nodejs/js"
+start /b WinSCP /command "open DigitalOceanDEBUG" "keepuptodate ""%CURDIR%\manager"" /home/chs/manager"
 
 :End

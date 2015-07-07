@@ -57,12 +57,18 @@ class HttpPost {
 	}
 }
 
+function gecho($text) {
+    //echo($text);
+}
+
 function post($url, $params) {
     $request = new HttpPost($url);
     if(!is_null($params)) {
         $request->setPostData($params);
     }
+    gecho("POST:$url<br>");
     $response = $request->send();
+    gecho("RESPONSE:$response<br>");
     if($response[0] == "{") {
         return json_decode($response);
     } else {
@@ -85,19 +91,32 @@ function serviceget($action, $params) {
     if(!is_null($params)) {
         $p = "&".http_build_query($params);
     }
+    global $webservice;
+    gecho("WEBSERVICE: $webservice<br>");
     return post($webservice.$action.$p, null);
 }
 
 function servicepost($action, $params) {
+    global $webservice;
+    gecho("WEBSERVICE: $webservice<br>");
     return post($webservice.$action, $params);
+}
+
+function debug_message($text) {
+    gecho("$text<br>");
+    return servicepost('message', array("text" => $text));
 }
 
 function do_redirect($varfile, $location)
 {
+    debug_message("DO_REDIRECT begins...");
     if(isset($_GET['code']) && isset($_COOKIE['provider_id'])) {
 
         $provider = $_COOKIE['provider_id'];
         $var_file = $varfile . $provider . '.php';
+
+        debug_message("Provider: $provider, VarFile: $var_file");
+
         if (file_exists($var_file)) {
 
             require($var_file);
@@ -111,9 +130,16 @@ function do_redirect($varfile, $location)
                 "redirect_uri" => $oauth2_redirect2
             );
 
+            debug_message("Client ID: $oauth2_client_id, redirect_uri: $oauth2_redirect2");
+
             $t = post($oauth2_tokenurl, $p);
 
             if(!isset($t->access_token)) {
+
+                $err = $t->error;
+
+                debug_message("Login error: $err");
+
                 setcookie('provider_id', null, time() - 3600, '/');
                 setcookie('login_error', "No token ($t->error)" . $oauth2_redirect2, 0, '/');
             } else {
@@ -126,6 +152,8 @@ function do_redirect($varfile, $location)
                     $id = $r->id;
                     $name = $r->name;
                     $pic = get_picture_url($r);
+
+                    debug_message("ID: $id, NAME: $name");
 
                     // got userinfo, register a session with the web service
                     $params = array(
@@ -162,6 +190,4 @@ function do_redirect($varfile, $location)
     }
     header('Location: ' . $location);
 }
-
-
 ?>

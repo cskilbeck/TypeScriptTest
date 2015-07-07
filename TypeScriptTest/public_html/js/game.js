@@ -230,7 +230,7 @@
                             leaderBoard.doUpdate();
                         } else {
                             console.log("Score not improved on...");
-                            leaderBoard.setUpdateFrequency(1);
+                            leaderBoard.setUpdateFrequency(10);
                         }
                     } else {
                         console.log("No game from web service...");
@@ -449,7 +449,8 @@
             if (board.bestScore > bestScore) {
                 bestButton.highlight = 0.5;
                 bestScore = board.bestScore;
-                if(retry) {
+                //if(retry) {
+                if(true) {
                     if(mtw.User.id) {
                         glib.WebService.post("board", {}, { board: board.getAsString(), user_id: mtw.User.id, game_id: this.game_id, seed: board.seed }, function (data) {
                             if (data && !data.error) {

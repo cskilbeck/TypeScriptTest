@@ -41,7 +41,7 @@ def open_database():
 def main():
     print "@--"
     print "Game Manager begins at " + str(datetime.datetime.now())
-    minutes = int(sys.argv[2]) if len(sys.argv) > 2 else 1440
+    minutes = int(sys.argv[1]) if len(sys.argv) > 1 else 14400  #10 days
     print "Creating game of " + str(minutes) + " length"
     print "Opening database " + db_db() + " on " + db_host() + " with username " + db_user()
     with closing(open_database()) as db:

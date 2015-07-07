@@ -23,7 +23,7 @@
             get: function (command, params, callback, context) {
                 var url;
                 params.action = command;
-                url = glib.ajax.url(mtw.WebServiceURL, params, true);
+                url = glib.ajax.url(mtw.WebServiceURL, params, false);
                 glib.ajax.get(url, function (url, xr) {
                     handleResult(url, xr, callback, context);
                 }, null, this, false, true);
@@ -32,7 +32,7 @@
             post: function (command, params, data, callback, context) {
                 var url;
                 params.action = command;
-                url = glib.ajax.url(mtw.WebServiceURL, params, true);
+                url = glib.ajax.url(mtw.WebServiceURL, params, false);
                 glib.ajax.post(url, data, function (url, xr) {
                     handleResult(url, xr, callback, context);
                 }, null, this, false, true);

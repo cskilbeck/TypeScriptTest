@@ -36,7 +36,7 @@
             xr = new XMLHttpRequest();
             xr.open(method, url);
             xr.onreadystatechange = function () {
-                console.log("onreadystatechange = " + xr.readyState.toString());
+                //console.log("onreadystatechange = " + xr.readyState.toString());
                 if (xr.readyState === XMLHttpRequest.DONE) {
                     if(xr.responseType === 'text' || xr.responseType === '') {
                         if(xr.responseText.length < 1000) {

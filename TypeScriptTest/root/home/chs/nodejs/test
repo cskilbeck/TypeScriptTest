@@ -1,0 +1,2 @@
+#!/bin/sh
+nodejs client.js 1338 "action=definition&word=red"

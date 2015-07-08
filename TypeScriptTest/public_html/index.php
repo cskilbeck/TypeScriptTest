@@ -1,7 +1,11 @@
+<?php
+require("php/url.php");
+?>
 <!DOCTYPE html>
 <html>
     <head>
         <title>Make The Words</title>
+
         <script src="js/glib/glib.js"></script>
 
         <script src="js/mtw.js"></script>
@@ -23,5 +27,6 @@
         <script src="js/mainmenu.js"></script>
         <script src="js/main.js"></script></head>
     <body>
+    <?php echo("URL:$url_root<br>\n"); ?>
     </body>
 </html>

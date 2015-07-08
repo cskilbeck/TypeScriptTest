@@ -1,3 +1,6 @@
+<?php
+require("php/url.php");
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -65,5 +68,7 @@
     <script src="js/tripple.js"></script>
 -->
 </head>
-<body></body>
+<body>
+    <?php echo("URL: $url_root<br>\n"); ?>
+</body>
 </html>

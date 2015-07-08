@@ -346,7 +346,9 @@ if (typeof performance === "undefined") {
 
     //////////////////////////////////////////////////////////////////////
 
-    performance = window.performance || {};
+    if ("performance" in window === false) {
+        window.performance = {};
+    }
 
     if (!Date.now) {
         Date.now = function now() {
@@ -1167,7 +1169,6 @@ glib.Cookies = (function () {
 
         if (glib.Browser.type === 'MSIE' && glib.Browser.version <= 10 && crossDomain) {
             xr = new XDomainRequest();
-            xr.open(method, url);
             xr.onerror = function () {
                 console.log("XDomainRequest error loading " + url);
             };
@@ -1185,13 +1186,12 @@ glib.Cookies = (function () {
                 }
                 callback.call(context, url, xr);
             };
+            xr.open(method, url);
         } else {
             xr = new XMLHttpRequest();
             xr.open(method, url);
-            if (binary) {
-                xr.responseType = 'arraybuffer';
-            }
             xr.onreadystatechange = function () {
+                //console.log("onreadystatechange = " + xr.readyState.toString());
                 if (xr.readyState === XMLHttpRequest.DONE) {
                     if(xr.responseType === 'text' || xr.responseType === '') {
                         if(xr.responseText.length < 1000) {
@@ -1213,11 +1213,15 @@ glib.Cookies = (function () {
                     progressCallback.call(context, url, e);
                 }
             };
+            if (binary) {
+                xr.responseType = 'arraybuffer';
+            }
             if (method === 'POST') {
                 xr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
             }
         }
         xr.send(data);
+        console.log("XR = " + xr.toString() + ", " + xr.status.toString());
         return xr;
     }
 
@@ -1291,7 +1295,7 @@ glib.Cookies = (function () {
             get: function (command, params, callback, context) {
                 var url;
                 params.action = command;
-                url = glib.ajax.url(mtw.WebServiceURL, params, true);
+                url = glib.ajax.url(mtw.WebServiceURL, params, false);
                 glib.ajax.get(url, function (url, xr) {
                     handleResult(url, xr, callback, context);
                 }, null, this, false, true);
@@ -1300,7 +1304,7 @@ glib.Cookies = (function () {
             post: function (command, params, data, callback, context) {
                 var url;
                 params.action = command;
-                url = glib.ajax.url(mtw.WebServiceURL, params, true);
+                url = glib.ajax.url(mtw.WebServiceURL, params, false);
                 glib.ajax.post(url, data, function (url, xr) {
                     handleResult(url, xr, callback, context);
                 }, null, this, false, true);

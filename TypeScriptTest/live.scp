@@ -1,0 +1,13 @@
+open HostPapa
+lcd "%1%"
+synchronize remote public_html /home/maket847/public_html
+put config\webservice.php /home/maket847/public_html/oauth2callback/*.*
+put config\webserviceurl.js /home/maket847/public_html/js/*.*
+put config\cb?.php /home/maket847/public_html/php/*.*
+close
+open DigitalOceanDEBUG
+lcd "%1%"
+synchronize remote root /
+synchronize remote public_html\js /home/chs/nodejs/js
+close
+exit

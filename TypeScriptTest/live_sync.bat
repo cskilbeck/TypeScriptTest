@@ -1,23 +1,26 @@
 set /P SURE="Are you Sure? Enter yes if you are:"
 if NOT "%SURE%" == "yes" GOTO End
-set CURDIR=%CD%
 
-WinSCP /command "open HostPapa" "synchronize remote ""%CURDIR%\public_html"" /home/maket847/public_html" "exit"
-WinSCP /command "open HostPapa" "put ""%CURDIR%%\public_html\debug.php"" /home/maket847/public_html/index.php" "exit"
-WinSCP /command "open HostPapa" "put ""%CURDIR%\config\index.php"" /home/maket847/public_html/oauth2callback/index.php"  "exit"
-WinSCP /command "open HostPapa" "put ""%CURDIR%\config\webserviceurl.js"" /home/maket847/public_html/js/webserviceurl.js"  "exit"
-WinSCP /command "open HostPapa" "put ""%CURDIR%\config\cb1.php"" /home/maket847/public_html/php/cb1.php" "exit"
-WinSCP /command "open HostPapa" "put ""%CURDIR%\config\cb2.php"" /home/maket847/public_html/php/cb2.php" "exit"
-WinSCP /command "open HostPapa" "put ""%CURDIR%\config\cb4.php"" /home/maket847/public_html/php/cb4.php" "exit"
-WinSCP /command "open DigitalOcean" "put ""%CURDIR%\config\dbaseconfig.py"" /usr/local/www/wsgi-scripts/dbaseconfig.py" "exit"
+pushd public_html\js\glib
 
-WinSCP /command "open DigitalOcean" "synchronize remote ""%CURDIR%\SQL"" /home/chs/sql" "exit"
-WinSCP /command "open DigitalOcean" "synchronize remote ""%CURDIR%\web_service"" /usr/local/www/wsgi-scripts" "exit"
-WinSCP /command "open DigitalOcean" "synchronize remote ""%CURDIR%\nodejs"" /home/chs/nodejs" "exit"
-WinSCP /command "open DigitalOcean" "synchronize remote ""%CURDIR%\public_html\js"" /home/chs/nodejs/js"  "exit"
-WinSCP /command "open DigitalOcean" "synchronize remote ""%CURDIR%\manager"" /home/chs/manager"  "exit"
+:: concatenate all glib files referenced in debug.php into glib.js
+grep "js/glib/" ../../debug.php | ^
+sed "s#<script src=""js/glib/\(.*\)\.js""></script>#\1.js #" | ^
+xargs | ^
+sed -e "s# # + #g" | ^
+sed "s#\(.*\)#copy \/B \/Y \1 glib.js#" | ^
+cmd
 
-REM start /b WinSCP /command "open HostPapa" "keepuptodate ""%CURDIR%\public_html"" /home/maket847/public_html"
+:: minify glib.js into glib_min.js
+"C:\Program Files (x86)\Microsoft\Microsoft Ajax Minifier\ajaxmin.exe" glib.js -o glib_min.js
+
+popd
+
+@echo off
+
+WinSCP /script=live.scp /parameter // %CD%
+
+REM start /b WinSCP /command "open HostPapa" "keepuptodate ""%CURDIR%\public_html"" /skilbeck/mtw"
 REM start /b WinSCP /command "open DigitalOcean" "keepuptodate ""%CURDIR%\SQL"" /home/chs/sql"
 REM start /b WinSCP /command "open DigitalOcean" "keepuptodate ""%CURDIR%\web_service"" /usr/local/www/wsgi-scripts"
 REM start /b WinSCP /command "open DigitalOcean" "keepuptodate ""%CURDIR%\nodejs"" /home/chs/nodejs"

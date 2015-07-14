@@ -1,5 +1,6 @@
 <?php
 require("php/url.php");
+setcookie("URL", $url_root, time() + 3600);
 ?>
 <!DOCTYPE html>
 <html>

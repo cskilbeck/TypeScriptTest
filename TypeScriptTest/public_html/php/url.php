@@ -1,5 +1,4 @@
 <?php
-session_start();
 function full_path()
 {
     $s = &$_SERVER;

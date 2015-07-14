@@ -1,0 +1,66 @@
+#! /bin/bash
+
+getpid() {
+    local pid=$(ps aux | grep '[n]odejs helper.js' | awk '{print $2}')
+    echo $pid
+}
+
+starter() {
+    local pid=$(getpid)
+    if [ -z "$pid" ]
+    then
+        echo "Starting wordhelper"
+        nohup nodejs helper.js >>helper.log 2>>helper.err </dev/null &
+    else
+        echo "Already running, use stop or restart"
+    fi
+}
+
+stopper() {
+    local pid=$(getpid)
+    if [ -z "$pid" ]
+    then
+        echo "Helper not running"
+    else
+        kill $pid
+        echo "Killed "
+    fi
+}
+
+show() {
+    local pid=$(getpid)
+    if [ -z "$pid" ]
+    then
+        echo "Not running"
+    else
+        echo "Running, PID = $pid"
+    fi
+}
+
+tester() {
+    nodejs client.js 1338 "action=definition&word=$1"
+}
+
+cd /home/chs/nodejs
+
+case "$1" in
+  stop)
+    stopper
+    ;;
+  start)
+    starter
+    ;;
+  restart)
+    stopper
+    starter
+    ;;
+  status)
+    show
+    ;;
+  test)
+    tester $2
+    ;;
+  *)
+    echo "usage: wordhelper [start | stop | restart | status | test 'word']"
+    ;;
+esac

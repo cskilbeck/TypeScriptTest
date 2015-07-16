@@ -1,0 +1,20 @@
+# parameters
+# 1 - local folder
+# 2 - Web Host SCP name
+# 3 - Web Service SCP name
+# 4 - config folder
+# 5 - remote web host folder
+
+open %2%
+lcd "%1%"
+synchronize remote public_html %5%
+put %4%\webservice.php %5%/oauth2callback/*.*
+put %4%\webserviceurl.js %5%/js/*.*
+put %4%\cb?.php %5%/php/*.*
+close
+open %3%
+lcd "%1%"
+synchronize remote root /
+synchronize remote public_html\js /home/chs/nodejs/js
+close
+exit

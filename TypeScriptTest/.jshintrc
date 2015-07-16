@@ -1,0 +1,11 @@
+{
+    "undef" : true,
+//    "unused" : false,
+    "debug" : true,
+    "devel" : true,
+    "browser" : true,
+    "predef" : [
+        "mtw",
+        "glib"
+    ]
+}

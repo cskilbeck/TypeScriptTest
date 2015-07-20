@@ -588,8 +588,8 @@
                         { x: e.left, y: e.bottom }
                     ];
             this.drawableData.globalMatrix.transform(points);
-            min = { x: points[0].x, y: point[0].y };
-            max = { x: points[0].x, y: point[0].y };
+            min = { x: points[0].x, y: points[0].y };
+            max = { x: points[0].x, y: points[0].y };
             for (i = 1; i < 4; ++i) {
                 min.x = Math.min(min.x, points[i].x);
                 min.y = Math.min(min.y, points[i].y);

@@ -22,8 +22,6 @@ sys.path.append('/usr/local/www/wsgi-scripts')
 os.chdir('/usr/local/www/wsgi-scripts')
 from dbaseconfig import *
 
-logString = ""
-
 #----------------------------------------------------------------------
 
 e_badaction             = { "error": 1, "msg": "bad action",             "status": "400 bad request" }
@@ -51,23 +49,39 @@ def date_handler(obj):
     return obj.isoformat() if hasattr(obj, 'isoformat') else obj
 
 #----------------------------------------------------------------------
-# switch offable log
+# Logger class
 
-logString = ""
+class Logger:
+
+    def __init__(self, port = 1339):
+        self.text = ""
+        self.port = port
+
+    def add(self, x, y):
+        self.text += x + y + "\n"
+
+    def dump(self):
+        with closing(socket.socket()) as s:
+            s.connect(("127.0.0.1", self.port))
+            s.send("T" + self.text)
+
+#----------------------------------------------------------------------
+# Logger functions
+
+logger = None
 
 def resetLog():
-    global logString
-    logString = ""
+    global logger
+    logger = Logger(1339)
 
 def log(x, y = ""):
     x = str(x).replace("\\n", "\n")
     if type(y) is not str:
         y = pprint.pformat(y, 0, 120).replace("\\n", "\n")
-    global logString
-    logString += x + y + "\n"
+    logger.add(x, y)
 
 def dumpLog():
-    print >> sys.stderr, logString,
+    logger.dump()
 
 #----------------------------------------------------------------------
 # call the local helper service
@@ -505,9 +519,8 @@ def application(environ, start_response):
 
     resetLog()
 
-#    print(pprint.pformat(environ))
+    #print(pprint.pformat(environ))
 
-    log("--------------------------------------------------------------------------------")
     headers = [('Content-type', 'application/json')]
     output = dict()
     status = '200 OK'
@@ -519,7 +532,7 @@ def application(environ, start_response):
             headers.append(('Access-Control-Allow-Origin', org))
             method = environ['REQUEST_METHOD']
             query = query_to_dict(environ.get('QUERY_STRING', ""))
-            log("QUERY:", query)
+            log("")
             post = dict()
             if method == 'POST':
                 post = query_to_dict(environ['wsgi.input'].read(int(environ.get('CONTENT_LENGTH', 4096), 10)))  # 4096? should be enough...

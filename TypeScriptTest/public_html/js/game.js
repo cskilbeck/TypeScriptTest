@@ -41,6 +41,7 @@
 //   you were the Nth person to find this word
 //   this word is the Nth most common word today
 //   etc
+// !Event bubbling bug (word list and undo/redo buttons overlapping)
 //////////////////////////////////////////////////////////////////////
 
 (function () {

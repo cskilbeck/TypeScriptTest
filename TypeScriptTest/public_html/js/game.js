@@ -227,7 +227,7 @@
                             bestLabel.text = board.bestScore.toString();
                             bestButton.compose();
                             bestButton.highlight = 0.5;
-                            leaderboard.board_id = data.board_id;
+                            leaderBoard.board_id = data.board_id;
                             leaderBoard.doUpdate();
                         } else {
                             console.log("Score not improved on...");

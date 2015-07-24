@@ -1,4 +1,8 @@
 <?php
+function gecho($text) {
+    //echo($text);
+}
+
 function get_protocol() {
     if (isset($_SERVER['HTTPS'])) {
         if ($_SERVER['HTTPS'] == 1) {
@@ -55,10 +59,6 @@ class HttpPost {
 	public function getHttpResponse() {
 		return $this->httpResponse;
 	}
-}
-
-function gecho($text) {
-    //echo($text);
 }
 
 function post($url, $params) {

@@ -2,8 +2,8 @@
 $oauth2_provider_id     = '2';
 $oauth2_client_id       = '224932627603132';
 $oauth2_secret          = 'e6f6e69b22e2c2b0b949a6f5611c3052';
-$oauth2_redirect        = 'http://skilbeck.com/mtw/oauth2callback';
-$oauth2_redirect2       = 'http://skilbeck.com/mtw/oauth2callback';
+$oauth2_redirect        = 'http://ice-cream-software.com/oauth2callback';
+$oauth2_redirect2       = 'http://ice-cream-software.com/oauth2callback';
 $oauth2_server_url      = 'https://www.facebook.com/dialog/oauth';
 $oauth2_scope           = 'public_profile';
 $oauth2_response_type   = 'code';

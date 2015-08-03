@@ -4,8 +4,15 @@ import sys
 import socket
 import pprint
 import argparse
+import signal
 from time import gmtime, strftime
 from termcolor import colored
+
+def signal_handler(signal, frame):
+    print "LOGGING server shutting down"
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, signal_handler)
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-p", "--port", help = "which port to listen on", type = int)
@@ -21,11 +28,12 @@ s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 s.bind(('', port))
 s.listen(backlog)
 print "Listening on port ", port, 'backlog size', backlog, 'buffer size', size, '\n'
+recv_socket = None
 complete = False
 while not complete:
     try:
-        (client, address) = s.accept()
-        data = client.recv(size)
+        recv_socket, address = s.accept()
+        data = recv_socket.recv(size)
         if data:
             t = colored(strftime("%Y-%m-%d %H:%M:%S", gmtime()), 'yellow', attrs=['bold'])
             if data[0] == 'Q':
@@ -34,6 +42,7 @@ while not complete:
             elif data[0] == 'T':
                 t += " " + data[1:]
             print t
-    except:
-        client.close()
-        raise
+    finally:
+        if recv_socket is not None:
+            recv_socket.close()
+            recv_socket = None

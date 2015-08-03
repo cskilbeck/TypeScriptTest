@@ -18,6 +18,16 @@ import urllib2
 import pprint
 from time import sleep
 
+import logging, logging.handlers
+
+rootLogger = logging.getLogger('')
+rootLogger.setLevel(logging.DEBUG)
+socketHandler = logging.handlers.SocketHandler('localhost',
+                    logging.handlers.DEFAULT_TCP_LOGGING_PORT)
+# don't bother with a formatter, since a socket handler sends the event as
+# an unformatted pickle
+rootLogger.addHandler(socketHandler)
+
 sys.path.append('/usr/local/www/wsgi-scripts')
 os.chdir('/usr/local/www/wsgi-scripts')
 from dbaseconfig import *
@@ -49,39 +59,24 @@ def date_handler(obj):
     return obj.isoformat() if hasattr(obj, 'isoformat') else obj
 
 #----------------------------------------------------------------------
-# Logger class
-
-class Logger:
-
-    def __init__(self, port = 1339):
-        self.text = ""
-        self.port = port
-
-    def add(self, x, y):
-        self.text += x + y + "\n"
-
-    def dump(self):
-        with closing(socket.socket()) as s:
-            s.connect(("127.0.0.1", self.port))
-            s.send("T" + self.text)
-
-#----------------------------------------------------------------------
 # Logger functions
 
-logger = None
+logger = ""
 
 def resetLog():
     global logger
-    logger = Logger(1339)
+    logger = ""
 
 def log(x, y = ""):
     x = str(x).replace("\\n", "\n")
     if type(y) is not str:
         y = pprint.pformat(y, 0, 120).replace("\\n", "\n")
-    logger.add(x, y)
+    global logger
+    logger += x + y
 
 def dumpLog():
-    logger.dump()
+    global logger
+    logging.debug(logger)
 
 #----------------------------------------------------------------------
 # call the local helper service

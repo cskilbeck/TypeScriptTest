@@ -1,6 +1,5 @@
 <?php
 require("php/url.php");
-setcookie("URL", $url_root, time() + 3600);
 ?>
 <!DOCTYPE html>
 <html>
@@ -28,6 +27,5 @@ setcookie("URL", $url_root, time() + 3600);
         <script src="js/mainmenu.js"></script>
         <script src="js/main.js"></script></head>
     <body>
-    <?php echo("URL:$url_root<br>\n"); ?>
     </body>
 </html>

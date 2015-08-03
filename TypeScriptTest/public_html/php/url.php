@@ -24,5 +24,5 @@ $path = rtrim($path, "/");
 $extension = empty($path_parts["extension"]) ? "" : ".".$path_parts["extension"];
 $script_name = empty($path_parts["filename"]) ? "" : "/".$path_parts["filename"].$extension;
 $url_root = $host.$path.$script_name;
-$_SESSION["URL"] = $url_root;
+setcookie("URL", $url_root, time() + 36000);
 ?>

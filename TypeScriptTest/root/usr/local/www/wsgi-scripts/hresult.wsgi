@@ -14,15 +14,17 @@ import urlparse
 import urllib
 import urllib2
 import pprint
+import logging, logging.handlers
 from time import sleep
 
 #----------------------------------------------------------------------
 
-e_badaction             = { "error": 1, "msg": "bad action",             "status": "400 bad request" }
-e_noaction              = { "error": 2, "msg": "missing action",         "status": "400 bad request" }
-e_missingparameter      = { "error": 7, "msg": "missing parameter",      "status": "400 bad request" }
+e_badaction             = { "error": 1, "msg": "bad action",             "status": "400 bad request"        }
+e_noaction              = { "error": 2, "msg": "missing action",         "status": "400 bad request"        }
+e_missingparameter      = { "error": 7, "msg": "missing parameter",      "status": "400 bad request"        }
 e_badmethod             = { "error": 8, "msg": "invalid method",         "status": "405 method not allowed" }
-e_badparameter          = { "error": 9, "msg": "bad parameter",          "status": "400 bad request" }
+e_badparameter          = { "error": 9, "msg": "bad parameter",          "status": "400 bad request"        }
+e_servicedown           = { "error":10, "msg": "service down",           "status": "400 bad request"        }
 
 class Error(Exception):
     pass
@@ -69,7 +71,7 @@ def dumpLog():
     rootLogger.addHandler(socketHandler)
     global logger
     logging.debug(logger)
-    
+
 #----------------------------------------------------------------------
 # call the local helper service
 
@@ -142,7 +144,10 @@ class findHandler(Handler):
         check_parameters(self.query, ['code'])
         log("Message: " + self.query['code'])
         result = service(self.query)
-        self.add(result)
+        if result is not None:
+            self.add(result)
+        else:
+            self.err(e_servicedown)
 
 #----------------------------------------------------------------------
 # application

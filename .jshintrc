@@ -7,6 +7,9 @@
     "predef" : [
         "mtw",
         "glib",
+        "angular",
+        "$rootScope",
+        "$",
         "FB"
     ]
 }

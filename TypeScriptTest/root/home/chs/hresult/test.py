@@ -4,6 +4,7 @@ import sys
 import socket
 import pprint
 import argparse
+import urllib
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-p", "--port", help = "which port to listen on", action = 'store', default = 1340, type = int)
@@ -17,5 +18,5 @@ else:
     port = int(args.port)
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.connect(('', port))
-    s.send(args.text)
+    s.send(urllib.urlencode({'code':args.text}))
     s.close()

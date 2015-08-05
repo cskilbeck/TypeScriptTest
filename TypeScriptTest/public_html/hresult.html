@@ -34,25 +34,57 @@
     <span class='pull-right'>
       <i ng-class="iconStyle"></i>
     </span>
-    <div class="well well-sm">
-      <h4>{{info}}</h4>
-      <table class="table table-condensed table-bordered table-hover" style="background-color: white; min-width:50%;" ng-Show="tableVisible">
-        <thead>
-          <tr>
-            <th>Code</th>
-            <th>Name</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr ng-repeat="r in result" popover="{container: 'body', trigger: 'hover', title: '{{r.tooltip}}', placement: 'auto', html: true}" data-content="{{r.tooltipcontent}}">
-            <td><span >{{r.error}}</span></td>
-            <td>{{r.name}}</td>
-            <td ng-bind-html="r.description"></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <h4>{{info}}</h4>
+    <table class="table table-condensed" ng-Show="tableVisible">
+      <thead>
+        <tr>
+          <th>Code</th>
+          <th>Name</th>
+          <th>File</th>
+        </tr>
+      </thead>
+      <tbody data-ng-repeat="r in result" data-ng-switch on="rowExpand[$index]">
+        <tr class="ng-class: rowExpand[$index] ? 'info highlighted' : 'clickableRow';" data-ng-click="selectRow($index, r.error)">
+          <td>{{r.error}}</td>
+          <td>{{r.name}}</td>
+          <td>{{r.file}}</td>
+        </tr>
+        <tr data-ng-switch-when="true">
+          <td colspan="3">
+            <div class="span3">
+              <table class="table table-condensed table-bordered">
+                <thead>
+                  <tr class='info'>
+                    <th>Severity</th>
+                    <th>Reserved</th>
+                    <th>Owner</th>
+                    <th>IsNT</th>
+                    <th>Type</th>
+                    <th>Facility</th>
+                    <th>Code</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{{r.details.Severity}}</td>
+                    <td>{{r.details.Reserved}}</td>
+                    <td>{{r.details.Owner}}</td>
+                    <td>{{r.details.IsNT}}</td>
+                    <td>{{r.details.Type}}</td>
+                    <td>{{r.details.facility}}</td>
+                    <td>{{r.details.code}}</td>
+                  </tr>
+                  <tr>
+                    <td colspan="7" ng-bind-html='r.details.description' class='success'>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </body>
 </html>

@@ -41,3 +41,18 @@
 .popover {
     max-width: 100%;
 }
+
+.levelTwo {
+    background-color: #E0E0E0;
+    color: black;
+}
+
+.clickableRow {
+    cursor: pointer;
+}
+
+.highlighted {
+    background-color: #D0D0D0;
+    cursor: pointer;
+    font-weight: bold;
+}

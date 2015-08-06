@@ -9,6 +9,7 @@
         "glib",
         "angular",
         "$rootScope",
+        "jQuery",
         "$",
         "FB"
     ]

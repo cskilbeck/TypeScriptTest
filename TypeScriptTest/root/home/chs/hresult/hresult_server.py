@@ -61,7 +61,6 @@ with open('hresults.json') as file:
     facilities = hresults['facilities']
     for f in facilities:
         fac[int(f[0])] = f[1]
-    pprint.pprint(fac)
 
 print "Loaded %(errcount)s errors, %(faccount)s facilities" % {'errcount': len(errors), 'faccount': len(facilities)}
 
@@ -91,7 +90,7 @@ while not complete:
 
                 for err in errors:
                     if err[1].find(code) != -1:
-                        f = fac.get((int(err[0]) >> 16) & 0x3ff, "UNKNOWN")
+                        f = fac.get((int(err[0]) >> 16) & 0x7ff, "UNKNOWN")
                         results['errors'].append({ 'name':err[2], 'description': err[3], 'file': err[4], 'error': err[1], 'number': err[0], 'facility': f })
                         if len(results['errors']) == 10:
                             break

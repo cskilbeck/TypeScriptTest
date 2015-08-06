@@ -1,43 +1,24 @@
+html {
+    overflow-y: scroll;
+}
+
 .gly-spin {
-    -webkit-animation: spin 1s infinite linear;
-    -moz-animation: spin 1s infinite linear;
-    -o-animation: spin 1s infinite linear;
-    animation: spin 1s infinite linear;
+    -webkit-animation:  spin 1s infinite linear;
+    -moz-animation:     spin 1s infinite linear;
+    -o-animation:       spin 1s infinite linear;
+    animation:          spin 1s infinite linear;
 }
-@-moz-keyframes spin {
-    0% {
-        -moz-transform: rotate(0deg);
-    }
-    100% {
-        -moz-transform: rotate(359deg);
-    }
-}
-@-webkit-keyframes spin {
-    0% {
-        -webkit-transform: rotate(0deg);
-    }
-    100% {
-        -webkit-transform: rotate(359deg);
-    }
-}
-@-o-keyframes spin {
-    0% {
-        -o-transform: rotate(0deg);
-    }
-    100% {
-        -o-transform: rotate(359deg);
-    }
-}
-@keyframes spin {
-    0% {
-        -webkit-transform: rotate(0deg);
-        transform: rotate(0deg);
-    }
-    100% {
-        -webkit-transform: rotate(359deg);
-        transform: rotate(359deg);
-    }
-}
+@-moz-keyframes     spin {  000% { -moz-transform: rotate(000deg); }
+                            100% { -moz-transform: rotate(359deg); } }
+
+@-webkit-keyframes  spin {  000% { -webkit-transform: rotate(000deg); }
+                            100% { -webkit-transform: rotate(359deg); } }
+
+@-o-keyframes       spin {  000% { -o-transform: rotate(000deg); }
+                            100% { -o-transform: rotate(359deg); } }
+
+@keyframes          spin {  000% { -webkit-transform: rotate(000deg); transform: rotate(000deg); }
+                            100% { -webkit-transform: rotate(359deg); transform: rotate(359deg); } }
 
 .clickable {
     cursor: pointer;
@@ -47,18 +28,26 @@
     font-weight: bold;
 }
 
-.table-squished {
-    border: none !important;
-    margin: 0px !important;
-    padding: 0px !important;
+.marginless table {
+    margin-bottom: 0px !important;
+}
+
+.table thead>tr>th,
+.table tbody>tr>th,
+.table thead>tr>td,
+.table tbody>tr>td,
+.table tbody {
+    border:1px solid black !important;
     padding-bottom: 4px !important;
-    padding-left: 16px !important;
+    padding-top: 4px !important;
 }
 
-.smallFont {
-    font-size: 80%;
-}
-
-html {
-    overflow-y: scroll;
+.inner thead>tr>th,
+.inner tbody>tr>th,
+.inner thead>tr>td,
+.inner tbody>tr>td,
+.inner table,
+.inner tbody {
+    border:none !important;
+    padding: 0px !important;
 }

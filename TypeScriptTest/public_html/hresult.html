@@ -29,7 +29,7 @@
       <br>
       <span class='pull-right'><i ng-class="iconStyle"></i></span>
       <h4>{{info}}</h4>
-      <table class="table table-bordered" ng-Show="tableVisible">
+      <table class="table marginless" ng-Show="tableVisible">
         <thead>
           <tr class="info">
             <th>Code</th><th>Name</th><th>File</th>
@@ -42,10 +42,10 @@
           <tr ng-switch-when="true">
             <td colspan="3" class="warning">
               <div class="span3">
-                <table class="table table-squished">
+                <table class="table inner">
                   <tr class="warning" ng-repeat='m in msg'>
-                    <td class='col-md-1 bolder table-squished smallFont'>{{m.name}}</td>
-                    <td class='col-md-11 table-squished smallFont'>{{r.details[m.name]}}</td>
+                    <td class='col-md-1 bolder'>{{m.name}}</td>
+                    <td class='col-md-11'>{{r.details[m.name]}}</td>
                   </tr>
                   <tr class="warning">
                     <td class='col-md-12' colspan='12' ng-bind-html='r.details.Description'></td>

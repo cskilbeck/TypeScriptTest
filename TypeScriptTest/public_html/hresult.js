@@ -7,20 +7,20 @@ angular.
             webservice = "http://45.55.209.178/hresult?action=find&code=";
 
         $scope.msg = [
-            { bit: 31, name: "Severity", text:["SUCCESS","FAILURE"] },
-            { bit: 30, name: "Reserved", text: ["NORMAL", "SEVERE"] },
-            { bit: 29, name: "Owner", text: ["MICROSOFT", "CUSTOMER"] },
-            { bit: 28, name: "IsNT", text: ["NT", "NORMAL"] },
-            { bit: 27, name: "Type", text: ["STATUS CODE", "DISPLAY STRING"] },
-            { bit: -1, name: "Facility", text: [] },
-            { bit: -1, name: "Code", text: [] }
+            { bit: 31, name: "Severity",    text: ["SUCCESS","FAILURE"],                style: "topPad" },
+            { bit: 30, name: "Reserved",    text: ["NORMAL", "SEVERE"],                 style: "" },
+            { bit: 29, name: "Owner",       text: ["MICROSOFT", "CUSTOMER"],            style: "" },
+            { bit: 28, name: "IsNT",        text: ["NT", "NORMAL"],                     style: "" },
+            { bit: 27, name: "Type",        text: ["STATUS CODE", "DISPLAY STRING"],    style: "" },
+            { bit: -1, name: "Facility",    text: [],                                   style: "" },
+            { bit: -1, name: "Code",        text: [],                                   style: "bottomPad" }
         ];
 
         $scope.status = 'Ready';
-        $scope.info = '';
+        $scope.info = '...';
         $scope.query = location.search.substr(1);
         $scope.result = [];
-        $scope.tableVisible = $scope.result.length > 0;
+        $scope.tableVisible = false;
         $scope.iconStyle = "glyphicon glyphicon-null";
         $scope.expand = [];
 
@@ -29,6 +29,10 @@ angular.
             $timeout(function() {
                 $("#query").focus();
             }, 100);
+        };
+
+        $scope.rowClass = function(index, last) {
+            return "row bordered " + ($scope.expand[index] ? 'bg-success open clickable' : 'clickable') + (last ? " lastly" : "");
         };
 
         $scope.toggle = function(index) {
@@ -105,7 +109,7 @@ angular.
             link: function(_scope, _element) {
                 $timeout(function(){
                     _element[0].focus();
-                }, 0);
+                }, 100);
             }
         };
     }).directive('suppressSelect', function() {

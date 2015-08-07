@@ -29,33 +29,31 @@
       <br>
       <span class='pull-right'><i ng-class="iconStyle"></i></span>
       <h4>{{info}}</h4>
-      <table class="table marginless" ng-Show="tableVisible">
-        <thead>
-          <tr class="info">
-            <th>Code</th><th>Name</th><th>File</th>
-          </tr>
-        </thead>
-        <tbody ng-repeat="r in result" ng-switch on="expand[$index]">
-          <tr suppress-select ng-class="expand[$index] ? 'success clickable' : 'clickable';" ng-click="toggle($index)">
-            <td>{{r.error}}</td><td>{{r.name}}</td><td>{{r.file}}</td>
-          </tr>
-          <tr ng-switch-when="true">
-            <td colspan="3" class="warning">
-              <div class="span3">
-                <table class="table inner">
-                  <tr class="warning" ng-repeat='m in msg'>
-                    <td class='col-md-1 bolder'>{{m.name}}</td>
-                    <td class='col-md-11'>{{r.details[m.name]}}</td>
-                  </tr>
-                  <tr class="warning">
-                    <td class='col-md-12' colspan='12' ng-bind-html='r.details.Description'></td>
-                  </tr>
-                </table>
+      <div class="container-fluid">
+        <div class="row bg-primary bolder">
+          <div class="col-md-1">Code</div>
+          <div class="col-md-9">Name</div>
+          <div class="col-md-2">File</div>
+        </div>
+        <div ng-repeat="r in result" ng-switch on="expand[$index]">
+          <div suppress-select ng-class="rowClass($index, $last)" ng-click='toggle($index)'>
+            <div class="col-md-1">{{r.error}}</div>
+            <div class="col-md-9">{{r.name}}</div>
+            <div class="col-md-2">{{r.file}}</div>
+          </div>
+          <div class="row bg-info" ng-switch-when="true">
+            <div class="col-md-12 borderedBody">
+              <div ng-repeat='m in msg'>
+                <div ng-class="m.style + ' col-md-1 fieldName'">{{m.name}}</div>
+                <div ng-class="m.style + ' col-md-11'">{{r.details[m.name]}}</div>
               </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+              <div class="row bg-info">
+                <div class="col-md-12 lastLine {{$last ? 'bottomBorder' : ''}}" ng-bind-html='r.details.Description'></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </body>
 </html>

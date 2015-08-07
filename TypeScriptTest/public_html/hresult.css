@@ -3,10 +3,10 @@ html {
 }
 
 .gly-spin {
-    -webkit-animation:  spin 1s infinite linear;
-    -moz-animation:     spin 1s infinite linear;
-    -o-animation:       spin 1s infinite linear;
-    animation:          spin 1s infinite linear;
+    -webkit-animation:  spin 0.5s infinite linear;
+    -moz-animation:     spin 0.5s infinite linear;
+    -o-animation:       spin 0.5s infinite linear;
+    animation:          spin 0.5s infinite linear;
 }
 @-moz-keyframes     spin {  000% { -moz-transform: rotate(000deg); }
                             100% { -moz-transform: rotate(359deg); } }
@@ -22,32 +22,55 @@ html {
 
 .clickable {
     cursor: pointer;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+.open {
+    border-bottom: 1px DarkGrey solid;
 }
 
 .bolder {
     font-weight: bold;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    border: 0;
 }
 
-.marginless table {
-    margin-bottom: 0px !important;
+.topPad {
+    padding-top: 10px;
 }
 
-.table thead>tr>th,
-.table tbody>tr>th,
-.table thead>tr>td,
-.table tbody>tr>td,
-.table tbody {
-    border:1px solid black !important;
-    padding-bottom: 4px !important;
-    padding-top: 4px !important;
+.bottomPad {
+    padding-bottom: 5px;
+    margin-bottom: 5px;
 }
 
-.inner thead>tr>th,
-.inner tbody>tr>th,
-.inner thead>tr>td,
-.inner tbody>tr>td,
-.inner table,
-.inner tbody {
-    border:none !important;
-    padding: 0px !important;
+.lastly {
+    border: 1px DarkGrey solid;
+}
+
+div.borderedBody {
+    border-right: 1px DarkGrey solid;
+    border-left: 1px DarkGrey solid;
+}
+
+div.bordered {
+    border-top: 1px DarkGrey solid;
+    border-right: 1px DarkGrey solid;
+    border-left: 1px DarkGrey solid;
+}
+
+.bottomBorder {
+    border-bottom: 1px DarkGrey solid;
+}
+
+.lastLine {
+    border-top: 1px DarkGrey solid;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.fieldName {
+    font-weight: bold;
 }

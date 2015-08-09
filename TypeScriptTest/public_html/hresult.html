@@ -38,7 +38,7 @@
           </tr>
         </thead>
         <tbody ng-repeat="r in result">
-          <tr data-toggle='collapse' data-target='#row{{$index}}' class='clickable' suppress-select id='headerRow{{$index}}'>
+          <tr data-toggle='collapse' data-target='#row{{$index}}' class='clickable' suppress-select id='headerRow{{$index}}' expand-single>
             <td class="col-md-1">{{r.error}}</td>
             <td class="col-md-8">{{r.name}}</td>
             <td class="col-md-3">{{r.file}}</td>

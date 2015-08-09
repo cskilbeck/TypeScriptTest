@@ -19,9 +19,7 @@ angular.
         $scope.info = '...';
         $scope.query = location.search.substr(1);
         $scope.result = [];
-        $scope.tableVisible = false;
         $scope.iconStyle = "glyphicon glyphicon-null";
-        $scope.expand = [];
 
         $scope.clearQuery = function() {
             $scope.query = '';
@@ -53,9 +51,7 @@ angular.
                             r = [];
                         more = (data.results >= 10) ? " or more" : "";
                         $scope.info = data.results + more + " result" + (data.results != 1 ? "s" : "");
-                        $scope.expand = [];
                         for(i in data.errors) {
-                            $scope.expand.push(false);
                             err = data.errors[i];
                             n = parseInt(err.number);
                             e = {
@@ -76,17 +72,14 @@ angular.
                             r.push(e);
                         }
                         $scope.result = r;
-                        $scope.tableVisible = r.length > 0;
                         $scope.iconStyle = "glyphicon glyphicon-null";
                         if(r.length == 1) {
-                            $scope.expand[0] = true;
+                            $("#headerRow0").attr("aria-expanded", true);
                         }
                     }).
                     error(function(data, status, headers, config) {
-                        $scope.expand = [];
                         $scope.info = "Error getting results!?";
                         $scope.result = [];
-                        $scope.tableVisible = false;
                         $scope.iconStyle = "glyphicon glyphicon-null";
                     });
             }, 250);
@@ -115,6 +108,15 @@ angular.
                         return false;
                     }
                 });
+            }
+        };
+    }).directive('expandSingle', function() {
+        return {
+            link: function(scope, element, attrs) {
+                console.log("Len " + scope.result.length);
+                if(scope.result.length == 1) {
+                    $('.accordion-body').collapse('show');
+                }
             }
         };
     });

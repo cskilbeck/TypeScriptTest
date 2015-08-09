@@ -16,7 +16,6 @@ angular.
             { bit: -1, name: "Code",        text: [],                                   style: "bottomPad" }
         ];
 
-        $scope.status = 'Ready';
         $scope.info = '...';
         $scope.query = location.search.substr(1);
         $scope.result = [];
@@ -29,14 +28,6 @@ angular.
             $timeout(function() {
                 $("#query").focus();
             }, 100);
-        };
-
-        $scope.rowClass = function(index, last) {
-            return "row bordered " + ($scope.expand[index] ? 'bg-success open clickable' : 'clickable') + (last ? " lastly" : "");
-        };
-
-        $scope.toggle = function(index) {
-            $scope.expand[index] = !$scope.expand[index];
         };
 
         $scope.$watch('query', function() {
@@ -52,7 +43,6 @@ angular.
                     $timeout.cancel(timer);
                 }
                 timer = null;
-                $scope.status = 'Searching...';
                 $scope.iconStyle = "glyphicon glyphicon-refresh gly-spin";
                 $http.get(webservice + $scope.query).
                     success(function(data, status, headers, config) {
@@ -61,9 +51,8 @@ angular.
                             more,
                             e,
                             r = [];
-                        $scope.status = data.status;
-                        more = (data.numresults >= 10) ? " or more" : "";
-                        $scope.info = data.numresults + more + " result" + (data.numresults != 1 ? "s" : "");
+                        more = (data.results >= 10) ? " or more" : "";
+                        $scope.info = data.results + more + " result" + (data.results != 1 ? "s" : "");
                         $scope.expand = [];
                         for(i in data.errors) {
                             $scope.expand.push(false);
@@ -95,8 +84,7 @@ angular.
                     }).
                     error(function(data, status, headers, config) {
                         $scope.expand = [];
-                        $scope.status = data.status;
-                        $scope.info = '';
+                        $scope.info = "Error getting results!?";
                         $scope.result = [];
                         $scope.tableVisible = false;
                         $scope.iconStyle = "glyphicon glyphicon-null";

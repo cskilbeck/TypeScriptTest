@@ -22,55 +22,71 @@ html {
 
 .clickable {
     cursor: pointer;
+    background-color: #f8f8f8;
+}
+
+.clickable:hover {
+    background-color: #f2f2f2;
+}
+
+.table.outer >tbody >tr >td {
+    padding: 0;
     padding-top: 2px;
     padding-bottom: 2px;
+    padding-left: 10px;
 }
 
-.open {
-    border-bottom: 1px DarkGrey solid;
+.table.outer >tbody >tr.hid > td {
+    padding: 0;
 }
 
-.bolder {
-    font-weight: bold;
-    padding-top: 4px;
-    padding-bottom: 4px;
-    border: 0;
+.table.outer >tbody >tr >td {
+    border: none;
+    border-left: 1px LightGrey solid;
+    border-right: 1px LightGrey solid;
 }
 
-.topPad {
-    padding-top: 10px;
+.table>thead:first-child>tr:first-child>th {
+    border-top: 1px LightGrey solid;
 }
 
-.bottomPad {
-    padding-bottom: 5px;
-    margin-bottom: 5px;
+.table.outer >thead >tr >th {
+    border: 1px LightGrey solid;
 }
 
-.lastly {
-    border: 1px DarkGrey solid;
+.table >thead>tr>th {
+    border-bottom: 1px LightGrey solid;
 }
 
-div.borderedBody {
-    border-right: 1px DarkGrey solid;
-    border-left: 1px DarkGrey solid;
+.table >tbody+tbody {
+    border-top: 1px LightGrey solid;
 }
 
-div.bordered {
-    border-top: 1px DarkGrey solid;
-    border-right: 1px DarkGrey solid;
-    border-left: 1px DarkGrey solid;
+.table.outer >tbody:last-child,
+.table.outer >tbody:last-child:first-child {
+    border-bottom: 1px LightGrey solid;
 }
 
-.bottomBorder {
-    border-bottom: 1px DarkGrey solid;
+.table.inner >tbody >tr >td {
+    border: none;
+    padding: 20px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    background-color: #fcfcfc;
 }
 
-.lastLine {
-    border-top: 1px DarkGrey solid;
-    padding-top: 10px;
-    padding-bottom: 10px;
+.table.inner >tbody >tr:first-child >td {
+    border-top: 1px LightGrey solid;
+    padding: 20px;
+    padding-top: 6px;
+    padding-bottom: 0px;
 }
 
-.fieldName {
-    font-weight: bold;
+.table.inner >tbody >tr:last-child >td {
+    padding-top: 6px;
+    padding-bottom: 8px;
+}
+
+.table {
+    margin-bottom: 0px;
 }

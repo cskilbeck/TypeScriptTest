@@ -1,13 +1,20 @@
 #! /usr/bin/python
 
-import pprint
+import sys, pprint
 import pickle
 import logging
 import logging.handlers
 import SocketServer
 import struct
+import signal
 
 from termcolor import colored
+
+def signal_handler(signal, frame):
+    print "LOGGING server shutting down"
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, signal_handler)
 
 class LogRecordStreamHandler(SocketServer.StreamRequestHandler):
     """Handler for a streaming logging request.

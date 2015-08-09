@@ -2,20 +2,13 @@
 # !NOTE! this runs as (potentially) many simultaneous threads/processes...
 #----------------------------------------------------------------------
 
-import os
-import traceback
-import sys
-import datetime
-import socket
-import threading
-import json
+import os, traceback, sys, datetime
+import socket, threading, json
+import urlparse, urllib, urllib2
+import pprint, logging, logging.handlers
+
 from contextlib import closing
-import urlparse
-import urllib
-import urllib2
-import pprint
-import logging, logging.handlers
-from time import sleep
+from time import sleep, gmtime, strftime
 
 #----------------------------------------------------------------------
 
@@ -51,39 +44,76 @@ def date_handler(obj):
 #----------------------------------------------------------------------
 # Logger functions
 
-logger = None
+logger = ""
 
 def resetLog():
     global logger
     logger = ""
 
 def log(x, y = ""):
-    x = str(x).replace("\\n", "\n")
-    if type(y) is not str:
+    if x is None:
+        x = "(None)"
+    else:
+        x = str(x).replace("\\n", "\n")
+    if y is None:
+        y = "(None)"
+    elif type(y) is not str:
         y = pprint.pformat(y, 0, 120).replace("\\n", "\n")
     global logger
     logger += x + y + "\n"
 
 def dumpLog():
-    rootLogger = logging.getLogger('')
-    rootLogger.setLevel(logging.DEBUG)
-    socketHandler = logging.handlers.SocketHandler('localhost', logging.handlers.DEFAULT_TCP_LOGGING_PORT)
-    rootLogger.addHandler(socketHandler)
     global logger
     logging.debug(logger)
 
-#----------------------------------------------------------------------
-# call the local helper service
+def byteify(input):
+    if isinstance(input, dict):
+        return {byteify(key):byteify(value) for key,value in input.iteritems()}
+    elif isinstance(input, list):
+        return [byteify(element) for element in input]
+    elif isinstance(input, unicode):
+        return input.encode('utf-8')
+    else:
+        return input
 
-def service(dict):
-    with closing(socket.socket()) as s:
-        try:
-            s.connect(("127.0.0.1", 1340))
-            s.send(urllib.urlencode(dict))
-            return json.loads(s.recv(8192))
-        except:
-            log("Error, can't connect to helper!")
-            return None
+#----------------------------------------------------------------------
+# Global Init
+#----------------------------------------------------------------------
+
+rootLogger = logging.getLogger('')
+rootLogger.setLevel(logging.DEBUG)
+socketHandler = logging.handlers.SocketHandler('localhost', logging.handlers.DEFAULT_TCP_LOGGING_PORT)
+rootLogger.addHandler(socketHandler)
+
+errors = None
+facilities = {}
+
+with open('/home/chs/hresult/hresults.json') as file:
+    hr = byteify(json.load(file))
+    errors = hr['errors']
+    for f in hr['facilities']:
+        facilities[int(f[0])] = f[1]
+
+logging.debug("Loaded {0} errors, {1} facilities".format(*[len(errors), len(facilities)]))
+
+#----------------------------------------------------------------------
+# error lookup
+#----------------------------------------------------------------------
+
+def get_errors(code):
+    results = { 'errors': [], 'results': 0 }
+    for err in errors:
+        if err[1].find(code) != -1:
+            results['errors'].append({ 'name':err[2],
+                                        'description': err[3],
+                                        'file': err[4],
+                                        'error': err[1],
+                                        'number': err[0],
+                                        'facility': facilities.get((int(err[0]) >> 16) & 0x7ff, "UNKNOWN") })
+            if len(results['errors']) == 10:
+                break
+    results['results'] = len(results['errors'])
+    return results
 
 #----------------------------------------------------------------------
 # check list of parameters in a query or post string
@@ -143,7 +173,7 @@ class findHandler(Handler):
     def handle(self):
         check_parameters(self.query, ['code'])
         log("Message: " + self.query['code'])
-        result = service(self.query)
+        result = get_errors(self.query['code'])
         if result is not None:
             self.add(result)
         else:
@@ -155,9 +185,9 @@ class findHandler(Handler):
 
 def application(environ, start_response):
 
-    resetLog()
-
     #print(pprint.pformat(environ))
+
+    resetLog()
 
     headers = [('Content-type', 'application/json')]
     output = dict()

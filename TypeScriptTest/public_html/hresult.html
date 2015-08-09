@@ -18,7 +18,7 @@
       </div>
       <div style="width:50%;min-width:200px;">
         <div class="input-group">
-          <input type="text" auto-focus ng-model="query" class="form-control" id="query" placeholder='Search...'>
+          <input type="text" auto-focus ng-model="query" class="form-control" id="query" placeholder='Search...' maxlength="12">
           <span class="input-group-btn">
             <button type="button" class="btn btn-primary" ng-click="clearQuery()">
               <i class='glyphicon glyphicon-remove'></i>
@@ -29,31 +29,37 @@
       <br>
       <span class='pull-right'><i ng-class="iconStyle"></i></span>
       <h4>{{info}}</h4>
-      <div class="container-fluid">
-        <div class="row bg-primary bolder">
-          <div class="col-md-1">Code</div>
-          <div class="col-md-9">Name</div>
-          <div class="col-md-2">File</div>
-        </div>
-        <div ng-repeat="r in result" ng-switch on="expand[$index]">
-          <div suppress-select ng-class="rowClass($index, $last)" ng-click='toggle($index)'>
-            <div class="col-md-1">{{r.error}}</div>
-            <div class="col-md-9">{{r.name}}</div>
-            <div class="col-md-2">{{r.file}}</div>
-          </div>
-          <div class="row bg-info" ng-switch-when="true">
-            <div class="col-md-12 borderedBody">
-              <div ng-repeat='m in msg'>
-                <div ng-class="m.style + ' col-md-1 fieldName'">{{m.name}}</div>
-                <div ng-class="m.style + ' col-md-11'">{{r.details[m.name]}}</div>
+      <table class="table outer">
+        <thead class="bg-primary">
+          <tr>
+            <th class="col-md-1">Code</th>
+            <th class="col-md-8">Name</th>
+            <th class="col-md-3">File</th>
+          </tr>
+        </thead>
+        <tbody ng-repeat="r in result">
+          <tr data-toggle='collapse' data-target='#row{{$index}}' class='clickable' suppress-select id='headerRow{{$index}}'>
+            <td class="col-md-1">{{r.error}}</td>
+            <td class="col-md-8">{{r.name}}</td>
+            <td class="col-md-3">{{r.file}}</td>
+          </tr>
+          <tr class="hid">
+            <td colspan="3">
+              <div class='accordion-body collapse' id='row{{$index}}'>
+                <table class="table inner">
+                  <tr ng-repeat='m in msg'>
+                    <td class="col-md-1 pl">{{m.name}}</td>
+                    <td class="col-md-11">{{r.details[m.name]}}</td>
+                  </tr>
+                  <tr>
+                    <td colspan="2" class='col-md-12' ng-bind-html='r.details.Description'></td>
+                  </tr>
+                </table>
               </div>
-              <div class="row bg-info">
-                <div class="col-md-12 lastLine {{$last ? 'bottomBorder' : ''}}" ng-bind-html='r.details.Description'></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </body>
 </html>

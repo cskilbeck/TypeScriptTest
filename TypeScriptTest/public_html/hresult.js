@@ -1,3 +1,25 @@
+//41010013
+
+function copyTextToClipboard(text) {
+    var t = document.createElement("textarea");
+    t.style.position = 'fixed';
+    t.style.top = t.style.left = t.style.padding = 0;
+    t.style.width = t.style.height = '2em';
+    t.style.border = t.style.outline = t.style.boxShadow = 'none';
+    t.style.background = 'transparent';
+    t.value = text;
+    document.body.appendChild(t);
+    t.select();
+    try {
+        var successful = document.execCommand('copy');
+        var msg = successful ? 'successful' : 'unsuccessful';
+        console.log('2 Copying text command was ' + msg);
+    } catch (err) {
+       console.log('Oops, unable to copy');
+    }
+    document.body.removeChild(t);
+}
+
 angular.
     module("mainApp", ['ngSanitize']).
     controller('hresultController', function($scope, $timeout, $http, $sce) {
@@ -16,7 +38,7 @@ angular.
             { bit: -1, name: "Code",        text: [],                                   style: "bottomPad" }
         ];
 
-        $scope.info = '...';
+        $scope.info = $sce.trustAsHtml('&nbsp;');
         $scope.query = location.search.substr(1);
         $scope.result = [];
         $scope.iconStyle = "glyphicon glyphicon-null";
@@ -26,6 +48,14 @@ angular.
             $timeout(function() {
                 $("#query").focus();
             }, 100);
+        };
+
+        $scope.copy = function(r) {
+            var t,
+                d = $('#entry' + r).clone();
+            d.find('.nocopy').remove();
+            t = d.text().replace(/^\s+|\s+$/gm, '').replace(/\t/gm, ' ').replace(/[\uE000-\uE001]/gm, '\t');
+            copyTextToClipboard(t);
         };
 
         $scope.$watch('query', function() {
@@ -48,9 +78,10 @@ angular.
                             err, code,
                             more,
                             e,
+                            id = 0,
                             r = [];
                         more = (data.results >= 10) ? " or more" : "";
-                        $scope.info = data.results + more + " result" + (data.results != 1 ? "s" : "");
+                        $scope.info = $sce.trustAsHtml(data.results + more + " result" + (data.results != 1 ? "s" : ""));
                         for(i in data.errors) {
                             err = data.errors[i];
                             n = parseInt(err.number);
@@ -66,9 +97,11 @@ angular.
                                     e.details[m.name] = m.text[(n >>> m.bit) & 1];
                                 }
                             }
-                            e.details.Description = $sce.trustAsHtml(err.description.replace(/&#10;/g, "<br>"));
+                            e.details.Description = "<span class='invisible'>Details&#xE000;</span>" +
+                                                    $sce.trustAsHtml(err.description.replace(/&#10;/g, "<br>\r\n<span class='invisible'>&#xE001;</span>"));
                             e.details.Facility = "0x" + ((err.error >> 16) & 0x7ff).toString(16) + " = " + err.facility;
-                            e.details.Code = err.error & 0xffff;
+                            e.details.Code = "0x" + (err.error & 0xffff).toString(16) + " = " + (err.error & 0xffff).toString();
+                            e.index = id++;
                             r.push(e);
                         }
                         $scope.result = r;
@@ -78,7 +111,7 @@ angular.
                         }
                     }).
                     error(function(data, status, headers, config) {
-                        $scope.info = "Error getting results!?";
+                        $scope.info = $sce.trustAsHtml("Error getting results!?");
                         $scope.result = [];
                         $scope.iconStyle = "glyphicon glyphicon-null";
                     });

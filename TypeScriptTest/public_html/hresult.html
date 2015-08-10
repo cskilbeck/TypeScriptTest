@@ -28,38 +28,47 @@
       </div>
       <br>
       <span class='pull-right'><i ng-class="iconStyle"></i></span>
-      <h4>{{info}}</h4>
-      <table class="table outer">
-        <thead class="bg-primary">
-          <tr>
-            <th class="col-md-1">Code</th>
-            <th class="col-md-8">Name</th>
-            <th class="col-md-3">File</th>
-          </tr>
-        </thead>
-        <tbody ng-repeat="r in result">
-          <tr data-toggle='collapse' data-target='#row{{$index}}' class='clickable' suppress-select id='headerRow{{$index}}' expand-single>
-            <td class="col-md-1">{{r.error}}</td>
-            <td class="col-md-8">{{r.name}}</td>
-            <td class="col-md-3">{{r.file}}</td>
-          </tr>
-          <tr class="hid">
-            <td colspan="3">
-              <div class='accordion-body collapse' id='row{{$index}}'>
-                <table class="table inner">
-                  <tr ng-repeat='m in msg'>
-                    <td class="col-md-1 pl">{{m.name}}</td>
-                    <td class="col-md-11">{{r.details[m.name]}}</td>
-                  </tr>
-                  <tr>
-                    <td colspan="2" class='col-md-12' ng-bind-html='r.details.Description'></td>
-                  </tr>
-                </table>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <h4 ng-bind-html='info'></h4>
+      <div id="mainTable">
+        <table class="table outer">
+          <thead class="bg-primary">
+            <tr>
+              <th class="col-md-1">Code</th>
+              <th class="col-md-8">Name</th>
+              <th class="col-md-3">File</th>
+            </tr>
+          </thead>
+          <tbody ng-repeat="r in result" id="entry{{$index}}">
+            <tr data-toggle='collapse' data-target='#row{{$index}}' class='clickable' suppress-select id='headerRow{{$index}}' expand-single>
+              <td class="col-md-1"><div class='invisible'>Error&#xE000;</div>{{r.error}}</td>
+              <td class="col-md-8"><div class='invisible'>Name&#xE000;</div>{{r.name}}</td>
+              <td class="col-md-3"><div class='invisible'>File&#xE000;</div>{{r.file}}</td>
+            </tr>
+            <tr class="hid">
+              <td colspan="3">
+                <div class='accordion-body collapse' id='row{{$index}}'>
+                  <table class="table inner">
+                    <tr ng-repeat='m in msg' ng-switch on='$index'>
+                      <td class="col-md-1 pl"><span class='nocopy'>{{m.name}}</span></td>
+                      <td class="col-md-11">
+                        <span class='invisible'>{{m.name}}&#xE000;</span>{{r.details[m.name]}}
+                        <span class='pull-right nocopy' ng-switch-when='0'>
+                          <button type="button" class="btn btn-info btn-xs" ng-click='copy(r.index)'>
+                            Copy&nbsp;<i class="glyphicon glyphicon-copy"></i>
+                          </button>
+                        </span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td colspan="2" class='col-md-12' ng-bind-html='r.details.Description'></td>
+                    </tr>
+                  </table>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </body>
 </html>

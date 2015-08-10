@@ -90,3 +90,11 @@ html {
 .table {
     margin-bottom: 0px;
 }
+
+.invisible {
+    display: none;
+}
+
+.nocopy {
+    display: inherit;
+}

@@ -41,7 +41,8 @@ angular.
         $scope.info = $sce.trustAsHtml('&nbsp;');
         $scope.query = location.search.substr(1);
         $scope.result = [];
-        $scope.iconStyle = "glyphicon glyphicon-null";
+        $scope.iconStyle = "glyphicon glyphicon-null pull-right";
+        $scope.tableVisible = "invisible";
 
         $scope.clearQuery = function() {
             $scope.query = '';
@@ -50,12 +51,31 @@ angular.
             }, 100);
         };
 
-        $scope.copy = function(r) {
-            var t,
-                d = $('#entry' + r).clone();
+        function getText(r) {
+            var d = $('#entry' + r).clone();
             d.find('.nocopy').remove();
-            t = d.text().replace(/^\s+|\s+$/gm, '').replace(/\t/gm, ' ').replace(/[\uE000-\uE001]/gm, '\t');
-            copyTextToClipboard(t);
+            return d.text().replace(/^\s+|\s+$/gm, '').
+                            replace(/\t/gm, ' ').
+                            replace(/[\uE000-\uE001]/gm, '\t').
+                            replace(/\uE002\"/gm, '""').
+                            replace(/\uE004/gm, '\n').
+                            replace(/\uE003/gm, '"');
+        }
+
+        $scope.copy = function(r) {
+            copyTextToClipboard(getText(r));
+        };
+
+        function inv(x) {
+            return "<span class='invisible'>" + x + "</span>";
+        }
+
+        $scope.expandAll = function() {
+            $('.accordion-body').collapse('show');
+        };
+
+        $scope.contractAll = function() {
+            $('.accordion-body').collapse('hide');
         };
 
         $scope.$watch('query', function() {
@@ -71,11 +91,11 @@ angular.
                     $timeout.cancel(timer);
                 }
                 timer = null;
-                $scope.iconStyle = "glyphicon glyphicon-refresh gly-spin";
+                $scope.iconStyle = "glyphicon glyphicon-refresh gly-spin pull-right";
                 $http.get(webservice + $scope.query).
                     success(function(data, status, headers, config) {
                         var i, j, m, n,
-                            err, code,
+                            err, code, desc,
                             more,
                             e,
                             id = 0,
@@ -97,15 +117,22 @@ angular.
                                     e.details[m.name] = m.text[(n >>> m.bit) & 1];
                                 }
                             }
-                            e.details.Description = "<span class='invisible'>Details&#xE000;</span>" +
-                                                    $sce.trustAsHtml(err.description.replace(/&#10;/g, "<br>\r\n<span class='invisible'>&#xE001;</span>"));
+                            desc = err.description.
+                                        replace(/&quot;/gm, inv("&#xE002;") + "&quot;").
+                                        replace(/\\n/gm, + '<br>\r\n').
+                                        replace(/\\t/gm, '&Tab;').
+                                        replace(/\"/gm, inv("&#xE002;") + "&quot;").
+                                        replace(/&#10;/g, "<br>\r\n" + inv("&#xE001;"));
+                            desc = inv("&#xE003") + desc + inv("&#xE003;");
+                            e.details.Description = inv("Details&#xE000;") + $sce.trustAsHtml(desc);
                             e.details.Facility = "0x" + ((err.error >> 16) & 0x7ff).toString(16) + " = " + err.facility;
                             e.details.Code = "0x" + (err.error & 0xffff).toString(16) + " = " + (err.error & 0xffff).toString();
                             e.index = id++;
                             r.push(e);
                         }
                         $scope.result = r;
-                        $scope.iconStyle = "glyphicon glyphicon-null";
+                        $scope.tableVisible = (r.length > 0) ? "" : "invisible";
+                        $scope.iconStyle = "glyphicon glyphicon-null pull-right";
                         if(r.length == 1) {
                             $("#headerRow0").attr("aria-expanded", true);
                         }

@@ -22,28 +22,33 @@ html {
 
 .clickable {
     cursor: pointer;
-    background-color: #f8f8f8;
+    background-color: #F0F0F0;
 }
 
 .clickable:hover {
-    background-color: #f2f2f2;
+    background-color: #E8E8E8;
+}
+
+.clickable[aria-expanded="true"] {
+    background-color: #dff0d8;
+}
+
+.clickable[aria-expanded="true"]:hover {
+    background-color: #d8e8d0;
 }
 
 .table.outer >tbody >tr >td {
-    padding: 0;
     padding-top: 2px;
     padding-bottom: 2px;
     padding-left: 10px;
+    padding-right: 10px;
+    border: none;
+    border-left: 1px LightGrey solid;
+    border-right: 1px LightGrey solid;
 }
 
 .table.outer >tbody >tr.hid > td {
     padding: 0;
-}
-
-.table.outer >tbody >tr >td {
-    border: none;
-    border-left: 1px LightGrey solid;
-    border-right: 1px LightGrey solid;
 }
 
 .table>thead:first-child>tr:first-child>th {
@@ -54,14 +59,11 @@ html {
     border: 1px LightGrey solid;
 }
 
-.table >thead>tr>th {
-    border-bottom: 1px LightGrey solid;
-}
-
 .table >tbody+tbody {
     border-top: 1px LightGrey solid;
 }
 
+.table >thead >tr >th,
 .table.outer >tbody:last-child,
 .table.outer >tbody:last-child:first-child {
     border-bottom: 1px LightGrey solid;
@@ -72,7 +74,7 @@ html {
     padding: 20px;
     padding-top: 0px;
     padding-bottom: 0px;
-    background-color: #fcfcfc;
+    background-color: #f8f8f8;
 }
 
 .table.inner >tbody >tr:first-child >td {
@@ -96,5 +98,25 @@ html {
 }
 
 .nocopy {
-    display: inherit;
+}
+
+.glyphicon.centeredImage {
+    line-height: inherit;
+}
+
+.row.gap {
+    padding-top: 1em;
+    padding-bottom: 0.5em;
+}
+
+span.centered {
+    vertical-align: middle;
+    line-height: 0.5em;
+}
+
+.btn.btn-xs.nofocus:focus {
+    outline: none;
+}
+.btn.btn-xs.nofocus {
+    border-radius: 10px;
 }

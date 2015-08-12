@@ -31,10 +31,10 @@
               </span>
             </div>
           </div>
-          <div class='col-md-6 wide'>
+          <div class='col-md-6 wide' ng-cloak>
             <h5><span class='label label-default {{searched ? "" : "invisible"}}' ng-bind-html='info'></span></h5>
           </div>
-          <div class='col-md-2'>
+          <div class='col-md-2' ng-cloak>
             <span class='pull-right'>
               <button class="btn btn-xs nofocus" ng-click="expand('show')" ng-disabled="!g1">
                 <span class="glyphicon glyphicon-align-center glyphicon-chevron-down"></span>
@@ -46,7 +46,7 @@
           </div>
         </div>
         <br>
-        <div id="mainTable" class='{{tableVisible ? "" : "invisible"}}'>
+        <div id="mainTable" ng-cloak class='{{tableVisible ? "" : "invisible"}}'>
           <table class="table outer">
             <thead class="bg-primary">
               <tr>
@@ -78,7 +78,8 @@
                         </td>
                       </tr>
                       <tr>
-                        <td colspan="2" class='col-md-12' ng-bind-html='r.details.Description'></td>
+                        <td class='col-md-1 pl nocopy'>Description</td>
+                        <td class='col-md-11'><code ng-bind-html='r.details.Description'></code></td>
                       </tr>
                     </table>
                   </div>

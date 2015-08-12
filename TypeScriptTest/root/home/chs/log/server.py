@@ -59,9 +59,7 @@ class LogRecordStreamHandler(SocketServer.StreamRequestHandler):
         logger.handle(record)
 
 class LogRecordSocketReceiver(SocketServer.ThreadingTCPServer):
-    """
-    Simple TCP socket-based logging receiver suitable for testing.
-    """
+    """Simple TCP socket-based logging receiver suitable for testing."""
 
     allow_reuse_address = 1
 

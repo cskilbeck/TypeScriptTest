@@ -8,12 +8,6 @@ import signal
 from time import gmtime, strftime
 from termcolor import colored
 
-def signal_handler(signal, frame):
-    print "LOGGING server shutting down"
-    sys.exit(0)
-
-signal.signal(signal.SIGINT, signal_handler)
-
 parser = argparse.ArgumentParser()
 parser.add_argument("-p", "--port", help = "which port to listen on", type = int)
 parser.add_argument("-b", "--backlog", help = "accept backlog size", type = int)

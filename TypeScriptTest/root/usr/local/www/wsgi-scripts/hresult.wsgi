@@ -102,6 +102,7 @@ logging.debug("Loaded {0} errors, {1} facilities".format(*[len(errors), len(faci
 
 def get_errors(code):
     results = { 'errors': [], 'results': 0 }
+    code = code.lower()
     for err in errors:
         if err[1].find(code) != -1:
             results['errors'].append({ 'name':err[2],

@@ -29,17 +29,17 @@ angular.
             webservice = "http://45.55.209.178/hresult?action=find&code=";
 
         $scope.msg = [
-            { bit: 31, name: "Severity",    text: ["SUCCESS","FAILURE"],                style: "topPad" },
-            { bit: 30, name: "Reserved",    text: ["NORMAL", "SEVERE"],                 style: "" },
-            { bit: 29, name: "Owner",       text: ["MICROSOFT", "CUSTOMER"],            style: "" },
-            { bit: 28, name: "IsNT",        text: ["NT", "NORMAL"],                     style: "" },
-            { bit: 27, name: "Type",        text: ["STATUS CODE", "DISPLAY STRING"],    style: "" },
-            { bit: -1, name: "Facility",    text: [],                                   style: "" },
-            { bit: -1, name: "Code",        text: [],                                   style: "bottomPad" }
+            { bit: 31, name: "Severity",    text: ["SUCCESS","FAILURE"]             },
+            { bit: 30, name: "Reserved",    text: ["NORMAL", "SEVERE"]              },
+            { bit: 29, name: "Owner",       text: ["MICROSOFT", "CUSTOMER"]         },
+            { bit: 28, name: "IsNT",        text: ["NT", "NORMAL"]                  },
+            { bit: 27, name: "Type",        text: ["STATUS CODE", "DISPLAY STRING"] },
+            { bit: -1, name: "Facility",    text: []                                },
+            { bit: -1, name: "Code",        text: []                                }
         ];
 
         $scope.query = location.search.substr(1);
-        $scope.info = ($scope.query.length > 0) ? $sce.trustAsHtml('Searching...') : $sce.trustAsHtml('Enter a search term above');
+        $scope.info = $sce.trustAsHtml('&nbsp;');
         $scope.result = [];
         $scope.iconStyle = "glyphicon glyphicon-null pull-right";
         $scope.tableVisible = false;
@@ -141,9 +141,6 @@ angular.
                         $scope.tableVisible = r.length > 0;
                         $scope.iconStyle = "glyphicon glyphicon-null pull-right";
                         $scope.g1 = r.length > 1;
-                        if(r.length == 1) {
-                            $("#headerRow0").attr("aria-expanded", true);
-                        }
                     }).
                     error(function(data, status, headers, config) {
                         $scope.info = $sce.trustAsHtml("Error getting results!?");

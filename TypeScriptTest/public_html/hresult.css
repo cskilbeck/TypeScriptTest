@@ -85,7 +85,6 @@ html {
 }
 
 .table.inner >tbody >tr:last-child >td {
-    padding-top: 6px;
     padding-bottom: 8px;
 }
 

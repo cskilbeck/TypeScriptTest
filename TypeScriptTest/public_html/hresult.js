@@ -1,7 +1,7 @@
 //41010013
-
 function copyTextToClipboard(text) {
-    var t = document.createElement("textarea");
+
+    var s = false, t = document.createElement("textarea");
     t.style.position = 'fixed';
     t.style.top = t.style.left = t.style.padding = 0;
     t.style.width = t.style.height = '2em';
@@ -11,13 +11,13 @@ function copyTextToClipboard(text) {
     document.body.appendChild(t);
     t.select();
     try {
-        var successful = document.execCommand('copy');
-        var msg = successful ? 'successful' : 'unsuccessful';
-        console.log('2 Copying text command was ' + msg);
-    } catch (err) {
-       console.log('Oops, unable to copy');
+        s = document.execCommand('copy');
+    } catch(e) {
     }
     document.body.removeChild(t);
+    if(!s) {
+        prompt("Press CTRL-C or CMD-C", text);
+    }
 }
 
 angular.
@@ -38,11 +38,13 @@ angular.
             { bit: -1, name: "Code",        text: [],                                   style: "bottomPad" }
         ];
 
-        $scope.info = $sce.trustAsHtml('&nbsp;');
         $scope.query = location.search.substr(1);
+        $scope.info = ($scope.query.length > 0) ? $sce.trustAsHtml('Searching...') : $sce.trustAsHtml('Enter a search term above');
         $scope.result = [];
         $scope.iconStyle = "glyphicon glyphicon-null pull-right";
-        $scope.tableVisible = "invisible";
+        $scope.tableVisible = false;
+        $scope.searched = false;
+        $scope.g1 = false;
 
         $scope.clearQuery = function() {
             $scope.query = '';
@@ -63,19 +65,23 @@ angular.
         }
 
         $scope.copy = function(r) {
+            var b = $('#copyButton' + r),
+                t = $('#copyText' + r);
             copyTextToClipboard(getText(r));
+            t.text("Copied ");
+            b.addClass("btn-success");
+            setTimeout(function() {
+                t.text("Copy ");
+                b.removeClass("btn-success");
+            }, 1000);
         };
 
         function inv(x) {
             return "<span class='invisible'>" + x + "</span>";
         }
 
-        $scope.expandAll = function() {
-            $('.accordion-body').collapse('show');
-        };
-
-        $scope.contractAll = function() {
-            $('.accordion-body').collapse('hide');
+        $scope.expand = function(s) {
+            $('.accordion-body').collapse(s);
         };
 
         $scope.$watch('query', function() {
@@ -101,7 +107,7 @@ angular.
                             id = 0,
                             r = [];
                         more = (data.results >= 10) ? " or more" : "";
-                        $scope.info = $sce.trustAsHtml(data.results + more + " result" + (data.results != 1 ? "s" : ""));
+                        $scope.info = $sce.trustAsHtml("&nbsp;" + data.results + more + " found&nbsp;");
                         for(i in data.errors) {
                             err = data.errors[i];
                             n = parseInt(err.number);
@@ -130,9 +136,11 @@ angular.
                             e.index = id++;
                             r.push(e);
                         }
+                        $scope.searched = true;
                         $scope.result = r;
-                        $scope.tableVisible = (r.length > 0) ? "" : "invisible";
+                        $scope.tableVisible = r.length > 0;
                         $scope.iconStyle = "glyphicon glyphicon-null pull-right";
+                        $scope.g1 = r.length > 1;
                         if(r.length == 1) {
                             $("#headerRow0").attr("aria-expanded", true);
                         }
@@ -168,15 +176,6 @@ angular.
                         return false;
                     }
                 });
-            }
-        };
-    }).directive('expandSingle', function() {
-        return {
-            link: function(scope, element, attrs) {
-                console.log("Len " + scope.result.length);
-                if(scope.result.length == 1) {
-                    $('.accordion-body').collapse('show');
-                }
             }
         };
     });

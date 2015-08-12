@@ -14,63 +14,65 @@
   <body>
     <div class="container" ng-app="mainApp" ng-controller="hresultController">
       <div class="page-header">
+        <span class='pull-right'>
+            <span ng-class="iconStyle"></span>
+        </span>
         <h4>HRESULT Finder</h4>
       </div>
       <div class="well">
         <div class='row'>
-          <div class='col-md-6'>
+          <div class='col-md-4'>
             <div class="input-group">
               <input type="text" auto-focus ng-model="query" class="form-control" id="query" placeholder='Search...' maxlength="12">
               <span class="input-group-btn">
                 <button type="button" class="btn btn-primary" ng-click="clearQuery()">
-                  <i class='glyphicon glyphicon-remove'></i>
+                  <span class='glyphicon glyphicon-remove'></span>
                 </button>
               </span>
             </div>
           </div>
-          <div class='col-md-6'>
-            <span class='pull-right'>
-              <i ng-class="iconStyle"></i>
-            </span>
-          </div>
-        </div>
-        <div class='row gap'>
-          <div class='col-md-10'>
-            <span ng-bind-html='info'></span>
+          <div class='col-md-6 wide'>
+            <h5><span class='label label-default {{searched ? "" : "invisible"}}' ng-bind-html='info'></span></h5>
           </div>
           <div class='col-md-2'>
             <span class='pull-right'>
-              <button class="btn btn-xs nofocus {{tableVisible}}" ng-click="expandAll()"><span class="centered"><span class="glyphicon glyphicon-align-center glyphicon-chevron-down centeredImage"></span></span></button>
-              <button class="btn btn-xs nofocus {{tableVisible}}" ng-click="contractAll()"><span class="centered"><span class="glyphicon glyphicon-align-center glyphicon-chevron-up centeredImage"></span></span></button>
+              <button class="btn btn-xs nofocus" ng-click="expand('show')" ng-disabled="!g1">
+                <span class="glyphicon glyphicon-align-center glyphicon-chevron-down"></span>
+              </button>
+              <button class="btn btn-xs nofocus" ng-click="expand('hide')" ng-disabled="!g1">
+                <span class="glyphicon glyphicon-align-center glyphicon-chevron-up"></span>
+              </button>
             </span>
           </div>
         </div>
-        <div id="mainTable">
-          <table class="table outer {{tableVisible}}">
+        <br>
+        <div id="mainTable" class='{{tableVisible ? "" : "invisible"}}'>
+          <table class="table outer">
             <thead class="bg-primary">
               <tr>
-                <th class="col-md-1">Code</th>
+                <th class="col-md-2">Code</th>
                 <th class="col-md-8">Name</th>
-                <th class="col-md-3">File</th>
+                <th class="col-md-2">File</th>
               </tr>
             </thead>
             <tbody ng-repeat="r in result" id="entry{{$index}}">
-              <tr data-toggle='collapse' data-target='#row{{$index}}' class='clickable' suppress-select id='headerRow{{$index}}' expand-single>
-                <td class="col-md-1"><span class='invisible'>Error&#xE000;</span>{{r.error}}</td>
+              <tr data-toggle='{{g1 ? "collapse" : ""}}' data-target='#row{{$index}}' class='{{ g1 ? "clickable" : ""}}' suppress-select id='headerRow{{$index}}'>
+                <td class="col-md-2"><span class='invisible'>Error&#xE000;</span>{{r.error}}</td>
                 <td class="col-md-8"><span class='invisible'>Name&#xE000;</span>{{r.name}}</td>
-                <td class="col-md-3"><span class='invisible'>File&#xE000;</span>{{r.file}}</td>
+                <td class="col-md-2"><span class='invisible'>File&#xE000;</span>{{r.file}}</td>
               </tr>
               <tr class="hid">
                 <td colspan="3">
-                  <div class='accordion-body collapse' id='row{{$index}}'>
+                  <div class='{{ g1 ? "accordion-body collapse" : ""}}' id='row{{$index}}'>
                     <table class="table inner">
                       <tr ng-repeat='m in msg' ng-switch on='$index'>
                         <td class="col-md-1 pl"><span class='nocopy'>{{m.name}}</span></td>
                         <td class="col-md-11">
                           <span class='invisible'>{{m.name}}&#xE000;</span>{{r.details[m.name]}}
                           <span class='pull-right nocopy' ng-switch-when='0'>
-                            <button type="button" class="btn btn-info btn-xs" ng-click='copy(r.index)'>
-                              Copy&nbsp;<i class="glyphicon glyphicon-copy"></i>
+                            <button type="button" class="btn btn-xs" style="width:6em;" ng-click='copy(r.index)' id="copyButton{{r.index}}">
+                              <span class='pull-left' id='copyText{{r.index}}'>Copy </span>
+                              <span class="pull-right glyphicon glyphicon-copy"></span>
                             </button>
                           </span>
                         </td>
@@ -86,6 +88,7 @@
           </table>
         </div>
       </div>
-      </div>
+    </div>
+    <div id = "alert_placeholder"></div>
   </body>
 </html>

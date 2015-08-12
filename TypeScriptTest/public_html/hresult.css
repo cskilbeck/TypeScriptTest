@@ -22,7 +22,7 @@ html {
 
 .clickable {
     cursor: pointer;
-    background-color: #F0F0F0;
+    background-color: #F5F5F5;
 }
 
 .clickable:hover {
@@ -74,7 +74,7 @@ html {
     padding: 20px;
     padding-top: 0px;
     padding-bottom: 0px;
-    background-color: #f8f8f8;
+    background-color: #ffffff;
 }
 
 .table.inner >tbody >tr:first-child >td {
@@ -100,23 +100,18 @@ html {
 .nocopy {
 }
 
-.glyphicon.centeredImage {
-/*    line-height: inherit;
-*/}
-
 .row.gap {
-    padding-top: 1em;
+    padding-top: 0.5em;
     padding-bottom: 0.5em;
 }
 
-span.centered {
-    vertical-align: middle;
-    line-height: 0.5em;
+h4.noMargin {
+    margin: 0;
 }
 
 .btn.btn-xs.nofocus:focus {
     outline: none;
 }
-.btn.btn-xs.nofocus {
-    border-radius: 10px;
+
+.wide {
 }

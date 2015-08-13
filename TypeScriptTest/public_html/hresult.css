@@ -20,21 +20,30 @@ html {
 @keyframes          spin {  000% { -webkit-transform: rotate(000deg); transform: rotate(000deg); }
                             100% { -webkit-transform: rotate(359deg); transform: rotate(359deg); } }
 
+
+table.table {
+    table-layout: fixed;
+}
+
 .clickable {
     cursor: pointer;
     background-color: #F5F5F5;
+    overflow: hidden;
 }
 
 .clickable:hover {
     background-color: #E8E8E8;
+    overflow: hidden;
 }
 
 .clickable[aria-expanded="true"] {
     background-color: #dff0d8;
+    overflow: hidden;
 }
 
 .clickable[aria-expanded="true"]:hover {
     background-color: #d8e8d0;
+    overflow: hidden;
 }
 
 .table.outer >tbody >tr >td {
@@ -45,6 +54,7 @@ html {
     border: none;
     border-left: 1px LightGrey solid;
     border-right: 1px LightGrey solid;
+    overflow: hidden;
 }
 
 .table.outer >tbody >tr.hid > td {

@@ -71,17 +71,23 @@ html {
 
 .table.inner >tbody >tr >td {
     border: none;
-    padding: 20px;
+    padding-left: 20px;
+    padding-right: 4px;
     padding-top: 0px;
     padding-bottom: 0px;
     background-color: #ffffff;
+    font-size: small;
 }
 
 .table.inner >tbody >tr:first-child >td {
     border-top: 1px LightGrey solid;
-    padding: 20px;
     padding-top: 6px;
-    padding-bottom: 0px;
+}
+
+.table.inner >tbody >tr:first-child >td.butter {
+    padding: 0px;
+    padding-top: 6px;
+    padding-right: 6px;
 }
 
 .table.inner >tbody >tr:last-child >td {
@@ -112,5 +118,22 @@ h4.noMargin {
     outline: none;
 }
 
+.btn.btn-xs.copyButton {
+    width:6em;
+}
+
 .wide {
+}
+
+pre.plain {
+    white-space: pre-wrap;
+    word-wrap: normal;
+    word-break: keep-all;
+    border: none;
+    background-color: inherit;
+    padding: inherit;
+    padding-left: 0;
+    padding-bottom: 0;
+    margin: inherit;
+    color: #B02000;
 }

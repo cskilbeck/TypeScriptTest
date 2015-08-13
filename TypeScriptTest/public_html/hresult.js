@@ -58,7 +58,7 @@ angular.
             d.find('.nocopy').remove();
             return d.text().replace(/^\s+|\s+$/gm, '').
                             replace(/\t/gm, ' ').
-                            replace(/[\uE000-\uE001]/gm, '\t').
+                            replace(/\uE000/gm, '\t').
                             replace(/\uE002\"/gm, '""').
                             replace(/\uE004/gm, '\n').
                             replace(/\uE003/gm, '"');
@@ -125,10 +125,8 @@ angular.
                             }
                             desc = err.description.
                                         replace(/&quot;/gm, inv("&#xE002;") + "&quot;").
-                                        replace(/\\n/gm, + '<br>\r\n').
                                         replace(/\\t/gm, '&Tab;').
-                                        replace(/\"/gm, inv("&#xE002;") + "&quot;").
-                                        replace(/&#10;/g, "<br>\r\n" + inv("&#xE001;"));
+                                        replace(/\"/gm, inv("&#xE002;") + "&quot;");
                             desc = inv("&#xE003") + desc + inv("&#xE003;");
                             e.details.Description = inv("Details&#xE000;") + $sce.trustAsHtml(desc);
                             e.details.Facility = "0x" + ((err.error >> 16) & 0x7ff).toString(16) + " = " + err.facility;

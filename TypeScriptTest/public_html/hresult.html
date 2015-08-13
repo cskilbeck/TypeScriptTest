@@ -69,8 +69,10 @@
                         <td class="col-md-1 pl"><span class='nocopy'>{{m.name}}</span></td>
                         <td class="col-md-11">
                           <span class='invisible'>{{m.name}}&#xE000;</span>{{r.details[m.name]}}
-                          <span class='pull-right nocopy' ng-switch-when='0'>
-                            <button type="button" class="btn btn-xs" style="width:6em;" ng-click='copy(r.index)' id="copyButton{{r.index}}">
+                        </td>
+                        <td class="butter" rowspan="2" ng-switch-when='0'>
+                          <span class='pull-right nocopy'>
+                            <button type="button" class="btn btn-xs copyButton" ng-click='copy(r.index)' id="copyButton{{r.index}}">
                               <span class='pull-left' id='copyText{{r.index}}'>Copy </span>
                               <span class="pull-right glyphicon glyphicon-copy"></span>
                             </button>
@@ -79,7 +81,7 @@
                       </tr>
                       <tr>
                         <td class='col-md-1 pl nocopy'>Description</td>
-                        <td class='col-md-11'><code ng-bind-html='r.details.Description'></code></td>
+                        <td colspan="2"><pre class="plain" ng-bind-html='r.details.Description'></pre></td>
                       </tr>
                     </table>
                   </div>

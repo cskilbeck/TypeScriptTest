@@ -20,9 +20,18 @@ function copyTextToClipboard(text) {
     }
 }
 
+function format(str, col) {
+    col = typeof col === 'object' ? col : Array.prototype.slice.call(arguments, 1);
+    return str.replace(/\{\{|\}\}|\{(\w+)\}/g, function (m, n) {
+        if (m == "{{") { return "{"; }
+        if (m == "}}") { return "}"; }
+        return col[n];
+    });
+}
+
 angular.
-    module("mainApp", ['ngSanitize']).
-    controller('hresultController', function($scope, $timeout, $http, $sce) {
+    module("mainApp", []).
+    controller('hresultController', function($scope, $timeout, $http) {
         "option strict";
 
         var timer = null,
@@ -39,7 +48,7 @@ angular.
         ];
 
         $scope.query = location.search.substr(1);
-        $scope.info = $sce.trustAsHtml('&nbsp;');
+        $scope.info = '';
         $scope.result = [];
         $scope.iconStyle = "glyphicon glyphicon-null pull-right";
         $scope.tableVisible = false;
@@ -53,26 +62,20 @@ angular.
             }, 100);
         };
 
-        function getText(r) {
-            var d = $('#entry' + r).clone();
-            d.find('.nocopy').remove();
-            return d.text().replace(/^\s+|\s+$/gm, '').
-                            replace(/\t/gm, ' ').
-                            replace(/\uE000/gm, '\t').
-                            replace(/\uE002\"/gm, '""').
-                            replace(/\uE004/gm, '\n').
-                            replace(/\uE003/gm, '"');
-        }
-
         $scope.copy = function(r) {
-            var b = $('#copyButton' + r),
-                t = $('#copyText' + r);
-            copyTextToClipboard(getText(r));
-            t.text("Copied ");
-            b.addClass("btn-success");
+            var e = $scope.result[r],
+                btn = $('#copyButton' + r),
+                txt = $('#copyText' + r),
+                m, j, t = format("Code\t\"{error}\"\r\nName\t\"{name}\"\r\nFile\t\"{file}\"\r\n", e);
+            for(j in e.details) {
+                t += j + "\t\"" + e.details[j].replace(/\"/gm, '""') + "\"\r\n";
+            }
+            copyTextToClipboard(t);
+            txt.text("Copied ");
+            btn.addClass("btn-success");
             setTimeout(function() {
-                t.text("Copy ");
-                b.removeClass("btn-success");
+                txt.text("Copy ");
+                btn.removeClass("btn-success");
             }, 1000);
         };
 
@@ -107,7 +110,7 @@ angular.
                             id = 0,
                             r = [];
                         more = (data.results >= 10) ? " or more" : "";
-                        $scope.info = $sce.trustAsHtml("&nbsp;" + data.results + more + " found&nbsp;");
+                        $scope.info = " " + data.results + more + " found";
                         for(i in data.errors) {
                             err = data.errors[i];
                             n = parseInt(err.number);
@@ -123,14 +126,9 @@ angular.
                                     e.details[m.name] = m.text[(n >>> m.bit) & 1];
                                 }
                             }
-                            desc = err.description.
-                                        replace(/&quot;/gm, inv("&#xE002;") + "&quot;").
-                                        replace(/\\t/gm, '&Tab;').
-                                        replace(/\"/gm, inv("&#xE002;") + "&quot;");
-                            desc = inv("&#xE003") + desc + inv("&#xE003;");
-                            e.details.Description = inv("Details&#xE000;") + $sce.trustAsHtml(desc);
                             e.details.Facility = "0x" + ((err.error >> 16) & 0x7ff).toString(16) + " = " + err.facility;
                             e.details.Code = "0x" + (err.error & 0xffff).toString(16) + " = " + (err.error & 0xffff).toString();
+                            e.details.Description = $('<i/>').html(err.description).text();
                             e.index = id++;
                             r.push(e);
                         }
@@ -141,7 +139,7 @@ angular.
                         $scope.g1 = r.length > 1;
                     }).
                     error(function(data, status, headers, config) {
-                        $scope.info = $sce.trustAsHtml("Error getting results!?");
+                        $scope.info = "Error getting results!?";
                         $scope.result = [];
                         $scope.iconStyle = "glyphicon glyphicon-null";
                     });
@@ -154,23 +152,6 @@ angular.
                 $timeout(function(){
                     _element[0].focus();
                 }, 100);
-            }
-        };
-    }).directive('suppressSelect', function() {
-        return {
-            link: function(scope, element, attrs) {
-                var down = new Date().getTime();
-                var old_down = down;
-                $(element).on('mousedown', function(e) {
-                    var time = new Date().getTime(),
-                        diff = time - down;
-                    old_down = down;
-                    down = time;
-                    if(diff < 500) {
-                        e.preventDefault();
-                        return false;
-                    }
-                });
             }
         };
     });

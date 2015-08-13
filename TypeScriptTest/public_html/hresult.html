@@ -7,7 +7,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-sanitize.min.js"></script>
     <script src="hresult.js"></script>
     <title>HRESULT Finder</title>
   </head>
@@ -15,7 +14,7 @@
     <div class="container" ng-app="mainApp" ng-controller="hresultController">
       <div class="page-header">
         <span class='pull-right'>
-            <span ng-class="iconStyle"></span>
+          <span ng-class="iconStyle"></span>
         </span>
         <h4>HRESULT Finder</h4>
       </div>
@@ -32,7 +31,9 @@
             </div>
           </div>
           <div class='col-md-6 wide' ng-cloak>
-            <h5><span class='label label-default {{searched ? "" : "invisible"}}' ng-bind-html='info'></span></h5>
+            <h5>
+              <span class='label label-default {{searched ? "" : "invisible"}}'>{{info}}</span>
+            </h5>
           </div>
           <div class='col-md-2' ng-cloak>
             <span class='pull-right'>
@@ -50,26 +51,24 @@
           <table class="table outer">
             <thead class="bg-primary">
               <tr>
-                <th class="col-md-2">Code</th>
-                <th class="col-md-8">Name</th>
-                <th class="col-md-2">File</th>
+                <th width="15%">Code</th>
+                <th width="60%">Name</th>
+                <th width="25%">File</th>
               </tr>
             </thead>
             <tbody ng-repeat="r in result" id="entry{{$index}}">
-              <tr data-toggle='{{g1 ? "collapse" : ""}}' data-target='#row{{$index}}' class='{{ g1 ? "clickable" : ""}}' suppress-select id='headerRow{{$index}}'>
-                <td class="col-md-2"><span class='invisible'>Error&#xE000;</span>{{r.error}}</td>
-                <td class="col-md-8"><span class='invisible'>Name&#xE000;</span>{{r.name}}</td>
-                <td class="col-md-2"><span class='invisible'>File&#xE000;</span>{{r.file}}</td>
+              <tr data-toggle='{{g1 ? "collapse" : ""}}' data-target='#row{{$index}}' class='{{ g1 ? "clickable" : ""}}' id='headerRow{{$index}}'>
+                <td width="15%">{{r.error}}</td>
+                <td width="60%">{{r.name}}</td>
+                <td width="25%">{{r.file}}</td>
               </tr>
               <tr class="hid">
                 <td colspan="3">
                   <div class='{{ g1 ? "accordion-body collapse" : ""}}' id='row{{$index}}'>
                     <table class="table inner">
                       <tr ng-repeat='m in msg' ng-switch on='$index'>
-                        <td class="col-md-1 pl"><span class='nocopy'>{{m.name}}</span></td>
-                        <td class="col-md-11">
-                          <span class='invisible'>{{m.name}}&#xE000;</span>{{r.details[m.name]}}
-                        </td>
+                        <td width="10%" class='nocopy'>{{m.name}}</td>
+                        <td width="70%">{{r.details[m.name]}}</td>
                         <td class="butter" rowspan="2" ng-switch-when='0'>
                           <span class='pull-right nocopy'>
                             <button type="button" class="btn btn-xs copyButton" ng-click='copy(r.index)' id="copyButton{{r.index}}">
@@ -80,8 +79,8 @@
                         </td>
                       </tr>
                       <tr>
-                        <td class='col-md-1 pl nocopy'>Description</td>
-                        <td colspan="2"><pre class="plain" ng-bind-html='r.details.Description'></pre></td>
+                        <td width="10%" class='nocopy'>Description</td>
+                        <td colspan="2"><pre class="plain">{{r.details.Description}}</pre></td>
                       </tr>
                     </table>
                   </div>
@@ -92,6 +91,5 @@
         </div>
       </div>
     </div>
-    <div id = "alert_placeholder"></div>
   </body>
 </html>

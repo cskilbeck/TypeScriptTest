@@ -81,6 +81,7 @@ table.table {
 
 .table.inner >tbody >tr >td {
     border: none;
+    overflow: hidden;
     padding-left: 20px;
     padding-right: 4px;
     padding-top: 0px;
@@ -110,9 +111,6 @@ table.table {
 
 .invisible {
     display: none;
-}
-
-.nocopy {
 }
 
 .row.gap {

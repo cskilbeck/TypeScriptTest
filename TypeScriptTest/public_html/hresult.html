@@ -30,7 +30,7 @@
               </span>
             </div>
           </div>
-          <div class='col-md-6 wide' ng-cloak>
+          <div class='col-md-6' ng-cloak>
             <h5>
               <span class='label label-default {{searched ? "" : "invisible"}}'>{{info}}</span>
             </h5>
@@ -57,14 +57,14 @@
               </tr>
             </thead>
             <tbody ng-repeat="r in result" id="entry{{$index}}">
-              <tr data-toggle='{{g1 ? "collapse" : ""}}' data-target='#row{{$index}}' class='{{ g1 ? "clickable" : ""}}' id='headerRow{{$index}}'>
+              <tr data-toggle='{{g1 ? "collapse" : ""}}' data-target='#row{{$index}}' class='{{ g1 ? "clickable" : ""}}' id='headerRow{{$index}}' >
                 <td width="15%">{{r.error}}</td>
                 <td width="60%">{{r.name}}</td>
                 <td width="25%">{{r.file}}</td>
               </tr>
               <tr class="hid">
                 <td colspan="3">
-                  <div class='{{ g1 ? "accordion-body collapse" : ""}}' id='row{{$index}}'>
+                  <div class='{{ g1 ? "accordion-body collapse" : ""}}' id='row{{$index}}' row="#headerRow{{$index}}" collapsible>
                     <table class="table inner">
                       <tr ng-repeat='m in msg' ng-switch on='$index'>
                         <td width="10%" class='nocopy'>{{m.name}}</td>

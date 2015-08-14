@@ -34,6 +34,22 @@ table.table {
 .clickable:hover {
     background-color: #E8E8E8;
     overflow: hidden;
+    -webkit-transition: none;
+    -moz-transition: none;
+    -o-transition: none;
+    transition: none;
+}
+
+.clickable.expanding,
+.clickable.contracting,
+.clickable.expanding:hover,
+.clickable.contracing:hover,
+.clickable.expanding[aria-expanded="true"]:hover,
+.clickable.contracting[aria-expanded="true"]:hover {
+    -webkit-transition: background-color 0.35s ease;
+    -moz-transition: background-color 0.35s ease;
+    -o-transition: background-color 0.35s ease;
+    transition: background-color 0.35s ease;
 }
 
 .clickable[aria-expanded="true"] {
@@ -43,7 +59,6 @@ table.table {
 
 .clickable[aria-expanded="true"]:hover {
     background-color: #d8e8d0;
-    overflow: hidden;
 }
 
 .table.outer >tbody >tr >td {
@@ -127,10 +142,15 @@ h4.noMargin {
 }
 
 .btn.btn-xs.copyButton {
+    -webkit-transition: background-color 0.125s ease;
+    -moz-transition: background-color 0.125s ease;
+    -o-transition: background-color 0.125s ease;
+    transition: background-color 0.125s ease;
+    -webkit-transition: color 0.125s ease;
+    -moz-transition: color 0.125s ease;
+    -o-transition: color 0.125s ease;
+    transition: color 0.125s ease;
     width:6em;
-}
-
-.wide {
 }
 
 pre.plain {

@@ -154,4 +154,13 @@ angular.
                 }, 100);
             }
         };
+    }).directive('collapsible', function() {
+        return {
+            link: function(scope, element) {
+                element.on('show.bs.collapse', function(e) { $($(this).attr('row')).addClass('expanding'); });
+                element.on('shown.bs.collapse', function(e) { $($(this).attr('row')).removeClass('expanding'); });
+                element.on('hide.bs.collapse', function(e) { $($(this).attr('row')).addClass('contracting'); });
+                element.on('hidden.bs.collapse', function(e) { $($(this).attr('row')).removeClass('contracting'); });
+            }
+        };
     });

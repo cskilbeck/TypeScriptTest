@@ -47,6 +47,56 @@ angular.
             { bit: -1, name: "Code",        text: []                                }
         ];
 
+        $scope.expand = function(s) {
+            $('.accordion-body').collapse(s);
+        };
+
+        $scope.getResults = function() {
+            $scope.iconStyle = "glyphicon glyphicon-refresh gly-spin pull-right";
+            $http.get(webservice + $scope.query).
+                success(function(data, status, headers, config) {
+                    var i, j, m, n,
+                        err, code, desc,
+                        more,
+                        e,
+                        id = 0,
+                        r = [];
+                    more = (data.results >= 10) ? " or more" : "";
+                    $scope.info = " " + data.results + more + " found";
+                    for(i in data.errors) {
+                        err = data.errors[i];
+                        n = parseInt(err.number);
+                        e = {
+                            error: err.error,
+                            name: err.name,
+                            file: err.file,
+                            details: {}
+                        };
+                        for(j in $scope.msg) {
+                            if($scope.msg[j].bit > 0) {
+                                m = $scope.msg[j];
+                                e.details[m.name] = m.text[(n >>> m.bit) & 1];
+                            }
+                        }
+                        e.details.Facility = "0x" + ((err.error >> 16) & 0x7ff).toString(16) + " = " + err.facility;
+                        e.details.Code = "0x" + (err.error & 0xffff).toString(16) + " = " + (err.error & 0xffff).toString();
+                        e.details.Description = $('<i/>').html(err.description).text();
+                        e.index = id++;
+                        r.push(e);
+                    }
+                    $scope.searched = true;
+                    $scope.result = r;
+                    $scope.tableVisible = r.length > 0;
+                    $scope.iconStyle = "glyphicon glyphicon-null pull-right";
+                    $scope.g1 = r.length > 1;
+                }).
+                error(function(data, status, headers, config) {
+                    $scope.info = "Error getting results!?";
+                    $scope.result = [];
+                    $scope.iconStyle = "glyphicon glyphicon-null";
+                });
+        };
+
         $scope.query = location.search.substr(1);
         $scope.info = '';
         $scope.result = [];
@@ -54,6 +104,10 @@ angular.
         $scope.tableVisible = false;
         $scope.searched = false;
         $scope.g1 = false;
+
+        if($scope.query.length > 0) {
+            $scope.getResults();
+        }
 
         $scope.clearQuery = function() {
             $scope.query = '';
@@ -83,10 +137,6 @@ angular.
             return "<span class='invisible'>" + x + "</span>";
         }
 
-        $scope.expand = function(s) {
-            $('.accordion-body').collapse(s);
-        };
-
         $scope.$watch('query', function() {
             $scope.iconStyle = "glyphicon glyphicon-null";
             if(timer !== null) {
@@ -100,49 +150,7 @@ angular.
                     $timeout.cancel(timer);
                 }
                 timer = null;
-                $scope.iconStyle = "glyphicon glyphicon-refresh gly-spin pull-right";
-                $http.get(webservice + $scope.query).
-                    success(function(data, status, headers, config) {
-                        var i, j, m, n,
-                            err, code, desc,
-                            more,
-                            e,
-                            id = 0,
-                            r = [];
-                        more = (data.results >= 10) ? " or more" : "";
-                        $scope.info = " " + data.results + more + " found";
-                        for(i in data.errors) {
-                            err = data.errors[i];
-                            n = parseInt(err.number);
-                            e = {
-                                error: err.error,
-                                name: err.name,
-                                file: err.file,
-                                details: {}
-                            };
-                            for(j in $scope.msg) {
-                                if($scope.msg[j].bit > 0) {
-                                    m = $scope.msg[j];
-                                    e.details[m.name] = m.text[(n >>> m.bit) & 1];
-                                }
-                            }
-                            e.details.Facility = "0x" + ((err.error >> 16) & 0x7ff).toString(16) + " = " + err.facility;
-                            e.details.Code = "0x" + (err.error & 0xffff).toString(16) + " = " + (err.error & 0xffff).toString();
-                            e.details.Description = $('<i/>').html(err.description).text();
-                            e.index = id++;
-                            r.push(e);
-                        }
-                        $scope.searched = true;
-                        $scope.result = r;
-                        $scope.tableVisible = r.length > 0;
-                        $scope.iconStyle = "glyphicon glyphicon-null pull-right";
-                        $scope.g1 = r.length > 1;
-                    }).
-                    error(function(data, status, headers, config) {
-                        $scope.info = "Error getting results!?";
-                        $scope.result = [];
-                        $scope.iconStyle = "glyphicon glyphicon-null";
-                    });
+                $scope.getResults();
             }, 250);
         });
 

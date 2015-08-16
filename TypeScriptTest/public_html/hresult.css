@@ -43,7 +43,7 @@ table.table {
 .clickable.expanding,
 .clickable.contracting,
 .clickable.expanding:hover,
-.clickable.contracing:hover,
+.clickable.contracting:hover,
 .clickable.expanding[aria-expanded="true"]:hover,
 .clickable.contracting[aria-expanded="true"]:hover {
     -webkit-transition: background-color 0.35s ease;

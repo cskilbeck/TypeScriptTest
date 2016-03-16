@@ -3,6 +3,7 @@
 //    "unused" : false,
     "debug" : true,
     "devel" : true,
+    "es5" : true,
     "browser" : true,
     "predef" : [
         "mtw",

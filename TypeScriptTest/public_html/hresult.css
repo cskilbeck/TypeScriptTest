@@ -67,8 +67,8 @@ table.table {
     padding-left: 10px;
     padding-right: 10px;
     border: none;
-    border-left: 1px LightGrey solid;
-    border-right: 1px LightGrey solid;
+    border-left: 1px #F0F solid;
+    border-right: 1px #F0F solid;
     overflow: hidden;
 }
 
@@ -77,21 +77,21 @@ table.table {
 }
 
 .table>thead:first-child>tr:first-child>th {
-    border-top: 1px LightGrey solid;
+    border-top: 1px #F0F solid;
 }
 
 .table.outer >thead >tr >th {
-    border: 1px LightGrey solid;
+    border: 1px #F0F solid;
 }
 
 .table >tbody+tbody {
-    border-top: 1px LightGrey solid;
+    border-top: 1px #F0F solid;
 }
 
 .table >thead >tr >th,
 .table.outer >tbody:last-child,
 .table.outer >tbody:last-child:first-child {
-    border-bottom: 1px LightGrey solid;
+    border-bottom: 1px #F0F solid;
 }
 
 .table.inner >tbody >tr >td {
@@ -106,7 +106,7 @@ table.table {
 }
 
 .table.inner >tbody >tr:first-child >td {
-    border-top: 1px LightGrey solid;
+    border-top: 1px #F0F solid;
     padding-top: 6px;
 }
 

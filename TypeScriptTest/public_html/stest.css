@@ -1,0 +1,105 @@
+body {
+    background: #d8d8d8;
+}
+
+#header {
+    height: 64px;
+    display: block;
+    overflow: hidden;
+}
+
+#main {
+    display: block;
+}
+
+#aspectwrapper {
+    display: inline-block;
+    left: 25%;
+    width: 50%;
+    position: relative;
+}
+
+#aspectwrapper::after {
+    padding-top: 66.666%;
+    display: block;
+    content: '';
+}
+
+#board {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    outline: 1px solid black;
+    background: white;
+    overflow: hidden;
+    font-size: 0;
+}
+
+#banner {
+    display: inline-block;
+    left: 25%;
+    width: 50%;
+    position: relative;
+    text-align: center;
+    font-family: 'Bangers';
+    font-size: 3em;
+    -webkit-text-stroke: 1px black;
+    color: rgb(255,175,75);
+    text-shadow:
+        3px 3px 0 #000,
+        -1px -1px 0 #000,
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        1px 1px 0 #000;
+}
+
+#banner::after {
+    padding-top: 0px;
+    display: block;
+    content: '';
+}
+
+.box {
+    display: inline-block;
+    overflow: hidden;
+    width: 33.333%;
+    background: white;
+    height: 50%;
+}
+
+.inner {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    padding: 0px;
+    margin: 0px;
+    color: black;
+    font-size: initial;
+}
+
+.box:nth-child(1) {
+    border-right: 1px solid black;
+    border-bottom: 2px solid black;
+}
+
+.box:nth-child(2) {
+    border-right: 1px solid black;
+    border-bottom: 2px solid black;
+}
+
+.box:nth-child(3) {
+    border-bottom: 2px solid black;
+}
+
+.box:nth-child(4) {
+    border-right: 1px solid black;
+}
+
+.box:nth-child(5) {
+    border-right: 1px solid black;
+}
+
+.box:nth-child(6) {
+}
